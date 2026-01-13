@@ -1,0 +1,228 @@
+import { motion } from 'framer-motion';
+import { oceanData } from '../data/mockData';
+import { useState, useEffect } from 'react';
+
+const Hero = () => {
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const sectors = oceanData.sectors;
+
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % sectors.length);
+    };
+
+    // Auto-advance slides
+    useEffect(() => {
+        const timer = setInterval(nextSlide, 5000);
+        return () => clearInterval(timer);
+    }, [sectors.length]);
+
+    return (
+        <section id="home" className="relative h-screen flex items-start justify-center overflow-hidden pt-32 pb-0">
+            {/* Background Video with Overlay */}
+            <div className="absolute inset-x-6 lg:inset-x-12 top-32 lg:top-[148px] bottom-6 rounded-3xl overflow-hidden bg-navy group">
+                {/* Carousel Background Image - Changes based on selected sector */}
+                <motion.div
+                    key={currentSlide}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0"
+                >
+                    <img
+                        src={sectors[currentSlide].image}
+                        alt={sectors[currentSlide].title}
+                        className="w-full h-full object-cover"
+                    />
+                </motion.div>
+
+                {/* Dark Overlay for better contrast */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
+
+                {/* Top Left Company Name */}
+                <div className="absolute top-6 left-6 lg:top-8 lg:left-8 z-10">
+                    <h3 className="text-white text-xs lg:text-sm font-semibold tracking-wider">
+                        OCEAN CEYLON HOLDINGS
+                    </h3>
+                </div>
+
+                {/* Center Content */}
+                <div className="absolute inset-x-0 top-0 bottom-40 lg:bottom-48 flex flex-col items-center justify-center z-10 px-4">
+                    {/* Chip Icon */}
+                    <motion.div
+                        initial={{ scale: 0, rotate: 180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="mb-6 bg-white/10 backdrop-blur-sm p-3 lg:p-4 rounded-2xl border border-white/20"
+                    >
+                        <svg
+                            className="w-10 h-10 lg:w-12 lg:h-12 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            <rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                            <circle cx="8.5" cy="8.5" r="0.5" />
+                            <circle cx="15.5" cy="8.5" r="0.5" />
+                            <circle cx="8.5" cy="15.5" r="0.5" />
+                            <circle cx="15.5" cy="15.5" r="0.5" />
+                            <rect x="9.5" y="9.5" width="5" height="5" fill="currentColor" opacity="0.3" />
+                        </svg>
+                    </motion.div>
+
+                    {/* Main Heading */}
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-center mb-4 lg:mb-6"
+                    >
+                        OceanLK Tech
+                    </motion.h1>
+
+                    {/* Subtitle */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                        className="text-sm md:text-base lg:text-lg text-white/90 text-center max-w-2xl mb-8 lg:mb-10 px-4"
+                    >
+                        Powering the future with advanced micro-processing solutions.
+                    </motion.p>
+
+                    {/* CTA Button */}
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.8 }}
+                        className="px-6 lg:px-8 py-3 lg:py-3.5 bg-white/10 backdrop-blur-sm text-white text-sm lg:text-base font-medium rounded-full border border-white/30 hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105"
+                    >
+                        Explore Division
+                    </motion.button>
+                </div>
+
+
+
+                {/* Social Media Sidebar */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-5 py-5 px-2 bg-white rounded-l-2xl shadow-lg transform translate-x-0 transition-transform duration-300">
+                    {/* Facebook */}
+                    <a href="#" className="hover:scale-110 transition-transform">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1877F2">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                    </a>
+                    {/* LinkedIn */}
+                    <a href="#" className="hover:scale-110 transition-transform">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#0A66C2">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.234-1.66-2.234-.906 0-1.446.61-1.683 1.197-.086.21-.107.502-.107.795v5.811H9.89s.048-9.422 0-10.42h3.554v1.477c.472-.731 1.325-1.776 3.219-1.776 2.348 0 4.109 1.534 4.109 4.832v5.887zM5.337 8.533c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 11.919H3.555V10.033h3.564v10.419z" />
+                        </svg>
+                    </a>
+                    {/* Instagram */}
+                    <a href="#" className="hover:scale-110 transition-transform text-white">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                            <defs>
+                                <linearGradient id="ig-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#833ab4" />
+                                    <stop offset="50%" stopColor="#fd1d1d" />
+                                    <stop offset="100%" stopColor="#fcb045" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="24" height="24" rx="6" fill="url(#ig-grad)" />
+                            <path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm5.25-9a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" />
+                            <path fill="currentColor" fillRule="evenodd" d="M16 3H8a5 5 0 0 0-5 5v8a5 5 0 0 0 5 5h8a5 5 0 0 0 5-5V8a5 5 0 0 0-5-5zm5 13a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v8z" clipRule="evenodd" />
+                        </svg>
+                    </a>
+                    {/* X (Twitter) */}
+                    <a href="#" className="hover:scale-110 transition-transform">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="black">
+                            <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                        </svg>
+                    </a>
+                    {/* WeChat */}
+                    <a href="#" className="hover:scale-110 transition-transform">
+                        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="#07C160">
+                            <path d="M8.5 13.5c-.28 0-.5.22-.5.5s.22.5.5.5.5-.22.5-.5-.22-.5-.5-.5zm5 0c-.28 0-.5.22-.5.5s.22.5.5.5.5-.22.5-.5-.22-.5-.5-.5zm-6.5-6c-.28 0-.5.22-.5.5s.22.5.5.5.5-.22.5-.5-.22-.5-.5-.5zm5 0c-.28 0-.5.22-.5.5s.22.5.5.5.5-.22.5-.5-.22-.5-.5-.5z" />
+                            <path fillRule="evenodd" d="M17.5 12c-2.48 0-4.5 1.79-4.5 4s2.02 4 4.5 4c.54 0 1.06-.09 1.54-.25l1.96 1.05v-1.89c1.5-1.07 2.5-2.65 2.5-4.41-.03-2.21-2.04-4.5-5.5-4.5zM8 3C3.58 3 0 6.13 0 10c0 2.21 1.17 4.17 3.03 5.46L2.5 19l3.48-1.74c1.03.4 2.14.63 3.3.56.33-2.61 2.55-4.83 5.22-4.83.6 0 1.18.11 1.73.31C16.89 5.8 12.87 3 8 3z" clipRule="evenodd" />
+                        </svg>
+                    </a>
+                    {/* YouTube */}
+                    <a href="#" className="hover:scale-110 transition-transform">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#FF0000">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            {/* Bottom Navigation Circles */}
+            <div className="absolute bottom-20 lg:bottom-24 left-0 right-0 z-20 px-4 lg:px-20">
+                <div className="w-full max-w-7xl mx-auto flex justify-between items-center overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 gap-4 no-scrollbar">
+                    {sectors.map((sector, index) => {
+                        const isActive = currentSlide === index;
+                        return (
+                            <button
+                                key={sector.id}
+                                onClick={() => setCurrentSlide(index)}
+                                className="group flex-1 flex items-center gap-4 focus:outline-none min-w-fit lg:min-w-0"
+                            >
+                                <div className="relative">
+                                    {/* Dotted Outline Ring - Only Visible when Active */}
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeRing"
+                                            className="absolute -inset-2 rounded-full border-2 border-dotted border-secondary"
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        />
+                                    )}
+
+                                    {/* Image Circle - Active much larger, inactive smaller */}
+                                    <motion.div
+                                        animate={{
+                                            scale: isActive ? 1 : 0.6,
+                                            opacity: isActive ? 1 : 0.5
+                                        }}
+                                        transition={{ duration: 0.4, ease: "easeOut" }}
+                                        className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'}`}
+                                    >
+                                        <img
+                                            src={sector.image}
+                                            alt={sector.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </motion.div>
+                                </div>
+
+                                {/* Sector Name Label - Always Visible */}
+                                <span className={`font-medium text-sm lg:text-base whitespace-nowrap transition-colors duration-300 hidden lg:block ${isActive ? 'text-white' : 'text-white/60 group-hover:text-white/90'}`}>
+                                    {sector.title}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Scroll Down Indicator - Below Circles */}
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.8 }}
+                className="absolute bottom-8 lg:bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+            >
+                <motion.div
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-2"
+                >
+                    <motion.div
+                        animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-1.5 h-1.5 bg-white rounded-full"
+                    />
+                </motion.div>
+            </motion.div>
+        </section>
+    );
+};
+
+export default Hero;
