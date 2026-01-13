@@ -1,7 +1,7 @@
 
 const TopBar = () => {
     return (
-        <div className="w-full bg-[#3a3a3a] border-b border-white/10">
+        <div className="w-full bg-[#004C97] border-b border-white/10">
             <div className="max-w-7xl mx-auto h-full px-6 lg:px-12 flex items-center justify-end gap-8 py-2">
                 <div className="flex items-center gap-8 text-xs text-white">
                     <div className="flex items-center gap-1 cursor-pointer hover:text-accent transition-colors">

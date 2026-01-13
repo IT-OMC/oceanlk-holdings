@@ -19,9 +19,9 @@ export default {
                     light: '#58d68d',
                 },
                 accent: {
-                    DEFAULT: '#00c4cc', // Signal Teal
-                    dark: '#009ea5',
-                    light: '#00e5ed',
+                    DEFAULT: '#2ecc71', // Aliased to Secondary (Green) to remove "Light Blue"
+                    dark: '#27ae60',
+                    light: '#58d68d',
                 },
                 navy: {
                     DEFAULT: '#001529', // Deep Navy (for dark sections)

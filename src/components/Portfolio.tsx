@@ -1,153 +1,113 @@
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Building2, TrendingUp, Users, Briefcase, Globe } from 'lucide-react';
-import React, { useState } from 'react';
+import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 
-// Define company data
+// Define company data with new logos
 const subsidiaries = [
     {
         id: 1,
         name: 'OceanTech Solutions',
         tagline: 'Technology & Innovation',
         description: 'Leading provider of cutting-edge technology solutions and digital transformation services.',
-        icon: Building2,
-        color: 'from-blue-500 to-cyan-500',
+        logo: '/subsidiaries/oceantech_logo_1768307339285.png',
+        color: 'from-blue-600 to-cyan-400',
+        glowColor: 'shadow-blue-500/50',
         orbitRadius: 280,
-        orbitDuration: 30,
     },
     {
         id: 2,
         name: 'Maritime Logistics Ltd',
-        tagline: 'Global Shipping & Logistics',
+        tagline: 'Global Shipping',
         description: 'World-class maritime logistics and supply chain management solutions across continents.',
-        icon: Globe,
-        color: 'from-emerald-500 to-teal-500',
+        logo: '/subsidiaries/maritime_logo_1768307355885.png',
+        color: 'from-emerald-500 to-teal-400',
+        glowColor: 'shadow-teal-500/50',
         orbitRadius: 280,
-        orbitDuration: 30,
     },
     {
         id: 3,
         name: 'Ceylon Capital Group',
         tagline: 'Investment & Finance',
         description: 'Strategic investment portfolio management and financial advisory services.',
-        icon: TrendingUp,
-        color: 'from-amber-500 to-orange-500',
+        logo: '/subsidiaries/capital_logo_1768307372443.png',
+        color: 'from-amber-400 to-yellow-600',
+        glowColor: 'shadow-amber-500/50',
         orbitRadius: 280,
-        orbitDuration: 30,
     },
     {
         id: 4,
         name: 'Ocean Hospitality',
         tagline: 'Hotels & Resorts',
         description: 'Luxury hospitality experiences with premium hotels and resorts worldwide.',
-        icon: Users,
-        color: 'from-purple-500 to-pink-500',
+        logo: '/subsidiaries/hospitality_logo_1768307390674.png',
+        color: 'from-purple-500 to-fuchsia-400',
+        glowColor: 'shadow-purple-500/50',
         orbitRadius: 280,
-        orbitDuration: 30,
     },
     {
         id: 5,
         name: 'Global Trade Partners',
         tagline: 'International Trade',
         description: 'Facilitating international trade and commerce across emerging markets.',
-        icon: Briefcase,
-        color: 'from-rose-500 to-red-500',
+        logo: '/subsidiaries/trade_logo_1768307410341.png',
+        color: 'from-orange-500 to-red-500',
+        glowColor: 'shadow-orange-500/50',
         orbitRadius: 280,
-        orbitDuration: 30,
     },
 ];
 
-// 3D Tilt Card Component
-const TiltCard = ({ subsidiary }: { subsidiary: typeof subsidiaries[0] }) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-
-    const mouseXSpring = useSpring(x);
-    const mouseYSpring = useSpring(y);
-
-    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['17.5deg', '-17.5deg']);
-    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-17.5deg', '17.5deg']);
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const width = rect.width;
-        const height = rect.height;
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const xPct = mouseX / width - 0.5;
-        const yPct = mouseY / height - 0.5;
-        x.set(xPct);
-        y.set(yPct);
-    };
-
-    const handleMouseLeave = () => {
-        x.set(0);
-        y.set(0);
-        setIsHovered(false);
-    };
-
-    const Icon = subsidiary.icon;
-
+// Holographic Card Component
+const HolographicCard = ({ subsidiary }: { subsidiary: typeof subsidiaries[0] }) => {
     return (
         <motion.div
-            style={{
-                rotateX,
-                rotateY,
-                transformStyle: 'preserve-3d',
-            }}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={handleMouseLeave}
-            whileHover={{ scale: 1.1 }}
-            className="relative cursor-pointer"
+            initial={{ opacity: 0, y: 20, scale: 0.8, rotateX: -15 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="absolute bottom-full mb-6 left-1/2 -translate-x-1/2 w-72 pointer-events-none z-50"
+            style={{ perspective: '1000px' }}
         >
+            {/* Connection Beam */}
             <motion.div
-                className={`relative w-full h-full rounded-xl bg-gradient-to-br ${subsidiary.color} p-6 shadow-2xl`}
-                style={{
-                    transform: 'translateZ(75px)',
-                    transformStyle: 'preserve-3d',
-                }}
-            >
-                {/* Icon */}
-                <div className="flex items-center justify-center mb-4">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
-                        <Icon className="w-8 h-8 text-white" />
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 24, opacity: 1 }}
+                className="absolute top-full left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-cyan-400/50 to-transparent"
+            />
+
+            {/* Card Content */}
+            <div className={`relative bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-xl p-5 shadow-2xl overflow-hidden ring-1 ring-white/20 ${subsidiary.glowColor}`}>
+                {/* Scanline Effect */}
+                <motion.div
+                    className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent bg-[length:100%_4px]"
+                    style={{ opacity: 0.1 }}
+                    animate={{ backgroundPosition: ['0% 0%', '0% 100%'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-3 border-b border-white/10 pb-3">
+                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${subsidiary.color} p-1.5`}>
+                        <img src={subsidiary.logo} alt="icon" className="w-full h-full object-contain brightness-200 contrast-200 grayscale" />
+                    </div>
+                    <div>
+                        <h4 className="text-white font-bold text-sm leading-tight">{subsidiary.name}</h4>
+                        <span className="text-xs text-cyan-400 font-mono tracking-wider">SECURE_LINK</span>
                     </div>
                 </div>
 
-                {/* Company Name */}
-                <h3 className="text-xl font-bold text-white text-center mb-2">
-                    {subsidiary.name}
-                </h3>
-
-                {/* Tagline */}
-                <p className="text-sm text-white/90 font-medium text-center mb-3">
-                    {subsidiary.tagline}
-                </p>
-
-                {/* Description - Only show on hover */}
-                <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{
-                        opacity: isHovered ? 1 : 0,
-                        height: isHovered ? 'auto' : 0,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                >
-                    <p className="text-sm text-white/80 text-center leading-relaxed">
+                {/* Body */}
+                <div className="space-y-2">
+                    <p className="text-xs text-slate-300 font-medium">{subsidiary.tagline}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed font-light">
                         {subsidiary.description}
                     </p>
-                </motion.div>
+                </div>
 
-                {/* Glow effect */}
-                <motion.div
-                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent"
-                    style={{
-                        transform: 'translateZ(-1px)',
-                    }}
-                />
-            </motion.div>
+                {/* Corner Accents */}
+                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500/50 rounded-tl-sm" />
+                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500/50 rounded-tr-sm" />
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500/50 rounded-bl-sm" />
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500/50 rounded-br-sm" />
+            </div>
         </motion.div>
     );
 };
@@ -157,27 +117,27 @@ const OrbitingPlanet = ({
     subsidiary,
     index,
     baseRotation,
-    onHover
+    onHover,
+    isPaused
 }: {
     subsidiary: typeof subsidiaries[0];
     index: number;
     baseRotation: any;
     onHover: (isHovered: boolean) => void;
+    isPaused: boolean;
 }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    // Calculate evenly spaced angle for each company
+    const [isHovered, setIsHovered] = useState(false);
     const totalCompanies = subsidiaries.length;
     const angleOffset = (360 / totalCompanies) * index;
 
-    // Transform motion value for this specific planet's position
+    // Calculate rotation: We want the planet to stay upright.
+    // The parent container rotates, so we must counter-rotate the child.
     const rotation = useTransform(baseRotation, (latest: number) => latest + angleOffset);
-    // Counter rotation to keep the planet upright
     const counterRotation = useTransform(baseRotation, (latest: number) => -(latest + angleOffset));
 
     return (
         <motion.div
-            className="absolute"
+            className="absolute rounded-full"
             style={{
                 left: '50%',
                 top: '50%',
@@ -186,82 +146,45 @@ const OrbitingPlanet = ({
                 marginLeft: -subsidiary.orbitRadius,
                 marginTop: -subsidiary.orbitRadius,
                 rotate: rotation,
+                zIndex: isHovered ? 50 : 10,
+                pointerEvents: 'none' // Let events pass through the orbit container
             }}
         >
-            {/* Planet positioned on the orbit */}
+            {/* The Planet */}
             <motion.div
                 className="absolute"
                 style={{
                     left: '50%',
-                    top: '0',
-                    marginLeft: -60,
-                    marginTop: -60,
+                    top: -40, // Offset from rim
+                    marginLeft: -40,
+                    width: 80,
+                    height: 80,
                     rotate: counterRotation,
+                    pointerEvents: 'auto'
                 }}
-                onMouseEnter={() => {
-                    setIsExpanded(true);
-                    onHover(true);
-                }}
-                onMouseLeave={() => {
-                    setIsExpanded(false);
-                    onHover(false);
-                }}
+                onMouseEnter={() => { setIsHovered(true); onHover(true); }}
+                onMouseLeave={() => { setIsHovered(false); onHover(false); }}
+                whileHover={{ scale: 1.15 }}
             >
-                <div className="relative flex items-center justify-center">
-                    <motion.div
-                        animate={{
-                            width: isExpanded ? 320 : 120, // Slightly smaller collapsed size
-                            height: isExpanded ? 'auto' : 120,
-                            zIndex: isExpanded ? 50 : 1
-                        }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                        className="relative"
-                    >
-                        {isExpanded ? (
-                            <TiltCard subsidiary={subsidiary} />
-                        ) : (
-                            // Collapsed planet
-                            <motion.div
-                                className={`w-full h-full rounded-full bg-gradient-to-br ${subsidiary.color} shadow-lg flex items-center justify-center relative overflow-hidden ring-4 ring-white/20`}
-                                whileHover={{ scale: 1.1 }}
-                            >
-                                {/* Glowing ring */}
-                                <motion.div
-                                    className="absolute inset-0 rounded-full"
-                                    animate={{
-                                        boxShadow: [
-                                            '0 0 10px rgba(255,255,255,0.3)',
-                                            '0 0 20px rgba(255,255,255,0.5)',
-                                            '0 0 10px rgba(255,255,255,0.3)',
-                                        ],
-                                    }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        ease: 'easeInOut',
-                                    }}
-                                />
+                <div className="relative w-full h-full flex items-center justify-center group cursor-pointer">
+                    {/* Planet Orb */}
+                    <div className="relative w-16 h-16 rounded-full bg-slate-900 border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-300 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_40px_rgba(34,211,238,0.2)]">
+                        {/* Background Gradient */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${subsidiary.color} opacity-20`} />
 
-                                {/* Icon */}
-                                <div className="relative z-10 bg-white/20 backdrop-blur-sm rounded-full p-5">
-                                    <subsidiary.icon className="w-8 h-8 text-white" />
-                                </div>
+                        {/* Logo */}
+                        <div className="absolute inset-2 p-2 bg-slate-950/50 rounded-full backdrop-blur-sm flex items-center justify-center">
+                            <img src={subsidiary.logo} alt={subsidiary.name} className="w-full h-full object-contain" />
+                        </div>
 
-                                {/* Shine effect */}
-                                <motion.div
-                                    className="absolute top-0 left-0 w-full h-full rounded-full bg-gradient-to-br from-white/30 via-transparent to-transparent"
-                                    animate={{
-                                        rotate: [0, 360],
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: 'linear',
-                                    }}
-                                />
-                            </motion.div>
-                        )}
-                    </motion.div>
+                        {/* Glass Gloss */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                    </div>
+
+                    {/* Holographic Projection */}
+                    <AnimatePresence>
+                        {isHovered && <HolographicCard subsidiary={subsidiary} />}
+                    </AnimatePresence>
                 </div>
             </motion.div>
         </motion.div>
@@ -269,183 +192,115 @@ const OrbitingPlanet = ({
 };
 
 const Portfolio = () => {
-    // Shared rotation state
     const baseRotation = useMotionValue(0);
     const [isPaused, setIsPaused] = useState(false);
 
-
-    // We use requestAnimationFrame to drive the rotation
-    React.useEffect(() => {
+    useEffect(() => {
         let lastTime = performance.now();
         let animationFrameId: number;
 
         const animate = (time: number) => {
             if (!isPaused) {
                 const delta = time - lastTime;
-                // Speed: degrees per millisecond. 360 degrees / 30000ms = 0.012 deg/ms
                 const current = baseRotation.get();
-                baseRotation.set(current + (delta * 0.012));
+                baseRotation.set(current + (delta * 0.006));
             }
             lastTime = time;
             animationFrameId = requestAnimationFrame(animate);
         };
 
         animationFrameId = requestAnimationFrame(animate);
-
         return () => cancelAnimationFrame(animationFrameId);
     }, [isPaused, baseRotation]);
 
     return (
-        <section id="portfolio" className="relative min-h-screen py-20 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
-            {/* Background Elements */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* Grid Pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-
-                {/* Radial Gradient on right side */}
-                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-blue-100/40 via-transparent to-transparent rounded-full blur-3xl" />
+        <section id="portfolio" className="relative py-24 overflow-hidden bg-slate-950">
+            {/* Background Atmosphere */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-900/10 rounded-full blur-[120px]" />
+                {/* Tech Grid */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
 
-            {/* Content - Split Layout */}
             <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    {/* LEFT SIDE - Text with Glass Effect */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                    {/* Left Content */}
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="relative z-30"
                     >
-                        {/* Glass Panel */}
-                        <div className="relative backdrop-blur-xl bg-white/70 rounded-3xl p-8 lg:p-12 shadow-2xl border border-white/20">
-                            {/* Decorative gradient overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent rounded-3xl" />
+                        <div className="relative">
+                            <h2 className="text-sm font-bold tracking-[0.2em] text-cyan-400 mb-3 uppercase">
+                                Our Ecosystem
+                            </h2>
+                            <h3 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+                                A Constellation of <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Excellence</span>
+                            </h3>
+                            <p className="text-lg text-slate-400 leading-relaxed mb-8 max-w-lg">
+                                Ocean Ceylon Holdings anchors a diverse portfolio of market-leading subsidiaries, each driving innovation in their respective sectors.
+                            </p>
 
-                            {/* Content */}
-                            <div className="relative z-10">
-                                <motion.p
-                                    className="text-primary font-semibold text-lg mb-4"
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.2 }}
+                            <div className="flex gap-4">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="px-8 py-4 bg-cyan-500 text-slate-900 font-bold rounded-full shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all"
                                 >
-                                    GROUP PORTFOLIO
-                                </motion.p>
-                                <h2 className="text-4xl lg:text-5xl font-bold text-navy mb-6">
-                                    Our Corporate Ecosystem
-                                </h2>
-                                <p className="text-lg text-gray-700 leading-relaxed">
-                                    Explore our diverse portfolio of subsidiary companies, each a leader in their respective industry.
-                                </p>
-
-                                {/* Additional decorative elements */}
-                                <div className="mt-8 space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-primary" />
-                                        <p className="text-gray-600">Innovation & Technology</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-secondary" />
-                                        <p className="text-gray-600">Global Maritime Solutions</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-accent" />
-                                        <p className="text-gray-600">Strategic Investments</p>
-                                    </div>
-                                </div>
+                                    Explore All Sectors
+                                </motion.button>
                             </div>
-
-                            {/* Glass shine effect */}
-                            <div className="absolute top-0 left-0 w-full h-full rounded-3xl bg-gradient-to-br from-white/40 via-transparent to-transparent pointer-events-none" />
                         </div>
                     </motion.div>
 
-                    {/* RIGHT SIDE - Orbiting Animation */}
-                    <div className="relative w-full flex items-center justify-center" style={{ minHeight: '600px' }}>
-                        {/* Central Hub - Main Company with Logo */}
+                    {/* Solar System */}
+                    <div className="relative h-[600px] flex items-center justify-center perspective-1000">
+                        {/* Orbit Track Visuals - Static */}
+                        <div className="absolute w-[560px] h-[560px] rounded-full border border-white/5" />
+                        <div className="absolute w-[560px] h-[560px] rounded-full border border-white/5 animate-pulse opacity-50" />
+
+                        {/* Central Sun (Main Company) */}
                         <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 1 }}
                             className="relative z-20"
-                            initial={{ scale: 0, rotate: -180 }}
-                            whileInView={{ scale: 1, rotate: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1, ease: 'easeOut' }}
                         >
-                            <motion.div
-                                className="relative w-32 h-32 rounded-full bg-white shadow-2xl flex items-center justify-center overflow-hidden ring-4 ring-blue-50"
-                                whileHover={{ scale: 1.05 }}
-                            >
-                                {/* Rotating background pattern (subtle now) */}
-                                <motion.div
-                                    className="absolute inset-0 opacity-5"
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                                >
-                                    <div className="w-full h-full bg-[radial-gradient(circle_at_center,#0a1628_1px,transparent_1px)] bg-[size:10px_10px]" />
-                                </motion.div>
-
-                                {/* Company Logo */}
-                                <div className="relative z-10 p-4">
-                                    <motion.img
-                                        src="/och-logo.png"
-                                        alt="Ocean Ceylon Holdings"
-                                        className="w-full h-full object-contain"
-                                        animate={{ scale: [1, 1.05, 1] }}
-                                        transition={{ duration: 4, repeat: Infinity }}
-                                    />
+                            <div className="relative w-32 h-32 rounded-full flex items-center justify-center">
+                                {/* Core Glow */}
+                                <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full animate-pulse" />
+                                <div className="absolute inset-0 bg-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl flex items-center justify-center p-6 bg-slate-900">
+                                    <img src="/och-logo.png" alt="OceanLK" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
                                 </div>
-
-                                {/* Glowing ring effect */}
+                                {/* Orbit Rings around sun */}
                                 <motion.div
-                                    className="absolute inset-0 rounded-full border-4 border-blue-100"
-                                    animate={{
-                                        scale: [1, 1.1, 1],
-                                        opacity: [0.3, 0.6, 0.3],
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: 'easeInOut',
-                                    }}
+                                    className="absolute inset-[-10px] rounded-full border border-cyan-500/30 opacity-50"
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                                 />
-                            </motion.div>
+                                <motion.div
+                                    className="absolute inset-[-20px] rounded-full border border-dashed border-blue-500/20 opacity-30"
+                                    animate={{ rotate: -360 }}
+                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                />
+                            </div>
                         </motion.div>
 
-                        {/* Single Orbit Ring - Smaller */}
-                        <motion.div
-                            className="absolute left-1/2 top-1/2 rounded-full border border-dashed border-gray-300/60"
-                            style={{
-                                width: 400,
-                                height: 400,
-                                marginLeft: -200,
-                                marginTop: -200,
-                            }}
-                            initial={{ opacity: 0, scale: 0 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                        />
-
-
-                        {/* Orbiting Planets - Smaller */}
-                        {subsidiaries.map((subsidiary, index) => {
-                            // Smaller orbit radius
-                            const smallerSubsidiary = {
-                                ...subsidiary,
-                                orbitRadius: 200, // Reduced from 280
-                            };
-
-                            return (
-                                <OrbitingPlanet
-                                    key={subsidiary.id}
-                                    subsidiary={smallerSubsidiary}
-                                    index={index}
-                                    baseRotation={baseRotation}
-                                    onHover={setIsPaused}
-                                />
-                            );
-                        })}
+                        {/* Planets */}
+                        {subsidiaries.map((subsidiary, index) => (
+                            <OrbitingPlanet
+                                key={subsidiary.id}
+                                subsidiary={subsidiary}
+                                index={index}
+                                baseRotation={baseRotation}
+                                onHover={setIsPaused}
+                                isPaused={isPaused}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
@@ -454,4 +309,3 @@ const Portfolio = () => {
 };
 
 export default Portfolio;
-

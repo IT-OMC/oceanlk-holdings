@@ -19,7 +19,7 @@ const Footer = () => {
                         <img
                             src="/och-logo.png"
                             alt={oceanData.company.name}
-                            className="h-16 w-auto mb-3 brightness-0 invert"
+                            className="h-16 w-auto mb-3"
                         />
                         <p className="text-lg text-slate-400 mb-4 italic">
                             {oceanData.company.tagline}

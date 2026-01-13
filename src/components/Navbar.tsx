@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, Menu, ChevronDown, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { oceanData } from '../data/mockData';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const { t } = useTranslation();
 
     return (
         <motion.nav
@@ -68,14 +71,14 @@ const Navbar = () => {
                                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                                 transition={{ duration: 0.2 }}
-                                                className="absolute top-full left-0 w-56 bg-white shadow-xl rounded-b-xl border-t-2 border-accent overflow-hidden"
+                                                className="absolute top-full left-0 mt-2 w-64 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50 p-2"
                                             >
-                                                <div className="py-2">
+                                                <div className="flex flex-col gap-1">
                                                     {link.subItems.map((subItem: any, subIndex: number) => (
                                                         <Link
                                                             key={subIndex}
                                                             to={subItem.path}
-                                                            className="block px-6 py-3 text-sm text-gray-600 hover:text-white hover:bg-primary transition-colors duration-200"
+                                                            className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                                                         >
                                                             {subItem.name}
                                                         </Link>
@@ -99,7 +102,7 @@ const Navbar = () => {
                                     >
                                         <input
                                             type="text"
-                                            placeholder="Search..."
+                                            placeholder={t('Search...')}
                                             className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-accent"
                                             autoFocus
                                         />
@@ -122,6 +125,9 @@ const Navbar = () => {
                                     </motion.button>
                                 )}
                             </AnimatePresence>
+
+                            {/* Language Switcher */}
+                            <LanguageSwitcher />
 
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
