@@ -15,7 +15,7 @@ interface ShippingRoute {
 
 const GlobalConnections = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [hoveredRoute, setHoveredRoute] = useState<ShippingRoute | null>(null);
+    const [hoveredRoute] = useState<ShippingRoute | null>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;

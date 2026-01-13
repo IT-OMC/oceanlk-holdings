@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Define company data with new logos
 const subsidiaries = [
@@ -117,14 +117,12 @@ const OrbitingPlanet = ({
     subsidiary,
     index,
     baseRotation,
-    onHover,
-    isPaused
+    onHover
 }: {
     subsidiary: typeof subsidiaries[0];
     index: number;
     baseRotation: any;
     onHover: (isHovered: boolean) => void;
-    isPaused: boolean;
 }) => {
     const [isHovered, setIsHovered] = useState(false);
     const totalCompanies = subsidiaries.length;
@@ -298,7 +296,6 @@ const Portfolio = () => {
                                 index={index}
                                 baseRotation={baseRotation}
                                 onHover={setIsPaused}
-                                isPaused={isPaused}
                             />
                         ))}
                     </div>

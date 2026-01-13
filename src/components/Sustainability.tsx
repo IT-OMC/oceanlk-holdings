@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, useInView, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import SectionWrapper from './SectionWrapper';
 
 const Sustainability = () => {
