@@ -1,5 +1,5 @@
 import Hero from '../components/Hero';
-import Portfolio from '../components/Portfolio';
+import HoldingDescription from '../components/HoldingDescription';
 import GlobalConnections from '../components/GlobalConnections';
 import Gallery from '../components/Gallery';
 import Testimonials from '../components/Testimonials';
@@ -10,7 +10,7 @@ const Home = () => {
     return (
         <div className="relative">
             <Hero />
-            <Portfolio />
+            <HoldingDescription />
             <ErrorBoundary>
                 <GlobalConnections />
             </ErrorBoundary>

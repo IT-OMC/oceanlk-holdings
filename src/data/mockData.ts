@@ -12,6 +12,14 @@ export const oceanData = {
             path: "/"
         },
         {
+            name: "Corporate",
+            hasDropdown: true,
+            subItems: [
+                { name: "Profile", path: "/corporate/profile" },
+                { name: "Leadership", path: "/corporate/leadership" }
+            ]
+        },
+        {
             name: "Companies",
             hasDropdown: true,
             subItems: [
@@ -24,14 +32,6 @@ export const oceanData = {
             ]
         },
         {
-            name: "Corporate",
-            hasDropdown: true,
-            subItems: [
-                { name: "Profile", path: "/corporate/profile" },
-                { name: "Leadership", path: "/corporate/leadership" }
-            ]
-        },
-        {
             name: "News",
             hasDropdown: true,
             subItems: [
@@ -41,7 +41,7 @@ export const oceanData = {
             ]
         },
         {
-            name: "Careers",
+            name: "Life at OCH",
             hasDropdown: true,
             subItems: [
                 { name: "Culture", path: "/careers/culture" },
