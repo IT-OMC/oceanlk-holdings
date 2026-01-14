@@ -11,7 +11,7 @@ const subsidiaries = [
         logo: '/subsidiaries/oceantech_logo_1768307339285.png',
         color: 'from-blue-600 to-cyan-400',
         glowColor: 'shadow-blue-500/50',
-        orbitRadius: 280,
+        orbitRadius: 220,
     },
     {
         id: 2,
@@ -21,7 +21,7 @@ const subsidiaries = [
         logo: '/subsidiaries/maritime_logo_1768307355885.png',
         color: 'from-emerald-500 to-teal-400',
         glowColor: 'shadow-teal-500/50',
-        orbitRadius: 280,
+        orbitRadius: 220,
     },
     {
         id: 3,
@@ -31,7 +31,7 @@ const subsidiaries = [
         logo: '/subsidiaries/capital_logo_1768307372443.png',
         color: 'from-amber-400 to-yellow-600',
         glowColor: 'shadow-amber-500/50',
-        orbitRadius: 280,
+        orbitRadius: 220,
     },
     {
         id: 4,
@@ -41,7 +41,7 @@ const subsidiaries = [
         logo: '/subsidiaries/hospitality_logo_1768307390674.png',
         color: 'from-purple-500 to-fuchsia-400',
         glowColor: 'shadow-purple-500/50',
-        orbitRadius: 280,
+        orbitRadius: 220,
     },
     {
         id: 5,
@@ -51,7 +51,7 @@ const subsidiaries = [
         logo: '/subsidiaries/trade_logo_1768307410341.png',
         color: 'from-orange-500 to-red-500',
         glowColor: 'shadow-orange-500/50',
-        orbitRadius: 280,
+        orbitRadius: 220,
     },
 ];
 
@@ -166,17 +166,17 @@ const OrbitingPlanet = ({
             >
                 <div className="relative w-full h-full flex items-center justify-center group cursor-pointer">
                     {/* Planet Orb */}
-                    <div className="relative w-16 h-16 rounded-full bg-slate-900 border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-300 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_40px_rgba(34,211,238,0.2)]">
-                        {/* Background Gradient */}
-                        <div className={`absolute inset-0 bg-gradient-to-br ${subsidiary.color} opacity-20`} />
+                    <div className="relative w-16 h-16 rounded-full bg-white border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.3)] overflow-hidden transition-all duration-300 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]">
+                        {/* Background Gradient - slightly visible on white */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${subsidiary.color} opacity-10`} />
 
                         {/* Logo */}
-                        <div className="absolute inset-2 p-2 bg-slate-950/50 rounded-full backdrop-blur-sm flex items-center justify-center">
+                        <div className="absolute inset-2 p-2 rounded-full flex items-center justify-center">
                             <img src={subsidiary.logo} alt={subsidiary.name} className="w-full h-full object-contain" />
                         </div>
 
                         {/* Glass Gloss */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent pointer-events-none" />
                     </div>
 
                     {/* Holographic Projection */}
@@ -212,9 +212,9 @@ const Portfolio = () => {
     }, [isPaused, baseRotation]);
 
     return (
-        <section id="portfolio" className="relative py-24 overflow-hidden bg-slate-950">
+        <section id="portfolio" className="relative py-24 bg-slate-950">
             {/* Background Atmosphere */}
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-0 overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
                 <div className="absolute bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-900/10 rounded-full blur-[120px]" />
                 {/* Tech Grid */}
@@ -271,8 +271,8 @@ const Portfolio = () => {
                             <div className="relative w-32 h-32 rounded-full flex items-center justify-center">
                                 {/* Core Glow */}
                                 <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full animate-pulse" />
-                                <div className="absolute inset-0 bg-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl flex items-center justify-center p-6 bg-slate-900">
-                                    <img src="/och-logo.png" alt="OceanLK" className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                                <div className="absolute inset-0 bg-white backdrop-blur-md rounded-full border border-white/40 shadow-[0_0_50px_rgba(255,255,255,0.3)] flex items-center justify-center p-6">
+                                    <img src="/och-logo.png" alt="OceanLK" className="w-full h-full object-contain" />
                                 </div>
                                 {/* Orbit Rings around sun */}
                                 <motion.div
