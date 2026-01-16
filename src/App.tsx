@@ -18,10 +18,12 @@ import Contact from './pages/Contact';
 import TopBar from './components/TopBar';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import UnderDevelopmentPopup from './components/UnderDevelopmentPopup';
 
 function App() {
     return (
         <Router>
+            <UnderDevelopmentPopup />
             <div className="fixed top-0 left-0 right-0 z-50">
                 <TopBar />
                 <Navbar />

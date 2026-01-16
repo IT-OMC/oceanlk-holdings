@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, Menu, ChevronDown, X } from 'lucide-react';
@@ -9,16 +9,30 @@ import LanguageSwitcher from './LanguageSwitcher';
 const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const { t } = useTranslation();
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <motion.nav
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="bg-white shadow-md relative z-50"
+            className={`relative z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-white/60 backdrop-blur-md'}`}
         >
-            <div className="max-w-7xl mx-auto px-6 py-1.5">
+            <div className="max-w-[98%] mx-auto px-6 py-1.5">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
                     <motion.div
