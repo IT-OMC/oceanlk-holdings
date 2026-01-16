@@ -79,21 +79,21 @@ const Footer = () => {
                             <motion.a
                                 whileHover={{ scale: 1.1, y: -2 }}
                                 href="#"
-                                className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
+                                className="w-[28px] h-[28px] md:w-[31px] md:h-[31px] rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
                             >
                                 <Linkedin className="w-4 h-4 text-accent" />
                             </motion.a>
                             <motion.a
                                 whileHover={{ scale: 1.1, y: -2 }}
                                 href="#"
-                                className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
+                                className="w-[28px] h-[28px] md:w-[31px] md:h-[31px] rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
                             >
                                 <Twitter className="w-4 h-4 text-accent" />
                             </motion.a>
                             <motion.a
                                 whileHover={{ scale: 1.1, y: -2 }}
                                 href="#"
-                                className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
+                                className="w-[28px] h-[28px] md:w-[31px] md:h-[31px] rounded-full glass flex items-center justify-center hover:bg-accent/20 transition-colors"
                             >
                                 <Facebook className="w-4 h-4 text-accent" />
                             </motion.a>

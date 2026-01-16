@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Define company data with new logos
 const subsidiaries = [

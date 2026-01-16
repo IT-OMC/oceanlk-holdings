@@ -24,7 +24,7 @@ const Hero = () => {
     }, [sectors.length]);
 
     return (
-        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden group">
             {/* Full Viewport Background - No rounded rectangle */}
             <div className="absolute inset-0 overflow-hidden bg-navy">
                 {/* Carousel Background Image - Changes based on selected sector */}
@@ -50,27 +50,21 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
 
                 {/* Center Content */}
-                <div className="absolute inset-x-0 top-0 bottom-40 lg:bottom-48 flex flex-col items-center justify-center z-10 px-4">
-                    {/* Chip Icon */}
+                <div className="absolute inset-x-0 top-20 md:top-24 bottom-32 md:bottom-36 lg:bottom-40 flex flex-col items-center justify-center z-10 px-4 md:px-8 lg:px-12">
+                    {/* Company Logo - Dynamic based on sector */}
                     <motion.div
-                        initial={{ scale: 0, rotate: 180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="mb-6 bg-white/10 backdrop-blur-sm p-3 lg:p-4 rounded-2xl border border-white/20"
+                        key={`logo-${currentSlide}`}
+                        initial={{ scale: 0, rotate: 180, opacity: 0 }}
+                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                        exit={{ scale: 0, rotate: -180, opacity: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="mb-4 md:mb-5 lg:mb-6 p-4 md:p-5 lg:p-6 bg-white rounded-full shadow-lg"
                     >
-                        <svg
-                            className="w-10 h-10 lg:w-12 lg:h-12 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                            <rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                            <circle cx="8.5" cy="8.5" r="0.5" />
-                            <circle cx="15.5" cy="8.5" r="0.5" />
-                            <circle cx="8.5" cy="15.5" r="0.5" />
-                            <circle cx="15.5" cy="15.5" r="0.5" />
-                            <rect x="9.5" y="9.5" width="5" height="5" fill="currentColor" opacity="0.3" />
-                        </svg>
+                        <img
+                            src={sectors[currentSlide].logo}
+                            alt={`${sectors[currentSlide].title} logo`}
+                            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-contain"
+                        />
                     </motion.div>
 
                     {/* Main Heading - Dynamic based on sector */}
@@ -80,7 +74,7 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6 }}
-                        className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-center mb-4 lg:mb-6"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-center leading-tight mb-3 md:mb-4 lg:mb-5"
                     >
                         {sectors[currentSlide].title}
                     </motion.h1>
@@ -92,7 +86,7 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-sm md:text-base lg:text-lg text-white/90 text-center max-w-2xl mb-8 lg:mb-10 px-4"
+                        className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white/90 text-center max-w-sm md:max-w-md lg:max-w-2xl mb-6 md:mb-8 lg:mb-9 px-2 md:px-4"
                     >
                         {sectors[currentSlide].desc}
                     </motion.p>
@@ -102,7 +96,7 @@ const Hero = () => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.8 }}
-                        className="px-6 lg:px-8 py-3 lg:py-3.5 bg-white/10 backdrop-blur-sm text-white text-sm lg:text-base font-medium rounded-full border border-white/30 hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105"
+                        className="px-5 md:px-6 lg:px-8 py-2.5 md:py-3 lg:py-3.5 bg-white/10 backdrop-blur-sm text-white text-sm lg:text-base font-medium rounded-full border border-white/30 hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105"
                     >
                         {t('hero.exploreButton')}
                     </motion.button>
@@ -111,14 +105,14 @@ const Hero = () => {
                 {/* Carousel Navigation Arrows */}
                 <button
                     onClick={prevSlide}
-                    className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                    className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group opacity-0 group-hover:opacity-100"
                     aria-label="Previous slide"
                 >
                     <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7 text-white group-hover:scale-110 transition-transform" />
                 </button>
                 <button
                     onClick={nextSlide}
-                    className="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                    className="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group opacity-0 group-hover:opacity-100"
                     aria-label="Next slide"
                 >
                     <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7 text-white group-hover:scale-110 transition-transform" />
@@ -178,8 +172,8 @@ const Hero = () => {
             </div>
 
             {/* Bottom Navigation Circles */}
-            <div className="absolute bottom-28 lg:bottom-32 left-0 right-0 z-20 px-4 lg:px-20">
-                <div className="w-full max-w-7xl mx-auto flex justify-between items-center overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 gap-4 no-scrollbar">
+            <div className="absolute bottom-16 lg:bottom-24 left-0 right-0 z-20 px-4 lg:px-6">
+                <div className="w-full max-w-[98%] mx-auto flex justify-between items-center overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 gap-4 no-scrollbar">
                     {sectors.map((sector, index) => {
                         const isActive = currentSlide === index;
                         return (
@@ -205,12 +199,12 @@ const Hero = () => {
                                             opacity: isActive ? 1 : 0.5
                                         }}
                                         transition={{ duration: 0.4, ease: "easeOut" }}
-                                        className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'}`}
+                                        className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'} bg-white flex items-center justify-center p-2`}
                                     >
                                         <img
-                                            src={sector.image}
+                                            src={sector.logo}
                                             alt={sector.title}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                         />
                                     </motion.div>
                                 </div>

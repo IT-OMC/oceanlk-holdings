@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, ChevronDown, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { oceanData } from '../data/mockData';
@@ -10,15 +10,38 @@ const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { t } = useTranslation();
+    const [isScrolled, setIsScrolled] = useState(false);
+    const location = useLocation();
+    const isHomePage = location.pathname === '/';
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Only apply scroll effect on home page
+            if (isHomePage) {
+                if (window.scrollY > 50) {
+                    setIsScrolled(true);
+                } else {
+                    setIsScrolled(false);
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isHomePage]);
+
 
     return (
         <motion.nav
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="bg-white shadow-md relative z-50"
+            className={`fixed left-0 right-0 z-50 transition-all duration-300 ${isHomePage
+                ? (isScrolled ? 'top-0 bg-white shadow-md py-1.5' : 'top-6 bg-transparent py-4')
+                : 'top-0 bg-white shadow-md py-1.5'
+                }`}
         >
-            <div className="max-w-7xl mx-auto px-6 py-1.5">
+            <div className="w-full px-4 mx-auto">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
                     <motion.div
@@ -52,14 +75,14 @@ const Navbar = () => {
                                     <div className="flex items-center gap-1 cursor-pointer">
                                         <Link
                                             to={link.path || '#'}
-                                            className="text-base font-semibold text-primary hover:text-accent transition-all duration-300 relative inline-block py-4"
+                                            className={`text-base font-semibold transition-all duration-300 relative inline-block py-4 ${(isHomePage && !isScrolled) ? 'text-white hover:text-white/80' : 'text-primary hover:text-accent'}`}
                                             onClick={(e) => link.hasDropdown && e.preventDefault()}
                                         >
                                             {link.name}
-                                            <span className="absolute bottom-2 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
+                                            <span className={`absolute bottom-2 left-0 w-0 h-0.5 transition-all duration-300 ${(isHomePage && !isScrolled) ? 'bg-white group-hover:w-full' : 'bg-accent group-hover:w-full'}`} />
                                         </Link>
                                         {link.hasDropdown && (
-                                            <ChevronDown className={`w-4 h-4 text-primary group-hover:text-accent transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''}`} />
+                                            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''} ${(isHomePage && !isScrolled) ? 'text-white group-hover:text-white/80' : 'text-primary group-hover:text-accent'}`} />
                                         )}
                                     </div>
 
@@ -78,9 +101,18 @@ const Navbar = () => {
                                                         <Link
                                                             key={subIndex}
                                                             to={subItem.path}
-                                                            className="block px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                                                            className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium group"
                                                         >
-                                                            {subItem.name}
+                                                            {subItem.logo && (
+                                                                <div className="w-5 h-5 flex-shrink-0 rounded overflow-hidden bg-white ring-1 ring-gray-200 group-hover:ring-accent transition-all">
+                                                                    <img
+                                                                        src={subItem.logo}
+                                                                        alt={subItem.name}
+                                                                        className="w-full h-full object-contain p-0.5"
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                            <span className={subItem.logo ? '' : 'ml-8'}>{subItem.name}</span>
                                                         </Link>
                                                     ))}
                                                 </div>
@@ -103,7 +135,7 @@ const Navbar = () => {
                                         <input
                                             type="text"
                                             placeholder={t('Search...')}
-                                            className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-accent"
+                                            className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-accent text-black"
                                             autoFocus
                                         />
                                         <button
@@ -118,10 +150,10 @@ const Navbar = () => {
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsSearchOpen(true)}
-                                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                        className={`p-2 rounded-full transition-colors ${(isHomePage && !isScrolled) ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
                                         aria-label="Search"
                                     >
-                                        <Search className="w-5 h-5 text-primary" />
+                                        <Search className={`w-5 h-5 ${(isHomePage && !isScrolled) ? 'text-white' : 'text-primary'}`} />
                                     </motion.button>
                                 )}
                             </AnimatePresence>
@@ -132,10 +164,10 @@ const Navbar = () => {
                             <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                className={`p-2 rounded-full transition-colors ${(isHomePage && !isScrolled) ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
                                 aria-label="Menu"
                             >
-                                <Menu className="w-6 h-6 text-primary" />
+                                <Menu className={`w-6 h-6 ${(isHomePage && !isScrolled) ? 'text-white' : 'text-primary'}`} />
                             </motion.button>
                         </div>
                     </div>

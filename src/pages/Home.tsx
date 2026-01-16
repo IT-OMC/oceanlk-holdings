@@ -1,22 +1,24 @@
 import Hero from '../components/Hero';
-import Portfolio from '../components/Portfolio';
+import HoldingDescription from '../components/HoldingDescription';
+import GlobalMetrics from '../components/GlobalMetrics';
 import GlobalConnections from '../components/GlobalConnections';
 import Gallery from '../components/Gallery';
-import Testimonials from '../components/Testimonials';
-import Sectors from '../components/Sectors';
+import LatestUpdates from '../components/LatestUpdates';
+
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const Home = () => {
     return (
         <div className="relative">
             <Hero />
-            <Portfolio />
+            <HoldingDescription />
+            <GlobalMetrics />
             <ErrorBoundary>
                 <GlobalConnections />
             </ErrorBoundary>
             <Gallery />
-            <Testimonials />
-            <Sectors />
+            <LatestUpdates />
+
         </div>
     );
 };
