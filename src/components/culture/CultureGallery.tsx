@@ -41,7 +41,7 @@ const images = [
 
 const CultureGallery = () => {
     return (
-        <section className="py-20 px-4 md:px-6 max-w-[95%] mx-auto">
+        <section className="pt-8 pb-20 px-4 md:px-6 max-w-[95%] mx-auto mt-[10px]">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

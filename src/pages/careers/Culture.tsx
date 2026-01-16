@@ -12,7 +12,7 @@ const Culture = () => {
 
             <NewCultureHero />
 
-            <div className="space-y-12">
+            <div className="flex flex-col">
                 <LifeAtHolding />
 
                 <CultureGallery />

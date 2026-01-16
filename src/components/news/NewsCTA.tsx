@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Rocket } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
-const CultureCTA = () => {
+const NewsCTA = () => {
     return (
         <section className="py-24 bg-white text-center relative overflow-hidden">
             {/* Background decoration */}
@@ -13,16 +13,16 @@ const CultureCTA = () => {
             <div className="relative z-10 max-w-3xl mx-auto px-6">
                 <div className="flex justify-center mb-8">
                     <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center shadow-sm">
-                        <Rocket className="text-blue-500" size={32} />
+                        <Mail className="text-blue-500" size={32} />
                     </div>
                 </div>
 
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">
-                    Ready to make an impact?
+                    Never miss an update
                 </h2>
 
                 <p className="text-xl text-gray-500 mb-12 max-w-xl mx-auto leading-relaxed">
-                    Join a team that celebrates creativity, integrity, and growth. We are looking for people just like you.
+                    Subscribe to our newsletter and stay informed about the latest news, insights, and developments from OCH.
                 </p>
 
                 <div className="flex flex-wrap justify-center gap-4">
@@ -31,7 +31,7 @@ const CultureCTA = () => {
                         whileTap={{ scale: 0.95 }}
                         className="px-8 py-4 bg-[#0099cc] text-white rounded-full font-bold shadow-lg shadow-blue-500/30 hover:bg-[#0088bb] transition-colors"
                     >
-                        View Open Positions
+                        Subscribe Now
                     </motion.button>
 
                     <motion.button
@@ -39,7 +39,7 @@ const CultureCTA = () => {
                         whileTap={{ scale: 0.95 }}
                         className="px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-full font-bold hover:bg-gray-50 hover:border-gray-300 transition-colors"
                     >
-                        Contact Us
+                        View Archive
                     </motion.button>
                 </div>
             </div>
@@ -47,4 +47,4 @@ const CultureCTA = () => {
     );
 };
 
-export default CultureCTA;
+export default NewsCTA;

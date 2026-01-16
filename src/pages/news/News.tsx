@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import SectionWrapper from '../../components/SectionWrapper';
 import { Calendar, ArrowRight } from 'lucide-react';
+import NewsHero from '../../components/news/NewsHero';
+import NewsCTA from '../../components/news/NewsCTA';
+import Navbar from '../../components/Navbar';
 
 const newsArticles = [
     {
@@ -48,64 +50,66 @@ const newsArticles = [
 
 const News = () => {
     return (
-        <div className="min-h-screen">
-            <SectionWrapper id="news" className="pt-32 pb-20">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <h1 className="text-5xl font-bold mb-6">Latest News</h1>
-                    <p className="text-xl text-gray-300 mb-12 max-w-3xl">
-                        Stay updated with the latest developments, announcements, and achievements
-                        from across the OceanLK group.
-                    </p>
+        <div className="min-h-screen bg-white text-gray-900 font-sans">
+            <Navbar />
 
-                    <div className="space-y-6">
-                        {newsArticles.map((article, index) => (
-                            <motion.div
-                                key={article.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                            >
-                                <Link to={`/news/articles/${article.id}`}>
-                                    <div className="glass rounded-xl overflow-hidden hover:scale-[1.01] transition-transform group">
-                                        <div className="flex flex-col md:flex-row gap-6">
-                                            <div className="md:w-1/3 h-64 md:h-auto overflow-hidden">
-                                                <img
-                                                    src={article.image}
-                                                    alt={article.title}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                />
-                                            </div>
-                                            <div className="flex-1 p-6 md:py-8">
-                                                <div className="flex items-center gap-4 mb-4">
-                                                    <span className="bg-accent px-3 py-1 rounded-full text-sm font-semibold">
-                                                        {article.category}
-                                                    </span>
-                                                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                                                        <Calendar className="w-4 h-4" />
-                                                        {article.date}
-                                                    </div>
-                                                </div>
-                                                <h3 className="text-3xl font-bold mb-3 group-hover:text-accent transition-colors">
-                                                    {article.title}
-                                                </h3>
-                                                <p className="text-gray-300 text-lg mb-4">{article.excerpt}</p>
-                                                <span className="text-accent flex items-center gap-2 font-semibold">
-                                                    Read Full Article
-                                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                                </span>
-                                            </div>
+            <NewsHero />
+
+            {/* Articles Section */}
+            <section className="py-20 px-4 md:px-6 w-full max-w-[95%] mx-auto">
+                <div className="flex justify-between items-center mb-12">
+                    <div>
+                        <h2 className="text-4xl font-bold text-gray-900 mb-2">Latest News</h2>
+                        <p className="text-gray-500">Stay updated with our latest announcements and achievements.</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {newsArticles.map((article, index) => (
+                        <motion.div
+                            key={article.id}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            whileHover={{ y: -5 }}
+                        >
+                            <Link to={`/news/articles/${article.id}`}>
+                                <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 group h-full flex flex-col">
+                                    <div className="h-56 overflow-hidden relative">
+                                        <img
+                                            src={article.image}
+                                            alt={article.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute top-4 left-4">
+                                            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                                {article.category}
+                                            </span>
                                         </div>
                                     </div>
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
-            </SectionWrapper>
+                                    <div className="p-6 flex-1 flex flex-col">
+                                        <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+                                            <Calendar className="w-4 h-4" />
+                                            {article.date}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                                            {article.title}
+                                        </h3>
+                                        <p className="text-gray-600 mb-4 flex-1">{article.excerpt}</p>
+                                        <span className="text-blue-600 flex items-center gap-2 font-semibold text-sm">
+                                            Read Full Article
+                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            <NewsCTA />
         </div>
     );
 };

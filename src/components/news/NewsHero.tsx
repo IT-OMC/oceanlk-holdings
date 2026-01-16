@@ -1,13 +1,13 @@
-import { Play, ArrowRight, Globe } from 'lucide-react';
+import { Play, ArrowRight } from 'lucide-react';
 
-const NewCultureHero = () => {
+const NewsHero = () => {
     return (
         <section className="relative h-screen w-full overflow-hidden">
             {/* Background Image - Full Viewport */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[20s] hover:scale-105"
                 style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")'
+                    backgroundImage: 'url("https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")'
                 }}
             >
                 {/* Gradient Overlays */}
@@ -22,21 +22,21 @@ const NewCultureHero = () => {
                         {/* Animated Badge */}
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-sm font-bold tracking-widest text-cyan-300 uppercase bg-blue-900/40 backdrop-blur-md rounded-full border border-cyan-500/30 animate-pulse">
                             <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                            Life at OCH
+                            Latest Updates
                         </div>
 
                         {/* Main Heading */}
                         <h1 className="text-6xl md:text-8xl font-black text-white mb-8 leading-none drop-shadow-2xl">
-                            Empowering People.<br />
+                            Stay Informed.<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
-                                Shaping Horizons.
+                                Stay Ahead.
                             </span>
                         </h1>
 
                         {/* Subheading */}
                         <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed font-light drop-shadow-md">
-                            Dive into a culture where innovation meets impact. <br className="hidden md:block" />
-                            At Ocean Ceylon Holdings, we don't just ride the waves—we create them.
+                            Your source for the latest news, updates, and insights <br className="hidden md:block" />
+                            from across the Ocean Ceylon Holdings group.
                         </p>
 
                         {/* Interactive Buttons */}
@@ -47,7 +47,7 @@ const NewCultureHero = () => {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <span className="relative flex items-center gap-3">
-                                    Explore Careers
+                                    Browse Articles
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </button>
@@ -59,15 +59,12 @@ const NewCultureHero = () => {
                                 <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                     <Play size={16} fill="currentColor" className="ml-0.5" />
                                 </span>
-                                Watch Our Story
+                                Watch Highlights
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Bottom Gradient Fade */}
-
 
             {/* Scroll Indicator */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 flex flex-col items-center gap-2 animate-bounce cursor-pointer hover:text-white transition-colors">
@@ -78,4 +75,4 @@ const NewCultureHero = () => {
     );
 };
 
-export default NewCultureHero;
+export default NewsHero;

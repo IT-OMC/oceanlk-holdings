@@ -37,7 +37,7 @@ const GlobalConnections = () => {
                     transition={{ duration: 0.8 }}
                     className="relative mb-16"
                 >
-                    <div className="relative h-[500px] lg:h-[700px] rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900 to-navy shadow-2xl">
+                    <div className="relative h-[500px] lg:h-[700px] rounded-2xl overflow-hidden bg-gradient-to-b from-navy via-navy to-slate-900 shadow-2xl">
                         <ThreeGlobe />
 
                         {/* Interaction Hint */}
