@@ -87,12 +87,10 @@ const UnderDevelopmentPopup = () => {
                         <DevelopmentAnimation />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white mb-3">
-                        Under Construction
-                    </h2>
+                    <h2 className="text-2xl font-bold text-white mb-2">ocean.lk is under control</h2>
 
-                    <p className="text-slate-400 mb-8 leading-relaxed">
-                        The Ocean Ceylon Holdings digital experience is currently being built. Please check back soon for our launch.
+                    <p className="text-gray-400 mb-8 max-w-sm">
+                        Ocean Ceylon Holdings digital experience is currently being built. Please check back soon for our launch.
                     </p>
 
                     <div className="mt-2 flex items-center justify-center gap-2 text-xs text-slate-500">

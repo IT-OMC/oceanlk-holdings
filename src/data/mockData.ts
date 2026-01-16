@@ -59,6 +59,14 @@ export const oceanData = {
         { id: 2, label: "Subsidiaries", value: "12" },
         { id: 3, label: "Global Partners", value: "50+" }
     ],
+    partners: [
+        { name: "Global Shipping Alliance", logo: "/partner_logos/partner1.png" },
+        { name: "EcoMarine Solutions", logo: "/partner_logos/partner2.png" },
+        { name: "Asian Logistics Network", logo: "/partner_logos/partner3.png" },
+        { name: "Ceylon Trade Hub", logo: "/partner_logos/partner4.png" },
+        { name: "Pacific Maritime Group", logo: "/partner_logos/partner5.png" },
+        { name: "Indian Ocean Trade", logo: "/partner_logos/partner6.png" }
+    ],
     sectors: [
         {
             id: "marine",
