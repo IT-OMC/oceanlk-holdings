@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "Αρχική",
+        "companies": "Εταιρείες",
+        "corporate": "Εταιρικό",
+        "news": "Νέα",
+        "careers": "Καριέρες",
+        "contact": "Επικοινωνία",
+        "allCompanies": "Όλες οι Εταιρείες",
+        "profile": "Προφίλ",
+        "leadership": "Ηγεσία",
+        "blogs": "Ιστολόγια",
+        "articles": "Νέα",
+        "media": "Μέσα",
+        "culture": "Κουλτούρα",
+        "onboard": "Εγγραφή",
+        "talentPool": "Δεξαμενή Ταλέντων"
+    },
+    "hero": {
+        "exploreButton": "Εξερευνήστε το Τμήμα"
+    },
+    "home": {
+        "memberships": {
+            "label": "Παγκόσμιες Συνεργασίες",
+            "title": "ΟΙ",
+            "titleAccent": "ΣΥΝΔΡΟΜΕΣ ΜΑΣ",
+            "description": "Είμαστε περήφανα μέλη κορυφαίων παγκόσμιων οργανισμών, αφοσιωμένοι στην επιχειρησιακή αριστεία, τη βιωσιμότητα και τις βέλτιστες πρακτικές του κλάδου.",
+            "activeBadge": "Ενεργό",
+            "memberSince": "Μέλος Από"
+        },
+        "metrics": {
+            "title": "Παγκόσμιος Αντίκτυπος",
+            "subtitle": "Τροφοδότηση Ναυτιλιακής Logistics Παγκοσμίως",
+            "activeRoutes": "Ενεργές Διαδρομές",
+            "weeklySailings": "Εβδομαδιαία Ταξίδια",
+            "annualCapacity": "Ετήσια Χωρητικότητα TEU",
+            "globalPorts": "Παγκόσμια Λιμάνια",
+            "countriesServed": "Χώρες που Εξυπηρετούνται"
+        },
+        "gallery": {
+            "label": "ΓΚΑΛΕΡΙ",
+            "title": "Το",
+            "titleAccent": "Ταξίδι Μας",
+            "description": "Δείτε τον κόσμο μέσα από τον φακό μας: περιπέτειες σε φωτογραφίες και βίντεο",
+            "viewMore": "Δείτε Περισσότερα",
+            "filterAll": "Όλα"
+        },
+        "updates": {
+            "title": "Τελευταίες",
+            "titleAccent": "Ενημερώσεις",
+            "description": "Μείνετε συνδεδεμένοι με τα τελευταία νέα από τις θυγατρικές μας εταιρείες",
+            "followText": "Ακολουθήστε μας στο Instagram για ενημερώσεις σε πραγματικό χρόνο από όλες τις εταιρείες μας"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "Η Ζωή στην OCH",
+        "subtitle": "Μια ματιά στον καθημερινό μας ρυθμό και τις αξίες μας.",
+        "islandwideOffices": "Γραφεία σε Όλο το Νησί",
+        "cards": {
+            "highlight": "ΕΠΙΣΗΜΑΝΣΗ",
+            "community": "ΚΟΙΝΟΤΗΤΑ",
+            "testimonial": "ΜΑΡΤΥΡΙΑ",
+            "coreValue": "ΒΑΣΙΚΗ ΑΞΙΑ",
+            "upcoming": "ΕΠΕΡΧΟΜΕΝΟ",
+            "stats": "ΣΤΑΤΙΣΤΙΚΑ",
+            "active": "Ενεργό"
+        }
+    },
+    "contact": {
+        "badge": "Επικοινωνήστε Μαζί Μας",
+        "heroTitle1": "Ας Ξεκινήσουμε",
+        "heroTitle2": "Μια Συζήτηση",
+        "heroDescription": "Θα χαρούμε να ακούσουμε από εσάς. Είτε έχετε μια ερώτηση για τις υπηρεσίες μας, τις συνεργασίες ή οτιδήποτε άλλο, η ομάδα μας είναι έτοιμη να απαντήσει σε όλες τις ερωτήσεις σας.",
+        "info": {
+            "headOffice": "Κεντρικά Γραφεία",
+            "phone": "Τηλέφωνο",
+            "email": "Email"
+        },
+        "form": {
+            "title": "Στείλτε μας ένα Μήνυμα",
+            "nameLabel": "Πλήρες Όνομα",
+            "namePlaceholder": "Γιάννης Παπαδόπουλος",
+            "emailLabel": "Email",
+            "emailPlaceholder": "giannis@paradeigma.gr",
+            "phoneLabel": "Τηλέφωνο",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "Θέμα",
+            "subjectPlaceholder": "Επιλέξτε ένα θέμα",
+            "subjectGeneral": "Γενική Ερώτηση",
+            "subjectPartnership": "Ευκαιρία Συνεργασίας",
+            "subjectInvestment": "Ερώτημα Επένδυσης",
+            "subjectCareer": "Ευκαιρία Καριέρας",
+            "subjectOther": "Άλλο",
+            "messageLabel": "Μήνυμα",
+            "messagePlaceholder": "Πείτε μας περισσότερα για το ερώτημά σας...",
+            "submitButton": "Αποστολή Μηνύματος",
+            "required": "*"
+        },
+        "map": {
+            "title": "Βρείτε Μας"
+        }
+    },
+    "globalConnections": {
+        "title": "Σύνδεση της Σρι Λάνκα",
+        "subtitle": "με τον Κόσμο",
+        "description": "Στρατηγική τοποθεσία στη διασταύρωση των παγκόσμιων εμπορικών δρόμων. Εξερευνήστε το ναυτιλιακό μας δίκτυο που εκτείνεται σε ηπείρους και ωκεανούς.",
+        "dragHint": "Σύρετε",
+        "scrollHint": "Κύλιση",
+        "dragText": "για περιστροφή",
+        "scrollText": "για μεγέθυνση",
+        "weeklySailings": "Εβδομαδιαία Ταξίδια",
+        "tonnageMoved": "Μετακινούμενη Χωρητικότητα",
+        "transitTime": "Χρόνος Μεταφοράς",
+        "activeRoutes": "Ενεργές Διαδρομές",
+        "annualTonnage": "Ετήσια Χωρητικότητα",
+        "globalPorts": "Παγκόσμια Λιμάνια"
+    },
+    "testimonials": {
+        "title": "Μαρτυρίες",
+        "titleAccent": "Πελατών",
+        "description": "Ιστορίες επιτυχίας από τους πολύτιμους συνεργάτες μας σε όλο τον κόσμο"
+    },
+    "footer": {
+        "quickLinks": "Γρήγοροι Σύνδεσμοι",
+        "contact": "Επικοινωνία",
+        "allRightsReserved": "Όλα τα δικαιώματα κατοχυρωμένα",
+        "privacyPolicy": "Πολιτική Απορρήτου",
+        "termsOfService": "Όροι Υπηρεσίας"
+    }
+}
