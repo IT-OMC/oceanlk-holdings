@@ -3,89 +3,54 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
 
-const jobOpenings = [
-    {
-        id: 1,
-        title: 'Senior Maritime Engineer',
-        company: 'OceanLK Marine',
-        location: 'Colombo, Sri Lanka',
-        type: 'Full-time',
-        category: 'Engineering',
-        description: 'Lead our maritime engineering team in developing innovative shipping solutions.',
-        featured: true,
-        level: 'Senior'
-    },
-    {
-        id: 2,
-        title: 'Resort Manager',
-        company: 'OceanLK Leisure',
-        location: 'Galle, Sri Lanka',
-        type: 'Full-time',
-        category: 'Hospitality',
-        description: 'Manage daily operations of our flagship beach resort property.',
-        featured: true,
-        level: 'Manager'
-    },
-    {
-        id: 3,
-        title: 'Renewable Energy Specialist',
-        company: 'OceanLK Energy',
-        location: 'Colombo, Sri Lanka',
-        type: 'Full-time',
-        category: 'Engineering',
-        description: 'Drive our solar and wind energy project implementations.',
-        featured: false,
-        level: 'Specialist'
-    },
-    {
-        id: 4,
-        title: 'Full Stack Developer',
-        company: 'OceanLK Tech',
-        location: 'Remote',
-        type: 'Contract',
-        category: 'Technology',
-        description: 'Build cutting-edge web applications for our enterprise clients.',
-        featured: true,
-        level: 'Mid-Senior'
-    },
-    {
-        id: 5,
-        title: 'Financial Analyst',
-        company: 'OceanLK Holdings',
-        location: 'Colombo, Sri Lanka',
-        type: 'Full-time',
-        category: 'Finance',
-        description: 'Provide financial analysis and strategic insights for group operations.',
-        featured: false,
-        level: 'Analyst'
-    },
-    {
-        id: 6,
-        title: 'Marketing Manager',
-        company: 'OceanLK Leisure',
-        location: 'Colombo, Sri Lanka',
-        type: 'Full-time',
-        category: 'Marketing',
-        description: 'Lead marketing strategies for our hospitality brands.',
-        featured: false,
-        level: 'Manager'
-    }
-];
+
 
 const categories = ['All', 'Engineering', 'Hospitality', 'Technology', 'Finance', 'Marketing'];
 
+interface JobOpportunity {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+    type: string;
+    category: string;
+    description: string;
+    featured: boolean;
+    level: string;
+}
+
 const Onboard = () => {
+    const [jobOpenings, setJobOpenings] = useState<JobOpportunity[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
+        fetchJobs();
+
         const handleMouseMove = (e: MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
         };
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
+
+    const fetchJobs = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/jobs');
+            if (response.ok) {
+                const data = await response.json();
+                setJobOpenings(data);
+            } else {
+                console.error("Failed to fetch jobs");
+            }
+        } catch (error) {
+            console.error("Error fetching jobs:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const filteredJobs = jobOpenings.filter(job => {
         const matchesCategory = selectedCategory === 'All' || job.category === selectedCategory;
@@ -96,6 +61,14 @@ const Onboard = () => {
 
     const featuredJobs = filteredJobs.filter(job => job.featured);
     const regularJobs = filteredJobs.filter(job => !job.featured);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">

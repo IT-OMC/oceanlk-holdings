@@ -26,7 +26,7 @@ const ThreeGlobe = () => {
             0.1,
             1000
         );
-        camera.position.z = 2.5; // Closer view for Sri Lanka focus
+        camera.position.z = 3.5; // Further view for smaller initial globe
         cameraRef.current = camera;
 
         // Renderer setup
@@ -208,28 +208,27 @@ const ThreeGlobe = () => {
         const createSriLankanLabel = (text: string) => {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
-            canvas.width = 256;
-            canvas.height = 64;
+            canvas.width = 512;
+            canvas.height = 128;
 
             if (context) {
                 context.fillStyle = 'rgba(0, 0, 0, 0)';
                 context.fillRect(0, 0, canvas.width, canvas.height);
 
-                context.font = 'bold 28px Arial';
+                context.font = 'bold 48px Arial';
                 context.fillStyle = '#ff3300';
                 context.shadowColor = 'rgba(0, 0, 0, 0.8)';
                 context.shadowBlur = 8;
                 context.textAlign = 'center';
-                context.fillText(text, canvas.width / 2, 40);
+                context.fillText(text, canvas.width / 2, 80);
             }
 
             const texture = new THREE.CanvasTexture(canvas);
             const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
             const sprite = new THREE.Sprite(material);
-            sprite.scale.set(0.15, 0.0375, 1);
+            sprite.scale.set(0.4, 0.1, 1);
             return sprite;
         };
-
         harbors.forEach(harbor => {
             const position = latLongToVector3(harbor.lat, harbor.lon, 1.01);
 
@@ -240,35 +239,7 @@ const ThreeGlobe = () => {
             globeGroup.add(label);
         });
 
-        // Add Company Logo and Connection Line
-        const colomboPos = latLongToVector3(6.95, 79.85, 1.01);
 
-        // Position logo to the left (West) of Sri Lanka
-        // Same latitude approx, much lower longitude
-        const logoPos = latLongToVector3(7.5, 75.0, 1.2);
-
-        const logoTexture = textureLoader.load('/och-logo.png');
-        const logoMaterial = new THREE.SpriteMaterial({
-            map: logoTexture,
-            transparent: true,
-            depthTest: false // Ensure it renders on top
-        });
-        const logoSprite = new THREE.Sprite(logoMaterial);
-        logoSprite.position.copy(logoPos);
-        logoSprite.scale.set(0.3, 0.3, 1); // Adjust size as needed
-        globeGroup.add(logoSprite);
-
-        // Draw line from Logo to Colombo
-        const linePoints = [logoPos, colomboPos];
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            transparent: true,
-            opacity: 0.6,
-            linewidth: 2
-        });
-        const connectionLine = new THREE.Line(lineGeometry, lineMaterial);
-        globeGroup.add(connectionLine);
 
         // Global Ports Data
         const globalPorts = [
@@ -286,6 +257,7 @@ const ThreeGlobe = () => {
         ];
 
         // Label Helper for Global Ports
+        // Label Helper for Global Ports
         const createLabel = (text: string, country: string) => {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -297,23 +269,23 @@ const ThreeGlobe = () => {
                 context.fillRect(0, 0, canvas.width, canvas.height);
 
                 // City Name
-                context.font = 'bold 36px Arial';
+                context.font = 'bold 48px Arial';
                 context.fillStyle = 'white';
                 context.shadowColor = 'rgba(0, 0, 0, 0.8)';
                 context.shadowBlur = 10;
                 context.textAlign = 'center';
-                context.fillText(text, canvas.width / 2, 50);
+                context.fillText(text, canvas.width / 2, 55);
 
                 // Country Name
-                context.font = '24px Arial';
+                context.font = '32px Arial';
                 context.fillStyle = '#cccccc';
-                context.fillText(country, canvas.width / 2, 90);
+                context.fillText(country, canvas.width / 2, 100);
             }
 
             const texture = new THREE.CanvasTexture(canvas);
             const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
             const sprite = new THREE.Sprite(material);
-            sprite.scale.set(0.2, 0.05, 1);
+            sprite.scale.set(0.4, 0.1, 1);
             return sprite;
         };
 

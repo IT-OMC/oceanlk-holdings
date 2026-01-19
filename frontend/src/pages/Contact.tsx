@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import SectionWrapper from '../components/SectionWrapper';
 import { Phone, Mail, Send, Building2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Contact = () => {
     const { t } = useTranslation();
@@ -32,6 +33,7 @@ const Contact = () => {
         message: ''
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
@@ -42,9 +44,55 @@ const Contact = () => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('http://localhost:8080/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                toast.success('Thank you! Your message has been sent successfully. We\'ll get back to you soon!', {
+                    duration: 5000,
+                    style: {
+                        background: '#10b981',
+                        color: '#fff',
+                        fontWeight: '600',
+                    },
+                });
+
+                // Clear form
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    subject: '',
+                    message: ''
+                });
+            } else {
+                throw new Error(data.message || 'Failed to send message');
+            }
+        } catch (error) {
+            console.error('Error submitting contact form:', error);
+            toast.error('Oops! Something went wrong. Please try again or contact us directly.', {
+                duration: 5000,
+                style: {
+                    background: '#ef4444',
+                    color: '#fff',
+                    fontWeight: '600',
+                },
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -56,6 +104,7 @@ const Contact = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">
+            <Toaster position="top-right" />
             {/* Animated Gradient Mesh Background */}
             <div className="absolute inset-0 opacity-30">
                 <div
@@ -340,20 +389,30 @@ const Contact = () => {
 
                                 <motion.button
                                     type="submit"
-                                    className="w-full px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 text-white relative overflow-hidden group/button"
+                                    disabled={isSubmitting}
+                                    className="w-full px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 text-white relative overflow-hidden group/button disabled:opacity-50 disabled:cursor-not-allowed"
                                     style={{
                                         background: 'linear-gradient(135deg, rgba(16,185,129,0.8) 0%, rgba(5,150,105,0.8) 100%)',
                                         boxShadow: '0 8px 20px rgba(16,185,129,0.4), inset 0 1px 0 rgba(255,255,255,0.2)',
                                         border: '1px solid rgba(255,255,255,0.3)'
                                     }}
-                                    whileHover={{
+                                    whileHover={!isSubmitting ? {
                                         scale: 1.02,
                                         boxShadow: '0 12px 30px rgba(16,185,129,0.5), inset 0 1px 0 rgba(255,255,255,0.3)'
-                                    }}
-                                    whileTap={{ scale: 0.98 }}
+                                    } : {}}
+                                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                                 >
-                                    {t('contact.form.submitButton')}
-                                    <Send className="w-5 h-5 group-hover/button:translate-x-1 transition-transform" />
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            {t('contact.form.submitButton')}
+                                            <Send className="w-5 h-5 group-hover/button:translate-x-1 transition-transform" />
+                                        </>
+                                    )}
                                 </motion.button>
                             </form>
                         </div>
