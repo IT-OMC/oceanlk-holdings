@@ -87,7 +87,7 @@ const UnderDevelopmentPopup = () => {
                         <DevelopmentAnimation />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white mb-2">ocean.lk is under control</h2>
+                    <h2 className="text-2xl font-bold text-white mb-2">ocean.lk is under construction</h2>
 
                     <p className="text-gray-400 mb-8 max-w-sm">
                         Ocean Ceylon Holdings digital experience is currently being built. Please check back soon for our launch.
