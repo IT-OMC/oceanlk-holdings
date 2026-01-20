@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
+import moment from 'moment';
+
+interface Event {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    time?: string;
+    location: string;
+    imageUrl?: string;
+    category: string;
+    status: string;
+}
 
 const UpcomingEvents = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [events, setEvents] = useState<Event[]>([]);
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -11,35 +26,53 @@ const UpcomingEvents = () => {
         description: ''
     });
 
-    const events = [
-        {
-            id: 1,
-            title: "Thanksgiving Potluck",
-            date: "Nov 19",
-            location: "Main Cafeteria • 12:00 PM",
-            image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
-            tag: "SOCIAL",
-            tagColor: "text-blue-500"
-        },
-        {
-            id: 2,
-            title: "Leadership Workshop",
-            date: "Nov 22",
-            location: "Conference Room A • 9:00 AM",
-            image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
-            tag: "LEARNING",
-            tagColor: "text-cyan-500"
-        },
-        {
-            id: 3,
-            title: "Winter Gala",
-            date: "Dec 05",
-            location: "Downtown Hall • 7:00 PM",
-            image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80",
-            tag: "CELEBRATION",
-            tagColor: "text-purple-500"
+    useEffect(() => {
+        fetchUpcomingEvents();
+    }, []);
+
+    const fetchUpcomingEvents = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/media');
+            if (response.ok) {
+                const data = await response.json();
+                // Filter for EVENTS category and map to Event interface
+                const eventsData = data
+                    .filter((item: any) => item.category === 'EVENTS')
+                    .map((item: any) => ({
+                        id: item.id,
+                        title: item.title,
+                        description: item.description,
+                        date: item.publishedDate || new Date().toISOString(),
+                        time: '09:00', // Default time as backend doesn't have time field yet
+                        location: 'OceanLK Premises', // Default location
+                        imageUrl: item.imageUrl,
+                        category: 'SOCIAL', // Default category mapping for UI colors
+                        status: 'Upcoming'
+                    }));
+
+                setEvents(eventsData.slice(0, 3));
+            }
+        } catch (error) {
+            console.error('Failed to fetch upcoming events:', error);
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
+
+    const getCategoryColor = (category: string) => {
+        switch (category) {
+            case 'SOCIAL':
+                return 'text-blue-500';
+            case 'LEARNING':
+                return 'text-cyan-500';
+            case 'CELEBRATION':
+                return 'text-purple-500';
+            case 'MEETING':
+                return 'text-yellow-500';
+            default:
+                return 'text-gray-500';
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -71,20 +104,29 @@ const UpcomingEvents = () => {
                         className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 group"
                     >
                         <div className="h-48 overflow-hidden relative">
-                            <img
-                                src={event.image}
-                                alt={event.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
+                            {event.imageUrl ? (
+                                <img
+                                    src={event.imageUrl}
+                                    alt={event.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-blue-100 flex items-center justify-center">
+                                    <span className="text-4xl">📅</span>
+                                </div>
+                            )}
                             <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                                {event.date}
+                                {moment(event.date).format('MMM DD')}
                             </div>
                         </div>
                         <div className="p-6">
                             <h3 className="text-xl font-bold text-gray-900 mb-1">{event.title}</h3>
-                            <p className="text-sm text-gray-500 mb-4">{event.location}</p>
-                            <span className={`text-[10px] font-bold tracking-wider uppercase ${event.tagColor}`}>
-                                {event.tag}
+                            <p className="text-sm text-gray-500 mb-4">
+                                {event.location}
+                                {event.time && ` • ${moment(event.time, 'HH:mm').format('h:mm A')}`}
+                            </p>
+                            <span className={`text-[10px] font-bold tracking-wider uppercase ${getCategoryColor(event.category)}`}>
+                                {event.category}
                             </span>
                         </div>
                     </motion.div>

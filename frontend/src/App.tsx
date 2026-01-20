@@ -26,6 +26,14 @@ import MediaManagement from './pages/admin/MediaManagement';
 import ApplicationViewer from './pages/admin/ApplicationViewer';
 import JobManagement from './pages/admin/JobManagement';
 import ManageContactMessages from './pages/admin/ManageContactMessages';
+import HRMediaManagement from './pages/admin/HRMediaManagement';
+import EventsManagement from './pages/admin/EventsManagement';
+import TestimonialsManagement from './pages/admin/TestimonialsManagement';
+// New Admin Content Pages
+import PageContentManager from './pages/admin/PageContentManager';
+import LeadershipManagement from './pages/admin/LeadershipManagement';
+import StatsManagement from './pages/admin/StatsManagement';
+import PartnerManagement from './pages/admin/PartnerManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -44,9 +52,20 @@ function App() {
                 >
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="media" element={<MediaManagement />} />
-                    <Route path="applications" element={<ApplicationViewer />} />
-                    <Route path="jobs" element={<JobManagement />} />
                     <Route path="contact-messages" element={<ManageContactMessages />} />
+
+                    {/* Website Content Routes */}
+                    <Route path="content/pages" element={<PageContentManager />} />
+                    <Route path="content/leadership" element={<LeadershipManagement />} />
+                    <Route path="content/stats" element={<StatsManagement />} />
+                    <Route path="content/partners" element={<PartnerManagement />} />
+
+                    {/* HR Routes */}
+                    <Route path="hr/media" element={<HRMediaManagement />} />
+                    <Route path="hr/events" element={<EventsManagement />} />
+                    <Route path="hr/testimonials" element={<TestimonialsManagement />} />
+                    <Route path="hr/applications" element={<ApplicationViewer />} />
+                    <Route path="hr/jobs" element={<JobManagement />} />
                 </Route>
 
                 {/* Main Website Routes */}

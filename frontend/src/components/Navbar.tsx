@@ -37,7 +37,7 @@ const Navbar = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className={`fixed left-0 right-0 z-50 transition-all duration-300 ${isHomePage
-                ? (isScrolled ? 'top-0 bg-white shadow-md py-1.5' : 'top-6 bg-transparent py-4')
+                ? (isScrolled ? 'top-0 bg-white shadow-md py-1.5' : 'top-3.5 bg-transparent py-4')
                 : 'top-0 bg-white shadow-md py-1.5'
                 }`}
         >

@@ -1,31 +1,63 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-const HoldingDescription = () => {
+const Memberships = () => {
     const { t } = useTranslation();
+    const [partners, setPartners] = useState<any[]>([]);
 
-    const memberships = [
-        { name: "World Shipping Council", logo: "/partner_logos/partner1.png", year: "2018" },
-        { name: "Int. Chamber of Shipping", logo: "/partner_logos/partner2.png", year: "2019" },
-        { name: "BIMCO Member", logo: "/partner_logos/partner3.png", year: "2020" },
-        { name: "Marine Environment Pro.", logo: "/partner_logos/partner4.png", year: "2021" },
-        // Repeat for demo purposes
-        { name: "World Shipping Council", logo: "/partner_logos/partner1.png", year: "2018" },
-        { name: "Int. Chamber of Shipping", logo: "/partner_logos/partner2.png", year: "2019" },
-        { name: "BIMCO Member", logo: "/partner_logos/partner3.png", year: "2020" },
-        { name: "Marine Environment Pro.", logo: "/partner_logos/partner4.png", year: "2021" },
-    ];
+    useEffect(() => {
+        const fetchPartners = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/partners');
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Filter or sort if needed.
+                    // Map backend fields to frontend expected if necessary, or update UI to use backend fields
+                    // Backend: name, logoUrl, websiteUrl
+                    const mapped = data.map((p: any) => ({
+                        ...p,
+                        logo: p.logoUrl,
+                        year: '2024' // Placeholder or remove year display
+                    }));
+                    setPartners(mapped);
+                }
+            } catch (error) {
+                console.error('Failed to fetch partners', error);
+            }
+        };
+
+        fetchPartners();
+    }, []);
+
+    // Create a safe list for carousel (duplicate for infinite scroll)
+    const displayPartners = partners.length > 0 ? [...partners, ...partners, ...partners] : [];
+
+    if (partners.length === 0) return null;
 
     return (
-        <section className="relative min-h-[70vh] flex items-center justify-center bg-black overflow-hidden py-24">
+        <section className="relative min-h-[70vh] flex items-center justify-center bg-[#020617] overflow-hidden py-24">
             {/* Background Elements */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-black to-blue-950/20" />
-                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 mix-blend-overlay" />
+            {/* Background Elements - Mesh Grid */}
+            <div className="absolute inset-0 z-0 bg-[#020617]">
+                {/* Square Mesh Pattern */}
+                <div
+                    className="absolute inset-0 opacity-[0.15]"
+                    style={{
+                        backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px),
+                                        linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+                        backgroundSize: '50px 50px',
+                        maskImage: 'linear-gradient(to bottom, transparent, #020617 10%, #020617 90%, transparent)'
+                    }}
+                />
 
-                {/* Glow effects */}
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[100px]" />
+                {/* Subtle Gradient Overlays for depth */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-transparent to-[#020617]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-transparent to-[#020617] opacity-60" />
+
+                {/* Glow effects for premium feel */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-20" />
             </div>
 
             <div className="relative z-10 w-full">
@@ -65,7 +97,7 @@ const HoldingDescription = () => {
                         style={{ width: 'fit-content' }}
                     >
                         {/* Duplicate for smooth infinite scroll */}
-                        {[...memberships, ...memberships, ...memberships].map((member, i) => (
+                        {displayPartners.map((member, i) => (
                             <div
                                 key={i}
                                 className="group relative flex-shrink-0"
@@ -104,9 +136,10 @@ const HoldingDescription = () => {
                                                 {member.name}
                                             </p>
                                             <div className="h-px w-12 mx-auto bg-gradient-to-r from-transparent via-gray-700 to-transparent group-hover:via-primary/50 transition-all" />
-                                            <p className="text-xs text-gray-500 font-mono">
+                                            {/* Since year is missing from backend, just hiding it for now */}
+                                            {/* <p className="text-xs text-gray-500 font-mono">
                                                 {t('home.memberships.memberSince')} {member.year}
-                                            </p>
+                                            </p> */}
                                         </div>
 
                                         {/* Bottom Accent */}
@@ -122,5 +155,5 @@ const HoldingDescription = () => {
     );
 };
 
-export default HoldingDescription;
+export default Memberships;
 

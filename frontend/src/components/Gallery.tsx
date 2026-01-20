@@ -1,21 +1,60 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { oceanData } from '../data/mockData';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
+interface GalleryItem {
+    id: string;
+    title: string;
+    description?: string;
+    imageUrl: string;
+    videoUrl?: string;
+    category: string;
+    company?: string;
+}
 
 const Gallery = () => {
     const { t } = useTranslation();
     const [filter, setFilter] = useState('All');
     const [activeIndex, setActiveIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Fetch gallery data from backend
+    useEffect(() => {
+        const fetchGalleryData = async () => {
+            try {
+                const response = await fetch('/api/media/gallery');
+                if (response.ok) {
+                    const data = await response.json();
+                    // Map backend data to gallery format
+                    const mappedData: GalleryItem[] = data.map((item: any) => ({
+                        id: item.id,
+                        title: item.title,
+                        description: item.description,
+                        imageUrl: item.imageUrl,
+                        videoUrl: item.videoUrl,
+                        category: item.company || 'General',
+                        company: item.company
+                    }));
+                    setGalleryItems(mappedData);
+                }
+            } catch (error) {
+                console.error('Failed to fetch gallery data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchGalleryData();
+    }, []);
 
     // Get unique categories (companies) plus 'All'
-    const categories = ['All', ...Array.from(new Set(oceanData.gallery.map(item => item.category)))];
+    const categories = ['All', ...Array.from(new Set(galleryItems.map(item => item.category)))];
 
     const filteredItems = filter === 'All'
-        ? oceanData.gallery
-        : oceanData.gallery.filter(item => item.category === filter);
+        ? galleryItems
+        : galleryItems.filter(item => item.category === filter);
 
     // Reset index when filter changes
     useEffect(() => {
@@ -98,75 +137,85 @@ const Gallery = () => {
                 </div>
 
                 {/* 3D Carousel */}
-                <div
-                    className="relative h-[400px] lg:h-[500px] flex items-center justify-center mb-12"
-                    onMouseEnter={() => setIsAutoPlaying(false)}
-                    onMouseLeave={() => setIsAutoPlaying(true)}
-                >
-                    <AnimatePresence mode='popLayout'>
-                        {filteredItems.map((item, index) => {
-                            const styles = getItemStyles(index);
-                            // Only render if visible to save resources, though we set display: none in styles too
-                            if (styles.opacity === 0) return null;
+                {isLoading ? (
+                    <div className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
+                        <p className="text-slate-500">Loading gallery...</p>
+                    </div>
+                ) : filteredItems.length === 0 ? (
+                    <div className="relative h-[400px] lg:h-[500px] flex items-center justify-center">
+                        <p className="text-slate-500">No media items found</p>
+                    </div>
+                ) : (
+                    <div
+                        className="relative h-[400px] lg:h-[500px] flex items-center justify-center mb-12"
+                        onMouseEnter={() => setIsAutoPlaying(false)}
+                        onMouseLeave={() => setIsAutoPlaying(true)}
+                    >
+                        <AnimatePresence mode='popLayout'>
+                            {filteredItems.map((item, index) => {
+                                const styles = getItemStyles(index);
+                                // Only render if visible to save resources, though we set display: none in styles too
+                                if (styles.opacity === 0) return null;
 
-                            const isActive = index === activeIndex;
+                                const isActive = index === activeIndex;
 
-                            return (
-                                <motion.div
-                                    key={item.id}
-                                    initial={false}
-                                    animate={styles}
-                                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                                    className={`absolute w-[280px] md:w-[400px] lg:w-[600px] aspect-[4/3] rounded-3xl shadow-2xl overflow-hidden bg-slate-900 ${isActive ? 'cursor-default' : 'cursor-pointer'
-                                        }`}
-                                    onClick={() => !isActive && setActiveIndex(index)}
-                                >
-                                    <div className="relative w-full h-full group">
-                                        {/* Media Content */}
-                                        {item.video && isActive ? (
-                                            <video
-                                                src={item.video}
-                                                className="w-full h-full object-cover"
-                                                autoPlay
-                                                muted
-                                                loop
-                                                playsInline
-                                            />
-                                        ) : (
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        )}
+                                return (
+                                    <motion.div
+                                        key={item.id}
+                                        initial={false}
+                                        animate={styles}
+                                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                                        className={`absolute w-[280px] md:w-[400px] lg:w-[600px] aspect-[4/3] rounded-3xl shadow-2xl overflow-hidden bg-slate-900 ${isActive ? 'cursor-default' : 'cursor-pointer'
+                                            }`}
+                                        onClick={() => !isActive && setActiveIndex(index)}
+                                    >
+                                        <div className="relative w-full h-full group">
+                                            {/* Media Content */}
+                                            {item.videoUrl && isActive ? (
+                                                <video
+                                                    src={item.videoUrl}
+                                                    className="w-full h-full object-cover"
+                                                    autoPlay
+                                                    muted
+                                                    loop
+                                                    playsInline
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={item.imageUrl}
+                                                    alt={item.title}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            )}
 
-                                        {/* Overlay (always visible on inactive, hover/active styled) */}
-                                        <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-40 hover:opacity-70'
-                                            }`}>
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform transition-transform duration-300">
-                                                <span className="inline-block px-3 py-1 bg-accent/90 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
-                                                    {item.category}
-                                                </span>
-                                                <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">
-                                                    {item.title}
-                                                </h3>
+                                            {/* Overlay (always visible on inactive, hover/active styled) */}
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-40 hover:opacity-70'
+                                                }`}>
+                                                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform transition-transform duration-300">
+                                                    <span className="inline-block px-3 py-1 bg-accent/90 text-white text-xs font-bold rounded-full mb-3 shadow-sm">
+                                                        {item.category}
+                                                    </span>
+                                                    <h3 className="text-white text-2xl md:text-3xl font-bold mb-2">
+                                                        {item.title}
+                                                    </h3>
 
-                                                {/* Play Icon if video available but not active/playing yet (though we auto play active) */}
-                                                {item.video && !isActive && (
-                                                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[200%]">
-                                                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40">
-                                                            <Play className="w-6 h-6 text-white fill-white" />
+                                                    {/* Play Icon if video available but not active/playing yet (though we auto play active) */}
+                                                    {item.videoUrl && !isActive && (
+                                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[200%]">
+                                                            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40">
+                                                                <Play className="w-6 h-6 text-white fill-white" />
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
-                    </AnimatePresence>
-                </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </AnimatePresence>
+                    </div>
+                )}
 
                 {/* Navigation Controls */}
                 <div className="flex items-center justify-center gap-6">

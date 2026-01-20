@@ -122,13 +122,49 @@ const MetricCard = ({ value, label, theme, index, icon: Icon }: MetricCardProps)
 
 const GlobalMetrics = () => {
     const { t } = useTranslation();
-    const metrics = [
-        { value: '15+', label: t('home.metrics.activeRoutes'), theme: 'blue' as const, icon: Ship },
-        { value: '113', label: t('home.metrics.weeklySailings'), theme: 'purple' as const, icon: Calendar },
-        { value: '3M', label: t('home.metrics.annualCapacity'), theme: 'pink' as const, icon: Anchor },
-        { value: '50+', label: t('home.metrics.globalPorts'), theme: 'emerald' as const, icon: MapPin },
-        { value: '25+', label: t('home.metrics.countriesServed'), theme: 'orange' as const, icon: Globe }
-    ];
+    const [metrics, setMetrics] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/metrics');
+                if (response.ok) {
+                    const data = await response.json();
+                    // Map backend icon strings to Lucide icons components if needed, or pass string to Helper
+                    // Backend has: id, label, value, icon, displayOrder
+                    // We need to map 'icon' string to actual Icon component
+                    const mappedData = data.map((item: any) => ({
+                        ...item,
+                        theme: 'blue', // Default theme or random
+                        icon: getIcon(item.icon)
+                    }));
+                    setMetrics(mappedData);
+                }
+            } catch (error) {
+                console.error('Failed to fetch metrics', error);
+            }
+        };
+
+        fetchMetrics();
+    }, []);
+
+    // Icon helper
+    const getIcon = (iconName: string) => {
+        const icons: any = {
+            'Ship': Ship,
+            'Calendar': Calendar,
+            'Anchor': Anchor,
+            'Globe': Globe,
+            'MapPin': MapPin,
+            'BarChart': Calendar // Fallback
+        };
+        return icons[iconName] || Globe;
+    };
+
+    // Fallback if no data
+    const displayMetrics = metrics.length > 0 ? metrics : [];
+
+    if (metrics.length === 0) return null; // Or loading state
 
     return (
         <section className="relative py-20 bg-slate-50/50">
@@ -151,10 +187,13 @@ const GlobalMetrics = () => {
 
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                    {metrics.map((metric, index) => (
+                    {displayMetrics.map((metric, index) => (
                         <MetricCard
-                            key={metric.label}
-                            {...metric}
+                            key={metric.id || index}
+                            value={metric.value}
+                            label={metric.label}
+                            theme={'blue'}
+                            icon={metric.icon}
                             index={index}
                         />
                     ))}

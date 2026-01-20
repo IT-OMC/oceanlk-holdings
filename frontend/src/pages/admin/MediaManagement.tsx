@@ -1,46 +1,98 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Link as LinkIcon, Image as ImageIcon, X, Loader } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader, Upload, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 interface MediaItem {
     id?: string;
     title: string;
     description: string;
+    excerpt?: string;        // Short summary for News/Blog
     imageUrl: string;
     videoUrl?: string;
     category: string;
+    type?: string;           // ARTICLE, VIDEO, GALLERY, DOCUMENT
     publishedDate: string;
     featured: boolean;
     status: string;
+    companyId?: string;
+    companyName?: string;    // For display purposes
+    company?: string;
+    // Blog-specific
+    author?: string;
+    readTime?: string;
+    // Media-specific
+    duration?: string;       // For videos
+    photoCount?: number;     // For galleries
+    pageCount?: number;      // For documents
+}
+
+interface Company {
+    id: string;
+    title: string;
 }
 
 const MediaManagement = () => {
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+    const [companies, setCompanies] = useState<Company[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [currentMedia, setCurrentMedia] = useState<MediaItem | null>(null);
+    const [uploadingFile, setUploadingFile] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
     const [formData, setFormData] = useState<MediaItem>({
         title: '',
         description: '',
+        excerpt: '',
         imageUrl: '',
         videoUrl: '',
-        category: 'News',
+        category: 'NEWS',
+        type: 'ARTICLE',
         publishedDate: new Date().toISOString().split('T')[0],
         featured: false,
-        status: 'PUBLISHED'
+        status: 'PUBLISHED',
+        companyId: '',
+        author: '',
+        readTime: '',
+        duration: '',
+        photoCount: undefined,
+        pageCount: undefined
     });
 
     useEffect(() => {
         fetchMedia();
+        fetchCompanies();
     }, []);
 
     const fetchMedia = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/admin/media');
+            const token = localStorage.getItem('adminToken');
+            const response = await fetch('/api/admin/media', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
-                setMediaItems(data);
+                // Enrich with company names
+                const enrichedData = await Promise.all(
+                    data.map(async (item: MediaItem) => {
+                        if (item.companyId) {
+                            const companyRes = await fetch(`/api/companies/${item.companyId}`);
+                            if (companyRes.ok) {
+                                const company = await companyRes.json();
+                                item.companyName = company.title;
+                            }
+                        }
+                        return item;
+                    })
+                );
+                setMediaItems(enrichedData);
             }
         } catch (error) {
             console.error('Failed to fetch media:', error);
@@ -49,23 +101,101 @@ const MediaManagement = () => {
         }
     };
 
+    const fetchCompanies = async () => {
+        try {
+            const response = await fetch('/api/companies');
+            if (response.ok) {
+                const data = await response.json();
+                setCompanies(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch companies:', error);
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files?.[0];
+        if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        } else {
+            toast.error('Please drop a valid image or video file');
+        }
+    };
+
+    const uploadFile = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const token = localStorage.getItem('adminToken');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/admin/media/upload');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    setUploadProgress(Math.round(percentComplete));
+                }
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    resolve(data.url);
+                } else {
+                    try {
+                        const error = JSON.parse(xhr.responseText);
+                        reject(new Error(error.error || 'File upload failed'));
+                    } catch (e) {
+                        reject(new Error('File upload failed'));
+                    }
+                }
+            };
+
+            xhr.onerror = () => reject(new Error('File upload failed'));
+            xhr.send(formData);
+        });
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = localStorage.getItem('adminToken');
         const isEdit = !!currentMedia?.id;
-        const url = isEdit
-            ? `http://localhost:8080/api/admin/media/${currentMedia.id}`
-            : 'http://localhost:8080/api/admin/media';
-        const method = isEdit ? 'PUT' : 'POST';
 
         try {
+            setUploadingFile(true);
+            setUploadProgress(0);
+            let updatedFormData = { ...formData };
+
+            // Upload file if selected
+            if (imageFile) {
+                const fileUrl = await uploadFile(imageFile);
+                updatedFormData.imageUrl = fileUrl;
+            }
+
+            const url = isEdit
+                ? `/api/admin/media/${currentMedia.id}`
+                : '/api/admin/media';
+            const method = isEdit ? 'PUT' : 'POST';
+
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(updatedFormData)
             });
 
             if (response.ok) {
@@ -73,20 +203,28 @@ const MediaManagement = () => {
                 closeModal();
                 toast.success(isEdit ? 'Media item updated successfully' : 'Media item created successfully');
             } else {
-                toast.error('Failed to save media item');
+                const errorData = await response.json().catch(() => ({}));
+                toast.error(errorData.error || 'Failed to save media item');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving media:', error);
-            toast.error('An error occurred while saving.');
+            toast.error(error.message || 'An error occurred while saving.');
+        } finally {
+            setUploadingFile(false);
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this item?')) return;
+    const openDeleteModal = (id: string) => {
+        setItemToDelete(id);
+        setDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
 
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/media/${id}`, {
+            const response = await fetch(`/api/admin/media/${itemToDelete}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -94,6 +232,8 @@ const MediaManagement = () => {
             if (response.ok) {
                 fetchMedia();
                 toast.success('Media item deleted successfully');
+                setDeleteModalOpen(false);
+                setItemToDelete(null);
             } else {
                 toast.error('Failed to delete media item');
             }
@@ -107,25 +247,38 @@ const MediaManagement = () => {
         if (media) {
             setCurrentMedia(media);
             setFormData(media);
+            setImagePreview(media.imageUrl || '');
         } else {
             setCurrentMedia(null);
             setFormData({
                 title: '',
                 description: '',
+                excerpt: '',
                 imageUrl: '',
                 videoUrl: '',
-                category: 'News',
+                category: 'NEWS',
+                type: 'ARTICLE',
                 publishedDate: new Date().toISOString().split('T')[0],
                 featured: false,
-                status: 'PUBLISHED'
+                status: 'PUBLISHED',
+                companyId: '',
+                author: '',
+                readTime: '',
+                duration: '',
+                photoCount: undefined,
+                pageCount: undefined
             });
+            setImagePreview('');
         }
+        setImageFile(null);
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setCurrentMedia(null);
+        setImageFile(null);
+        setImagePreview('');
     };
 
     if (isLoading) {
@@ -174,6 +327,11 @@ const MediaManagement = () => {
                         <div className="p-5 flex-1 flex flex-col">
                             <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
                             <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{item.description}</p>
+                            {item.companyName && (
+                                <p className="text-emerald-400 text-xs mb-2 flex items-center gap-1">
+                                    <Briefcase size={12} /> {item.companyName}
+                                </p>
+                            )}
 
                             <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                                 <span className="text-xs text-gray-500">
@@ -187,7 +345,7 @@ const MediaManagement = () => {
                                         <Edit2 size={16} />
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(item.id!)}
+                                        onClick={() => openDeleteModal(item.id!)}
                                         className="p-1.5 bg-white/5 rounded text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                                     >
                                         <Trash2 size={16} />
@@ -231,16 +389,18 @@ const MediaManagement = () => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Category</label>
+                                        <label className="text-sm font-medium text-gray-400">Company (Optional)</label>
                                         <select
-                                            value={formData.category}
-                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            value={formData.companyId || ''}
+                                            onChange={(e) => setFormData({ ...formData, companyId: e.target.value })}
                                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
                                         >
-                                            <option value="News" className="bg-[#0f1e3a]">News</option>
-                                            <option value="Blog" className="bg-[#0f1e3a]">Blog</option>
-                                            <option value="Press Release" className="bg-[#0f1e3a]">Press Release</option>
-                                            <option value="Gallery" className="bg-[#0f1e3a]">Gallery</option>
+                                            <option value="" className="bg-[#0f1e3a]">None</option>
+                                            {companies.map((company) => (
+                                                <option key={company.id} value={company.id} className="bg-[#0f1e3a]">
+                                                    {company.title}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="space-y-2">
@@ -255,18 +415,72 @@ const MediaManagement = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-400">Image URL</label>
-                                    <div className="relative">
-                                        <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
-                                        <input
-                                            type="url"
-                                            value={formData.imageUrl}
-                                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                                            className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-3 py-3 text-white focus:border-emerald-500 outline-none"
-                                            placeholder="https://test.com/image.jpg"
-                                        />
+                                    <label className="text-sm font-medium text-gray-400">Media File</label>
+                                    <div
+                                        onDrop={handleFileDrop}
+                                        onDragOver={(e) => e.preventDefault()}
+                                        className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer relative"
+                                    >
+                                        {imagePreview ? (
+                                            <div className="relative">
+                                                <img src={imagePreview} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setImageFile(null);
+                                                        setImagePreview('');
+                                                    }}
+                                                    className="absolute top-2 right-2 p-2 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Upload className="mx-auto mb-2 text-gray-500" size={32} />
+                                                <p className="text-gray-400 mb-2">Drag and drop a file here, or click to browse</p>
+                                                <p className="text-xs text-gray-600">Supports: Images (JPG, PNG, GIF, WebP) and Videos (MP4, WebM)</p>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*,video/*"
+                                                    onChange={handleFileSelect}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-400">Category</label>
+                                    <select
+                                        value={formData.category}
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                    >
+                                        <option value="NEWS" className="bg-[#0f1e3a]">News Article</option>
+                                        <option value="BLOG" className="bg-[#0f1e3a]">Blog Post</option>
+                                        <option value="MEDIA" className="bg-[#0f1e3a]">Media (Video/Gallery/Doc)</option>
+                                        <option value="GALLERY" className="bg-[#0f1e3a]">Home Gallery</option>
+                                        <option value="PRESS_RELEASE" className="bg-[#0f1e3a]">Press Release</option>
+                                    </select>
+                                </div>
+
+                                {/* Conditional: Media Type (for MEDIA category) */}
+                                {formData.category === 'MEDIA' && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Media Type</label>
+                                        <select
+                                            value={formData.type || 'VIDEO'}
+                                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                        >
+                                            <option value="VIDEO" className="bg-[#0f1e3a]">Video</option>
+                                            <option value="GALLERY" className="bg-[#0f1e3a]">Photo Gallery</option>
+                                            <option value="DOCUMENT" className="bg-[#0f1e3a]">Document</option>
+                                        </select>
+                                    </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-400">Description</label>
@@ -275,9 +489,89 @@ const MediaManagement = () => {
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         rows={4}
                                         className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
-                                        placeholder="Short summary or content..."
+                                        placeholder="Full content or description..."
                                     />
                                 </div>
+
+                                {/* Conditional: Excerpt (for NEWS and BLOG) */}
+                                {(formData.category === 'NEWS' || formData.category === 'BLOG') && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Excerpt (Short Summary)</label>
+                                        <textarea
+                                            value={formData.excerpt || ''}
+                                            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                                            rows={2}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                            placeholder="Brief summary for preview..."
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Conditional: Blog-specific fields */}
+                                {formData.category === 'BLOG' && (
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-400">Author</label>
+                                            <input
+                                                type="text"
+                                                value={formData.author || ''}
+                                                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                                placeholder="Author name"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-400">Read Time</label>
+                                            <input
+                                                type="text"
+                                                value={formData.readTime || ''}
+                                                onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                                placeholder="e.g., 5 min read"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Conditional: Media-specific fields */}
+                                {formData.category === 'MEDIA' && formData.type === 'VIDEO' && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Duration</label>
+                                        <input
+                                            type="text"
+                                            value={formData.duration || ''}
+                                            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                            placeholder="e.g., 12:45"
+                                        />
+                                    </div>
+                                )}
+
+                                {formData.category === 'MEDIA' && formData.type === 'GALLERY' && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Photo Count</label>
+                                        <input
+                                            type="number"
+                                            value={formData.photoCount || ''}
+                                            onChange={(e) => setFormData({ ...formData, photoCount: parseInt(e.target.value) || undefined })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                            placeholder="Number of photos"
+                                        />
+                                    </div>
+                                )}
+
+                                {formData.category === 'MEDIA' && formData.type === 'DOCUMENT' && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Page Count</label>
+                                        <input
+                                            type="number"
+                                            value={formData.pageCount || ''}
+                                            onChange={(e) => setFormData({ ...formData, pageCount: parseInt(e.target.value) || undefined })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                            placeholder="Number of pages"
+                                        />
+                                    </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-400">Status</label>
@@ -302,9 +596,17 @@ const MediaManagement = () => {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors"
+                                        disabled={uploadingFile}
+                                        className="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
-                                        {currentMedia ? 'Update Item' : 'Create Item'}
+                                        {uploadingFile ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                <span>{uploadProgress}% Uploading...</span>
+                                            </div>
+                                        ) : (
+                                            currentMedia ? 'Update Item' : 'Create Item'
+                                        )}
                                     </button>
                                 </div>
                             </form>
@@ -312,6 +614,20 @@ const MediaManagement = () => {
                     </div>
                 )}
             </AnimatePresence>
+            {/* Delete Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setItemToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+                title="Delete Media Item"
+                message="Are you sure you want to delete this media item? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                type="danger"
+            />
         </div>
     );
 };

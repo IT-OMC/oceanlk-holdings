@@ -1,8 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Linkedin, Mail, ArrowRight, X } from 'lucide-react';
-import { leadershipData, LeadershipMember } from '../../data/leadershipData';
+// import { leadershipData } from '../../data/leadershipData'; // Removed
+
+// Keeping this interface or redefining it to match backend response
+export interface LeadershipMember {
+    id: string;
+    name: string;
+    position: string;
+    department: 'BOARD' | 'EXECUTIVE' | 'SENIOR';
+    image: string;
+    bio: string; // backend has bio
+    shortDescription?: string; // backend has shortDescription
+    details?: string; // UI uses details, backend has bio. I'll map them or update UI to use bio
+    linkedin?: string;
+    email?: string;
+}
 
 interface LeadershipCardProps {
     member: LeadershipMember;
@@ -170,6 +184,40 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
 };
 
 const Leadership = () => {
+    const [leaders, setLeaders] = useState<LeadershipMember[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLeaders = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/leadership');
+                if (response.ok) {
+                    const data = await response.json();
+                    setLeaders(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch leadership data', error);
+                // Fallback to empty or toast error
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchLeaders();
+    }, []);
+
+    const boardOfDirectors = leaders.filter(l => l.department === 'BOARD');
+    const executiveLeadership = leaders.filter(l => l.department === 'EXECUTIVE');
+    const seniorManagement = leaders.filter(l => l.department === 'SENIOR');
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#0f0f2a] to-[#0a0a1a]">
             {/* Hero Section */}
@@ -210,7 +258,7 @@ const Leadership = () => {
                             whileHover={{ scale: 1.05 }}
                             className="glass px-8 py-4 rounded-xl border border-primary/30"
                         >
-                            <div className="text-3xl font-bold text-primary">16</div>
+                            <div className="text-3xl font-bold text-primary">{leaders.length}</div>
                             <div className="text-sm text-gray-300">Leadership Members</div>
                         </motion.div>
                         <motion.div
@@ -225,43 +273,49 @@ const Leadership = () => {
             </SectionWrapper>
 
             {/* Board of Directors */}
-            <SectionWrapper id="board-of-directors" className="py-20">
-                <SectionHeader
-                    title="Board of Directors"
-                    subtitle="Strategic governance and oversight guiding our organization's vision, values, and long-term success"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {leadershipData.boardOfDirectors.map((member, index) => (
-                        <LeadershipCard key={member.id} member={member} index={index} />
-                    ))}
-                </div>
-            </SectionWrapper>
+            {boardOfDirectors.length > 0 && (
+                <SectionWrapper id="board-of-directors" className="py-20">
+                    <SectionHeader
+                        title="Board of Directors"
+                        subtitle="Strategic governance and oversight guiding our organization's vision, values, and long-term success"
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {boardOfDirectors.map((member, index) => (
+                            <LeadershipCard key={member.id} member={member} index={index} />
+                        ))}
+                    </div>
+                </SectionWrapper>
+            )}
 
             {/* Executive Leadership */}
-            <SectionWrapper id="executive-leadership" className="py-20">
-                <SectionHeader
-                    title="Executive Leadership"
-                    subtitle="C-Suite executives driving operational excellence and strategic initiatives across the organization"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {leadershipData.executiveLeadership.map((member, index) => (
-                        <LeadershipCard key={member.id} member={member} index={index} />
-                    ))}
-                </div>
-            </SectionWrapper>
+            {executiveLeadership.length > 0 && (
+                <SectionWrapper id="executive-leadership" className="py-20">
+                    <SectionHeader
+                        title="Executive Leadership"
+                        subtitle="C-Suite executives driving operational excellence and strategic initiatives across the organization"
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {executiveLeadership.map((member, index) => (
+                            <LeadershipCard key={member.id} member={member} index={index} />
+                        ))}
+                    </div>
+                </SectionWrapper>
+            )}
 
             {/* Senior Management */}
-            <SectionWrapper id="senior-management" className="py-20 pb-32">
-                <SectionHeader
-                    title="Senior Management"
-                    subtitle="Experienced leaders managing key departments and driving day-to-day operational success"
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {leadershipData.seniorManagement.map((member, index) => (
-                        <LeadershipCard key={member.id} member={member} index={index} />
-                    ))}
-                </div>
-            </SectionWrapper>
+            {seniorManagement.length > 0 && (
+                <SectionWrapper id="senior-management" className="py-20 pb-32">
+                    <SectionHeader
+                        title="Senior Management"
+                        subtitle="Experienced leaders managing key departments and driving day-to-day operational success"
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {seniorManagement.map((member, index) => (
+                            <LeadershipCard key={member.id} member={member} index={index} />
+                        ))}
+                    </div>
+                </SectionWrapper>
+            )}
 
             {/* CTA Section */}
             <SectionWrapper id="leadership-cta" className="py-20">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock } from 'lucide-react';
+import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Application {
@@ -23,6 +23,8 @@ const ApplicationViewer = () => {
     const [selectedApp, setSelectedApp] = useState<Application | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
+    const [deleteConfirmation, setDeleteConfirmation] = useState<{ appId: string; appName: string } | null>(null);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     useEffect(() => {
         fetchApplications();
@@ -68,6 +70,7 @@ const ApplicationViewer = () => {
 
     const handleDownloadCV = async (appId: string, filename: string) => {
         const token = localStorage.getItem('adminToken');
+        setIsDownloading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/talent-pool/cv/${appId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -83,10 +86,15 @@ const ApplicationViewer = () => {
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+                toast.success('CV downloaded successfully');
+            } else {
+                toast.error('CV not found or unavailable');
             }
         } catch (error) {
             console.error('Download failed:', error);
             toast.error('Failed to download CV');
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -114,6 +122,49 @@ const ApplicationViewer = () => {
         } catch (error) {
             console.error('Status update failed:', error);
             toast.error('An error occurred while updating status');
+        }
+    };
+
+    const handleDeleteApplication = async () => {
+        if (!deleteConfirmation) return;
+
+        const { appId } = deleteConfirmation;
+        const token = localStorage.getItem('adminToken');
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/talent-pool/application/${appId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                // Remove from local state
+                const updatedApps = applications.filter(app => app.id !== appId);
+                setApplications(updatedApps);
+
+                // Close modal if the deleted app was selected
+                if (selectedApp && selectedApp.id === appId) {
+                    setSelectedApp(null);
+                }
+
+                toast.success('Application deleted successfully');
+            } else {
+                // Try to parse error message, but handle non-JSON responses
+                let errorMessage = 'Failed to delete application';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || errorMessage;
+                } catch (e) {
+                    // If JSON parsing fails, use status text
+                    errorMessage = `Failed to delete application: ${response.status} ${response.statusText}`;
+                }
+                toast.error(errorMessage);
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+            toast.error('An error occurred while deleting the application');
+        } finally {
+            setDeleteConfirmation(null);
         }
     };
 
@@ -220,7 +271,17 @@ const ApplicationViewer = () => {
                                         className="px-4 py-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-gray-300 hover:text-emerald-400 transition-colors flex items-center gap-2 text-sm font-medium"
                                     >
                                         <Download size={16} />
-                                        Expected CV
+                                        Download CV
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setDeleteConfirmation({ appId: app.id, appName: app.fullName });
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-400 transition-colors flex items-center gap-2 text-sm font-medium"
+                                    >
+                                        <Trash2 size={16} />
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -306,15 +367,74 @@ const ApplicationViewer = () => {
                                     </p>
                                 </div>
 
-                                <div className="flex justify-end pt-4">
+                                <div className="flex flex-col md:flex-row justify-end gap-3 pt-4">
+                                    <button
+                                        onClick={() => setDeleteConfirmation({ appId: selectedApp.id, appName: selectedApp.fullName })}
+                                        className="w-full md:w-auto px-8 py-4 rounded-xl font-bold bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 transition-all flex items-center justify-center gap-3"
+                                    >
+                                        <Trash2 size={20} />
+                                        Delete Application
+                                    </button>
                                     <button
                                         onClick={() => handleDownloadCV(selectedApp.id, selectedApp.cvFilename)}
-                                        className="w-full md:w-auto px-8 py-4 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center justify-center gap-3"
+                                        disabled={isDownloading}
+                                        className="w-full md:w-auto px-8 py-4 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <Download size={20} />
-                                        Download Resume
+                                        <Download size={20} className={isDownloading ? 'animate-bounce' : ''} />
+                                        {isDownloading ? 'Downloading...' : 'Download Resume'}
                                     </button>
                                 </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {deleteConfirmation && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-[#0a1628] w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-red-500/20"
+                        >
+                            <div className="p-6 border-b border-red-500/20 bg-red-500/5">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                                        <Trash2 className="text-red-400" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-white">Confirm Deletion</h2>
+                                        <p className="text-sm text-gray-400">This action cannot be undone</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-6 space-y-4">
+                                <p className="text-gray-300">
+                                    Are you sure you want to delete the application from{' '}
+                                    <span className="font-bold text-white">{deleteConfirmation.appName}</span>?
+                                </p>
+                                <p className="text-sm text-gray-400">
+                                    This will permanently remove the application and all associated files from the system.
+                                </p>
+                            </div>
+
+                            <div className="p-6 pt-0 flex gap-3">
+                                <button
+                                    onClick={() => setDeleteConfirmation(null)}
+                                    className="flex-1 px-6 py-3 rounded-xl font-semibold bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors border border-white/10"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDeleteApplication}
+                                    className="flex-1 px-6 py-3 rounded-xl font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors shadow-lg shadow-red-500/20"
+                                >
+                                    Delete
+                                </button>
                             </div>
                         </motion.div>
                     </div>

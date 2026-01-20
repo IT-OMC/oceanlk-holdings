@@ -20,6 +20,8 @@ const JobManagement = () => {
     const [jobs, setJobs] = useState<JobOpportunity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [jobToDelete, setJobToDelete] = useState<string | null>(null);
     const [currentJob, setCurrentJob] = useState<JobOpportunity | null>(null);
     const [formData, setFormData] = useState<JobOpportunity>({
         title: '',
@@ -39,16 +41,22 @@ const JobManagement = () => {
 
     const fetchJobs = async () => {
         try {
-            // Note: Admins see all jobs, so maybe a different endpoint or filtering on client?
-            // Assuming /api/jobs returns all strictly active, maybe /api/admin/jobs returns all?
-            // Let's assume we use public for now, or admin if implemented
-            const response = await fetch('http://localhost:8080/api/jobs');
+            const token = localStorage.getItem('adminToken');
+            const response = await fetch('http://localhost:8080/api/admin/jobs', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setJobs(data);
+            } else {
+                console.error('Failed to fetch jobs:', response.status);
+                toast.error('Failed to load jobs');
             }
         } catch (error) {
             console.error('Failed to fetch jobs', error);
+            toast.error('An error occurred while loading jobs');
         } finally {
             setIsLoading(false);
         }
@@ -86,12 +94,22 @@ const JobManagement = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this job?')) return;
+    const openDeleteModal = (id: string) => {
+        setJobToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setJobToDelete(null);
+    };
+
+    const confirmDelete = async () => {
+        if (!jobToDelete) return;
 
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/jobs/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/admin/jobs/${jobToDelete}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -99,6 +117,7 @@ const JobManagement = () => {
             if (response.ok) {
                 fetchJobs();
                 toast.success('Job deleted successfully');
+                closeDeleteModal();
             } else {
                 toast.error('Failed to delete job');
             }
@@ -140,8 +159,7 @@ const JobManagement = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Job Opportunities</h1>
+            <div className="flex items-center justify-end">
                 <button
                     onClick={() => openModal()}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
@@ -171,7 +189,7 @@ const JobManagement = () => {
                                     <Edit2 size={16} />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(job.id!)}
+                                    onClick={() => openDeleteModal(job.id!)}
                                     className="p-2 bg-white/5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10"
                                 >
                                     <Trash2 size={16} />
@@ -189,7 +207,7 @@ const JobManagement = () => {
                         </div>
 
                         <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${job.status === 'Active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${job.status === 'ACTIVE' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'
                                 }`}>
                                 {job.status}
                             </span>
@@ -201,7 +219,7 @@ const JobManagement = () => {
                 ))}
             </div>
 
-            {/* Modal */}
+            {/* Edit/Create Modal */}
             <AnimatePresence>
                 {isModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -240,6 +258,37 @@ const JobManagement = () => {
                                             required
                                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Location</label>
+                                        <input
+                                            type="text"
+                                            value={formData.location}
+                                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                            required
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                            placeholder="e.g. Colombo, Sri Lanka"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Category</label>
+                                        <select
+                                            value={formData.category}
+                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
+                                        >
+                                            <option value="Engineering" className="bg-[#0f1e3a]">Engineering</option>
+                                            <option value="Design" className="bg-[#0f1e3a]">Design</option>
+                                            <option value="Marketing" className="bg-[#0f1e3a]">Marketing</option>
+                                            <option value="Sales" className="bg-[#0f1e3a]">Sales</option>
+                                            <option value="Operations" className="bg-[#0f1e3a]">Operations</option>
+                                            <option value="Finance" className="bg-[#0f1e3a]">Finance</option>
+                                            <option value="HR" className="bg-[#0f1e3a]">HR</option>
+                                            <option value="Other" className="bg-[#0f1e3a]">Other</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -328,6 +377,51 @@ const JobManagement = () => {
                                     </button>
                                 </div>
                             </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {isDeleteModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-[#0a1628] w-full max-w-md rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
+                        >
+                            <div className="p-6 border-b border-white/10 bg-[#0f1e3a]">
+                                <h2 className="text-xl font-bold text-white">Delete Job</h2>
+                            </div>
+
+                            <div className="p-6">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                        <Trash2 className="text-red-400" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-200 font-medium mb-1">Are you sure you want to delete this job?</p>
+                                        <p className="text-gray-400 text-sm">This action cannot be undone.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        onClick={closeDeleteModal}
+                                        className="px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={confirmDelete}
+                                        className="px-6 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                                    >
+                                        Delete Job
+                                    </button>
+                                </div>
+                            </div>
                         </motion.div>
                     </div>
                 )}

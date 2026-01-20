@@ -56,7 +56,7 @@ const CompanySingle = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
                 <div className="absolute inset-0 flex items-center">
                     <SectionWrapper>
-                        <Link to="/companies" className="inline-flex items-center gap-2 text-accent mb-6 hover:gap-3 transition-all">
+                        <Link to="/companies" className="inline-flex items-center gap-2 text-accent mb-12 hover:gap-3 transition-all">
                             <ArrowLeft className="w-5 h-5" />
                             Back to Companies
                         </Link>
@@ -66,12 +66,12 @@ const CompanySingle = () => {
                             transition={{ duration: 0.6 }}
                         >
                             <p className="text-accent uppercase tracking-wider mb-2">{company.category}</p>
-                            <h1 className="text-6xl font-bold mb-4">{company.title}</h1>
+                            <h1 className="text-6xl text-white font-bold mb-4">{company.title}</h1>
                             <p className="text-2xl text-gray-200">{company.desc}</p>
                         </motion.div>
                     </SectionWrapper>
                 </div>
-            </div>
+            </div>  
 
             <SectionWrapper className="py-20">
                 <div className="grid lg:grid-cols-3 gap-12">
@@ -83,7 +83,7 @@ const CompanySingle = () => {
                             transition={{ duration: 0.6, delay: 0.2 }}
                         >
                             <h2 className="text-3xl font-bold mb-6">About {company.title}</h2>
-                            <p className="text-xl text-gray-300 leading-relaxed mb-8">
+                            <p className="text-xl text-gray-400 leading-relaxed mb-8">
                                 {company.longDescription}
                             </p>
 
