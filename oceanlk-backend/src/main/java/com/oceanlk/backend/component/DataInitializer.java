@@ -26,6 +26,14 @@ public class DataInitializer implements CommandLineRunner {
         private AdminUserRepository adminUserRepository;
         @Autowired
         private JobOpportunityRepository jobOpportunityRepository;
+        @Autowired
+        private MediaItemRepository mediaItemRepository;
+        @Autowired
+        private PartnerRepository partnerRepository;
+        @Autowired
+        private CorporateLeaderRepository corporateLeaderRepository;
+        @Autowired
+        private GlobalMetricRepository globalMetricRepository;
 
         @Override
         public void run(String... args) throws Exception {
@@ -35,6 +43,83 @@ public class DataInitializer implements CommandLineRunner {
                 seedTestimonials();
                 seedAdminUser();
                 seedJobOpportunities();
+                seedMediaItems();
+                seedPartners();
+                seedCorporateLeaders();
+                seedGlobalMetrics();
+        }
+
+        private void seedPartners() {
+                if (partnerRepository.count() == 0) {
+                        List<Partner> partners = new ArrayList<>();
+                        partners.add(new Partner("World Shipping Council", "/partner_logos/partner1.png",
+                                        "https://www.worldshipping.org"));
+                        partners.add(new Partner("Int. Chamber of Shipping", "/partner_logos/partner2.png",
+                                        "https://www.ics-shipping.org"));
+                        partners.add(new Partner("BIMCO Member", "/partner_logos/partner3.png",
+                                        "https://www.bimco.org"));
+                        partners.add(new Partner("Marine Environment Pro.", "/partner_logos/partner4.png",
+                                        "https://www.mepc.org"));
+                        partnerRepository.saveAll(partners);
+                        System.out.println("Seeded Partners");
+                }
+        }
+
+        private void seedCorporateLeaders() {
+                if (corporateLeaderRepository.count() == 0) {
+                        List<CorporateLeader> leaders = new ArrayList<>();
+
+                        // Board
+                        leaders.add(new CorporateLeader(
+                                        "Dr. Sarah Perera", "Chairperson", "BOARD",
+                                        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
+                                        "Dr. Perera brings over 25 years of maritime law and policy experience...",
+                                        "Strategic Visionary"));
+
+                        leaders.add(new CorporateLeader(
+                                        "Mr. David Alwis", "Non-Executive Director", "BOARD",
+                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
+                                        "A veteran in global logistics and supply chain management...",
+                                        "Governance Expert"));
+
+                        // Executive
+                        leaders.add(new CorporateLeader(
+                                        "James Fernando", "Chief Executive Officer", "EXECUTIVE",
+                                        "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop",
+                                        "James has led OceanLK through its most transformative years...",
+                                        "Operational Excellence"));
+
+                        leaders.add(new CorporateLeader(
+                                        "Mrs. Kamala Silva", "Chief Financial Officer", "EXECUTIVE",
+                                        "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop",
+                                        "Expert in maritime finance and international taxation...",
+                                        "Financial Steward"));
+
+                        // Senior
+                        leaders.add(new CorporateLeader(
+                                        "Mr. Rajan Selvam", "Head of Engineering", "SENIOR",
+                                        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop",
+                                        "Overseeing our technical fleet and engineering projects...",
+                                        "Technical Lead"));
+
+                        corporateLeaderRepository.saveAll(leaders);
+                        System.out.println("Seeded Corporate Leaders");
+                }
+        }
+
+        private void seedGlobalMetrics() {
+                if (globalMetricRepository.count() == 0) {
+                        List<GlobalMetric> metrics = new ArrayList<>();
+                        // Icon names must match frontend mapping: Ship, Calendar, Anchor, MapPin, Globe
+                        metrics.add(new GlobalMetric("Active Routes", "15+", "Ship", 1));
+                        metrics.add(new GlobalMetric("Weekly Sailings", "113", "Calendar", 2));
+                        metrics.add(new GlobalMetric("Annual Capacity", "3M", "Anchor", 3));
+                        metrics.add(new GlobalMetric("Global Ports", "50+", "MapPin", 4));
+                        metrics.add(new GlobalMetric("Countries Served", "25+", "Globe", 5));
+
+                        globalMetricRepository.saveAll(metrics);
+                        System.out.println("Seeded Global Metrics");
+                }
         }
 
         private void seedAdminUser() {
@@ -394,5 +479,162 @@ public class DataInitializer implements CommandLineRunner {
                 t.setQuote(quote);
                 t.setRating(rating);
                 return t;
+        }
+
+        private void seedMediaItems() {
+                if (mediaItemRepository.findByTitle("Employee Appreciation Day 2025").isEmpty()) {
+                        List<MediaItem> items = new ArrayList<>();
+
+                        // --- HR / CULTURE Categories (LIFE_AT_OCH, EVENTS, GALLERY) ---
+
+                        // Life at OCH
+                        items.add(new MediaItem(
+                                        "Employee Appreciation Day 2025",
+                                        "A day filled with fun, games, and recognition for our hardworking team members.",
+                                        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "LIFE_AT_OCH",
+                                        true));
+                        items.add(new MediaItem(
+                                        "Team Building in Sigiriya",
+                                        "Our annual team excursion to the historic rock fortress of Sigiriya.",
+                                        "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "LIFE_AT_OCH",
+                                        false));
+
+                        // Events
+                        items.add(new MediaItem(
+                                        "Annual Awards Night 2025",
+                                        "Celebrating excellence and dedication at our grand awards ceremony.",
+                                        "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "EVENTS",
+                                        true));
+                        items.add(new MediaItem(
+                                        "CSR Initiative: Coastal Cleanup",
+                                        "Our team volunteering to keep our beautiful coastlines clean and plastic-free.",
+                                        "https://images.unsplash.com/photo-1618477461853-5f8dd68aa395?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "EVENTS",
+                                        false));
+
+                        // Gallery (General/Shared)
+                        items.add(new MediaItem(
+                                        "New Headquarters Opening",
+                                        "Glimpses from the opening of our state-of-the-art office complex in Colombo.",
+                                        "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop",
+                                        "https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4",
+                                        "GALLERY",
+                                        true));
+                        MediaItem gallery2 = new MediaItem(
+                                        "Port Operations Overview",
+                                        "A visual tour of our busy port operations and logistics handling.",
+                                        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "GALLERY",
+                                        false);
+                        // Assigning a company ID for Gallery item (e.g., OMC)
+                        gallery2.setCompanyId("omc");
+                        items.add(gallery2);
+
+                        // --- GENERAL / MEDIA Categories (NEWS, BLOG, MEDIA, PRESS_RELEASE) ---
+
+                        // NEWS
+                        MediaItem news1 = new MediaItem(
+                                        "OceanLK Expands Fleet with 5 New Vessels",
+                                        "Strategic expansion to meet growing global demand for logistics.",
+                                        "https://images.unsplash.com/photo-1559297434-fae8a1916a79?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "NEWS",
+                                        true);
+                        news1.setExcerpt("We are proud to announce the addition of 5 modern vessels...");
+                        news1.setCompanyId("omc");
+                        items.add(news1);
+
+                        MediaItem news2 = new MediaItem(
+                                        "Partnership with EcoEnergy Solutions",
+                                        "Collaborating for a greener, sustainable maritime future.",
+                                        "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "NEWS",
+                                        false);
+                        news2.setExcerpt("OceanLK has signed a generic MoU with EcoEnergy...");
+                        news2.setCompanyId("oec");
+                        items.add(news2);
+
+                        // BLOG
+                        MediaItem blog1 = new MediaItem(
+                                        "The Future of Smart Shipping",
+                                        "How IoT and AI are revolutionizing the maritime industry.",
+                                        "https://images.unsplash.com/photo-1516216628859-9bccecab13ca?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "BLOG",
+                                        true);
+                        blog1.setExcerpt("Smart shipping is no longer a concept of the future...");
+                        blog1.setAuthor("Dr. Aruna Perera");
+                        blog1.setReadTime("5 min read");
+                        items.add(blog1);
+
+                        MediaItem blog2 = new MediaItem(
+                                        "Sustainable Tourism in Sri Lanka",
+                                        "Exploring the hidden gems of our island nation responsibly.",
+                                        "https://images.unsplash.com/photo-1546708773-e57fa527acb0?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "BLOG",
+                                        false);
+                        blog2.setExcerpt("Sri Lanka offers more than just beaches...");
+                        blog2.setAuthor("Sarah Shenali");
+                        blog2.setReadTime("4 min read");
+                        blog2.setCompanyId("connecting-cubes");
+                        items.add(blog2);
+
+                        // MEDIA (Video, Gallery, Document)
+                        MediaItem mediaVideo = new MediaItem(
+                                        "Corporate Overview 2025",
+                                        "A journey through our milestones and vision for the future.",
+                                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop",
+                                        "https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_24fps.mp4",
+                                        "MEDIA",
+                                        true);
+                        mediaVideo.setType("VIDEO");
+                        mediaVideo.setDuration("03:45");
+                        items.add(mediaVideo);
+
+                        MediaItem mediaDoc = new MediaItem(
+                                        "Annual Report 2024",
+                                        "Comprehensive financial and operational report for the fiscal year.",
+                                        "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "MEDIA",
+                                        false);
+                        mediaDoc.setType("DOCUMENT");
+                        mediaDoc.setPageCount(120);
+                        items.add(mediaDoc);
+
+                        MediaItem mediaPhotos = new MediaItem(
+                                        "Port Development Project",
+                                        "Progress photos of the new terminal construction.",
+                                        "https://images.unsplash.com/photo-1590845947391-ba409895c026?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "MEDIA",
+                                        false);
+                        mediaPhotos.setType("GALLERY");
+                        mediaPhotos.setPhotoCount(25);
+                        items.add(mediaPhotos);
+
+                        // PRESS RELEASE
+                        MediaItem press1 = new MediaItem(
+                                        "OceanLK Achieves ISO 9001 Certification",
+                                        "Demonstrating our commitment to quality management systems.",
+                                        "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2000&auto=format&fit=crop",
+                                        null,
+                                        "PRESS_RELEASE",
+                                        false);
+                        items.add(press1);
+
+                        mediaItemRepository.saveAll(items);
+                        System.out.println("Seeded Media Items");
+                }
         }
 }

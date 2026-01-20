@@ -13,7 +13,11 @@ public interface MediaItemRepository extends MongoRepository<MediaItem, String> 
 
     List<MediaItem> findByCategory(String category);
 
+    List<MediaItem> findByCategoryAndStatusOrderByPublishedDateDesc(String category, String status);
+
     List<MediaItem> findByFeaturedTrue();
 
     List<MediaItem> findByStatusOrderByPublishedDateDesc(String status);
+
+    List<MediaItem> findByTitle(String title);
 }

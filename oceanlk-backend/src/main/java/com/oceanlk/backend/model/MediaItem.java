@@ -19,10 +19,23 @@ public class MediaItem {
 
     private String title;
     private String description;
+    private String excerpt; // Short summary for previews (News/Blog)
     private String imageUrl;
     private String videoUrl;
-    private String category; // NEWS, EVENTS, AWARDS, etc.
+    private String category; // NEWS, BLOG, MEDIA, GALLERY, PRESS_RELEASE, EVENTS, LIFE_AT_OCH
+    private String type; // ARTICLE, VIDEO, GALLERY, DOCUMENT (for MEDIA category)
+    private String companyId; // Associated company ID (optional, required for GALLERY)
+    private String company; // Company name for display
     private boolean featured;
+
+    // Blog-specific fields
+    private String author;
+    private String readTime; // e.g., "5 min read"
+
+    // Media-specific fields
+    private String duration; // For videos, e.g., "12:45"
+    private Integer photoCount; // For galleries
+    private Integer pageCount; // For documents
 
     private LocalDateTime publishedDate;
     private String status; // PUBLISHED, DRAFT, ARCHIVED

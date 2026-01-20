@@ -141,4 +141,42 @@ public class TalentPoolController {
 
         return ResponseEntity.ok(application);
     }
+
+    @DeleteMapping("/application/{id}")
+    public ResponseEntity<?> deleteApplication(@PathVariable String id) {
+        try {
+            TalentPoolApplication application = applicationRepository.findById(id).orElse(null);
+
+            if (application == null) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Application not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+
+            // Delete CV file from GridFS if it exists
+            if (application.getCvFileId() != null) {
+                try {
+                    gridFsTemplate.delete(org.springframework.data.mongodb.core.query.Query.query(
+                            org.springframework.data.mongodb.core.query.Criteria.where("_id")
+                                    .is(application.getCvFileId())));
+                } catch (Exception e) {
+                    System.err.println("Failed to delete CV file from GridFS: " + e.getMessage());
+                }
+            }
+
+            // Delete application record
+            applicationRepository.deleteById(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Application deleted successfully");
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Failed to delete application: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
 }

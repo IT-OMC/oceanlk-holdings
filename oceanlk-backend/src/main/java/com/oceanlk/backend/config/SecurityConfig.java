@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/talent-pool/submit").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/media").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/media/gallery").permitAll()
+                        .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded files
                         .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
 
                         // Admin endpoints
@@ -51,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/media/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/media/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/talent-pool/application/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/talent-pool/application/**").hasRole("ADMIN")
                         .requestMatchers("/api/talent-pool/applications").hasRole("ADMIN")
 
                         // Allow other public GET requests (e.g. initial data) if any
