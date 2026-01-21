@@ -11,6 +11,9 @@ const ThreeGlobe = () => {
     const cloudsRef = useRef<THREE.Mesh | null>(null);
     const atmosphereRef = useRef<THREE.Mesh | null>(null);
     const controlsRef = useRef<OrbitControls | null>(null);
+    const logoSpriteRef = useRef<THREE.Sprite | null>(null);
+    const glassBackgroundRef = useRef<THREE.Sprite | null>(null);
+    const globeGroupRef = useRef<THREE.Group | null>(null);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -99,7 +102,11 @@ const ThreeGlobe = () => {
 
         // Create a group to hold globe, clouds, and markers
         const globeGroup = new THREE.Group();
+        globeGroupRef.current = globeGroup;
         scene.add(globeGroup);
+
+        // Initial scale for animation - start large
+        globeGroup.scale.set(2.5, 2.5, 2.5);
 
         // Create Earth globe
         const geometry = new THREE.SphereGeometry(1, 128, 128);
@@ -192,53 +199,9 @@ const ThreeGlobe = () => {
             side: THREE.BackSide,
             transparent: true
         });
-
         const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
         globeGroup.add(atmosphere);
         atmosphereRef.current = atmosphere;
-
-        // Add Markers for Harbors
-        const harbors = [
-            { name: 'Colombo', lat: 6.95, lon: 79.85, color: 0xff0000 },
-            { name: 'Trincomalee', lat: 8.57, lon: 81.23, color: 0xff0000 },
-            { name: 'Hambantota', lat: 6.12, lon: 81.12, color: 0xff0000 }
-        ];
-
-        // Create label helper for Sri Lankan harbors
-        const createSriLankanLabel = (text: string) => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = 512;
-            canvas.height = 128;
-
-            if (context) {
-                context.fillStyle = 'rgba(0, 0, 0, 0)';
-                context.fillRect(0, 0, canvas.width, canvas.height);
-
-                context.font = 'bold 48px Arial';
-                context.fillStyle = '#ff3300';
-                context.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                context.shadowBlur = 8;
-                context.textAlign = 'center';
-                context.fillText(text, canvas.width / 2, 80);
-            }
-
-            const texture = new THREE.CanvasTexture(canvas);
-            const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
-            const sprite = new THREE.Sprite(material);
-            sprite.scale.set(0.4, 0.1, 1);
-            return sprite;
-        };
-        harbors.forEach(harbor => {
-            const position = latLongToVector3(harbor.lat, harbor.lon, 1.01);
-
-            // Add text label only (no red dots)
-            const label = createSriLankanLabel(harbor.name);
-            const labelPos = position.clone().multiplyScalar(1.05);
-            label.position.copy(labelPos);
-            globeGroup.add(label);
-        });
-
 
 
         // Global Ports Data
@@ -332,6 +295,69 @@ const ThreeGlobe = () => {
             globeGroup.add(label);
         });
 
+        // Add OCH logo with glass background west of Sri Lanka
+        const sriLankaPos = latLongToVector3(7.8731, 77.0, 1.01); // West of Sri Lanka
+
+        // Create glass/frosted rectangle background for logo
+        const glassCanvas = document.createElement('canvas');
+        const glassContext = glassCanvas.getContext('2d');
+        glassCanvas.width = 300;
+        glassCanvas.height = 300;
+
+        if (glassContext) {
+            // Rounded rectangle helper function
+            const roundRect = (x: number, y: number, width: number, height: number, radius: number) => {
+                glassContext.beginPath();
+                glassContext.moveTo(x + radius, y);
+                glassContext.lineTo(x + width - radius, y);
+                glassContext.quadraticCurveTo(x + width, y, x + width, y + radius);
+                glassContext.lineTo(x + width, y + height - radius);
+                glassContext.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                glassContext.lineTo(x + radius, y + height);
+                glassContext.quadraticCurveTo(x, y + height, x, y + height - radius);
+                glassContext.lineTo(x, y + radius);
+                glassContext.quadraticCurveTo(x, y, x + radius, y);
+                glassContext.closePath();
+            };
+
+            // Draw glass background
+            roundRect(20, 20, 260, 260, 15);
+            glassContext.fillStyle = 'rgba(255, 255, 255, 1.0)';
+            glassContext.fill();
+
+            // Draw border
+            roundRect(20, 20, 260, 260, 15);
+            glassContext.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            glassContext.lineWidth = 3;
+            glassContext.stroke();
+        }
+
+        const glassTexture = new THREE.CanvasTexture(glassCanvas);
+        const glassMaterial = new THREE.SpriteMaterial({
+            map: glassTexture,
+            transparent: true
+        });
+        const glassBackground = new THREE.Sprite(glassMaterial);
+        glassBackground.scale.set(0.2, 0.2, 1);
+        const glassPos = sriLankaPos.clone().multiplyScalar(1.08);
+        glassBackground.position.copy(glassPos);
+        glassBackgroundRef.current = glassBackground;
+        globeGroup.add(glassBackground);
+
+        // Add OCH logo on top of glass
+        const logoTexture = textureLoader.load('/och-logo.png');
+        const logoMaterial = new THREE.SpriteMaterial({
+            map: logoTexture,
+            transparent: true,
+            opacity: 1.0
+        });
+        const logoSprite = new THREE.Sprite(logoMaterial);
+        logoSprite.scale.set(0.16, 0.16, 1);
+        const logoPos = sriLankaPos.clone().multiplyScalar(1.085);
+        logoSprite.position.copy(logoPos);
+        logoSpriteRef.current = logoSprite;
+        globeGroup.add(logoSprite);
+
         // Create a raycaster for interaction
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -357,11 +383,29 @@ const ThreeGlobe = () => {
 
         window.addEventListener('mousemove', handleMouseMove);
 
+        // Scale-down animation on load
+        const startTime = Date.now();
+        const animationDuration = 4000; // 4 seconds for smoother animation
+        const startScale = 2.5;
+        const endScale = 1.0;
+
         // Animation loop
         let animationId: number;
 
         const animate = () => {
             animationId = requestAnimationFrame(animate);
+
+            // Scale-down animation
+            const elapsed = Date.now() - startTime;
+            if (elapsed < animationDuration && globeGroupRef.current) {
+                const progress = elapsed / animationDuration;
+                // Ease-out cubic function for smooth deceleration
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentScale = startScale - (startScale - endScale) * easeProgress;
+                globeGroupRef.current.scale.set(currentScale, currentScale, currentScale);
+            } else if (globeGroupRef.current) {
+                globeGroupRef.current.scale.set(endScale, endScale, endScale);
+            }
 
             if (controlsRef.current && cameraRef.current) {
                 // Raycast to check if mouse is over globe
@@ -409,6 +453,31 @@ const ThreeGlobe = () => {
                     // Note: ShaderMaterial roughly handles opacity via transparent prop, but visual density works better with scale or color mix.
                     // Simple opacity approach for standard meshes:
                     atmosphereRef.current.material.opacity = visibilityFactor;
+                }
+
+                // Logo scaling and position based on zoom
+                // When zoomed in (distance closer to 1.5), logo gets smaller and moves left
+                // When zoomed out (distance closer to 4.0), logo stays at normal size
+                if (logoSpriteRef.current && glassBackgroundRef.current) {
+                    // Calculate zoom factor (0 = zoomed in, 1 = zoomed out)
+                    const zoomFactor = (distance - 1.5) / (4.0 - 1.5);
+                    const clampedZoom = Math.max(0, Math.min(1, zoomFactor));
+
+                    // Scale: from 50% when zoomed in to 100% when zoomed out
+                    const logoScale = 0.5 + (0.5 * clampedZoom);
+                    logoSpriteRef.current.scale.set(0.16 * logoScale, 0.16 * logoScale, 1);
+                    glassBackgroundRef.current.scale.set(0.2 * logoScale, 0.2 * logoScale, 1);
+
+                    // Position offset: move left when zoomed in
+                    // When zoomed in, move further west (decrease longitude)
+                    const lonOffset = -10 * (1 - clampedZoom); // Move up to 10 degrees west when fully zoomed in
+                    const adjustedPos = latLongToVector3(7.8731, 77.0 + lonOffset, 1.01);
+
+                    const logoPos = adjustedPos.clone().multiplyScalar(1.085);
+                    logoSpriteRef.current.position.copy(logoPos);
+
+                    const glassPos = adjustedPos.clone().multiplyScalar(1.08);
+                    glassBackgroundRef.current.position.copy(glassPos);
                 }
             }
 

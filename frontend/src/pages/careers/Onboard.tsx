@@ -292,7 +292,7 @@ const Onboard = () => {
 
                                             {/* Liquid Glass Card */}
                                             <div
-                                                className="h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl relative overflow-hidden transition-all duration-500"
+                                                className="h-full p-4 sm:p-5 rounded-2xl sm:rounded-3xl relative overflow-hidden transition-all duration-500"
                                                 style={{
                                                     background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
                                                     backdropFilter: 'blur(24px)',
@@ -305,9 +305,9 @@ const Onboard = () => {
 
                                                 <div className="relative z-10 h-full flex flex-col">
                                                     {/* Header */}
-                                                    <div className="flex items-start justify-between mb-6">
+                                                    <div className="flex items-start justify-between mb-4">
                                                         <motion.div
-                                                            className="p-4 rounded-2xl"
+                                                            className="p-2.5 rounded-xl"
                                                             style={{
                                                                 background: 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.1) 100%)',
                                                                 backdropFilter: 'blur(10px)',
@@ -316,11 +316,11 @@ const Onboard = () => {
                                                             whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                                                             transition={{ duration: 0.5 }}
                                                         >
-                                                            <Briefcase className="w-7 h-7 text-emerald-400" />
+                                                            <Briefcase className="w-5 h-5 text-emerald-400" />
                                                         </motion.div>
-                                                        <div className="flex flex-col gap-2 items-end">
+                                                        <div className="flex flex-col gap-1.5 items-end">
                                                             <span
-                                                                className="px-4 py-1.5 rounded-full text-xs font-semibold text-emerald-300"
+                                                                className="px-3 py-1 rounded-full text-xs font-semibold text-emerald-300"
                                                                 style={{
                                                                     background: 'rgba(16,185,129,0.2)',
                                                                     border: '1px solid rgba(16,185,129,0.3)',
@@ -330,7 +330,7 @@ const Onboard = () => {
                                                                 {job.type}
                                                             </span>
                                                             <span
-                                                                className="px-3 py-1 rounded-full text-xs font-medium text-yellow-300 flex items-center gap-1"
+                                                                className="px-2.5 py-0.5 rounded-full text-xs font-medium text-yellow-300 flex items-center gap-1"
                                                                 style={{
                                                                     background: 'rgba(234,179,8,0.2)',
                                                                     border: '1px solid rgba(234,179,8,0.3)'
@@ -414,7 +414,7 @@ const Onboard = () => {
 
                                         {/* Liquid Glass Card */}
                                         <div
-                                            className="h-full p-6 sm:p-8 rounded-2xl relative overflow-hidden transition-all duration-500"
+                                            className="h-full p-4 sm:p-5 rounded-2xl relative overflow-hidden transition-all duration-500"
                                             style={{
                                                 background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 100%)',
                                                 backdropFilter: 'blur(24px)',
@@ -426,9 +426,9 @@ const Onboard = () => {
                                             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5 transition-all duration-500" />
 
                                             <div className="relative z-10 flex flex-col h-full">
-                                                <div className="flex items-start justify-between mb-6">
+                                                <div className="flex items-start justify-between mb-4">
                                                     <motion.div
-                                                        className="p-3 rounded-xl"
+                                                        className="p-2 rounded-xl"
                                                         style={{
                                                             background: 'rgba(59,130,246,0.15)',
                                                             border: '1px solid rgba(59,130,246,0.3)',
@@ -436,10 +436,10 @@ const Onboard = () => {
                                                         }}
                                                         whileHover={{ rotate: [0, -5, 5, 0] }}
                                                     >
-                                                        <Briefcase className="w-6 h-6 text-blue-400" />
+                                                        <Briefcase className="w-5 h-5 text-blue-400" />
                                                     </motion.div>
                                                     <span
-                                                        className="px-3 py-1.5 rounded-full text-xs font-medium text-gray-300"
+                                                        className="px-2.5 py-1 rounded-full text-xs font-medium text-gray-300"
                                                         style={{
                                                             background: 'rgba(255,255,255,0.1)',
                                                             border: '1px solid rgba(255,255,255,0.2)'

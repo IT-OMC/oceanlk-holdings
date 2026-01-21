@@ -89,8 +89,27 @@ public class MediaController {
     // Public endpoint - get media items (videos, galleries, documents)
     @GetMapping("/media/media")
     public ResponseEntity<List<MediaItem>> getMediaItems() {
-        List<MediaItem> media = mediaRepository.findByCategoryAndStatusOrderByPublishedDateDesc("MEDIA", "PUBLISHED");
+        List<MediaItem> media = mediaRepository.findByCategoryInAndStatusOrderByPublishedDateDesc(
+                java.util.Arrays.asList("MEDIA", "GALLERY"), "PUBLISHED");
         return ResponseEntity.ok(media);
+    }
+
+    // Public endpoint - get single media item
+    @GetMapping("/media/{id}")
+    public ResponseEntity<?> getMediaItemById(@PathVariable String id) {
+        return mediaRepository.findById(id)
+                .map(item -> {
+                    if (!"PUBLISHED".equalsIgnoreCase(item.getStatus())) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(java.util.Collections.singletonMap("error", "Media item not found"));
+                    }
+
+                    // If it is a gallery/album, ensure galleryImages is present.
+                    // The entity usually has it.
+                    return ResponseEntity.ok(item);
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(java.util.Collections.singletonMap("error", "Media item not found")));
     }
 
     // Admin endpoints
@@ -176,6 +195,7 @@ public class MediaController {
         mediaItem.setDuration(updatedItem.getDuration());
         mediaItem.setPhotoCount(updatedItem.getPhotoCount());
         mediaItem.setPageCount(updatedItem.getPageCount());
+        mediaItem.setGalleryImages(updatedItem.getGalleryImages());
 
         if (updatedItem.getStatus() != null) {
             mediaItem.setStatus(updatedItem.getStatus().toUpperCase());

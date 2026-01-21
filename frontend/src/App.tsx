@@ -23,6 +23,9 @@ import Footer from './components/Footer';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MediaManagement from './pages/admin/MediaManagement';
+import NewsManagement from './pages/admin/NewsManagement';
+import BlogManagement from './pages/admin/BlogManagement';
+import GalleryManagement from './pages/admin/GalleryManagement';
 import ApplicationViewer from './pages/admin/ApplicationViewer';
 import JobManagement from './pages/admin/JobManagement';
 import ManageContactMessages from './pages/admin/ManageContactMessages';
@@ -52,6 +55,12 @@ function App() {
                 >
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="media" element={<MediaManagement />} />
+
+                    {/* News & Media Routes */}
+                    <Route path="news-media/news" element={<NewsManagement />} />
+                    <Route path="news-media/blog" element={<BlogManagement />} />
+                    <Route path="news-media/gallery" element={<GalleryManagement />} />
+
                     <Route path="contact-messages" element={<ManageContactMessages />} />
 
                     {/* Website Content Routes */}

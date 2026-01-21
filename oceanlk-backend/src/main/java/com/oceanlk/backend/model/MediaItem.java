@@ -36,6 +36,8 @@ public class MediaItem {
     private String duration; // For videos, e.g., "12:45"
     private Integer photoCount; // For galleries
     private Integer pageCount; // For documents
+    
+    private java.util.List<String> galleryImages; // For ALBUM type
 
     private LocalDateTime publishedDate;
     private String status; // PUBLISHED, DRAFT, ARCHIVED

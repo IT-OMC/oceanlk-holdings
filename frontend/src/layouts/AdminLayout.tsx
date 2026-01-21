@@ -15,7 +15,9 @@ import {
     Calendar,
     MessageSquare,
     ImageIcon,
-    Newspaper
+    Newspaper,
+    BookOpen,
+    Camera
 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
@@ -23,6 +25,7 @@ const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isHRExpanded, setIsHRExpanded] = useState(true);
     const [isContentExpanded, setIsContentExpanded] = useState(true);
+    const [isNewsMediaExpanded, setIsNewsMediaExpanded] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
     const adminUser = localStorage.getItem('adminUser');
@@ -36,8 +39,13 @@ const AdminLayout = () => {
     const menuItems = [
         // moved Dashboard out of array loop in JSX for custom rendering, 
         // but keeping other main items here if needed for potential future use or cleanup.
-        { path: '/admin/media', icon: Newspaper, label: 'News & Media' },
         { path: '/admin/contact-messages', icon: Mail, label: 'Contact Messages' },
+    ];
+
+    const newsMediaMenuItems = [
+        { path: '/admin/news-media/news', icon: Newspaper, label: 'News' },
+        { path: '/admin/news-media/blog', icon: BookOpen, label: 'Blog' },
+        { path: '/admin/news-media/gallery', icon: Camera, label: 'Gallery' },
     ];
 
     const contentMenuItems = [
@@ -61,9 +69,9 @@ const AdminLayout = () => {
             <motion.aside
                 initial={{ width: 280 }}
                 animate={{ width: isSidebarOpen ? 280 : 80 }}
-                className="bg-[#0f1e3a] border-r border-white/10 fixed left-0 top-0 bottom-0 z-20 transition-all duration-300 overflow-y-auto"
+                className="bg-[#0f1e3a] border-r border-white/10 fixed left-0 top-0 bottom-0 z-20 transition-all duration-300 flex flex-col overflow-hidden"
             >
-                <div className="p-6 flex items-center justify-between border-b border-white/10">
+                <div className="p-6 flex items-center justify-between border-b border-white/10 shrink-0">
                     <AnimatePresence mode="wait">
                         {isSidebarOpen && (
                             <motion.div
@@ -84,7 +92,7 @@ const AdminLayout = () => {
                     </button>
                 </div>
 
-                <nav className="p-4 space-y-2">
+                <nav className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {/* Dashboard */}
                     <Link
                         to="/admin/dashboard"
@@ -173,7 +181,66 @@ const AdminLayout = () => {
                         </AnimatePresence>
                     </div>
 
-                    {/* Main Menu Items (News, Contact) */}
+                    {/* News & Media Section */}
+                    <div className="mt-2">
+                        <button
+                            onClick={() => setIsNewsMediaExpanded(!isNewsMediaExpanded)}
+                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative ${location.pathname.startsWith('/admin/news-media')
+                                ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                }`}
+                        >
+                            <Newspaper
+                                size={20}
+                                className={`${location.pathname.startsWith('/admin/news-media') ? 'text-amber-400' : 'text-gray-500 group-hover:text-amber-400'} transition-colors`}
+                            />
+                            {isSidebarOpen && (
+                                <>
+                                    <span className="font-medium truncate flex-1 text-left">News & Media</span>
+                                    {isNewsMediaExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                                </>
+                            )}
+                        </button>
+
+                        <AnimatePresence>
+                            {isNewsMediaExpanded && isSidebarOpen && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="overflow-hidden ml-4 mt-1 space-y-1"
+                                >
+                                    {newsMediaMenuItems.map((item) => {
+                                        const isActive = location.pathname === item.path;
+                                        return (
+                                            <Link
+                                                key={item.path}
+                                                to={item.path}
+                                                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 group relative text-sm ${isActive
+                                                    ? 'bg-amber-500/10 text-amber-300'
+                                                    : 'text-gray-500 hover:text-white hover:bg-white/5'
+                                                    }`}
+                                            >
+                                                {isActive && (
+                                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-amber-400 rounded-full" />
+                                                )}
+                                                <item.icon
+                                                    size={16}
+                                                    className={`${isActive ? 'text-amber-400' : 'text-gray-600 group-hover:text-amber-400'} transition-colors`}
+                                                />
+                                                <span className="font-medium truncate">
+                                                    {item.label}
+                                                </span>
+                                            </Link>
+                                        );
+                                    })}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Main Menu Items (Albums, Contact) */}
                     {menuItems.map((item) => {
                         const isActive = location.pathname === item.path;
                         return (
@@ -272,7 +339,7 @@ const AdminLayout = () => {
                     </div>
                 </nav>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#0f1e3a]">
+                <div className="p-4 border-t border-white/10 bg-[#0f1e3a] shrink-0">
                     <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'} mb-4 px-2`}>
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">
                             {adminUser ? adminUser.charAt(0).toUpperCase() : 'A'}
@@ -302,24 +369,7 @@ const AdminLayout = () => {
             >
                 <div className="max-w-7xl mx-auto p-8">
                     {/* Breadcrumbs / Header could go here */}
-                    <div className="mb-8 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-bold text-white">
-                                {(() => {
-                                    // Check HR sub-pages first
-                                    const hrMenuItem = hrMenuItems.find(item => item.path === location.pathname);
-                                    if (hrMenuItem) return hrMenuItem.label;
 
-                                    // Fallback to regular menu items
-                                    const menuItem = menuItems.find(item => item.path === location.pathname);
-                                    return menuItem?.label || 'Dashboard';
-                                })()}
-                            </h2>
-                            <p className="text-gray-400 text-sm mt-1">
-                                Manage your platform content and applications
-                            </p>
-                        </div>
-                    </div>
 
                     <Outlet />
                 </div>

@@ -111,22 +111,22 @@ const Memberships = () => {
                                         {/* Hover Gradient Background */}
                                         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                                        {/* Status Badge */}
-                                        <div className="absolute top-4 right-4 z-20">
+                                        {/* Status Badge - Removed */}
+                                        {/* <div className="absolute top-4 right-4 z-20">
                                             <div className="px-2 py-1 bg-white/5 rounded text-[10px] text-gray-400 border border-white/5 uppercase tracking-wider group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-colors">
                                                 {t('home.memberships.activeBadge')}
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         {/* Logo Container */}
-                                        <div className="relative z-10 w-24 h-24 flex items-center justify-center mt-4">
+                                        <div className="relative z-10 w-32 h-32 flex items-center justify-center mt-2 bg-white p-4 rounded-2xl group-hover:scale-105 transition-transform duration-500">
                                             {/* Logo Glow */}
-                                            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-150" />
+                                            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
 
                                             <img
                                                 src={member.logo}
                                                 alt={member.name}
-                                                className="relative w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110 drop-shadow-lg"
+                                                className="relative w-full h-full object-contain drop-shadow-sm"
                                             />
                                         </div>
 

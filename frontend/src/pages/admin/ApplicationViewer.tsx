@@ -178,6 +178,12 @@ const ApplicationViewer = () => {
 
     return (
         <div className="space-y-6">
+            {/* Header */}
+            <div>
+                <h1 className="text-2xl font-bold text-white">Job Applications</h1>
+                <p className="text-gray-400 text-sm mt-1">View and manage candidate applications</p>
+            </div>
+
             {/* Header / Controls */}
             <div className="bg-[#0f1e3a] p-4 rounded-2xl border border-white/10 flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">

@@ -232,6 +232,7 @@ const TestimonialsManagement = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
+                    <h2 className="text-2xl font-bold text-white">Employee Testimonials</h2>
                     <p className="text-gray-400">Manage employee testimonials for the culture page</p>
                 </div>
                 <button

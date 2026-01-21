@@ -159,7 +159,11 @@ const JobManagement = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-white">Job Postings</h1>
+                    <p className="text-gray-400 text-sm mt-1">Manage open positions and job descriptions</p>
+                </div>
                 <button
                     onClick={() => openModal()}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"

@@ -20,4 +20,6 @@ public interface MediaItemRepository extends MongoRepository<MediaItem, String> 
     List<MediaItem> findByStatusOrderByPublishedDateDesc(String status);
 
     List<MediaItem> findByTitle(String title);
+
+    List<MediaItem> findByCategoryInAndStatusOrderByPublishedDateDesc(List<String> categories, String status);
 }
