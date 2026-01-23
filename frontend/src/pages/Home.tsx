@@ -1,5 +1,5 @@
 import Hero from '../components/Hero';
-import Memberships from '../components/Memberships';
+import Partners from '../components/Partners';
 import GlobalMetrics from '../components/GlobalMetrics';
 // import GlobalConnections from '../components/GlobalConnections';
 import Gallery from '../components/Gallery';
@@ -13,7 +13,7 @@ const Home = () => {
     return (
         <div className="relative">
             <Hero />
-            <Memberships />
+            <Partners />
             <GlobalMetrics />
             {/* <GlobalConnections /> */}
             <ErrorBoundary>

@@ -129,8 +129,8 @@ const HRMediaManagement = () => {
 
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/media/${editingItem.id}`
-                : 'http://localhost:8080/api/media';
+                ? `http://localhost:8080/api/admin/media/${editingItem.id}`
+                : 'http://localhost:8080/api/admin/media';
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -169,7 +169,7 @@ const HRMediaManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/media/${itemToDelete}`, {
+            const response = await fetch(`http://localhost:8080/api/admin/media/${itemToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -502,9 +502,9 @@ const HRMediaManagement = () => {
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                         className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
                                     >
-                                        <option value="GALLERY">Gallery</option>
-                                        <option value="LIFE_AT_OCH">Life at OCH</option>
-                                        <option value="EVENTS">Events</option>
+                                        <option value="GALLERY" className="bg-[#0f1e3a] text-white">Gallery</option>
+                                        <option value="LIFE_AT_OCH" className="bg-[#0f1e3a] text-white">Life at OCH</option>
+                                        <option value="EVENTS" className="bg-[#0f1e3a] text-white">Events</option>
                                     </select>
                                 </div>
 

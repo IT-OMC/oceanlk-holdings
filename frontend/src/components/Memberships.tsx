@@ -13,10 +13,10 @@ const Memberships = () => {
                 if (response.ok) {
                     const data = await response.json();
 
-                    // Filter or sort if needed.
-                    // Map backend fields to frontend expected if necessary, or update UI to use backend fields
-                    // Backend: name, logoUrl, websiteUrl
-                    const mapped = data.map((p: any) => ({
+                    // Filter for MEMBERSHIP category
+                    const memberData = data.filter((p: any) => p.category === 'MEMBERSHIP');
+
+                    const mapped = memberData.map((p: any) => ({
                         ...p,
                         logo: p.logoUrl,
                         year: '2024' // Placeholder or remove year display
@@ -24,7 +24,7 @@ const Memberships = () => {
                     setPartners(mapped);
                 }
             } catch (error) {
-                console.error('Failed to fetch partners', error);
+                console.error('Failed to fetch memberships', error);
             }
         };
 
@@ -37,28 +37,7 @@ const Memberships = () => {
     if (partners.length === 0) return null;
 
     return (
-        <section className="relative min-h-[70vh] flex items-center justify-center bg-[#020617] overflow-hidden py-24">
-            {/* Background Elements */}
-            {/* Background Elements - Mesh Grid */}
-            <div className="absolute inset-0 z-0 bg-[#020617]">
-                {/* Square Mesh Pattern */}
-                <div
-                    className="absolute inset-0 opacity-[0.15]"
-                    style={{
-                        backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px),
-                                        linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
-                        backgroundSize: '50px 50px',
-                        maskImage: 'linear-gradient(to bottom, transparent, #020617 10%, #020617 90%, transparent)'
-                    }}
-                />
-
-                {/* Subtle Gradient Overlays for depth */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#020617] via-transparent to-[#020617]" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-transparent to-[#020617] opacity-60" />
-
-                {/* Glow effects for premium feel */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-20" />
-            </div>
+        <section className="relative min-h-[60vh] flex items-center justify-center bg-transparent overflow-hidden py-24">
 
             <div className="relative z-10 w-full">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col items-center">
@@ -87,8 +66,8 @@ const Memberships = () => {
                 {/* Badges Carousel - Full Width */}
                 <div className="w-full relative overflow-hidden py-10 group/carousel">
                     {/* Gradient Masks */}
-                    <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-black via-black/80 to-transparent z-20 pointer-events-none" />
-                    <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-black via-black/80 to-transparent z-20 pointer-events-none" />
+                    <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-[#000000] via-[#000000]/80 to-transparent z-20 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-[#000000] via-[#000000]/80 to-transparent z-20 pointer-events-none" />
 
                     <motion.div
                         className="flex gap-6 md:gap-10 items-center"

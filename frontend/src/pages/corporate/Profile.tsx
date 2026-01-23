@@ -5,6 +5,7 @@ import { Target, Eye } from 'lucide-react';
 import { oceanData } from '../../data/mockData';
 import Timeline from '../../components/corporate/Timeline';
 import BentoGrid from '../../components/corporate/BentoGrid';
+import Memberships from '../../components/Memberships';
 
 const Profile = () => {
     const mouseX = useMotionValue(0);
@@ -222,6 +223,9 @@ const Profile = () => {
                     </motion.div>
                 </SectionWrapper>
             </div>
+
+            {/* Memberships Section */}
+            <Memberships />
         </div>
     );
 };

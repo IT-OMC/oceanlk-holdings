@@ -1,43 +1,83 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const verticals = [
     {
         id: 1,
-        title: "Maritime Logistics",
+        title: "Ocean Maritime Ceylon",
+        expandedHeading: "Global Ocean Freight",
         description: "Comprehensive ocean freight solutions connecting major global ports with precision and efficiency.",
-        image: "https://images.unsplash.com/photo-1494412574643-35d324688133?q=80&w=2075&auto=format&fit=crop", // Container ship
-        color: "from-blue-600 to-cyan-600"
+        collapsedImage: "/ecosystem-images/Front images/1.jpeg",
+        expandedImage: "/ecosystem-images/Main images/1.jpg",
+        color: "from-blue-600 to-cyan-600",
+        link: "/companies/omc"
     },
     {
         id: 2,
-        title: "Aviation Services",
-        description: "Rapid air cargo transport ensuring time-critical deliveries across international borders.",
-        image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop", // Airplane
-        color: "from-sky-600 to-indigo-600"
+        title: "Ocean Engineering Ceylon",
+        expandedHeading: "Marine Engineering Excellence",
+        description: "Expert marine engineering services ensuring vessel peak performance and safety compliance.",
+        collapsedImage: "/ecosystem-images/Front images/2.png",
+        expandedImage: "/ecosystem-images/Main images/2.jpg",
+        color: "from-sky-600 to-indigo-600",
+        link: "/companies/oec"
     },
     {
         id: 3,
-        title: "Ground Transport",
-        description: "Reliable inland transportation network bridging the last mile with our extensive fleet.",
-        image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=2075&auto=format&fit=crop", // Truck
-        color: "from-emerald-600 to-teal-600"
+        title: "Ocean Maritime Channel",
+        expandedHeading: "Maritime Logistics Channel",
+        description: "Seamless logistics channel management and global product sourcing for maritime operations.",
+        collapsedImage: "/ecosystem-images/Front images/3.jpg",
+        expandedImage: "/ecosystem-images/Main images/3.jpg",
+        color: "from-emerald-600 to-teal-600",
+        link: "/companies/omch"
     },
     {
         id: 4,
-        title: "Warehousing",
-        description: "State-of-the-art storage facilities with advanced inventory management systems.",
-        image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop", // Warehouse
-        color: "from-purple-600 to-violet-600"
+        title: "Connecting Cubes",
+        expandedHeading: "Luxury Corporate Travel",
+        description: "Premium travel agency curating personalized corporate and luxury travel experiences.",
+        collapsedImage: "/ecosystem-images/Front images/4.jpg",
+        expandedImage: "/ecosystem-images/Main images/4.jpg",
+        color: "from-purple-600 to-violet-600",
+        link: "/companies/connecting-cubes"
+    },
+    {
+        id: 5,
+        title: "Digital Books",
+        expandedHeading: "Digital Storytelling & Marketing",
+        description: "Forward-thinking digital marketing agency driving brand visibility and storytelling.",
+        collapsedImage: "/ecosystem-images/Front images/5.jpg",
+        expandedImage: "/ecosystem-images/Main images/5.jpg",
+        color: "from-orange-600 to-red-600",
+        link: "/companies/digital-books"
     },
 ];
 
 const EcosystemAccordion = () => {
-    const [activeId, setActiveId] = useState<number | null>(1); // Default to first item open
+    const [activeId, setActiveId] = useState<number | null>(1);
+    const navigate = useNavigate();
 
     return (
-        <section className="py-24 bg-slate-950 text-white overflow-hidden">
-            <div className="container mx-auto px-6 h-[600px] flex flex-col lg:flex-row gap-4">
+        <section className="relative py-24 text-white overflow-hidden">
+            {/* Extended Background: Video + Overlay */}
+            <div className="absolute inset-0 z-0">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                >
+                    <source src="/ecosystem-images/Background/0_Underwater_Ocean_720x720.mp4" type="video/mp4" />
+                </video>
+                {/* Vivid overlay to ensure text readability while keeping the ocean vibe */}
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-blue-950/40 to-slate-950/90 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-blue-900/20 mix-blend-overlay" />
+            </div>
+
+            <div className="relative z-10 container mx-auto px-6 h-[600px] flex flex-col lg:flex-row gap-4">
 
                 {/* Header for Mobile / Intro Area */}
                 <div className="lg:w-1/4 mb-10 lg:mb-0 flex flex-col justify-center pr-8 space-y-6">
@@ -66,7 +106,7 @@ const EcosystemAccordion = () => {
                                 h-[120px] lg:h-full bg-slate-900 border border-slate-800 group
                             `}
                         >
-                            {/* Background Image */}
+                            {/* Background Image - Expanded */}
                             <AnimatePresence mode="popLayout">
                                 {activeId === item.id && (
                                     <motion.img
@@ -74,15 +114,40 @@ const EcosystemAccordion = () => {
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.7 }}
-                                        src={item.image}
-                                        alt={item.title}
+                                        src={item.expandedImage}
+                                        alt={`${item.title} Expanded`}
                                         className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                                        onError={(e) => {
+                                            // Fallback if image not found to unsplash or placeholder
+                                            (e.target as HTMLImageElement).src = `https://source.unsplash.com/random/800x600/?business,${item.id}`;
+                                        }}
                                     />
                                 )}
                             </AnimatePresence>
 
-                            {/* Gradient Overlay for inactive showing text */}
-                            <div className={`absolute inset-0 bg-gradient-to-b ${item.color} ${activeId === item.id ? 'opacity-20' : 'opacity-10'} transition-opacity`} />
+                            {/* Background Image - Collapsed (Always rendered but hidden when expanded to maintain state if needed, or re-rendered) 
+                                 Actually, it's better to render it when NOT active, or underneath. 
+                                 Let's render it always at a lower z-index or opacity if we want a smooth transition, 
+                                 but for simplicity and performance, let's show it when !activeId.
+                             */}
+                            <AnimatePresence>
+                                {activeId !== item.id && (
+                                    <motion.img
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 0.4 }}
+                                        exit={{ opacity: 0 }}
+                                        src={item.collapsedImage}
+                                        alt={`${item.title} Collapsed`}
+                                        className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = `https://source.unsplash.com/random/400x800/?abstract,${item.id}`;
+                                        }}
+                                    />
+                                )}
+                            </AnimatePresence>
+
+                            {/* Gradient Overlay */}
+                            <div className={`absolute inset-0 bg-gradient-to-b ${item.color} ${activeId === item.id ? 'opacity-20' : 'opacity-40'} transition-opacity`} />
 
                             {/* Content */}
                             <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
@@ -93,8 +158,8 @@ const EcosystemAccordion = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <h3 className={`text-xl lg:text-3xl font-bold text-white whitespace-nowrap ${activeId !== item.id && 'lg:hidden'}`}>
-                                        {item.title}
+                                    <h3 className={`text-xl lg:text-3xl font-bold text-white whitespace-nowrap ${activeId !== item.id ? 'lg:hidden' : ''}`}>
+                                        {activeId === item.id ? item.expandedHeading : item.title}
                                     </h3>
 
                                     {activeId === item.id && (
@@ -106,7 +171,13 @@ const EcosystemAccordion = () => {
                                             <p className="text-slate-200 text-sm lg:text-base max-w-lg mb-4">
                                                 {item.description}
                                             </p>
-                                            <button className="text-sm font-semibold text-white/80 hover:text-white flex items-center gap-2 group/btn">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(item.link);
+                                                }}
+                                                className="text-sm font-semibold text-white/80 hover:text-white flex items-center gap-2 group/btn"
+                                            >
                                                 Learn More
                                                 <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
                                             </button>

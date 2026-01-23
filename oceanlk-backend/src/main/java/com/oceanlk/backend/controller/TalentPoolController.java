@@ -124,7 +124,7 @@ public class TalentPoolController {
         }
     }
 
-    @PatchMapping("application/{id}/status")
+    @PatchMapping("/application/{id}/status")
     public ResponseEntity<?> updateApplicationStatus(
             @PathVariable String id,
             @RequestParam String status) {

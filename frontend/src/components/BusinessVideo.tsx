@@ -12,7 +12,7 @@ const BusinessVideo = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
     return (
-        <section ref={containerRef} className="relative h-[80vh] min-h-[600px] overflow-hidden flex items-center justify-center">
+        <section ref={containerRef} className="relative min-h-screen overflow-hidden flex items-center justify-center">
             {/* Background Video */}
             <motion.div
                 style={{ y }}

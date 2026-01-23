@@ -1,6 +1,7 @@
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\JobOpportunityRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\GlobalMetricRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\component\DataInitializer.java
+C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\LeadershipCategoryRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\PageContentController.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\GalleryItemRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\model\Testimonial.java
@@ -41,6 +42,7 @@ C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backen
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\MediaItemRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\service\FileStorageService.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\NewsUpdateController.java
+C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\LeadershipCategoryController.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\CorporateLeaderRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\ContactMessageController.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\JobOpportunityController.java
@@ -49,6 +51,7 @@ C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backen
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\repository\PartnerRepository.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\TalentPoolController.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\MediaController.java
+C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\model\LeadershipCategory.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\controller\EventController.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\model\Event.java
 C:\Users\VICTUS\Desktop\OCEANLK\oceanlk-backend\src\main\java\com\oceanlk\backend\model\TalentPoolApplication.java

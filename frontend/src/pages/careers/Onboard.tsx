@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
@@ -20,6 +21,7 @@ interface JobOpportunity {
 }
 
 const Onboard = () => {
+    const navigate = useNavigate();
     const [jobOpenings, setJobOpenings] = useState<JobOpportunity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -362,19 +364,21 @@ const Onboard = () => {
                                                                 <span>{job.location}</span>
                                                             </div>
                                                             <motion.button
-                                                                className="p-3 rounded-full text-white"
+                                                                onClick={() => navigate(`/careers/opportunities/${job.id}`)}
+                                                                className="px-5 py-2.5 rounded-full text-white flex items-center gap-2"
                                                                 style={{
                                                                     background: 'linear-gradient(135deg, rgba(16,185,129,0.6) 0%, rgba(5,150,105,0.6) 100%)',
                                                                     border: '1px solid rgba(255,255,255,0.2)'
                                                                 }}
                                                                 whileHover={{
-                                                                    scale: 1.1,
-                                                                    x: 5,
+                                                                    scale: 1.05,
+                                                                    paddingRight: 24,
                                                                     background: 'linear-gradient(135deg, rgba(16,185,129,0.8) 0%, rgba(5,150,105,0.8) 100%)'
                                                                 }}
-                                                                whileTap={{ scale: 0.9 }}
+                                                                whileTap={{ scale: 0.95 }}
                                                             >
-                                                                <ArrowRight className="w-5 h-5" />
+                                                                <span className="font-semibold text-sm">Apply</span>
+                                                                <ArrowRight className="w-4 h-4" />
                                                             </motion.button>
                                                         </div>
                                                     </div>
@@ -467,19 +471,20 @@ const Onboard = () => {
                                                             <span>{job.location}</span>
                                                         </div>
                                                         <motion.button
-                                                            className="p-2 rounded-full"
+                                                            onClick={() => navigate(`/careers/opportunities/${job.id}`)}
+                                                            className="px-4 py-2 rounded-full flex items-center gap-2"
                                                             style={{
                                                                 background: 'rgba(59,130,246,0.2)',
                                                                 border: '1px solid rgba(59,130,246,0.3)'
                                                             }}
                                                             whileHover={{
-                                                                scale: 1.1,
-                                                                x: 3,
+                                                                scale: 1.05,
                                                                 background: 'rgba(59,130,246,0.4)'
                                                             }}
-                                                            whileTap={{ scale: 0.9 }}
+                                                            whileTap={{ scale: 0.95 }}
                                                         >
-                                                            <ArrowRight className="w-5 h-5 text-blue-400" />
+                                                            <span className="font-semibold text-sm text-blue-400">Apply</span>
+                                                            <ArrowRight className="w-4 h-4 text-blue-400" />
                                                         </motion.button>
                                                     </div>
                                                 </div>

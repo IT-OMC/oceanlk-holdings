@@ -1,136 +1,111 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Play, Globe } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Play } from 'lucide-react';
 
 const RefreshedCultureHero = () => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end start"]
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
     return (
-        <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-blue-950">
-            {/* Background Video Layer */}
-            <motion.div
-                style={{ y, opacity }}
-                className="absolute inset-0 z-0"
-            >
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-900/60 via-blue-900/40 to-blue-950/90 z-10" />
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover opacity-60"
-                >
-                    <source src="https://assets.mixkit.co/videos/preview/mixkit-people-working-in-a-modern-office-4338-large.mp4" type="video/mp4" />
-                    {/* Fallback to image if video fails or while loading */}
-                    <img
-                        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-                        alt="Office Culture"
+        <section
+            ref={containerRef}
+            className="relative min-h-screen w-full bg-[#05050A] flex items-start justify-center overflow-hidden pt-32 md:pt-40"
+        >
+            {/* Video Background - Full View */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 h-full top-0">
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
                         className="w-full h-full object-cover"
-                    />
-                </video>
-            </motion.div>
+                    >
+                        <source src="/videos/Culture page/7031309_Close_up_Slow_Motion_3840x2160.mp4" type="video/mp4" />
+                        {/* Fallback for browsers that don't support video */}
+                    </video>
 
-            {/* Abstract Shapes/Particles Overlay */}
-            <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700" />
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#05050A]/80 via-[#05050A]/60 to-[#05050A]/80" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#05050A]/40 via-transparent to-[#05050A]/40" />
+                </div>
+
+                {/* Glow spots */}
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[100px]" />
             </div>
 
-            {/* Main Content */}
-            <div className="relative z-20 h-full flex flex-col items-center justify-center px-4 md:px-6 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="max-w-5xl mx-auto"
-                >
-                    {/* Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-cyan-300 text-sm font-medium tracking-wider uppercase"
-                    >
-                        <Globe size={14} className="animate-spin-slow" />
-                        <span>Life at Ocean Ceylon Holdings</span>
-                    </motion.div>
+            {/* Centered Content Container */}
+            <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center">
+                <div className="flex justify-center items-center w-full">
 
-                    {/* Heading */}
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight tracking-tight drop-shadow-lg">
-                        <span className="block overflow-hidden">
-                            <motion.span
-                                initial={{ y: "100%" }}
-                                animate={{ y: 0 }}
-                                transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                                className="block"
-                            >
-                                Empowering People.
-                            </motion.span>
-                        </span>
-                        <span className="block overflow-hidden mt-2">
-                            <motion.span
-                                initial={{ y: "100%" }}
-                                animate={{ y: 0 }}
-                                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                                className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400"
-                            >
-                                Shaping Horizons.
-                            </motion.span>
-                        </span>
-                    </h1>
+                    {/* Main Content - Centered */}
+                    <div className="max-w-4xl text-center flex flex-col items-center space-y-10">
 
-                    {/* Description */}
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8, duration: 0.8 }}
-                        className="text-lg md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
-                    >
-                        Dive into a vibrant ecosystem where innovation meets passion.
-                        We don't just build careers; we craft legacies together.
-                    </motion.p>
+                        {/* Main Headline */}
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="text-5xl md:text-7xl font-bold leading-tight text-white tracking-tight"
+                        >
+                            The Complete <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-secondary">
+                                ecosystem
+                            </span> for <br />
+                            growth.
+                        </motion.h1>
 
-                    {/* CTA Buttons */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1, duration: 0.5 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-6"
-                    >
-                        <button className="group relative px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-white rounded-full font-bold text-lg transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] hover:-translate-y-1">
-                            <span className="flex items-center gap-3">
-                                Join Our Team
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </span>
-                        </button>
+                        {/* Description */}
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="text-slate-400 text-lg max-w-2xl leading-relaxed mx-auto"
+                        >
+                            Everything you need to connect your passion to purposes.
+                            We don't just build careers; we craft legacies together at Ocean Ceylon Holdings.
+                        </motion.p>
 
-                        <button className="group flex items-center gap-3 px-8 py-4 bg-white/5 hover:bg-white/15 text-white rounded-full font-bold text-lg backdrop-blur-sm border border-white/10 transition-all duration-300 hover:-translate-y-1">
-                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue-900 group-hover:scale-110 transition-transform">
-                                <Play size={14} fill="currentColor" className="ml-0.5" />
-                            </span>
-                            <span>Watch Our Story</span>
-                        </button>
-                    </motion.div>
-                </motion.div>
+                        {/* CTA Buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.6 }}
+                            className="flex flex-wrap items-center justify-center gap-6"
+                        >
+                            <button className="px-8 py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white rounded-lg font-medium transition-all shadow-[0_0_20px_rgba(0,86,179,0.3)] hover:shadow-[0_0_30px_rgba(0,86,179,0.5)]">
+                                Get Started
+                            </button>
+
+                            <button className="group flex items-center gap-3 text-slate-300 hover:text-white transition-colors px-6 py-4 rounded-lg border border-slate-800 hover:border-slate-600 hover:bg-slate-900/50 backdrop-blur-sm">
+                                <span className="bg-slate-800 p-2 rounded-full group-hover:bg-primary transition-colors">
+                                    <Play size={12} fill="currentColor" />
+                                </span>
+                                <span>Watch Story</span>
+                            </button>
+                        </motion.div>
+
+                        {/* Social Proof / Trusted By */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1, delay: 0.8 }}
+                            className="pt-8 border-t border-slate-800/50 mt-4 flex items-center justify-center gap-8"
+                        >
+                            <div>
+                                <p className="text-3xl font-bold text-white mb-1">320K+</p>
+                                <p className="text-xs text-slate-500 uppercase tracking-wider">Happy Employees</p>
+                            </div>
+                            <div className="h-10 w-[1px] bg-slate-800" />
+                            <div>
+                                <p className="text-3xl font-bold text-white mb-1">5.0</p>
+                                <p className="text-xs text-slate-500 uppercase tracking-wider">Star Rating</p>
+                            </div>
+                        </motion.div>
+
+                    </div>
+                </div>
             </div>
-
-            {/* Scroll Indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
-            >
-                <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-cyan-400 to-transparent animate-pulse" />
-                <span className="text-cyan-400/70 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-            </motion.div>
         </section>
     );
 };

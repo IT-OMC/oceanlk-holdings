@@ -18,6 +18,14 @@ export interface LeadershipMember {
     email?: string;
 }
 
+interface LeadershipCategory {
+    id: string;
+    code: string;
+    title: string;
+    subtitle: string;
+    displayOrder: number;
+}
+
 interface LeadershipCardProps {
     member: LeadershipMember;
     index: number;
@@ -185,30 +193,32 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
 
 const Leadership = () => {
     const [leaders, setLeaders] = useState<LeadershipMember[]>([]);
+    const [categories, setCategories] = useState<LeadershipCategory[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchLeaders = async () => {
+        const loadData = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/leadership');
-                if (response.ok) {
-                    const data = await response.json();
-                    setLeaders(data);
+                const [leadersResponse, categoriesResponse] = await Promise.all([
+                    fetch('http://localhost:8080/api/leadership'),
+                    fetch('http://localhost:8080/api/leadership-categories')
+                ]);
+
+                if (leadersResponse.ok && categoriesResponse.ok) {
+                    const leadersData = await leadersResponse.json();
+                    const categoriesData = await categoriesResponse.json();
+                    setLeaders(leadersData);
+                    setCategories(categoriesData);
                 }
             } catch (error) {
-                console.error('Failed to fetch leadership data', error);
-                // Fallback to empty or toast error
+                console.error('Failed to fetch data', error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchLeaders();
+        loadData();
     }, []);
-
-    const boardOfDirectors = leaders.filter(l => l.department === 'BOARD');
-    const executiveLeadership = leaders.filter(l => l.department === 'EXECUTIVE');
-    const seniorManagement = leaders.filter(l => l.department === 'SENIOR');
 
     if (isLoading) {
         return (
@@ -272,50 +282,27 @@ const Leadership = () => {
                 </motion.div>
             </SectionWrapper>
 
-            {/* Board of Directors */}
-            {boardOfDirectors.length > 0 && (
-                <SectionWrapper id="board-of-directors" className="py-20">
-                    <SectionHeader
-                        title="Board of Directors"
-                        subtitle="Strategic governance and oversight guiding our organization's vision, values, and long-term success"
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {boardOfDirectors.map((member, index) => (
-                            <LeadershipCard key={member.id} member={member} index={index} />
-                        ))}
-                    </div>
-                </SectionWrapper>
-            )}
+            {/* Dynamic Categories */}
+            {categories.map((category) => {
+                const categoryLeaders = leaders.filter(l => l.department === category.code);
+                if (categoryLeaders.length === 0) return null;
 
-            {/* Executive Leadership */}
-            {executiveLeadership.length > 0 && (
-                <SectionWrapper id="executive-leadership" className="py-20">
-                    <SectionHeader
-                        title="Executive Leadership"
-                        subtitle="C-Suite executives driving operational excellence and strategic initiatives across the organization"
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {executiveLeadership.map((member, index) => (
-                            <LeadershipCard key={member.id} member={member} index={index} />
-                        ))}
-                    </div>
-                </SectionWrapper>
-            )}
-
-            {/* Senior Management */}
-            {seniorManagement.length > 0 && (
-                <SectionWrapper id="senior-management" className="py-20 pb-32">
-                    <SectionHeader
-                        title="Senior Management"
-                        subtitle="Experienced leaders managing key departments and driving day-to-day operational success"
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {seniorManagement.map((member, index) => (
-                            <LeadershipCard key={member.id} member={member} index={index} />
-                        ))}
-                    </div>
-                </SectionWrapper>
-            )}
+                return (
+                    <SectionWrapper key={category.id} id={category.code.toLowerCase()} className="py-20">
+                        <SectionHeader
+                            title={category.title}
+                            subtitle={category.subtitle}
+                        />
+                        <div className="flex flex-wrap justify-center gap-8">
+                            {categoryLeaders.map((member, index) => (
+                                <div key={member.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                                    <LeadershipCard member={member} index={index} />
+                                </div>
+                            ))}
+                        </div>
+                    </SectionWrapper>
+                );
+            })}
 
             {/* CTA Section */}
             <SectionWrapper id="leadership-cta" className="py-20">

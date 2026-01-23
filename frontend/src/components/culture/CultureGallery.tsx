@@ -139,13 +139,14 @@ const CultureGallery = () => {
             </div>
 
             {/* Show More Button */}
-            {visibleCount < images.length && (
+            {/* Show More / Show Less Button */}
+            {images.length > 10 && (
                 <div className="flex justify-center">
                     <button
-                        onClick={handleShowMore}
+                        onClick={visibleCount >= images.length ? () => setVisibleCount(10) : handleShowMore}
                         className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-full font-medium hover:bg-gray-50 transition-colors shadow-sm"
                     >
-                        Show More
+                        {visibleCount >= images.length ? 'Show Less' : 'Show More'}
                     </button>
                 </div>
             )}

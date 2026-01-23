@@ -8,6 +8,7 @@ import Companies from './pages/companies/Companies';
 import CompanySingle from './pages/companies/CompanySingle';
 import Culture from './pages/careers/Culture';
 import Onboard from './pages/careers/Onboard';
+import JobApplication from './pages/careers/JobApplication';
 import TalentPool from './pages/careers/TalentPool';
 import Blogs from './pages/news/Blogs';
 import BlogSingle from './pages/news/BlogSingle';
@@ -37,6 +38,7 @@ import PageContentManager from './pages/admin/PageContentManager';
 import LeadershipManagement from './pages/admin/LeadershipManagement';
 import StatsManagement from './pages/admin/StatsManagement';
 import PartnerManagement from './pages/admin/PartnerManagement';
+import CompanyManagement from './pages/admin/CompanyManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -54,6 +56,7 @@ function App() {
                     }
                 >
                     <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="companies" element={<CompanyManagement />} />
                     <Route path="media" element={<MediaManagement />} />
 
                     {/* News & Media Routes */}
@@ -100,6 +103,7 @@ function App() {
                                     {/* Careers Routes */}
                                     <Route path="/careers/culture" element={<Culture />} />
                                     <Route path="/careers/opportunities" element={<Onboard />} />
+                                    <Route path="/careers/opportunities/:id" element={<JobApplication />} />
                                     <Route path="/careers/talent-pool" element={<TalentPool />} />
 
                                     {/* News Routes */}
