@@ -1,6 +1,5 @@
 package com.oceanlk.backend.controller;
 
-import com.oceanlk.backend.model.Company;
 import com.oceanlk.backend.model.MediaItem;
 import com.oceanlk.backend.repository.CompanyRepository;
 import com.oceanlk.backend.repository.MediaItemRepository;
@@ -24,6 +23,7 @@ public class MediaController {
     private final MediaItemRepository mediaRepository;
     private final FileStorageService fileStorageService;
     private final CompanyRepository companyRepository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     // Public endpoint - get all published media
     @GetMapping("/media")
@@ -40,7 +40,8 @@ public class MediaController {
 
             // Enrich with company information
             List<Map<String, Object>> enrichedItems = mediaItems.stream()
-                    .filter(item -> "Gallery".equalsIgnoreCase(item.getCategory()))
+                    .filter(item -> "Gallery".equalsIgnoreCase(item.getCategory())
+                            && "MEDIA_PANEL".equalsIgnoreCase(item.getGroup()))
                     .map(item -> {
                         Map<String, Object> enriched = new HashMap<>();
                         enriched.put("id", item.getId());
@@ -75,22 +76,24 @@ public class MediaController {
     // Public endpoint - get news articles
     @GetMapping("/media/news")
     public ResponseEntity<List<MediaItem>> getNewsArticles() {
-        List<MediaItem> news = mediaRepository.findByCategoryAndStatusOrderByPublishedDateDesc("NEWS", "PUBLISHED");
+        List<MediaItem> news = mediaRepository.findByCategoryAndGroupAndStatusOrderByPublishedDateDesc("NEWS",
+                "MEDIA_PANEL", "PUBLISHED");
         return ResponseEntity.ok(news);
     }
 
     // Public endpoint - get blog posts
     @GetMapping("/media/blogs")
     public ResponseEntity<List<MediaItem>> getBlogPosts() {
-        List<MediaItem> blogs = mediaRepository.findByCategoryAndStatusOrderByPublishedDateDesc("BLOG", "PUBLISHED");
+        List<MediaItem> blogs = mediaRepository.findByCategoryAndGroupAndStatusOrderByPublishedDateDesc("BLOG",
+                "MEDIA_PANEL", "PUBLISHED");
         return ResponseEntity.ok(blogs);
     }
 
     // Public endpoint - get media items (videos, galleries, documents)
     @GetMapping("/media/media")
     public ResponseEntity<List<MediaItem>> getMediaItems() {
-        List<MediaItem> media = mediaRepository.findByCategoryInAndStatusOrderByPublishedDateDesc(
-                java.util.Arrays.asList("MEDIA", "GALLERY"), "PUBLISHED");
+        List<MediaItem> media = mediaRepository.findByCategoryInAndGroupAndStatusOrderByPublishedDateDesc(
+                java.util.Arrays.asList("MEDIA", "GALLERY"), "MEDIA_PANEL", "PUBLISHED");
         return ResponseEntity.ok(media);
     }
 
@@ -114,16 +117,22 @@ public class MediaController {
 
     // Admin endpoints
     @GetMapping("/admin/media")
-    public ResponseEntity<List<MediaItem>> getAllMedia() {
-        List<MediaItem> mediaItems = mediaRepository.findAll();
+    public ResponseEntity<List<MediaItem>> getAllMedia(@RequestParam(required = false) String group) {
+        List<MediaItem> mediaItems;
+        if (group != null && !group.isEmpty()) {
+            mediaItems = mediaRepository.findByGroupOrderByPublishedDateDesc(group);
+        } else {
+            mediaItems = mediaRepository.findAll();
+        }
         return ResponseEntity.ok(mediaItems);
     }
 
     // File upload endpoint
     @PostMapping("/admin/media/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
+            @RequestParam(value = "group", defaultValue = "MEDIA_PANEL") String group) {
         try {
-            String fileUrl = fileStorageService.saveFile(file);
+            String fileUrl = fileStorageService.saveFile(file, group);
 
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
@@ -157,6 +166,11 @@ public class MediaController {
             }
 
             MediaItem savedItem = mediaRepository.save(mediaItem);
+
+            // Log Action
+            auditLogService.logAction("admin", "CREATE", "MediaItem", savedItem.getId(),
+                    "Created media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
+
             return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
@@ -182,6 +196,7 @@ public class MediaController {
         mediaItem.setImageUrl(updatedItem.getImageUrl());
         mediaItem.setVideoUrl(updatedItem.getVideoUrl());
         mediaItem.setCategory(updatedItem.getCategory());
+        mediaItem.setGroup(updatedItem.getGroup());
         mediaItem.setType(updatedItem.getType());
         mediaItem.setCompanyId(updatedItem.getCompanyId());
         mediaItem.setCompany(updatedItem.getCompany());
@@ -201,7 +216,20 @@ public class MediaController {
             mediaItem.setStatus(updatedItem.getStatus().toUpperCase());
         }
 
+        if (updatedItem.getPublishedDate() != null) {
+            mediaItem.setPublishedDate(updatedItem.getPublishedDate());
+        }
+
+        if (updatedItem.getSeoMetadata() != null) {
+            mediaItem.setSeoMetadata(updatedItem.getSeoMetadata());
+        }
+
         MediaItem savedItem = mediaRepository.save(mediaItem);
+
+        // Log Action
+        auditLogService.logAction("admin", "UPDATE", "MediaItem", savedItem.getId(),
+                "Updated media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
+
         return ResponseEntity.ok(savedItem);
     }
 
@@ -229,6 +257,10 @@ public class MediaController {
         }
 
         mediaRepository.deleteById(id);
+
+        // Log Action
+        auditLogService.logAction("admin", "DELETE", "MediaItem", id,
+                "Deleted media item: " + mediaItem.getTitle() + " (Category: " + mediaItem.getCategory() + ")");
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Media item deleted successfully");

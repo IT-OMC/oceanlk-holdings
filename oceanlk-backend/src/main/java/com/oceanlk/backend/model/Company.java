@@ -13,12 +13,14 @@ public class Company {
     private String id;
     @NotBlank(message = "Title is required")
     private String title;
-    private String desc;
+    private String description; // Renamed from desc
     private String longDescription;
-    private String logo;
+    private String logoUrl; // Renamed from logo
+    private String website; // New
+    private String industry; // New
+    private String established; // Renamed from founded
     private String image;
     private String video;
-    private String founded;
     private String employees;
     private String revenue;
     private String category;

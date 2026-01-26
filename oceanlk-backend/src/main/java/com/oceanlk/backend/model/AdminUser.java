@@ -17,19 +17,35 @@ public class AdminUser {
     @Id
     private String id;
 
+    private String name;
     private String username;
-    private String password; // BCrypt hashed
-    private String role; // ADMIN, SUPER_ADMIN
-
+    private String password;
+    private String email;
+    private String phone;
+    private String role;
     private LocalDateTime createdDate;
     private LocalDateTime lastLoginDate;
     private boolean active;
+    private boolean verified;
 
-    public AdminUser(String username, String password, String role) {
+    // OTP fields
+    private String otp;
+    private LocalDateTime otpExpiry;
+
+    // Temporary fields for contact update verification
+    private String tempEmail;
+    private String tempPhone;
+    private String tempOtp;
+
+    public AdminUser(String name, String username, String password, String email, String phone, String role) {
+        this.name = name;
         this.username = username;
         this.password = password;
+        this.email = email;
+        this.phone = phone;
         this.role = role;
         this.createdDate = LocalDateTime.now();
         this.active = true;
+        this.verified = false;
     }
 }

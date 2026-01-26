@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.lang.NonNull;
 import java.util.List;
 
 @RestController
@@ -15,6 +16,7 @@ import java.util.List;
 public class LeadershipController {
 
     private final CorporateLeaderRepository repository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @GetMapping
     public ResponseEntity<List<CorporateLeader>> getAllLeaders() {
@@ -22,17 +24,24 @@ public class LeadershipController {
     }
 
     @GetMapping("/department/{dept}")
-    public ResponseEntity<List<CorporateLeader>> getLeadersByDepartment(@PathVariable String dept) {
+    public ResponseEntity<List<CorporateLeader>> getLeadersByDepartment(@PathVariable @NonNull String dept) {
         return ResponseEntity.ok(repository.findByDepartmentOrderByDisplayOrderAsc(dept.toUpperCase()));
     }
 
     @PostMapping
     public ResponseEntity<CorporateLeader> createLeader(@RequestBody CorporateLeader leader) {
-        return ResponseEntity.ok(repository.save(leader));
+        CorporateLeader savedLeader = repository.save(leader);
+
+        // Log Action
+        auditLogService.logAction("admin", "CREATE", "CorporateLeader", savedLeader.getId(),
+                "Created leadership member: " + savedLeader.getName());
+
+        return ResponseEntity.ok(savedLeader);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CorporateLeader> updateLeader(@PathVariable String id, @RequestBody CorporateLeader leader) {
+    public ResponseEntity<CorporateLeader> updateLeader(@PathVariable @NonNull String id,
+            @RequestBody CorporateLeader leader) {
         return repository.findById(id)
                 .map(existing -> {
                     existing.setName(leader.getName());
@@ -44,14 +53,24 @@ public class LeadershipController {
                     existing.setLinkedin(leader.getLinkedin());
                     existing.setEmail(leader.getEmail());
                     existing.setDisplayOrder(leader.getDisplayOrder());
-                    return ResponseEntity.ok(repository.save(existing));
+                    CorporateLeader savedLeader = repository.save(existing);
+
+                    // Log Action
+                    auditLogService.logAction("admin", "UPDATE", "CorporateLeader", id,
+                            "Updated leadership member: " + savedLeader.getName());
+
+                    return ResponseEntity.ok(savedLeader);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLeader(@PathVariable String id) {
+    public ResponseEntity<?> deleteLeader(@PathVariable @NonNull String id) {
         repository.deleteById(id);
+
+        // Log Action
+        auditLogService.logAction("admin", "DELETE", "CorporateLeader", id, "Deleted leadership member ID: " + id);
+
         return ResponseEntity.ok().build();
     }
 }

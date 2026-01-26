@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Document(collection = "media_items")
 @Data
@@ -23,6 +23,7 @@ public class MediaItem {
     private String imageUrl;
     private String videoUrl;
     private String category; // NEWS, BLOG, MEDIA, GALLERY, PRESS_RELEASE, EVENTS, LIFE_AT_OCH
+    private String group; // MEDIA_PANEL, HR_PANEL
     private String type; // ARTICLE, VIDEO, GALLERY, DOCUMENT (for MEDIA category)
     private String companyId; // Associated company ID (optional, required for GALLERY)
     private String company; // Company name for display
@@ -36,11 +37,13 @@ public class MediaItem {
     private String duration; // For videos, e.g., "12:45"
     private Integer photoCount; // For galleries
     private Integer pageCount; // For documents
-    
+
     private java.util.List<String> galleryImages; // For ALBUM type
 
-    private LocalDateTime publishedDate;
+    private LocalDate publishedDate;
     private String status; // PUBLISHED, DRAFT, ARCHIVED
+
+    private SeoMetadata seoMetadata;
 
     public MediaItem(String title, String description, String imageUrl,
             String videoUrl, String category, boolean featured) {
@@ -50,7 +53,7 @@ public class MediaItem {
         this.videoUrl = videoUrl;
         this.category = category;
         this.featured = featured;
-        this.publishedDate = LocalDateTime.now();
+        this.publishedDate = LocalDate.now();
         this.status = "PUBLISHED";
     }
 }

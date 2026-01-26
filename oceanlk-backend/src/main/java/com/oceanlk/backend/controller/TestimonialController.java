@@ -19,6 +19,9 @@ public class TestimonialController {
     @Autowired
     private TestimonialService testimonialService;
 
+    @Autowired
+    private com.oceanlk.backend.service.AuditLogService auditLogService;
+
     @GetMapping
     public ResponseEntity<List<Testimonial>> getAllTestimonials() {
         return ResponseEntity.ok(testimonialService.getAllTestimonials());
@@ -35,6 +38,11 @@ public class TestimonialController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Testimonial> createTestimonial(@Valid @RequestBody Testimonial testimonial) {
         Testimonial createdTestimonial = testimonialService.createTestimonial(testimonial);
+
+        // Log Action
+        auditLogService.logAction("admin", "CREATE", "Testimonial", String.valueOf(createdTestimonial.getId()),
+                "Created testimonial by: " + createdTestimonial.getName());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTestimonial);
     }
 
@@ -44,6 +52,11 @@ public class TestimonialController {
             @Valid @RequestBody Testimonial testimonial) {
         try {
             Testimonial updatedTestimonial = testimonialService.updateTestimonial(id, testimonial);
+
+            // Log Action
+            auditLogService.logAction("admin", "UPDATE", "Testimonial", String.valueOf(id),
+                    "Updated testimonial by: " + updatedTestimonial.getName());
+
             return ResponseEntity.ok(updatedTestimonial);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -54,6 +67,11 @@ public class TestimonialController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTestimonial(@PathVariable Integer id) {
         testimonialService.deleteTestimonial(id);
+
+        // Log Action
+        auditLogService.logAction("admin", "DELETE", "Testimonial", String.valueOf(id),
+                "Deleted testimonial ID: " + id);
+
         return ResponseEntity.noContent().build();
     }
 }

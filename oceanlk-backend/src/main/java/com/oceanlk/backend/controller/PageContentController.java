@@ -16,6 +16,7 @@ import java.util.Optional;
 public class PageContentController {
 
     private final PageContentRepository repository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @GetMapping("/{page}")
     public ResponseEntity<List<PageContent>> getPageContent(@PathVariable String page) {
@@ -44,9 +45,22 @@ public class PageContentController {
             toUpdate.setImageUrl(content.getImageUrl());
             toUpdate.setCtaText(content.getCtaText());
             toUpdate.setCtaLink(content.getCtaLink());
-            return ResponseEntity.ok(repository.save(toUpdate));
+            PageContent saved = repository.save(toUpdate);
+
+            // Log Action
+            auditLogService.logAction("admin", "UPDATE", "PageContent", saved.getId(),
+                    "Updated content for page: " + saved.getPageIdentifier() + " section: "
+                            + saved.getSectionIdentifier());
+
+            return ResponseEntity.ok(saved);
         }
 
-        return ResponseEntity.ok(repository.save(content));
+        PageContent saved = repository.save(content);
+
+        // Log Action
+        auditLogService.logAction("admin", "CREATE", "PageContent", saved.getId(),
+                "Created content for page: " + saved.getPageIdentifier() + " section: " + saved.getSectionIdentifier());
+
+        return ResponseEntity.ok(saved);
     }
 }

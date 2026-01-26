@@ -15,6 +15,7 @@ import java.util.List;
 public class LeadershipCategoryController {
 
     private final LeadershipCategoryRepository repository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @GetMapping
     public ResponseEntity<List<LeadershipCategory>> getAllCategories() {
@@ -42,7 +43,13 @@ public class LeadershipCategoryController {
                 .map(existing -> {
                     existing.setTitle(updatedCategory.getTitle());
                     existing.setSubtitle(updatedCategory.getSubtitle());
-                    return ResponseEntity.ok(repository.save(existing));
+                    LeadershipCategory saved = repository.save(existing);
+
+                    // Log Action
+                    auditLogService.logAction("admin", "UPDATE", "LeadershipCategory", code,
+                            "Updated leadership category: " + saved.getTitle());
+
+                    return ResponseEntity.ok(saved);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -53,14 +60,26 @@ public class LeadershipCategoryController {
             return ResponseEntity.badRequest().build();
         }
         category.setCode(category.getCode().toUpperCase());
-        return ResponseEntity.ok(repository.save(category));
+        LeadershipCategory saved = repository.save(category);
+
+        // Log Action
+        auditLogService.logAction("admin", "CREATE", "LeadershipCategory", saved.getCode(),
+                "Created leadership category: " + saved.getTitle());
+
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteCategory(@PathVariable String code) {
         java.util.Optional<LeadershipCategory> categoryOpt = repository.findByCode(code.toUpperCase());
         if (categoryOpt.isPresent()) {
-            repository.delete(categoryOpt.get());
+            LeadershipCategory category = categoryOpt.get();
+            repository.delete(category);
+
+            // Log Action
+            auditLogService.logAction("admin", "DELETE", "LeadershipCategory", code,
+                    "Deleted leadership category: " + category.getTitle());
+
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

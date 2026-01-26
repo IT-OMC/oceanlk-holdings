@@ -34,12 +34,22 @@ public class FileStorageService {
     /**
      * Save uploaded file to the server
      * 
-     * @param file MultipartFile to save
+     * @param file  MultipartFile to save
+     * @param group Group name for subdirectory (e.g., MEDIA_PANEL, HR_PANEL)
      * @return relative URL path to the saved file
      */
-    public String saveFile(MultipartFile file) throws IOException {
+    public String saveFile(MultipartFile file, String group) throws IOException {
         // Validate file
         validateFile(file);
+
+        // Determine subdirectory
+        String subDir = "general";
+        if ("HR_PANEL".equalsIgnoreCase(group)) {
+            subDir = "hr";
+        }
+
+        Path targetDir = uploadDir.resolve(subDir);
+        Files.createDirectories(targetDir);
 
         // Generate unique filename
         String originalFilename = file.getOriginalFilename();
@@ -49,25 +59,25 @@ public class FileStorageService {
         String uniqueFilename = UUID.randomUUID().toString() + extension;
 
         // Save file
-        Path targetLocation = uploadDir.resolve(uniqueFilename);
+        Path targetLocation = targetDir.resolve(uniqueFilename);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
         // Return relative URL
-        return "/uploads/media/" + uniqueFilename;
+        return "/uploads/media/" + subDir + "/" + uniqueFilename;
     }
 
     /**
      * Delete file from server
      * 
-     * @param fileUrl URL path to the file (e.g., /uploads/media/filename.jpg)
+     * @param fileUrl URL path to the file (e.g., /uploads/media/hr/filename.jpg)
      */
     public void deleteFile(String fileUrl) throws IOException {
         if (fileUrl == null || !fileUrl.startsWith("/uploads/media/")) {
             return; // Not a local file or invalid path
         }
 
-        String filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-        Path filePath = uploadDir.resolve(filename);
+        String remainingPath = fileUrl.substring("/uploads/media/".length());
+        Path filePath = uploadDir.resolve(remainingPath);
 
         if (Files.exists(filePath)) {
             Files.delete(filePath);

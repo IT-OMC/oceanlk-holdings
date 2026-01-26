@@ -11,6 +11,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +31,7 @@ public class TalentPoolController {
     private final TalentPoolApplicationRepository applicationRepository;
     private final EmailService emailService;
     private final GridFsTemplate gridFsTemplate;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @PostMapping(value = "/submit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> submitApplication(
@@ -94,10 +98,17 @@ public class TalentPoolController {
     @GetMapping("/cv/{applicationId}")
     public ResponseEntity<?> downloadCV(@PathVariable String applicationId) {
         try {
-            TalentPoolApplication application = applicationRepository.findById(applicationId)
-                    .orElse(null);
+            var applicationOpt = applicationRepository.findById(applicationId);
 
-            if (application == null || application.getCvFileId() == null) {
+            if (applicationOpt.isEmpty()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Application not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+
+            TalentPoolApplication application = applicationOpt.get();
+
+            if (application.getCvFileId() == null) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "CV not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -126,39 +137,44 @@ public class TalentPoolController {
 
     @PatchMapping("/application/{id}/status")
     public ResponseEntity<?> updateApplicationStatus(
-            @PathVariable String id,
+            @PathVariable @NonNull String id,
             @RequestParam String status) {
-        TalentPoolApplication application = applicationRepository.findById(id).orElse(null);
+        var applicationOpt = applicationRepository.findById(id);
 
-        if (application == null) {
+        if (applicationOpt.isEmpty()) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Application not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
 
+        TalentPoolApplication application = applicationOpt.get();
         application.setStatus(status);
         applicationRepository.save(application);
+
+        // Log Action
+        auditLogService.logAction("admin", "UPDATE", "TalentPoolApplication", id,
+                "Updated application status for " + application.getFullName() + " to " + status);
 
         return ResponseEntity.ok(application);
     }
 
     @DeleteMapping("/application/{id}")
-    public ResponseEntity<?> deleteApplication(@PathVariable String id) {
+    public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id) {
         try {
-            TalentPoolApplication application = applicationRepository.findById(id).orElse(null);
+            var applicationOpt = applicationRepository.findById(id);
 
-            if (application == null) {
+            if (applicationOpt.isEmpty()) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "Application not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
 
+            TalentPoolApplication application = applicationOpt.get();
+
             // Delete CV file from GridFS if it exists
             if (application.getCvFileId() != null) {
                 try {
-                    gridFsTemplate.delete(org.springframework.data.mongodb.core.query.Query.query(
-                            org.springframework.data.mongodb.core.query.Criteria.where("_id")
-                                    .is(application.getCvFileId())));
+                    gridFsTemplate.delete(Query.query(Criteria.where("_id").is(application.getCvFileId())));
                 } catch (Exception e) {
                     System.err.println("Failed to delete CV file from GridFS: " + e.getMessage());
                 }
@@ -166,6 +182,10 @@ public class TalentPoolController {
 
             // Delete application record
             applicationRepository.deleteById(id);
+
+            // Log Action
+            auditLogService.logAction("admin", "DELETE", "TalentPoolApplication", id,
+                    "Deleted application from " + application.getFullName());
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

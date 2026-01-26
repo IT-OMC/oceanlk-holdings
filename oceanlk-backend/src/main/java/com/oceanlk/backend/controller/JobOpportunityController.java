@@ -18,6 +18,7 @@ import java.util.Map;
 public class JobOpportunityController {
 
     private final JobOpportunityRepository jobRepository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     // Public endpoint - get all active jobs
     @GetMapping("/jobs")
@@ -46,6 +47,11 @@ public class JobOpportunityController {
             }
 
             JobOpportunity savedJob = jobRepository.save(job);
+
+            // Log Action
+            auditLogService.logAction("admin", "CREATE", "JobOpportunity", savedJob.getId(),
+                    "Created job: " + savedJob.getTitle());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(savedJob);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
@@ -78,6 +84,11 @@ public class JobOpportunityController {
         }
 
         JobOpportunity savedJob = jobRepository.save(job);
+
+        // Log Action
+        auditLogService.logAction("admin", "UPDATE", "JobOpportunity", savedJob.getId(),
+                "Updated job: " + savedJob.getTitle());
+
         return ResponseEntity.ok(savedJob);
     }
 
@@ -90,6 +101,9 @@ public class JobOpportunityController {
         }
 
         jobRepository.deleteById(id);
+
+        // Log Action
+        auditLogService.logAction("admin", "DELETE", "JobOpportunity", id, "Deleted job ID: " + id);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Job deleted successfully");

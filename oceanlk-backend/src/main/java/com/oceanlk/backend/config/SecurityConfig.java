@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -35,8 +34,12 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
+                        .requestMatchers("/api/contact").permitAll()
                         .requestMatchers("/api/admin/login").permitAll()
                         .requestMatchers("/api/admin/validate").permitAll()
+                        .requestMatchers("/api/admin/otp/**").permitAll()
+                        .requestMatchers("/api/admin/forgot-password").permitAll()
+                        .requestMatchers("/api/admin/reset-password").permitAll()
                         .requestMatchers("/api/talent-pool/submit").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/media").permitAll()
@@ -45,7 +48,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
 
                         // Admin endpoints
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/admin/management/delete/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/admin/management/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/jobs").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasRole("ADMIN")

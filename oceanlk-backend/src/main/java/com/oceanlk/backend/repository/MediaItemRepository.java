@@ -22,4 +22,14 @@ public interface MediaItemRepository extends MongoRepository<MediaItem, String> 
     List<MediaItem> findByTitle(String title);
 
     List<MediaItem> findByCategoryInAndStatusOrderByPublishedDateDesc(List<String> categories, String status);
+
+    List<MediaItem> findByCategoryInAndGroupAndStatusOrderByPublishedDateDesc(List<String> categories, String group,
+            String status);
+
+    List<MediaItem> findByCategoryAndGroupAndStatusOrderByPublishedDateDesc(String category, String group,
+            String status);
+
+    List<MediaItem> findByGroupAndStatusOrderByPublishedDateDesc(String group, String status);
+
+    List<MediaItem> findByGroupOrderByPublishedDateDesc(String group);
 }

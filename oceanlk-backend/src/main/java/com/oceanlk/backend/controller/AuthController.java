@@ -23,6 +23,9 @@ public class AuthController {
 
     private final AdminUserRepository adminUserRepository;
     private final JwtUtil jwtUtil;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
+    private final com.oceanlk.backend.service.AdminUserService adminUserService;
+    private final com.oceanlk.backend.service.OtpService otpService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/login")
@@ -53,7 +56,12 @@ public class AuthController {
             // Generate JWT token
             String token = jwtUtil.generateToken(admin.getUsername());
 
-            LoginResponse response = new LoginResponse(token, admin.getUsername(), admin.getRole());
+            // Log Action
+            auditLogService.logAction(admin.getUsername(), "LOGIN", "AdminUser", admin.getId(),
+                    "Admin logged in successfully");
+
+            LoginResponse response = new LoginResponse(token, admin.getName(), admin.getUsername(), admin.getRole(),
+                    admin.isVerified());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -81,8 +89,10 @@ public class AuthController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("valid", true);
+            response.put("name", admin.getName());
             response.put("username", admin.getUsername());
             response.put("role", admin.getRole());
+            response.put("verified", admin.isVerified());
 
             return ResponseEntity.ok(response);
 
@@ -90,6 +100,42 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(createErrorResponse("Token validation failed"));
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        return adminUserRepository.findByEmail(email)
+                .map(user -> {
+                    // In a real app, you might want to send a specific reset token or OTP
+                    // For now, we'll use the existing OtpService logic
+                    // This is handled by OtpController /api/admin/otp/send usually,
+                    // but we can add logic here if preferred.
+                    return ResponseEntity
+                            .ok(Map.of("message", "If an account exists with this email, you will receive an OTP."));
+                })
+                .orElse(ResponseEntity
+                        .ok(Map.of("message", "If an account exists with this email, you will receive an OTP.")));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
+        String newPassword = request.get("newPassword");
+
+        return adminUserRepository.findByEmail(email)
+                .map(user -> {
+                    if (otpService.verifyOtp(user, otp)) {
+                        adminUserService.changePassword(user, newPassword);
+                        auditLogService.logAction(user.getUsername(), "RESET_PASSWORD", "AdminUser", user.getId(),
+                                "Password reset via OTP");
+                        return ResponseEntity.ok(Map.of("message", "Password reset successfully"));
+                    } else {
+                        return ResponseEntity.status(400).body(Map.of("error", "Invalid or expired OTP"));
+                    }
+                })
+                .orElse(ResponseEntity.status(404).body(Map.of("error", "User not found")));
     }
 
     private Map<String, String> createErrorResponse(String message) {

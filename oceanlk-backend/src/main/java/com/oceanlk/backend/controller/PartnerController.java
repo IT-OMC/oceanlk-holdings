@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.lang.NonNull;
 import java.util.List;
 
 @RestController
@@ -15,6 +16,7 @@ import java.util.List;
 public class PartnerController {
 
     private final PartnerRepository repository;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @GetMapping
     public ResponseEntity<List<Partner>> getAllPartners() {
@@ -23,11 +25,17 @@ public class PartnerController {
 
     @PostMapping
     public ResponseEntity<Partner> savePartner(@RequestBody Partner partner) {
-        return ResponseEntity.ok(repository.save(partner));
+        Partner savedPartner = repository.save(partner);
+
+        // Log Action
+        auditLogService.logAction("admin", "CREATE", "Partner", savedPartner.getId(),
+                "Created partner: " + savedPartner.getName());
+
+        return ResponseEntity.ok(savedPartner);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Partner> updatePartner(@PathVariable String id, @RequestBody Partner partner) {
+    public ResponseEntity<Partner> updatePartner(@PathVariable @NonNull String id, @RequestBody Partner partner) {
         return repository.findById(id)
                 .map(existing -> {
                     existing.setName(partner.getName());
@@ -35,14 +43,24 @@ public class PartnerController {
                     existing.setWebsiteUrl(partner.getWebsiteUrl());
                     existing.setCategory(partner.getCategory());
                     existing.setDisplayOrder(partner.getDisplayOrder());
-                    return ResponseEntity.ok(repository.save(existing));
+                    Partner savedPartner = repository.save(existing);
+
+                    // Log Action
+                    auditLogService.logAction("admin", "UPDATE", "Partner", id,
+                            "Updated partner: " + savedPartner.getName());
+
+                    return ResponseEntity.ok(savedPartner);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePartner(@PathVariable String id) {
+    public ResponseEntity<?> deletePartner(@PathVariable @NonNull String id) {
         repository.deleteById(id);
+
+        // Log Action
+        auditLogService.logAction("admin", "DELETE", "Partner", id, "Deleted partner ID: " + id);
+
         return ResponseEntity.ok().build();
     }
 }
