@@ -275,8 +275,8 @@ const EventsManagement = () => {
                                             {category?.label || event.category}
                                         </div>
                                         <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :
-                                                event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
-                                                    'bg-gray-500/20 text-gray-400'
+                                            event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
+                                                'bg-gray-500/20 text-gray-400'
                                             }`}>
                                             {event.status}
                                         </span>

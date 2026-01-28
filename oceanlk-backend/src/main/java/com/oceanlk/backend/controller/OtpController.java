@@ -30,6 +30,20 @@ public class OtpController {
                 .orElse(ResponseEntity.status(404).body(Map.of("error", "Admin user not found")));
     }
 
+    @PostMapping("/send-by-email")
+    public ResponseEntity<?> sendOtpByEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String method = request.getOrDefault("method", "email");
+
+        return adminUserService.findByEmail(email)
+                .map(user -> {
+                    otpService.sendOtp(user, method);
+                    return ResponseEntity.ok(Map.of("message", "OTP sent successfully to your email"));
+                })
+                .orElse(ResponseEntity
+                        .ok(Map.of("message", "If an account exists with this email, you will receive an OTP.")));
+    }
+
     @PostMapping("/verify")
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
         String username = request.get("username");

@@ -30,7 +30,7 @@ public class PendingChangeController {
      * Get all pending changes (Superadmin only)
      */
     @GetMapping
-    @PreAuthorize("hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<PendingChange>> getAllPendingChanges() {
         return ResponseEntity.ok(pendingChangeService.getAllPendingChanges());
     }
@@ -39,7 +39,7 @@ public class PendingChangeController {
      * Get pending changes by entity type (Superadmin only)
      */
     @GetMapping("/type/{entityType}")
-    @PreAuthorize("hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<PendingChange>> getPendingChangesByType(@PathVariable String entityType) {
         return ResponseEntity.ok(pendingChangeService.getPendingChangesByEntityType(entityType));
     }
@@ -48,7 +48,7 @@ public class PendingChangeController {
      * Get admin's own pending changes
      */
     @GetMapping("/my-submissions")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<PendingChange>> getMySubmissions(Principal principal) {
         return ResponseEntity.ok(pendingChangeService.getPendingChangesForAdmin(principal.getName()));
     }
@@ -57,7 +57,7 @@ public class PendingChangeController {
      * Get a specific pending change
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<PendingChange> getPendingChange(@PathVariable String id) {
         return pendingChangeService.getPendingChangeById(id)
                 .map(ResponseEntity::ok)
@@ -68,7 +68,7 @@ public class PendingChangeController {
      * Approve a pending change (Superadmin only)
      */
     @PostMapping("/{id}/approve")
-    @PreAuthorize("hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> approvePendingChange(
             @PathVariable String id,
             @RequestBody(required = false) ApprovalRequest request,
@@ -103,7 +103,7 @@ public class PendingChangeController {
      * Reject a pending change (Superadmin only)
      */
     @PostMapping("/{id}/reject")
-    @PreAuthorize("hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> rejectPendingChange(
             @PathVariable String id,
             @RequestBody ApprovalRequest request,
@@ -162,6 +162,8 @@ public class PendingChangeController {
 
         switch (action) {
             case "CREATE":
+                // Force null ID to ensure MongoDB generates a new one
+                event.setId(null);
                 eventService.createEvent(event);
                 break;
             case "UPDATE":

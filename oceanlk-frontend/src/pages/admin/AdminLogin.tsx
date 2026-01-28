@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -19,8 +19,21 @@ const AdminLogin = () => {
     const [resetEmail, setResetEmail] = useState('');
     const [resetOtp, setResetOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [resetLoading, setResetLoading] = useState(false);
     const [resetError, setResetError] = useState('');
+
+    // Password strength requirements
+    const passwordRequirements = [
+        { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
+        { label: 'One uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
+        { label: 'One lowercase letter', test: (p: string) => /[a-z]/.test(p) },
+        { label: 'One number', test: (p: string) => /[0-9]/.test(p) },
+        { label: 'One special character (!@#$%^&*)', test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
+    ];
+
+    const isPasswordValid = passwordRequirements.every(req => req.test(newPassword));
+    const doPasswordsMatch = newPassword === confirmPassword && confirmPassword !== '';
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -66,21 +79,16 @@ const AdminLogin = () => {
         setResetLoading(true);
         setResetError('');
         try {
-            const res = await fetch('http://localhost:8080/api/admin/forgot-password', {
+            // Send OTP directly by email
+            const res = await fetch('http://localhost:8080/api/admin/otp/send-by-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: resetEmail })
+                body: JSON.stringify({ email: resetEmail, method: 'email' })
             });
             if (res.ok) {
-                // Also trigger OTP send for real use
-                await fetch('http://localhost:8080/api/admin/otp/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: 'admin', method: 'email' }) // This should ideally be linked better, but for demo:
-                });
                 setResetStep(2);
             } else {
-                setResetError('Failed to initiate reset.');
+                setResetError('Failed to send OTP. Please check your email.');
             }
         } catch (err) {
             setResetError('Connection error');
@@ -96,6 +104,20 @@ const AdminLogin = () => {
 
     const handlePasswordReset = async (e: React.FormEvent) => {
         e.preventDefault();
+        setResetError('');
+
+        // Validate password requirements
+        if (!isPasswordValid) {
+            setResetError('Password does not meet all requirements.');
+            return;
+        }
+
+        // Validate passwords match
+        if (!doPasswordsMatch) {
+            setResetError('Passwords do not match.');
+            return;
+        }
+
         setResetLoading(true);
         try {
             const res = await fetch('http://localhost:8080/api/admin/reset-password', {
@@ -107,8 +129,13 @@ const AdminLogin = () => {
                 alert('Password reset successful! Please log in.');
                 setShowForgotModal(false);
                 setResetStep(1);
+                setNewPassword('');
+                setConfirmPassword('');
+                setResetEmail('');
+                setResetOtp('');
             } else {
-                setResetError('Failed to reset password.');
+                const data = await res.json();
+                setResetError(data.error || 'Failed to reset password. Invalid or expired OTP.');
             }
         } catch (err) {
             setResetError('Connection error');
@@ -245,16 +272,64 @@ const AdminLogin = () => {
                             )}
 
                             {resetStep === 3 && (
-                                <form onSubmit={handlePasswordReset} className="space-y-6">
+                                <form onSubmit={handlePasswordReset} className="space-y-5">
+                                    {/* Password Requirements Guide */}
+                                    <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
+                                        <p className="text-sm font-semibold text-gray-400 mb-3">Password Requirements:</p>
+                                        <div className="space-y-2">
+                                            {passwordRequirements.map((req, index) => {
+                                                const isMet = req.test(newPassword);
+                                                return (
+                                                    <div key={index} className="flex items-center gap-2 text-sm">
+                                                        {isMet ? (
+                                                            <CheckCircle2 size={16} className="text-emerald-400" />
+                                                        ) : (
+                                                            <XCircle size={16} className="text-gray-500" />
+                                                        )}
+                                                        <span className={isMet ? 'text-emerald-400' : 'text-gray-500'}>
+                                                            {req.label}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* New Password Field */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-gray-500 ml-1">New Secure Password</label>
+                                        <label className="text-sm font-semibold text-gray-500 ml-1">New Password</label>
                                         <input
                                             type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-emerald-500 outline-none transition-all"
-                                            placeholder="••••••••"
+                                            className={`w-full bg-white/5 border rounded-2xl px-5 py-4 text-white focus:border-emerald-500 outline-none transition-all ${isPasswordValid ? 'border-emerald-500/50' : 'border-white/10'}`}
+                                            placeholder="Enter secure password"
                                         />
                                     </div>
-                                    <button type="submit" disabled={resetLoading} className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold hover:bg-emerald-600 transition-all flex items-center justify-center">
+
+                                    {/* Confirm Password Field */}
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-gray-500 ml-1">Confirm Password</label>
+                                        <input
+                                            type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className={`w-full bg-white/5 border rounded-2xl px-5 py-4 text-white focus:border-emerald-500 outline-none transition-all ${doPasswordsMatch ? 'border-emerald-500/50' : 'border-white/10'}`}
+                                            placeholder="Confirm your password"
+                                        />
+                                        {confirmPassword && !doPasswordsMatch && (
+                                            <p className="text-red-400 text-xs ml-1 flex items-center gap-1">
+                                                <XCircle size={12} /> Passwords do not match
+                                            </p>
+                                        )}
+                                        {doPasswordsMatch && (
+                                            <p className="text-emerald-400 text-xs ml-1 flex items-center gap-1">
+                                                <CheckCircle2 size={12} /> Passwords match
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={resetLoading || !isPasswordValid || !doPasswordsMatch}
+                                        className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold hover:bg-emerald-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
                                         {resetLoading ? <Loader2 className="animate-spin" /> : 'Set New Password'}
                                     </button>
                                 </form>

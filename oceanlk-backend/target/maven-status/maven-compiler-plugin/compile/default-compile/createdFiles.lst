@@ -1,4 +1,5 @@
 com\oceanlk\backend\util\JwtUtil.class
+com\oceanlk\backend\controller\EmailTestController.class
 com\oceanlk\backend\controller\OtpController.class
 com\oceanlk\backend\controller\GlobalMetricController.class
 com\oceanlk\backend\service\MediaItemService.class

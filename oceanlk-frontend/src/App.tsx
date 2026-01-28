@@ -42,8 +42,7 @@ import CompanyManagement from './pages/admin/CompanyManagement';
 import AuditLogViewer from './pages/admin/AuditLogViewer';
 import AdminProfile from './pages/admin/Profile';
 import AdminManagement from './pages/admin/AdminManagement';
-import SuperAdminApproval from './pages/admin/SuperAdminApproval';
-import MyPendingChanges from './pages/admin/MyPendingChanges';
+import PendingChanges from './pages/admin/PendingChanges';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -80,8 +79,7 @@ function App() {
                     <Route path="content/partners" element={<PartnerManagement />} />
 
                     <Route path="audit-logs" element={<AuditLogViewer />} />
-                    <Route path="approvals" element={<SuperAdminApproval />} />
-                    <Route path="my-pending-changes" element={<MyPendingChanges />} />
+                    <Route path="pending-changes" element={<PendingChanges />} />
 
                     {/* HR Routes */}
                     <Route path="hr/media" element={<HRMediaManagement />} />

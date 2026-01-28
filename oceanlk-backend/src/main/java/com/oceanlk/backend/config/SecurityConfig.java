@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/media").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/media/gallery").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded files
+                        .requestMatchers("/api/test/**").permitAll() // Allow email testing
                         .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
 
                         // Admin endpoints

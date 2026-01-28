@@ -75,12 +75,12 @@ public class EventController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> createEvent(@Valid @RequestBody Event event, Principal principal,
             Authentication authentication) {
         // Check if user is superadmin
         boolean isSuperAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
         if (isSuperAdmin) {
             // Superadmin: Direct publish
@@ -101,13 +101,13 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> updateEvent(@PathVariable String id, @Valid @RequestBody Event event,
             Principal principal, Authentication authentication) {
         try {
             // Check if user is superadmin
             boolean isSuperAdmin = authentication.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERADMIN"));
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
             if (isSuperAdmin) {
                 // Superadmin: Direct update
@@ -142,11 +142,11 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> deleteEvent(@PathVariable String id, Principal principal, Authentication authentication) {
         // Check if user is superadmin
         boolean isSuperAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
         if (isSuperAdmin) {
             // Superadmin: Direct delete

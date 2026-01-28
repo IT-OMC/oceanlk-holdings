@@ -78,7 +78,8 @@ const TalentPool = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Submission failed. Please try again.');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || errorData.error || 'Submission failed. Please try again.');
             }
 
             const result = await response.json();

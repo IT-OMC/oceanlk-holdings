@@ -134,51 +134,20 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 </Link>
             )}
 
-            {/* Pending Approvals (Super Admin only) */}
-            {isSuperAdmin && (
-                <Link
-                    to="/admin/approvals"
-                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/approvals'
-                        ? 'bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-white'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                        }`}
-                >
-                    {location.pathname === '/admin/approvals' && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 rounded-full" />
-                    )}
-                    <CheckSquare
-                        size={20}
-                        className={`${location.pathname === '/admin/approvals' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
-                    />
-                    <AnimatePresence mode="wait">
-                        {isSidebarOpen && (
-                            <motion.span
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                className="font-medium truncate"
-                            >
-                                Pending Approvals
-                            </motion.span>
-                        )}
-                    </AnimatePresence>
-                </Link>
-            )}
-
-            {/* My Pending Changes */}
+            {/* Pending Changes (for both Admin and SuperAdmin) */}
             <Link
-                to="/admin/my-pending-changes"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/my-pending-changes'
-                    ? 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-white'
+                to="/admin/pending-changes"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/pending-changes'
+                    ? 'bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/my-pending-changes' && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full" />
+                {location.pathname === '/admin/pending-changes' && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 rounded-full" />
                 )}
                 <CheckSquare
                     size={20}
-                    className={`${location.pathname === '/admin/my-pending-changes' ? 'text-blue-400' : 'text-gray-500 group-hover:text-blue-400'} transition-colors`}
+                    className={`${location.pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
                 />
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (
@@ -188,7 +157,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                             exit={{ opacity: 0, x: -10 }}
                             className="font-medium truncate"
                         >
-                            My Pending Changes
+                            Pending Changes
                         </motion.span>
                     )}
                 </AnimatePresence>

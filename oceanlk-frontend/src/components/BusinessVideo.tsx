@@ -30,7 +30,7 @@ const BusinessVideo = () => {
     };
 
     return (
-        <section ref={containerRef} className="relative min-h-screen overflow-hidden flex items-center justify-center">
+        <section ref={containerRef} className="relative min-h-screen overflow-hidden flex items-center justify-center bg-black">
             {/* Background Video */}
             <motion.div
                 style={{ y }}
