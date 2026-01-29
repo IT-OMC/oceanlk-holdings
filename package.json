@@ -12,6 +12,8 @@
   "dependencies": {
     "@react-three/drei": "^9.108.3",
     "@react-three/fiber": "^8.16.8",
+    "@types/canvas-confetti": "^1.9.0",
+    "canvas-confetti": "^1.9.4",
     "framer-motion": "^10.18.0",
     "i18next": "^25.7.4",
     "i18next-browser-languagedetector": "^8.2.0",

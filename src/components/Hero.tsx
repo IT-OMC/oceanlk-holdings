@@ -24,7 +24,7 @@ const Hero = () => {
     }, [sectors.length]);
 
     return (
-        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden group">
             {/* Full Viewport Background - No rounded rectangle */}
             <div className="absolute inset-0 overflow-hidden bg-navy">
                 {/* Carousel Background Image - Changes based on selected sector */}
@@ -50,7 +50,7 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
 
                 {/* Center Content */}
-                <div className="absolute inset-x-0 top-0 bottom-40 lg:bottom-48 flex flex-col items-center justify-center z-10 px-4">
+                <div className="absolute inset-x-0 top-32 bottom-44 lg:bottom-48 flex flex-col items-center justify-center z-10 px-4">
                     {/* Chip Icon */}
                     <motion.div
                         initial={{ scale: 0, rotate: 180 }}
@@ -111,17 +111,17 @@ const Hero = () => {
                 {/* Carousel Navigation Arrows */}
                 <button
                     onClick={prevSlide}
-                    className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                    className="absolute left-6 lg:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group opacity-0 group-hover:opacity-100"
                     aria-label="Previous slide"
                 >
-                    <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7 text-white group-hover:scale-110 transition-transform" />
+                    <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7 text-white hover:scale-110 transition-transform" />
                 </button>
                 <button
                     onClick={nextSlide}
-                    className="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
+                    className="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group opacity-0 group-hover:opacity-100"
                     aria-label="Next slide"
                 >
-                    <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7 text-white group-hover:scale-110 transition-transform" />
+                    <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7 text-white hover:scale-110 transition-transform" />
                 </button>
 
 
