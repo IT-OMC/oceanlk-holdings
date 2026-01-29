@@ -287,7 +287,9 @@ public class PendingChangeController {
                 globalMetricRepository.save(metric);
                 break;
             case "UPDATE":
-                globalMetricRepository.save(metric);
+                if (metric != null) {
+                    globalMetricRepository.save(metric);
+                }
                 break;
             case "DELETE":
                 globalMetricRepository.deleteById(metric.getId());
@@ -305,7 +307,9 @@ public class PendingChangeController {
                 corporateLeaderRepository.save(leader);
                 break;
             case "UPDATE":
-                corporateLeaderRepository.save(leader);
+                if (leader != null) {
+                    corporateLeaderRepository.save(leader);
+                }
                 break;
             case "DELETE":
                 corporateLeaderRepository.deleteById(leader.getId());
@@ -320,7 +324,9 @@ public class PendingChangeController {
             case "CREATE":
             case "UPDATE":
                 // For PageContent, it's usually upsert logic
-                pageContentRepository.save(content);
+                if (content != null) {
+                    pageContentRepository.save(content);
+                }
                 break;
             case "DELETE":
                 pageContentRepository.deleteById(content.getId());

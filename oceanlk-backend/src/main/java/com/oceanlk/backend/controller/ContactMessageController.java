@@ -28,6 +28,7 @@ public class ContactMessageController {
     private final ContactMessageRepository contactMessageRepository;
     private final EmailService emailService;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
+    private final com.oceanlk.backend.service.NotificationService notificationService;
 
     // Public endpoint - Submit contact form
     @PostMapping
@@ -51,6 +52,13 @@ public class ContactMessageController {
                 // Log email error but don't fail the request
                 log.error("Failed to send email notifications: {}", emailException.getMessage());
             }
+
+            // Create Notification for Admin
+            notificationService.createNotification(
+                    "New Contact Message from " + savedMessage.getName(),
+                    "INFO",
+                    "ROLE_ADMIN",
+                    "/admin/contact-messages");
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

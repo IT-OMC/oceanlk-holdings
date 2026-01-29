@@ -139,6 +139,20 @@ public class MediaController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
             @RequestParam(value = "group", defaultValue = "MEDIA_PANEL") String group) {
         try {
+            // Security: Scaleable size limit
+            long maxSize = 20 * 1024 * 1024; // 20MB
+            if (file.getSize() > maxSize) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "File too large. Maximum size is 20MB."));
+            }
+
+            // Security: Basic type validation
+            String contentType = file.getContentType();
+            if (contentType == null || (!contentType.startsWith("image/") && !contentType.startsWith("video/"))) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Invalid file type. Only images and videos are allowed."));
+            }
+
             String fileUrl = fileStorageService.saveFile(file, group);
 
             Map<String, String> response = new HashMap<>();

@@ -16,4 +16,6 @@ public interface AdminUserRepository extends MongoRepository<AdminUser, String> 
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    java.util.List<com.oceanlk.backend.model.AdminUser> findByRole(String role);
 }

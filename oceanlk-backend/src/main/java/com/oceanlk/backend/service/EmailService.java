@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
 public class EmailService {
 
     private final JavaMailSender mailSender;
@@ -36,8 +37,12 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+        String toEmail = application.getEmail();
+        if (toEmail == null || fromEmail == null)
+            return;
+
         helper.setFrom(fromEmail);
-        helper.setTo(application.getEmail());
+        helper.setTo(toEmail);
         helper.setSubject("[TEST] Thank You for Joining Our Talent Pool - Ocean Ceylon Holdings");
 
         String htmlContent = buildApplicantEmailTemplate(application);
@@ -54,6 +59,9 @@ public class EmailService {
         }
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        if (fromEmail == null || hrEmail == null)
+            return;
 
         helper.setFrom(fromEmail);
         helper.setTo(hrEmail);
@@ -425,8 +433,12 @@ public class EmailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
+        String toEmail = message.getEmail();
+        if (toEmail == null || fromEmail == null)
+            return;
+
         helper.setFrom(fromEmail);
-        helper.setTo(message.getEmail());
+        helper.setTo(toEmail);
         helper.setSubject("[TEST] Thank You for Contacting Ocean Ceylon Holdings");
 
         String htmlContent = buildContactConfirmationTemplate(message);
@@ -443,6 +455,9 @@ public class EmailService {
         }
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        if (fromEmail == null || hrEmail == null)
+            return;
 
         helper.setFrom(fromEmail);
         helper.setTo(hrEmail);
@@ -513,7 +528,7 @@ public class EmailService {
                             width: 60px;
                             height: 60px;
                             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                            border-radius: 50%%;
+                            border-radius: 50%;
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -755,6 +770,77 @@ public class EmailService {
                         message.getEmail());
     }
 
+    public void sendAdminNotification(String email, String subject, String message, String link)
+            throws MessagingException {
+        if (!emailEnabled) {
+            log.info("Email sending disabled. Admin notification for {}: {}", email, message);
+            return;
+        }
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setFrom(fromEmail);
+        helper.setTo(email);
+        helper.setSubject("[OceanLK Alert] " + subject);
+
+        String htmlContent = buildAdminNotificationTemplate(subject, message, link);
+        helper.setText(htmlContent, true);
+
+        mailSender.send(mimeMessage);
+    }
+
+    private String buildAdminNotificationTemplate(String subject, String message, String link) {
+        String actionButton = (link != null && !link.isEmpty())
+                ? String.format("<a href=\"http://localhost:5173%s\" class=\"action-button\">View Details</a>", link)
+                : "";
+
+        String loginButton = "<a href=\"http://localhost:5173/admin\" class=\"action-button secondary\">Login to Admin Portal</a>";
+
+        return """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #f3f4f6; }
+                        .container { max-width: 600px; margin: 30px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+                        .header { background: linear-gradient(135deg, #0f1e3a 0%, #1a2847 100%); padding: 30px; color: white; text-align: center; }
+                        .header h1 { margin: 0; font-size: 24px; color: white !important; }
+                        .content { padding: 40px; color: #333; line-height: 1.6; }
+                        .alert-box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+                        .button-group { margin-top: 30px; text-align: center; }
+                        .action-button { display: inline-block; padding: 14px 28px; background: #3b82f6; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 5px; }
+                        .action-button.secondary { background: #1f2937; }
+                        .footer { background: #f9fafb; padding: 20px; text-align: center; color: #6b7280; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>System Notification</h1>
+                        </div>
+                        <div class="content">
+                            <h2 style="color: #0f1e3a; margin-top: 0;">%s</h2>
+                            <div class="alert-box">
+                                %s
+                            </div>
+                            <div class="button-group">
+                                %s
+                                %s
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>This is an automated administrative alert from Ocean Ceylon Holdings.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """
+                .formatted(subject, message, actionButton, loginButton);
+    }
+
     private String formatFileSize(Long bytes) {
 
         if (bytes == null)
@@ -773,6 +859,9 @@ public class EmailService {
         }
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        if (fromEmail == null || email == null)
+            return;
 
         helper.setFrom(fromEmail);
         helper.setTo(email);

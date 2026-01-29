@@ -288,8 +288,7 @@ const NewsManagement = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">News Articles</h1>
+            <div className="flex justify-end">
                 <button
                     onClick={() => openModal()}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"

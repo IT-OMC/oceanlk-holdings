@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut,
@@ -14,10 +14,12 @@ import {
 } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
+import NotificationBell from '../components/admin/NotificationBell';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
     const adminName = localStorage.getItem('adminName') || 'Administrator';
     const adminUsername = localStorage.getItem('adminUsername') || 'admin';
     const adminRole = localStorage.getItem('adminRole');
@@ -109,6 +111,32 @@ const AdminLayout = () => {
             setLoading(false);
         }
     };
+
+    const getPageTitle = () => {
+        const path = location.pathname;
+        if (path.includes('/dashboard')) return 'Dashboard';
+        if (path.includes('/profile')) return 'My Profile';
+        if (path.includes('/management')) return 'Admin Management';
+        if (path.includes('/companies')) return 'Companies';
+        if (path.includes('/news-media/news')) return 'News Articles';
+        if (path.includes('/news-media/blog')) return 'Blog Posts';
+        if (path.includes('/news-media/gallery')) return 'Gallery';
+        if (path.includes('/contact-messages')) return 'Contact Messages';
+        if (path.includes('/content/pages')) return 'Page Content';
+        if (path.includes('/content/leadership')) return 'Leadership';
+        if (path.includes('/content/stats')) return 'Statistics';
+        if (path.includes('/content/partners')) return 'Partners';
+        if (path.includes('/audit-logs')) return 'Audit Logs';
+        if (path.includes('/pending-changes')) return 'Pending Changes';
+        if (path.includes('/hr/media')) return 'HR Media';
+        if (path.includes('/hr/events')) return 'Events';
+        if (path.includes('/hr/testimonials')) return 'Testimonials';
+        if (path.includes('/hr/applications')) return 'Applications';
+        if (path.includes('/hr/jobs')) return 'Job Postings';
+        if (path.includes('/media')) return 'Media Management';
+        return 'Admin Panel';
+    };
+
 
     // If not verified, show blocking UI
     if (!isVerified) {
@@ -276,8 +304,23 @@ const AdminLayout = () => {
                 className="min-h-screen overflow-y-auto relative bg-[#0a1628]"
             >
                 <div className="max-w-7xl mx-auto p-8">
-                    {/* Breadcrumbs / Header could go here */}
-
+                    {/* Top Header / Navbar */}
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h1 className="text-2xl font-bold text-white tracking-tight">{getPageTitle()}</h1>
+                            <p className="text-gray-400 text-sm">Welcome back, {adminName}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <NotificationBell />
+                            <div className="h-6 w-px bg-white/10" />
+                            <div className="flex items-center gap-3">
+                                <div className="text-right hidden sm:block">
+                                    <p className="text-sm font-semibold text-white">{adminName}</p>
+                                    <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">{adminRole?.replace('ROLE_', '')}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <Outlet />
                 </div>

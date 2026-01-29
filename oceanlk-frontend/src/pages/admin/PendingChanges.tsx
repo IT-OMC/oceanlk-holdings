@@ -192,13 +192,7 @@ const PendingChanges: React.FC = () => {
         <div className="min-h-screen bg-[#0B1120] text-gray-100 p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                            Pending Changes
-                        </h1>
-                        <p className="text-gray-400 mt-1">Manage and track system modifications</p>
-                    </div>
+                <div className="flex justify-end mb-4">
                     <button
                         onClick={() => navigate('/admin')}
                         className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors border border-gray-700"

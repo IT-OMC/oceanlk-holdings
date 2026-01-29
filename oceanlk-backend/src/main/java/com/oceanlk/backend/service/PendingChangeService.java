@@ -17,6 +17,7 @@ import java.util.Optional;
 public class PendingChangeService {
 
     private final PendingChangeRepository pendingChangeRepository;
+    private final NotificationService notificationService;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     /**
@@ -31,7 +32,16 @@ public class PendingChangeService {
             PendingChange pendingChange = new PendingChange(
                     entityType, entityId, action, submittedBy, changeDataJson, originalDataJson);
 
-            return pendingChangeRepository.save(pendingChange);
+            PendingChange saved = pendingChangeRepository.save(pendingChange);
+
+            // Create Notification for Super Admin
+            notificationService.createNotification(
+                    "New Approval Request from " + submittedBy + ": " + action + " " + entityType,
+                    "WARNING",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/pending-changes");
+
+            return saved;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error serializing change data", e);
         }

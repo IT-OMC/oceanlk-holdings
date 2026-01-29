@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, UserPlus, Trash2, Shield, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2 } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2 } from 'lucide-react';
 
 const AdminManagement = () => {
     const [admins, setAdmins] = useState<any[]>([]);
@@ -146,11 +146,7 @@ const AdminManagement = () => {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Admin Management</h1>
-                    <p className="text-gray-400 mt-2">Create and manage administrator accounts</p>
-                </div>
+            <div className="flex justify-end">
                 <button
                     onClick={() => setShowAddModal(true)}
                     className="flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20"

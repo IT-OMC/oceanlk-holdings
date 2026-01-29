@@ -26,6 +26,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final com.oceanlk.backend.filter.RateLimitFilter rateLimitFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,34 +43,38 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/reset-password").permitAll()
                         .requestMatchers("/api/talent-pool/submit").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/media").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/media/gallery").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/media/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded files
-                        .requestMatchers("/api/test/**").permitAll() // Allow email testing
+                        .requestMatchers("/api/test/**").hasRole("ADMIN") // Protect email testing
                         .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
 
                         // Admin endpoints
+                        .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/delete/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/admin/management/edit/**").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/jobs").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/media").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/media/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/media/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/talent-pool/application/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/talent-pool/application/**").hasRole("ADMIN")
-                        .requestMatchers("/api/talent-pool/applications").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/jobs").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/media").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/media/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/media/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/talent-pool/application/**")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/talent-pool/application/**")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/talent-pool/applications").hasAnyRole("ADMIN", "SUPER_ADMIN")
 
-                        // Allow other public GET requests (e.g. initial data) if any
+                        // Default deny for non-GET public access
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -18,13 +18,13 @@ public class AuditLogController {
     private final AuditLogService auditLogService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<AuditLog>> getAllLogs() {
         return ResponseEntity.ok(auditLogService.getAllLogs());
     }
 
     @GetMapping("/user/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<AuditLog>> getLogsByUser(@PathVariable String username) {
         return ResponseEntity.ok(auditLogService.getLogsByUser(username));
     }

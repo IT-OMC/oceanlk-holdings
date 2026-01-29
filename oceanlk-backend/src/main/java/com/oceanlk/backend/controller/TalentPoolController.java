@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class TalentPoolController {
     private final EmailService emailService;
     private final GridFsTemplate gridFsTemplate;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
+    private final com.oceanlk.backend.service.NotificationService notificationService;
 
     @PostMapping(value = "/submit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> submitApplication(
@@ -51,6 +53,25 @@ public class TalentPoolController {
 
             // Handle CV file upload if provided
             if (file != null && !file.isEmpty()) {
+                // Security: Validate file size (max 5MB)
+                if (file.getSize() > 5 * 1024 * 1024) {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "File too large. Maximum size is 5MB.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+                }
+
+                // Security: Validate MIME types
+                String contentType = file.getContentType();
+                if (contentType == null || (!contentType.equals("application/pdf") &&
+                        !contentType.equals("application/msword") &&
+                        !contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                        &&
+                        !contentType.startsWith("image/"))) {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "Invalid file type. Only PDF, DOCX, and images are allowed.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+                }
+
                 String fileId = gridFsTemplate.store(
                         file.getInputStream(),
                         file.getOriginalFilename(),
@@ -72,6 +93,13 @@ public class TalentPoolController {
                 // Log error but don't fail the request
                 log.error("Failed to send email: {}", e.getMessage());
             }
+
+            // Create Notification for Admin
+            notificationService.createNotification(
+                    "New Talent Pool application from " + fullName,
+                    "INFO",
+                    "ROLE_ADMIN",
+                    "/admin/talent-pool");
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -161,6 +189,7 @@ public class TalentPoolController {
     }
 
     @DeleteMapping("/application/{id}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id) {
         try {
             var applicationOpt = applicationRepository.findById(id);

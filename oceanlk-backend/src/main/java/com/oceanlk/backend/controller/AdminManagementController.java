@@ -102,22 +102,31 @@ public class AdminManagementController {
     }
 
     @GetMapping("/profile/{username}")
-    public ResponseEntity<?> getProfile(@PathVariable String username) {
+    public ResponseEntity<?> getProfile(@PathVariable String username, java.security.Principal principal,
+            org.springframework.security.core.Authentication authentication) {
+        boolean isOwner = principal.getName().equals(username);
+        boolean isSuperAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+        if (!isOwner && !isSuperAdmin) {
+            return ResponseEntity.status(403)
+                    .body(Map.of("error", "Access denied. You can only view your own profile."));
+        }
+
         return adminUserService.findByUsername(username)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(404).build());
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request,
+            java.security.Principal principal) {
         String username = request.get("username");
         String newPassword = request.get("newPassword");
 
-        // Note: OTP verification should have happened before calling this,
-        // or we verify it here. Let's assume verification happens in separate step for
-        // better UX.
-        // For security, we'll re-verify if needed or trust the previous step if handled
-        // by state.
+        if (!principal.getName().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "You can only change your own password."));
+        }
 
         return adminUserService.findByUsername(username)
                 .map(user -> {
@@ -130,9 +139,14 @@ public class AdminManagementController {
     }
 
     @PutMapping("/profile/update-name")
-    public ResponseEntity<?> updateProfileName(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> updateProfileName(@RequestBody Map<String, String> request,
+            java.security.Principal principal) {
         String username = request.get("username");
         String newName = request.get("name");
+
+        if (!principal.getName().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "You can only update your own profile."));
+        }
 
         return adminUserService.findByUsername(username)
                 .map(user -> {
@@ -146,10 +160,15 @@ public class AdminManagementController {
     }
 
     @PostMapping("/profile/contact-update/init")
-    public ResponseEntity<?> initiateContactUpdate(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> initiateContactUpdate(@RequestBody Map<String, String> request,
+            java.security.Principal principal) {
         String username = request.get("username");
         String type = request.get("type"); // "email" or "phone"
         String value = request.get("value");
+
+        if (!principal.getName().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Unauthorized access."));
+        }
 
         return adminUserService.findByUsername(username)
                 .map(user -> {
@@ -177,9 +196,14 @@ public class AdminManagementController {
     }
 
     @PostMapping("/profile/contact-update/verify")
-    public ResponseEntity<?> verifyContactUpdate(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> verifyContactUpdate(@RequestBody Map<String, String> request,
+            java.security.Principal principal) {
         String username = request.get("username");
         String otp = request.get("otp");
+
+        if (!principal.getName().equals(username)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Unauthorized access."));
+        }
 
         return adminUserService.findByUsername(username)
                 .map(user -> {
