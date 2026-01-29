@@ -96,7 +96,8 @@ public class TalentPoolController {
 
             // Create Notification for Admin
             notificationService.createNotification(
-                    "New Talent Pool application from " + fullName,
+                    "New Talent Pool Application",
+                    "New application from " + application.getFullName(),
                     "INFO",
                     "ROLE_ADMIN",
                     "/admin/talent-pool");

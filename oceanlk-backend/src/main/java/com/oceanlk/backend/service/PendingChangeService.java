@@ -36,7 +36,8 @@ public class PendingChangeService {
 
             // Create Notification for Super Admin
             notificationService.createNotification(
-                    "New Approval Request from " + submittedBy + ": " + action + " " + entityType,
+                    "Pending Change Request",
+                    "A new " + saved.getEntityType() + " change requires approval.",
                     "WARNING",
                     "ROLE_SUPER_ADMIN",
                     "/admin/pending-changes");

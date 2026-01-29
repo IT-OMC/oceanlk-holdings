@@ -18,13 +18,14 @@ public class NotificationService {
     private final AdminUserRepository adminUserRepository;
     private final EmailService emailService;
 
-    public void createNotification(String message, String type, String recipientRole, String link) {
+    public void createNotification(String title, String message, String type, String recipientRole, String link) {
         try {
             if (message == null || type == null || recipientRole == null) {
                 log.warn("Attempted to create notification with null required fields");
                 return;
             }
-            Notification notification = new Notification(message, type, recipientRole, link);
+            Notification notification = new Notification(title == null ? "System Alert" : title, message, type,
+                    recipientRole, link);
             notificationRepository.save(notification);
 
             // Send Email to all admins with this role
@@ -45,13 +46,15 @@ public class NotificationService {
         }
     }
 
-    public void createNotificationForSpecificUser(String message, String type, String recipientId, String link) {
+    public void createNotificationForSpecificUser(String title, String message, String type, String recipientId,
+            String link) {
         try {
             if (message == null || type == null || recipientId == null) {
                 log.warn("Attempted to create user notification with null required fields");
                 return;
             }
-            Notification notification = new Notification(message, type, null, link);
+            Notification notification = new Notification(title == null ? "Personal Alert" : title, message, type, null,
+                    link);
             notification.setRecipientId(recipientId);
             notificationRepository.save(notification);
 
