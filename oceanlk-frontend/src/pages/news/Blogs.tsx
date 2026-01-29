@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
 
 import Navbar from '../../components/Navbar';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface BlogPost {
     id: string;
@@ -26,7 +27,7 @@ const Blogs = () => {
 
     const fetchBlogs = useCallback(async () => {
         try {
-            const response = await fetch('/api/media/blogs');
+            const response = await fetch(API_ENDPOINTS.MEDIA_BLOGS);
             if (response.ok) {
                 const data = await response.json();
                 // Map and assign spans for layout variety

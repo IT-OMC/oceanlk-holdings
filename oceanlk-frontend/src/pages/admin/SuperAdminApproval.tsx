@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './EventsManagement.css';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface PendingChange {
     id: string;
@@ -19,8 +18,6 @@ interface PendingChange {
     originalData?: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
 const SuperAdminApproval: React.FC = () => {
     const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
     const [loading, setLoading] = useState(true);
@@ -29,22 +26,23 @@ const SuperAdminApproval: React.FC = () => {
     const [filter, setFilter] = useState<string>('all');
     const navigate = useNavigate();
 
-
-
     const fetchPendingChanges = React.useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await axios.get(`${API_URL}/api/pending-changes`, {
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGES, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setPendingChanges(response.data);
-            setLoading(false);
-        } catch (error: any) {
-            console.error('Error fetching pending changes:', error);
-            if (error.response?.status === 403) {
+
+            if (response.ok) {
+                const data = await response.json();
+                setPendingChanges(data);
+            } else if (response.status === 403) {
                 alert('Access denied. Superadmin privileges required.');
                 navigate('/admin');
             }
+            setLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching pending changes:', error);
             setLoading(false);
         }
     }, [navigate]);
@@ -56,15 +54,23 @@ const SuperAdminApproval: React.FC = () => {
     const handleApprove = async (changeId: string) => {
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post(
-                `${API_URL}/api/pending-changes/${changeId}/approve`,
-                { reviewComments },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            alert('Change approved and published successfully!');
-            setSelectedChange(null);
-            setReviewComments('');
-            fetchPendingChanges();
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_APPROVE(changeId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ reviewComments })
+            });
+
+            if (response.ok) {
+                alert('Change approved and published successfully!');
+                setSelectedChange(null);
+                setReviewComments('');
+                fetchPendingChanges();
+            } else {
+                alert('Failed to approve change');
+            }
         } catch (error) {
             console.error('Error approving change:', error);
             alert('Failed to approve change');
@@ -79,15 +85,23 @@ const SuperAdminApproval: React.FC = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post(
-                `${API_URL}/api/pending-changes/${changeId}/reject`,
-                { reviewComments },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            alert('Change rejected successfully!');
-            setSelectedChange(null);
-            setReviewComments('');
-            fetchPendingChanges();
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_REJECT(changeId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ reviewComments })
+            });
+
+            if (response.ok) {
+                alert('Change rejected successfully!');
+                setSelectedChange(null);
+                setReviewComments('');
+                fetchPendingChanges();
+            } else {
+                alert('Failed to reject change');
+            }
         } catch (error) {
             console.error('Error rejecting change:', error);
             alert('Failed to reject change');

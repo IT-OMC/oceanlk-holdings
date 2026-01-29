@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Linkedin, Mail, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Leader {
     id: string;
@@ -69,7 +70,7 @@ const LeadershipManagement = () => {
 
     const fetchLeaders = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/leadership');
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP);
             if (response.ok) {
                 const data = await response.json();
                 setLeaders(data);
@@ -81,7 +82,7 @@ const LeadershipManagement = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/leadership-categories');
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORIES);
             if (response.ok) {
                 const data = await response.json();
                 setCategories(data);
@@ -98,8 +99,8 @@ const LeadershipManagement = () => {
         try {
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/leadership/${editingItem.id}`
-                : 'http://localhost:8080/api/leadership';
+                ? API_ENDPOINTS.LEADERSHIP_BY_ID(editingItem.id)
+                : API_ENDPOINTS.LEADERSHIP;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -132,7 +133,7 @@ const LeadershipManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/leadership/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -159,7 +160,7 @@ const LeadershipManagement = () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/leadership-categories', {
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORIES, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -195,7 +196,7 @@ const LeadershipManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/admin/media/upload', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_UPLOAD, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -221,7 +222,7 @@ const LeadershipManagement = () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/leadership-categories/${category.code}`, {
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORY_BY_CODE(category.code), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -254,7 +255,7 @@ const LeadershipManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/leadership-categories/${categoryToDelete.code}`, {
+            const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORY_BY_CODE(categoryToDelete.code), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

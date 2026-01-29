@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './EventsManagement.css';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface PendingChange {
     id: string;
@@ -26,25 +25,22 @@ const MyPendingChanges: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const navigate = useNavigate();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
     const fetchMyPendingChanges = useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await axios.get(`${API_URL}/api/pending-changes/my-submissions`, {
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGES_MY, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setPendingChanges(response.data);
+            if (response.ok) {
+                const data = await response.json();
+                setPendingChanges(data);
+            }
             setLoading(false);
         } catch (error) {
             console.error('Error fetching pending changes:', error);
-            // Don't show alert for empty list or 404, only for actual errors
-            if (axios.isAxiosError(error) && error.response?.status !== 404) {
-                // alert('Failed to load pending changes');
-            }
             setLoading(false);
         }
-    }, [API_URL]);
+    }, []);
 
     useEffect(() => {
         fetchMyPendingChanges();

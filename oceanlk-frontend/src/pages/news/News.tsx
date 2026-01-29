@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
 
 import Navbar from '../../components/Navbar';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface NewsArticle {
     id: string;
@@ -24,7 +25,7 @@ const News = () => {
 
     const fetchNews = useCallback(async () => {
         try {
-            const response = await fetch('/api/media/news');
+            const response = await fetch(API_ENDPOINTS.MEDIA_NEWS);
             if (response.ok) {
                 const data = await response.json();
                 const mappedData = data.map((item: any, index: number) => ({

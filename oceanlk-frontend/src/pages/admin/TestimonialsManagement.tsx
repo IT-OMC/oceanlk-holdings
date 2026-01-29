@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, MessageSquare, Star, Upload, X, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Testimonial {
     id: number;
@@ -43,7 +44,7 @@ const TestimonialsManagement = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/testimonials');
+            const response = await fetch(API_ENDPOINTS.TESTIMONIALS);
             if (response.ok) {
                 const data = await response.json();
                 setTestimonials(data);
@@ -79,7 +80,7 @@ const TestimonialsManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/admin/media/upload');
+            xhr.open('POST', API_ENDPOINTS.ADMIN_MEDIA_UPLOAD);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -126,8 +127,8 @@ const TestimonialsManagement = () => {
 
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/testimonials/${editingItem.id}`
-                : 'http://localhost:8080/api/testimonials';
+                ? API_ENDPOINTS.TESTIMONIAL_BY_ID(editingItem.id)
+                : API_ENDPOINTS.TESTIMONIALS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -170,7 +171,7 @@ const TestimonialsManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/testimonials/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.TESTIMONIAL_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -3,18 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Star, CheckCircle, AlertCircle, FileText, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
-
-interface JobOpportunity {
-    id: string;
-    title: string;
-    company: string;
-    location: string;
-    type: string;
-    category: string;
-    description: string;
-    featured: boolean;
-    level: string;
-}
+import { API_ENDPOINTS } from '../../utils/api';
+import { JobOpportunity } from '../../types/api';
 
 const JobApplication = () => {
     const { id } = useParams<{ id: string }>();
@@ -43,7 +33,7 @@ const JobApplication = () => {
             try {
                 // Since we don't have a single job endpoint verified, we fetch all and filter
                 // Or try single endpoint if available. Let's try fetching all for now as a fallback.
-                const response = await fetch('http://localhost:8080/api/jobs');
+                const response = await fetch(API_ENDPOINTS.JOBS);
                 if (response.ok) {
                     const jobs = await response.json();
                     const foundJob = jobs.find((j: JobOpportunity) => j.id === id);
@@ -113,7 +103,7 @@ const JobApplication = () => {
                 data.append('file', formData.file);
             }
 
-            const response = await fetch('http://localhost:8080/api/talent-pool/submit', {
+            const response = await fetch(API_ENDPOINTS.TALENT_POOL_SUBMIT, {
                 method: 'POST',
                 body: data,
             });

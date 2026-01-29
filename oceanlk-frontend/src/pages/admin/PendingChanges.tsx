@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Check, X, ChevronRight, Clock,
@@ -8,6 +7,7 @@ import {
     User, Calendar, Search
 } from 'lucide-react';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface PendingChange {
     id: string;
@@ -35,7 +35,6 @@ const PendingChanges: React.FC = () => {
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
     const navigate = useNavigate();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
     const adminRole = localStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
@@ -48,29 +47,30 @@ const PendingChanges: React.FC = () => {
             // Fetch data based on role
             if (isSuperAdmin) {
                 // SuperAdmin: Fetch all pending changes for approval
-                const allResponse = await axios.get(`${API_URL}/api/pending-changes`, {
+                const allResponse = await fetch(API_ENDPOINTS.PENDING_CHANGES, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setAllPendingChanges(allResponse.data);
+                if (allResponse.ok) {
+                    const data = await allResponse.json();
+                    setAllPendingChanges(data);
+                }
             }
 
             // Fetch user's own submissions
-            const myResponse = await axios.get(`${API_URL}/api/pending-changes/my-submissions`, {
+            const myResponse = await fetch(API_ENDPOINTS.PENDING_CHANGES_MY, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setMyPendingChanges(myResponse.data);
+            if (myResponse.ok) {
+                const data = await myResponse.json();
+                setMyPendingChanges(data);
+            }
 
         } catch (error: any) {
             console.error('Error fetching pending changes:', error);
-            if (error.response?.status === 403) {
-                // Silently handle 403 for regular admins trying to access all changes
-            } else if (axios.isAxiosError(error) && error.response?.status !== 404) {
-                // Don't show alert for empty list or 404
-            }
         } finally {
             setLoading(false);
         }
-    }, [isSuperAdmin, API_URL]);
+    }, [isSuperAdmin]);
 
     useEffect(() => {
         fetchData();
@@ -85,15 +85,23 @@ const PendingChanges: React.FC = () => {
     const handleApprove = async (changeId: string) => {
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post(
-                `${API_URL}/api/pending-changes/${changeId}/approve`,
-                { reviewComments },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            alert('Change approved and published successfully!');
-            setSelectedChange(null);
-            setReviewComments('');
-            fetchData();
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_APPROVE(changeId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ reviewComments })
+            });
+
+            if (response.ok) {
+                alert('Change approved and published successfully!');
+                setSelectedChange(null);
+                setReviewComments('');
+                fetchData();
+            } else {
+                alert('Failed to approve change');
+            }
         } catch (error) {
             console.error('Error approving change:', error);
             alert('Failed to approve change');
@@ -108,15 +116,23 @@ const PendingChanges: React.FC = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post(
-                `${API_URL}/api/pending-changes/${changeId}/reject`,
-                { reviewComments },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            alert('Change rejected successfully!');
-            setSelectedChange(null);
-            setReviewComments('');
-            fetchData();
+            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_REJECT(changeId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ reviewComments })
+            });
+
+            if (response.ok) {
+                alert('Change rejected successfully!');
+                setSelectedChange(null);
+                setReviewComments('');
+                fetchData();
+            } else {
+                alert('Failed to reject change');
+            }
         } catch (error) {
             console.error('Error rejecting change:', error);
             alert('Failed to reject change');

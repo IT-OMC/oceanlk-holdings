@@ -1,9 +1,9 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, User, Share2, Loader } from 'lucide-react';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface BlogPost {
     id: string;
@@ -25,7 +25,8 @@ const BlogSingle = () => {
 
     const fetchBlog = useCallback(async () => {
         try {
-            const response = await fetch(`/api/media/${id}`);
+            if (!id) return;
+            const response = await fetch(API_ENDPOINTS.MEDIA_SINGLE(id));
             if (response.ok) {
                 const data = await response.json();
                 setBlog({

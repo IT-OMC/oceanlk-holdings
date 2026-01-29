@@ -2,32 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Linkedin, Mail, ArrowRight, X } from 'lucide-react';
-// import { leadershipData } from '../../data/leadershipData'; // Removed
-
-// Keeping this interface or redefining it to match backend response
-export interface LeadershipMember {
-    id: string;
-    name: string;
-    position: string;
-    department: 'BOARD' | 'EXECUTIVE' | 'SENIOR';
-    image: string;
-    bio: string; // backend has bio
-    shortDescription?: string; // backend has shortDescription
-    details?: string; // UI uses details, backend has bio. I'll map them or update UI to use bio
-    linkedin?: string;
-    email?: string;
-}
-
-interface LeadershipCategory {
-    id: string;
-    code: string;
-    title: string;
-    subtitle: string;
-    displayOrder: number;
-}
+import { API_ENDPOINTS } from '../../utils/api';
+import { CorporateLeader, LeadershipCategory } from '../../types/api';
 
 interface LeadershipCardProps {
-    member: LeadershipMember;
+    member: CorporateLeader;
     index: number;
 }
 
@@ -146,7 +125,7 @@ const LeadershipCard = ({ member, index }: LeadershipCardProps) => {
 
                         <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar">
                             <p className="text-gray-300 leading-relaxed text-sm md:text-base whitespace-pre-line">
-                                {member.details || member.bio}
+                                {member.bio}
                             </p>
                         </div>
 
@@ -192,7 +171,7 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
 };
 
 const Leadership = () => {
-    const [leaders, setLeaders] = useState<LeadershipMember[]>([]);
+    const [leaders, setLeaders] = useState<CorporateLeader[]>([]);
     const [categories, setCategories] = useState<LeadershipCategory[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -200,8 +179,8 @@ const Leadership = () => {
         const loadData = async () => {
             try {
                 const [leadersResponse, categoriesResponse] = await Promise.all([
-                    fetch('http://localhost:8080/api/leadership'),
-                    fetch('http://localhost:8080/api/leadership-categories')
+                    fetch(API_ENDPOINTS.LEADERSHIP),
+                    fetch(API_ENDPOINTS.LEADERSHIP_CATEGORIES)
                 ]);
 
                 if (leadersResponse.ok && categoriesResponse.ok) {

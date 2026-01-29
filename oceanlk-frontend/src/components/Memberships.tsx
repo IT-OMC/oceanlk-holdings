@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { API_ENDPOINTS } from '../utils/api';
 
 const Memberships = () => {
     const { t } = useTranslation();
@@ -9,7 +10,7 @@ const Memberships = () => {
     useEffect(() => {
         const fetchPartners = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/partners');
+                const response = await fetch(API_ENDPOINTS.PARTNERS);
                 if (response.ok) {
                     const data = await response.json();
 

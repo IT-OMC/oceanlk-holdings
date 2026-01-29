@@ -15,6 +15,7 @@ import {
 import { Toaster, toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import NotificationBell from '../components/admin/NotificationBell';
+import { API_ENDPOINTS } from '../utils/api';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -42,7 +43,7 @@ const AdminLayout = () => {
                 const token = localStorage.getItem('adminToken');
                 if (!token) return;
 
-                const res = await fetch('http://localhost:8080/api/admin/validate', {
+                const res = await fetch(API_ENDPOINTS.VALIDATE_TOKEN, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -69,7 +70,7 @@ const AdminLayout = () => {
     const sendOtp = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/api/admin/otp/send', {
+            const res = await fetch(API_ENDPOINTS.OTP_SEND, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, method: 'email' })
@@ -91,7 +92,7 @@ const AdminLayout = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/api/admin/otp/verify', {
+            const res = await fetch(API_ENDPOINTS.OTP_VERIFY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, otp })

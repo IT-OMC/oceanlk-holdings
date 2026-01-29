@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
 
 import Navbar from '../../components/Navbar';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -39,7 +40,7 @@ const Media = () => {
     const fetchMediaItems = useCallback(async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('/api/media/media');
+            const response = await fetch(API_ENDPOINTS.MEDIA_MEDIA);
             if (response.ok) {
                 const data = await response.json();
                 setMediaItems(data);

@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import { FileText, Briefcase, Image, ArrowUpRight, Mail, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TimePeriodDropdown, { TimePeriod } from '../../components/admin/TimePeriodDropdown';
+import { API_ENDPOINTS } from '../../utils/api';
+import { TalentPoolApplication, JobOpportunity, MediaItem, ContactMessage } from '../../types/api';
 
 const AdminDashboard = () => {
     const [rawData, setRawData] = useState<{
-        applications: any[],
-        jobs: any[],
-        media: any[],
-        contactMessages: any[]
+        applications: TalentPoolApplication[],
+        jobs: JobOpportunity[],
+        media: MediaItem[],
+        contactMessages: ContactMessage[]
     }>({
         applications: [],
         jobs: [],
@@ -37,16 +39,16 @@ const AdminDashboard = () => {
             const token = localStorage.getItem('adminToken');
             try {
                 const [appsRes, jobsRes, mediaRes, contactRes] = await Promise.all([
-                    fetch('http://localhost:8080/api/talent-pool/applications', {
+                    fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('http://localhost:8080/api/admin/jobs', {
+                    fetch(API_ENDPOINTS.ADMIN_JOBS, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('http://localhost:8080/api/admin/media', {
+                    fetch(API_ENDPOINTS.ADMIN_MEDIA, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('http://localhost:8080/api/contact/messages', {
+                    fetch(API_ENDPOINTS.CONTACT_MESSAGES, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     })
                 ]);
@@ -71,6 +73,7 @@ const AdminDashboard = () => {
 
         fetchStats();
     }, []);
+
 
     const filterData = (data: any[], period: TimePeriod, dateField: string) => {
         if (!data || !Array.isArray(data)) return [];

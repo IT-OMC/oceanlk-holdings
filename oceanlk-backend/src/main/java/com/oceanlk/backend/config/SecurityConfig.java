@@ -44,12 +44,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/talent-pool/submit").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/media/**").permitAll()
+                        .requestMatchers("/api/public/whatsapp").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded files
                         .requestMatchers("/api/test/**").hasRole("ADMIN") // Protect email testing
                         .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
 
                         // Admin endpoints
                         .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/whatsapp").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/admin/management/delete/**").hasRole("SUPER_ADMIN")

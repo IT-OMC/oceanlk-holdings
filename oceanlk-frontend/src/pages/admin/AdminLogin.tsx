@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
+import { API_ENDPOINTS } from '../../utils/api';
+import { LoginResponse } from '../../types/api';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -49,7 +51,7 @@ const AdminLogin = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:8080/api/admin/login', {
+            const response = await fetch(API_ENDPOINTS.LOGIN, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -60,7 +62,7 @@ const AdminLogin = () => {
                 throw new Error('Login failed. Please try again.');
             }
 
-            const data = await response.json();
+            const data: LoginResponse = await response.json();
             localStorage.setItem('adminToken', data.token);
             localStorage.setItem('adminName', data.name || '');
             localStorage.setItem('adminUsername', data.username);
@@ -80,7 +82,7 @@ const AdminLogin = () => {
         setResetError('');
         try {
             // Send OTP directly by email
-            const res = await fetch('http://localhost:8080/api/admin/otp/send-by-email', {
+            const res = await fetch(API_ENDPOINTS.OTP_SEND_EMAIL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail, method: 'email' })
@@ -120,7 +122,7 @@ const AdminLogin = () => {
 
         setResetLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/api/admin/reset-password', {
+            const res = await fetch(API_ENDPOINTS.RESET_PASSWORD, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail, otp: resetOtp, newPassword })
@@ -143,6 +145,7 @@ const AdminLogin = () => {
             setResetLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-[#0a1628] relative overflow-hidden flex items-center justify-center p-4 font-inter">

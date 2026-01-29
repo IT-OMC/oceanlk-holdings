@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { API_ENDPOINTS } from '../utils/api';
 
 interface GalleryItem {
     id: string;
@@ -25,7 +26,7 @@ const Gallery = () => {
     useEffect(() => {
         const fetchGalleryData = async () => {
             try {
-                const response = await fetch('/api/media/gallery');
+                const response = await fetch(API_ENDPOINTS.MEDIA_GALLERY);
                 if (response.ok) {
                     const data = await response.json();
                     // Map backend data to gallery format

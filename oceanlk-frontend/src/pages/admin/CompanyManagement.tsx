@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, X, Loader, Upload, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Company {
     id?: string;
@@ -40,7 +41,7 @@ const CompanyManagement = () => {
 
     const fetchCompanies = async () => {
         try {
-            const response = await fetch('/api/companies');
+            const response = await fetch(API_ENDPOINTS.COMPANIES);
             if (response.ok) {
                 const data = await response.json();
                 setCompanies(data);
@@ -78,7 +79,7 @@ const CompanyManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/admin/media/upload');
+            xhr.open('POST', API_ENDPOINTS.ADMIN_MEDIA_UPLOAD);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -124,8 +125,8 @@ const CompanyManagement = () => {
             }
 
             const url = isEdit
-                ? `/api/admin/companies/${currentCompany.id}`
-                : '/api/admin/companies';
+                ? API_ENDPOINTS.ADMIN_COMPANY_BY_ID(currentCompany.id!)
+                : API_ENDPOINTS.ADMIN_COMPANIES;
             const method = isEdit ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -163,7 +164,7 @@ const CompanyManagement = () => {
 
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`/api/admin/companies/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.ADMIN_COMPANY_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

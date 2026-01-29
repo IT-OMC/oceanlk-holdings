@@ -117,14 +117,12 @@ const OrbitingPlanet = ({
     subsidiary,
     index,
     baseRotation,
-    onHover,
-    isPaused
+    onHover
 }: {
     subsidiary: typeof subsidiaries[0];
     index: number;
     baseRotation: any;
     onHover: (isHovered: boolean) => void;
-    isPaused: boolean;
 }) => {
     const [isHovered, setIsHovered] = useState(false);
     const totalCompanies = subsidiaries.length;
@@ -193,7 +191,7 @@ const OrbitingPlanet = ({
 
 const Portfolio = () => {
     const baseRotation = useMotionValue(0);
-
+    const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
         let lastTime = performance.now();
@@ -298,7 +296,6 @@ const Portfolio = () => {
                                 index={index}
                                 baseRotation={baseRotation}
                                 onHover={setIsPaused}
-                                isPaused={isPaused}
                             />
                         ))}
                     </div>

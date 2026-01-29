@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface GlobalMetric {
     id: string;
@@ -32,7 +33,7 @@ const StatsManagement = () => {
 
     const fetchStats = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/metrics');
+            const response = await fetch(API_ENDPOINTS.METRICS);
             if (response.ok) {
                 const data = await response.json();
                 setStats(data);
@@ -49,8 +50,8 @@ const StatsManagement = () => {
         try {
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/metrics/${editingItem.id}`
-                : 'http://localhost:8080/api/metrics';
+                ? API_ENDPOINTS.METRIC_BY_ID(editingItem.id)
+                : API_ENDPOINTS.METRICS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -83,7 +84,7 @@ const StatsManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/metrics/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.METRIC_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

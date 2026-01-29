@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Lock, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { API_ENDPOINTS } from '../../utils/api';
 
 const AdminProfile = () => {
     const [profile, setProfile] = useState<any>(null);
@@ -23,8 +24,10 @@ const AdminProfile = () => {
     const fetchProfile = async () => {
         const username = localStorage.getItem('adminUsername');
         const token = localStorage.getItem('adminToken');
+        if (!username) return;
+
         try {
-            const res = await fetch(`http://localhost:8080/api/admin/management/profile/${username}`, {
+            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE(username), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -49,7 +52,7 @@ const AdminProfile = () => {
 
         const username = localStorage.getItem('adminUsername');
         try {
-            const res = await fetch('http://localhost:8080/api/admin/otp/send', {
+            const res = await fetch(API_ENDPOINTS.OTP_SEND, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, method: 'email' })
@@ -76,14 +79,14 @@ const AdminProfile = () => {
         const username = localStorage.getItem('adminUsername');
         try {
             // Re-verify OTP for security
-            const verifyRes = await fetch('http://localhost:8080/api/admin/otp/verify', {
+            const verifyRes = await fetch(API_ENDPOINTS.OTP_VERIFY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, otp })
             });
 
             if (verifyRes.ok) {
-                const changeRes = await fetch('http://localhost:8080/api/admin/management/change-password', {
+                const changeRes = await fetch(API_ENDPOINTS.ADMIN_CHANGE_PASSWORD, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, newPassword, otp })
@@ -226,6 +229,13 @@ const AdminProfile = () => {
                                     ? 'Enter your new password below. You will need to verify via OTP.'
                                     : `A 6-digit code has been sent to ${profile?.email}.`}
                             </p>
+
+                            {success && (
+                                <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3 text-emerald-400 text-sm">
+                                    <CheckCircle size={18} />
+                                    {success}
+                                </div>
+                            )}
 
                             {error && (
                                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">

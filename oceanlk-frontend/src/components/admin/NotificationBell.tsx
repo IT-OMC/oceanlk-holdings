@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Check, ExternalLink, Clock, Info, AlertTriangle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Notification {
     id: string;
@@ -23,7 +24,7 @@ const NotificationBell = () => {
             const token = localStorage.getItem('adminToken');
             if (!token) return;
 
-            const res = await fetch('http://localhost:8080/api/admin/notifications', {
+            const res = await fetch(API_ENDPOINTS.NOTIFICATIONS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -55,7 +56,7 @@ const NotificationBell = () => {
     const markAsRead = async (id: string) => {
         try {
             const token = localStorage.getItem('adminToken');
-            const res = await fetch(`http://localhost:8080/api/admin/notifications/${id}/mark-read`, {
+            const res = await fetch(API_ENDPOINTS.MARK_READ(id), {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -70,7 +71,7 @@ const NotificationBell = () => {
     const markAllRead = async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const res = await fetch(`http://localhost:8080/api/admin/notifications/mark-all-read`, {
+            const res = await fetch(API_ENDPOINTS.MARK_ALL_READ, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

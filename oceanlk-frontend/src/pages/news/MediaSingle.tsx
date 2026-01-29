@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader, Download } from 'lucide-react';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -29,7 +30,7 @@ const MediaSingle = () => {
     const fetchMediaItem = useCallback(async (mediaId: string) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`/api/media/${mediaId}`);
+            const response = await fetch(API_ENDPOINTS.MEDIA_SINGLE(mediaId));
             if (response.ok) {
                 const data = await response.json();
                 setMedia(data);

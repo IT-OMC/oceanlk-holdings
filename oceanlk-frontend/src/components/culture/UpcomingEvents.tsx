@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
 import moment from 'moment';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Event {
     id: string;
@@ -32,7 +33,7 @@ const UpcomingEvents = () => {
 
     const fetchUpcomingEvents = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/media');
+            const response = await fetch(API_ENDPOINTS.MEDIA);
             if (response.ok) {
                 const data = await response.json();
                 // Filter for EVENTS category and map to Event interface

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -21,8 +22,8 @@ const CultureGallery = () => {
         try {
             // Fetch both GALLERY and LIFE_AT_OCH categories
             const [galleryRes, lifeRes] = await Promise.all([
-                fetch('http://localhost:8080/api/media?category=GALLERY'),
-                fetch('http://localhost:8080/api/media?category=LIFE_AT_OCH')
+                fetch(`${API_ENDPOINTS.MEDIA}?category=GALLERY`),
+                fetch(`${API_ENDPOINTS.MEDIA}?category=LIFE_AT_OCH`)
             ]);
 
             let allImages: MediaItem[] = [];

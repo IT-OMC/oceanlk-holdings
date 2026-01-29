@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../utils/api';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -23,7 +24,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
             try {
                 // Verify token validity with backend
-                const response = await fetch(`http://localhost:8080/api/admin/validate`, {
+                const response = await fetch(API_ENDPOINTS.VALIDATE_TOKEN, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Partner {
     id: string;
@@ -35,7 +36,7 @@ const PartnerManagement = () => {
 
     const fetchPartners = async () => {
         try {
-            const response = await fetch('/api/partners');
+            const response = await fetch(API_ENDPOINTS.PARTNERS);
             if (response.ok) {
                 const data = await response.json();
                 setPartners(data);
@@ -64,7 +65,7 @@ const PartnerManagement = () => {
                 const uploadFormData = new FormData();
                 uploadFormData.append('file', selectedFile);
 
-                const uploadResponse = await fetch('/api/admin/media/upload', {
+                const uploadResponse = await fetch(API_ENDPOINTS.ADMIN_MEDIA_UPLOAD, {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -88,8 +89,8 @@ const PartnerManagement = () => {
             }
 
             const url = editingItem
-                ? `/api/partners/${editingItem.id}`
-                : '/api/partners';
+                ? API_ENDPOINTS.PARTNER_BY_ID(editingItem.id)
+                : API_ENDPOINTS.PARTNERS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -125,7 +126,7 @@ const PartnerManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`/api/partners/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.PARTNER_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Ship, Calendar, Anchor, Globe, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { API_ENDPOINTS } from '../utils/api';
 
 // Custom hook for count-up animation
 const useCountUp = (end: number, duration: number = 2000, inView: boolean) => {
@@ -127,7 +128,7 @@ const GlobalMetrics = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/metrics');
+                const response = await fetch(API_ENDPOINTS.METRICS);
                 if (response.ok) {
                     const data = await response.json();
                     // Map backend icon strings to Lucide icons components if needed, or pass string to Helper

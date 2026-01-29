@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2 } from 'lucide-react';
+import { API_ENDPOINTS } from '../../utils/api';
+import { AdminUser, UserCreateRequest, UserUpdateRequest, UserRole } from '../../types/api';
 
 const AdminManagement = () => {
-    const [admins, setAdmins] = useState<any[]>([]);
+    const [admins, setAdmins] = useState<AdminUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
@@ -11,7 +13,7 @@ const AdminManagement = () => {
     const [success, setSuccess] = useState('');
 
     // New Admin State
-    const [newAdmin, setNewAdmin] = useState({
+    const [newAdmin, setNewAdmin] = useState<UserCreateRequest>({
         name: '',
         username: '',
         email: '',
@@ -23,7 +25,7 @@ const AdminManagement = () => {
 
     // Edit Admin State
     const [showEditModal, setShowEditModal] = useState(false);
-    const [editingAdmin, setEditingAdmin] = useState<any>(null);
+    const [editingAdmin, setEditingAdmin] = useState<AdminUser | null>(null);
     const [updating, setUpdating] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -35,7 +37,7 @@ const AdminManagement = () => {
         setLoading(true);
         const token = localStorage.getItem('adminToken');
         try {
-            const res = await fetch('http://localhost:8080/api/admin/management/list', {
+            const res = await fetch(API_ENDPOINTS.ADMIN_LIST, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -57,7 +59,7 @@ const AdminManagement = () => {
         setError('');
         const token = localStorage.getItem('adminToken');
         try {
-            const res = await fetch('http://localhost:8080/api/admin/management/add', {
+            const res = await fetch(API_ENDPOINTS.ADMIN_ADD, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +89,7 @@ const AdminManagement = () => {
 
         const token = localStorage.getItem('adminToken');
         try {
-            const res = await fetch(`http://localhost:8080/api/admin/management/delete/${id}`, {
+            const res = await fetch(API_ENDPOINTS.ADMIN_DELETE(id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -105,17 +107,27 @@ const AdminManagement = () => {
 
     const handleEditAdmin = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!editingAdmin) return;
         setUpdating(true);
         setError('');
         const token = localStorage.getItem('adminToken');
+
+        const updateRequest: UserUpdateRequest = {
+            name: editingAdmin.name,
+            email: editingAdmin.email,
+            phone: editingAdmin.phone,
+            role: editingAdmin.role,
+            active: editingAdmin.active
+        };
+
         try {
-            const res = await fetch(`http://localhost:8080/api/admin/management/edit/${editingAdmin.id}`, {
+            const res = await fetch(API_ENDPOINTS.ADMIN_EDIT(editingAdmin.id), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(editingAdmin)
+                body: JSON.stringify(updateRequest)
             });
 
             if (res.ok) {
@@ -134,10 +146,11 @@ const AdminManagement = () => {
         }
     };
 
-    const openEditModal = (admin: any) => {
+    const openEditModal = (admin: AdminUser) => {
         setEditingAdmin({ ...admin });
         setShowEditModal(true);
     };
+
 
     const filteredAdmins = admins.filter(a =>
         a.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -363,7 +376,7 @@ const AdminManagement = () => {
                                     <label className="text-sm font-medium text-gray-400">Role</label>
                                     <select
                                         value={newAdmin.role}
-                                        onChange={(e) => setNewAdmin({ ...newAdmin, role: e.target.value })}
+                                        onChange={(e) => setNewAdmin({ ...newAdmin, role: e.target.value as UserRole })}
                                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors appearance-none"
                                     >
                                         <option value="ADMIN" className="bg-[#0f1e3a]">Standard Admin</option>
@@ -451,7 +464,7 @@ const AdminManagement = () => {
                                     <label className="text-sm font-medium text-gray-400">Role</label>
                                     <select
                                         value={editingAdmin.role}
-                                        onChange={(e) => setEditingAdmin({ ...editingAdmin, role: e.target.value })}
+                                        onChange={(e) => setEditingAdmin({ ...editingAdmin, role: e.target.value as UserRole })}
                                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors appearance-none"
                                     >
                                         <option value="ADMIN" className="bg-[#0f1e3a]">Standard Admin</option>

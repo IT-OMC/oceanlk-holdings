@@ -3,18 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Upload, Trash2, Edit2, Image as ImageIcon, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-
-interface MediaItem {
-    id: string;
-    title: string;
-    description: string;
-    imageUrl: string;
-    videoUrl?: string;
-    category: string;
-    group: string;
-    companyId?: string;
-    featured: boolean;
-}
+import { API_ENDPOINTS } from '../../utils/api';
+import { MediaItem, MediaCategory, MediaGroup } from '../../types/api';
 
 const HRMediaManagement = () => {
     const [galleryItems, setGalleryItems] = useState<MediaItem[]>([]);
@@ -37,14 +27,14 @@ const HRMediaManagement = () => {
         title: '',
         description: '',
         imageUrl: '',
-        category: 'GALLERY',
-        group: 'HR_PANEL',
+        category: 'GALLERY' as MediaCategory,
+        group: 'HR_PANEL' as MediaGroup,
     });
 
 
     const fetchMediaItems = useCallback(async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/admin/media?group=HR_PANEL', {
+            const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=HR_PANEL`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                 }
@@ -91,7 +81,7 @@ const HRMediaManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://localhost:8080/api/admin/media/upload?group=HR_PANEL');
+            xhr.open('POST', `${API_ENDPOINTS.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -131,8 +121,8 @@ const HRMediaManagement = () => {
 
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/admin/media/${editingItem.id}`
-                : 'http://localhost:8080/api/admin/media';
+                ? API_ENDPOINTS.ADMIN_MEDIA_BY_ID(editingItem.id)
+                : API_ENDPOINTS.ADMIN_MEDIA;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -171,7 +161,7 @@ const HRMediaManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/admin/media/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -198,14 +188,15 @@ const HRMediaManagement = () => {
         setFormData({
             title: item.title,
             description: item.description,
-            imageUrl: item.imageUrl,
-            category: item.category,
-            group: 'HR_PANEL',
+            imageUrl: item.imageUrl || '',
+            category: item.category as MediaCategory,
+            group: 'HR_PANEL' as MediaGroup,
         });
         setImagePreview(item.imageUrl || '');
         setImageFile(null);
         setIsModalOpen(true);
     };
+
 
     const openDeleteModal = (id: string) => {
         setItemToDelete(id);
@@ -502,7 +493,7 @@ const HRMediaManagement = () => {
                                     <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
                                     <select
                                         value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value as MediaCategory })}
                                         className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
                                     >
                                         <option value="GALLERY" className="bg-[#0f1e3a] text-white">Gallery</option>

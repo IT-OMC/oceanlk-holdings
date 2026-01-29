@@ -12,6 +12,7 @@ import {
     CheckCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface ContactMessage {
     id: string;
@@ -33,6 +34,40 @@ const ManageContactMessages = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
     const [stats, setStats] = useState({ total: 0, unread: 0, read: 0 });
+
+    const fetchMessages = async () => {
+        setIsLoading(true);
+        const token = localStorage.getItem('adminToken');
+        try {
+            const response = await fetch(API_ENDPOINTS.CONTACT_MESSAGES, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setMessages(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch messages:', error);
+            toast.error('Failed to load messages');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchStats = async () => {
+        const token = localStorage.getItem('adminToken');
+        try {
+            const response = await fetch(API_ENDPOINTS.CONTACT_STATS, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setStats(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        }
+    };
 
     useEffect(() => {
         fetchMessages();
@@ -67,10 +102,10 @@ const ManageContactMessages = () => {
 
     const toggleReadStatus = async (message: ContactMessage) => {
         const token = localStorage.getItem('adminToken');
-        const endpoint = message.isRead ? 'unread' : 'read';
+        const endpoint = message.isRead ? API_ENDPOINTS.CONTACT_MARK_UNREAD(message.id) : API_ENDPOINTS.CONTACT_MARK_READ(message.id);
 
         try {
-            const response = await fetch(`http://localhost:8080/api/contact/messages/${message.id}/${endpoint}`, {
+            const response = await fetch(endpoint, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -82,7 +117,7 @@ const ManageContactMessages = () => {
                     setSelectedMessage(updated);
                 }
                 fetchStats();
-                toast.success(`Message marked as ${endpoint === 'read' ? 'read' : 'unread'}`);
+                toast.success(`Message marked as ${message.isRead ? 'unread' : 'read'}`);
             }
         } catch (error) {
             console.error('Failed to update message status:', error);
@@ -95,7 +130,7 @@ const ManageContactMessages = () => {
 
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`http://localhost:8080/api/contact/messages/${id}`, {
+            const response = await fetch(API_ENDPOINTS.CONTACT_DELETE(id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

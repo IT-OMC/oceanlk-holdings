@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Filter, ShieldAlert, ArrowLeft, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface AuditLog {
     id: string;
@@ -35,7 +36,7 @@ const AuditLogViewer = () => {
     const fetchLogs = async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/admin/audit-logs', {
+            const response = await fetch(API_ENDPOINTS.AUDIT_LOGS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -76,7 +77,7 @@ const AuditLogViewer = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/admin/audit-logs/${id}`, {
+            const response = await fetch(API_ENDPOINTS.AUDIT_LOG_DELETE(id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

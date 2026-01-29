@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
-
-
+import { API_ENDPOINTS } from '../../utils/api';
 
 const categories = ['All', 'Engineering', 'Hospitality', 'Technology', 'Finance', 'Marketing'];
 
@@ -40,7 +39,7 @@ const Onboard = () => {
 
     const fetchJobs = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/jobs');
+            const response = await fetch(API_ENDPOINTS.JOBS);
             if (response.ok) {
                 const data = await response.json();
                 setJobOpenings(data);

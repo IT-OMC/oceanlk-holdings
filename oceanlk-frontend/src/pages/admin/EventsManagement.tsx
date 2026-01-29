@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { API_ENDPOINTS } from '../../utils/api';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './EventsManagement.css';
 
@@ -66,7 +67,7 @@ const EventsManagement = () => {
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/events');
+            const response = await fetch(API_ENDPOINTS.EVENTS);
             if (response.ok) {
                 const data = await response.json();
                 setEvents(data);
@@ -93,8 +94,8 @@ const EventsManagement = () => {
         try {
             const token = localStorage.getItem('adminToken');
             const url = editingItem
-                ? `http://localhost:8080/api/events/${editingItem.id}`
-                : 'http://localhost:8080/api/events';
+                ? API_ENDPOINTS.EVENT_BY_ID(editingItem.id)
+                : API_ENDPOINTS.EVENTS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -135,7 +136,7 @@ const EventsManagement = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:8080/api/events/${itemToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.EVENT_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

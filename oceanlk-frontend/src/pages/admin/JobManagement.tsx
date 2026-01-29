@@ -2,19 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, X, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface JobOpportunity {
-    id?: string;
-    title: string;
-    company: string;
-    location: string;
-    type: string;
-    category: string;
-    description: string;
-    featured: boolean;
-    level: string;
-    status: string;
-}
+import { API_ENDPOINTS } from '../../utils/api';
+import { JobOpportunity, JobStatus } from '../../types/api';
 
 const JobManagement = () => {
     const [jobs, setJobs] = useState<JobOpportunity[]>([]);
@@ -24,6 +13,7 @@ const JobManagement = () => {
     const [jobToDelete, setJobToDelete] = useState<string | null>(null);
     const [currentJob, setCurrentJob] = useState<JobOpportunity | null>(null);
     const [formData, setFormData] = useState<JobOpportunity>({
+        id: '',
         title: '',
         company: 'Ocean Ceylon Holdings', // Default
         location: 'Colombo, Sri Lanka',
@@ -32,6 +22,7 @@ const JobManagement = () => {
         description: '',
         featured: false,
         level: 'Mid-Senior',
+        postedDate: '',
         status: 'ACTIVE'
     });
 
@@ -42,7 +33,7 @@ const JobManagement = () => {
     const fetchJobs = async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch('http://localhost:8080/api/admin/jobs', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_JOBS, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -67,8 +58,8 @@ const JobManagement = () => {
         const token = localStorage.getItem('adminToken');
         const isEdit = !!currentJob?.id;
         const url = isEdit
-            ? `http://localhost:8080/api/admin/jobs/${currentJob.id}`
-            : 'http://localhost:8080/api/admin/jobs';
+            ? API_ENDPOINTS.ADMIN_JOB_BY_ID(currentJob!.id!)
+            : API_ENDPOINTS.ADMIN_JOBS;
         const method = isEdit ? 'PUT' : 'POST';
 
         try {
@@ -109,7 +100,7 @@ const JobManagement = () => {
 
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`http://localhost:8080/api/admin/jobs/${jobToDelete}`, {
+            const response = await fetch(API_ENDPOINTS.ADMIN_JOB_BY_ID(jobToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -134,6 +125,7 @@ const JobManagement = () => {
         } else {
             setCurrentJob(null);
             setFormData({
+                id: '',
                 title: '',
                 company: 'Ocean Ceylon Holdings',
                 location: 'Colombo, Sri Lanka',
@@ -142,11 +134,13 @@ const JobManagement = () => {
                 description: '',
                 featured: false,
                 level: 'Mid-Senior',
+                postedDate: '',
                 status: 'ACTIVE'
             });
         }
         setIsModalOpen(true);
     };
+
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -355,7 +349,7 @@ const JobManagement = () => {
                                         <div className="text-sm text-gray-400">Status:</div>
                                         <select
                                             value={formData.status}
-                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                            onChange={(e) => setFormData({ ...formData, status: e.target.value as JobStatus })}
                                             className="bg-white/5 border border-white/10 rounded px-2 py-1 text-white text-sm focus:border-emerald-500 outline-none"
                                         >
                                             <option value="ACTIVE" className="bg-[#0f1e3a]">Active</option>

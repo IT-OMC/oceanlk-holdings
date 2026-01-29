@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface Application {
     id: string;
@@ -24,7 +25,7 @@ const ApplicationViewer = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [deleteConfirmation, setDeleteConfirmation] = useState<{ appId: string; appName: string } | null>(null);
-    const [isDownloading, setIsDownloading] = useState(false);
+    const [isDownloading, setIsLoadingDownloading] = useState(false);
 
     useEffect(() => {
         fetchApplications();
@@ -53,7 +54,7 @@ const ApplicationViewer = () => {
     const fetchApplications = async () => {
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch('http://localhost:8080/api/talent-pool/applications', {
+            const response = await fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -70,9 +71,9 @@ const ApplicationViewer = () => {
 
     const handleDownloadCV = async (appId: string, filename: string) => {
         const token = localStorage.getItem('adminToken');
-        setIsDownloading(true);
+        setIsLoadingDownloading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/talent-pool/cv/${appId}`, {
+            const response = await fetch(API_ENDPOINTS.TALENT_POOL_CV(appId), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -94,14 +95,14 @@ const ApplicationViewer = () => {
             console.error('Download failed:', error);
             toast.error('Failed to download CV');
         } finally {
-            setIsDownloading(false);
+            setIsLoadingDownloading(false);
         }
     };
 
     const handleStatusUpdate = async (appId: string, newStatus: string) => {
         const token = localStorage.getItem('adminToken');
         try {
-            const response = await fetch(`http://localhost:8080/api/talent-pool/application/${appId}/status?status=${newStatus}`, {
+            const response = await fetch(`${API_ENDPOINTS.TALENT_POOL_STATUS(appId)}?status=${newStatus}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -132,7 +133,7 @@ const ApplicationViewer = () => {
         const token = localStorage.getItem('adminToken');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/talent-pool/application/${appId}`, {
+            const response = await fetch(API_ENDPOINTS.TALENT_POOL_DELETE(appId), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
