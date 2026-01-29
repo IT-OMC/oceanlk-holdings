@@ -18,6 +18,8 @@ interface PendingChange {
     originalData?: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const SuperAdminApproval: React.FC = () => {
     const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
     const [loading, setLoading] = useState(true);
@@ -26,13 +28,9 @@ const SuperAdminApproval: React.FC = () => {
     const [filter, setFilter] = useState<string>('all');
     const navigate = useNavigate();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-    useEffect(() => {
-        fetchPendingChanges();
-    }, []);
 
-    const fetchPendingChanges = async () => {
+    const fetchPendingChanges = React.useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await axios.get(`${API_URL}/api/pending-changes`, {
@@ -48,7 +46,11 @@ const SuperAdminApproval: React.FC = () => {
             }
             setLoading(false);
         }
-    };
+    }, [navigate]);
+
+    useEffect(() => {
+        fetchPendingChanges();
+    }, [fetchPendingChanges]);
 
     const handleApprove = async (changeId: string) => {
         try {

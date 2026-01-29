@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader, Upload, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -62,12 +62,19 @@ const BlogManagement = () => {
         pageCount: undefined
     });
 
-    useEffect(() => {
-        fetchMedia();
-        fetchCompanies();
+    const fetchCompanies = useCallback(async () => {
+        try {
+            const response = await fetch('/api/companies');
+            if (response.ok) {
+                const data = await response.json();
+                setCompanies(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch companies:', error);
+        }
     }, []);
 
-    const fetchMedia = async () => {
+    const fetchMedia = useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await fetch('/api/admin/media', {
@@ -100,19 +107,12 @@ const BlogManagement = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    const fetchCompanies = async () => {
-        try {
-            const response = await fetch('/api/companies');
-            if (response.ok) {
-                const data = await response.json();
-                setCompanies(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch companies:', error);
-        }
-    };
+    useEffect(() => {
+        fetchMedia();
+        fetchCompanies();
+    }, [fetchMedia, fetchCompanies]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -177,7 +177,7 @@ const BlogManagement = () => {
         try {
             setUploadingFile(true);
             setUploadProgress(0);
-            let updatedFormData = { ...formData, category: 'BLOG' };
+            const updatedFormData = { ...formData, category: 'BLOG' };
 
             // Upload file if selected
             if (imageFile) {

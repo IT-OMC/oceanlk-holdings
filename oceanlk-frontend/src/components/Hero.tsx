@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,19 +9,19 @@ const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const sectors = oceanData.sectors;
 
-    const nextSlide = () => {
+    const nextSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev + 1) % sectors.length);
-    };
+    }, [sectors.length]);
 
-    const prevSlide = () => {
+    const prevSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev - 1 + sectors.length) % sectors.length);
-    };
+    }, [sectors.length]);
 
     // Auto-advance slides
     useEffect(() => {
         const timer = setInterval(nextSlide, 5000);
         return () => clearInterval(timer);
-    }, [sectors.length]);
+    }, [nextSlide]);
 
     return (
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden group">

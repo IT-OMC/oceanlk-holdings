@@ -5,6 +5,7 @@ import com.oceanlk.backend.repository.CompanyRepository;
 import com.oceanlk.backend.repository.MediaItemRepository;
 import com.oceanlk.backend.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,16 +15,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.lang.NonNull;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
+@Slf4j
 public class MediaController {
 
     private final MediaItemRepository mediaRepository;
     private final FileStorageService fileStorageService;
     private final CompanyRepository companyRepository;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
+
+    private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
     // Public endpoint - get all published media
     @GetMapping("/media")
@@ -53,8 +59,9 @@ public class MediaController {
                         enriched.put("featured", item.isFeatured());
 
                         // Add company info if associated
-                        if (item.getCompanyId() != null) {
-                            companyRepository.findById(item.getCompanyId())
+                        String companyId = item.getCompanyId();
+                        if (companyId != null) {
+                            companyRepository.findById(companyId)
                                     .ifPresent(company -> {
                                         enriched.put("company", company.getTitle());
                                         enriched.put("companyId", company.getId());
@@ -99,7 +106,7 @@ public class MediaController {
 
     // Public endpoint - get single media item
     @GetMapping("/media/{id}")
-    public ResponseEntity<?> getMediaItemById(@PathVariable String id) {
+    public ResponseEntity<?> getMediaItemById(@PathVariable @NonNull String id) {
         return mediaRepository.findById(id)
                 .map(item -> {
                     if (!"PUBLISHED".equalsIgnoreCase(item.getStatus())) {
@@ -147,7 +154,9 @@ public class MediaController {
     }
 
     @PostMapping("/admin/media")
-    public ResponseEntity<?> createMediaItem(@RequestBody MediaItem mediaItem) {
+    public ResponseEntity<?> createMediaItem(@RequestBody MediaItem mediaItem,
+            java.security.Principal principal,
+            org.springframework.security.core.Authentication authentication) {
         try {
             if (mediaItem.getStatus() == null || mediaItem.getStatus().isEmpty()) {
                 mediaItem.setStatus("PUBLISHED"); // Default
@@ -155,23 +164,28 @@ public class MediaController {
                 mediaItem.setStatus(mediaItem.getStatus().toUpperCase());
             }
 
-            if (mediaItem.getPublishedDate() == null) {
-                // Assuming publishedDate is String or Date. Model shows specific type?
-                // Looking at file, it is used in sort ByPublishedDateDesc.
-                // Frontend sends string YYYY-MM-DD.
-                // Let's assume it's okay or set to now if needed.
-                // But wait, lines 25 says `findByStatusOrderByPublishedDateDesc`.
-                // Let's check MediaItem model first?
-                // I'll stick to just status fix for now, and let frontend send date.
+            // Check if user is superadmin
+            boolean isSuperAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+            if (isSuperAdmin) {
+                MediaItem savedItem = mediaRepository.save(mediaItem);
+
+                // Log Action
+                auditLogService.logAction(principal.getName(), "CREATE", "MediaItem", savedItem.getId(),
+                        "Created media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+            } else {
+                // Admin: Create pending change
+                com.oceanlk.backend.model.PendingChange pendingChange = pendingChangeService.createPendingChange(
+                        "MediaItem", null, "CREATE", principal.getName(), mediaItem, null);
+                auditLogService.logAction(principal.getName(), "SUBMIT_FOR_APPROVAL", "MediaItem", null,
+                        "Submitted new media item for approval: " + mediaItem.getTitle());
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                        "message", "Media item submitted for approval",
+                        "pendingChange", pendingChange));
             }
-
-            MediaItem savedItem = mediaRepository.save(mediaItem);
-
-            // Log Action
-            auditLogService.logAction("admin", "CREATE", "MediaItem", savedItem.getId(),
-                    "Created media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Failed to create media item: " + e.getMessage());
@@ -180,7 +194,10 @@ public class MediaController {
     }
 
     @PutMapping("/admin/media/{id}")
-    public ResponseEntity<?> updateMediaItem(@PathVariable String id, @RequestBody MediaItem updatedItem) {
+    public ResponseEntity<?> updateMediaItem(@PathVariable @NonNull String id,
+            @RequestBody MediaItem updatedItem,
+            java.security.Principal principal,
+            org.springframework.security.core.Authentication authentication) {
         MediaItem mediaItem = mediaRepository.findById(id).orElse(null);
 
         if (mediaItem == null) {
@@ -189,6 +206,34 @@ public class MediaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
 
+        // Check availability of pending changes logic
+        // Check if user is superadmin
+        boolean isSuperAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+        if (!isSuperAdmin) {
+            // Check for existing pending change
+            if (pendingChangeService.hasPendingChange(id)) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "error", "This item already has a pending change awaiting approval"));
+            }
+
+            // Prepare updated object for pending change (create a copy or just use
+            // updatedItem)
+            // updatedItem might miss ID, ensuring it has it
+            updatedItem.setId(id);
+
+            // Admin: Create pending change
+            com.oceanlk.backend.model.PendingChange pendingChange = pendingChangeService.createPendingChange(
+                    "MediaItem", id, "UPDATE", principal.getName(), updatedItem, mediaItem);
+            auditLogService.logAction(principal.getName(), "SUBMIT_FOR_APPROVAL", "MediaItem", id,
+                    "Submitted media update for approval: " + updatedItem.getTitle());
+            return ResponseEntity.ok(Map.of(
+                    "message", "Media update submitted for approval",
+                    "pendingChange", pendingChange));
+        }
+
+        // Super Admin - Proceed with update
         // Update fields
         mediaItem.setTitle(updatedItem.getTitle());
         mediaItem.setDescription(updatedItem.getDescription());
@@ -227,14 +272,16 @@ public class MediaController {
         MediaItem savedItem = mediaRepository.save(mediaItem);
 
         // Log Action
-        auditLogService.logAction("admin", "UPDATE", "MediaItem", savedItem.getId(),
+        auditLogService.logAction(principal.getName(), "UPDATE", "MediaItem", savedItem.getId(),
                 "Updated media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
 
         return ResponseEntity.ok(savedItem);
     }
 
     @DeleteMapping("/admin/media/{id}")
-    public ResponseEntity<?> deleteMediaItem(@PathVariable String id) {
+    public ResponseEntity<?> deleteMediaItem(@PathVariable @NonNull String id,
+            java.security.Principal principal,
+            org.springframework.security.core.Authentication authentication) {
         MediaItem mediaItem = mediaRepository.findById(id).orElse(null);
 
         if (mediaItem == null) {
@@ -243,6 +290,28 @@ public class MediaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
 
+        // Check if user is superadmin
+        boolean isSuperAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+        if (!isSuperAdmin) {
+            // Check for existing pending change
+            if (pendingChangeService.hasPendingChange(id)) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "error", "This item already has a pending change awaiting approval"));
+            }
+
+            // Admin: Create pending change for deletion
+            com.oceanlk.backend.model.PendingChange pendingChange = pendingChangeService.createPendingChange(
+                    "MediaItem", id, "DELETE", principal.getName(), mediaItem, mediaItem);
+            auditLogService.logAction(principal.getName(), "SUBMIT_FOR_APPROVAL", "MediaItem", id,
+                    "Submitted media deletion for approval");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Media deletion submitted for approval",
+                    "pendingChange", pendingChange));
+        }
+
+        // Super Admin: Direct Delete
         // Delete associated files if they exist
         try {
             if (mediaItem.getImageUrl() != null) {
@@ -253,13 +322,13 @@ public class MediaController {
             }
         } catch (Exception e) {
             // Log but don't fail the deletion if file cleanup fails
-            System.err.println("Failed to delete associated files: " + e.getMessage());
+            log.error("Failed to delete associated files: {}", e.getMessage());
         }
 
         mediaRepository.deleteById(id);
 
         // Log Action
-        auditLogService.logAction("admin", "DELETE", "MediaItem", id,
+        auditLogService.logAction(principal.getName(), "DELETE", "MediaItem", id,
                 "Deleted media item: " + mediaItem.getTitle() + " (Category: " + mediaItem.getCategory() + ")");
 
         Map<String, String> response = new HashMap<>();

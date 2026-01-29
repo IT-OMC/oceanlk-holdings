@@ -39,17 +39,7 @@ const PendingChanges: React.FC = () => {
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
 
-    useEffect(() => {
-        fetchData();
-        // Set active tab based on role
-        if (isSuperAdmin) {
-            setActiveTab('pending-approvals');
-        } else {
-            setActiveTab('my-changes');
-        }
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = React.useCallback(async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('adminToken');
@@ -79,7 +69,17 @@ const PendingChanges: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [isSuperAdmin, API_URL]);
+
+    useEffect(() => {
+        fetchData();
+        // Set active tab based on role
+        if (isSuperAdmin) {
+            setActiveTab('pending-approvals');
+        } else {
+            setActiveTab('my-changes');
+        }
+    }, [fetchData, isSuperAdmin]);
 
     const handleApprove = async (changeId: string) => {
         try {

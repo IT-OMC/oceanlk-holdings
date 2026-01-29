@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader, Download } from 'lucide-react';
@@ -26,13 +26,7 @@ const MediaSingle = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (id) {
-            fetchMediaItem(id);
-        }
-    }, [id]);
-
-    const fetchMediaItem = async (mediaId: string) => {
+    const fetchMediaItem = useCallback(async (mediaId: string) => {
         try {
             setIsLoading(true);
             const response = await fetch(`/api/media/${mediaId}`);
@@ -48,7 +42,13 @@ const MediaSingle = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (id) {
+            fetchMediaItem(id);
+        }
+    }, [id, fetchMediaItem]);
 
     if (isLoading) {
         return (

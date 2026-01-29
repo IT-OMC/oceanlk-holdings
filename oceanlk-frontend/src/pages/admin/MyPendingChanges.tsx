@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './EventsManagement.css';
@@ -27,11 +27,7 @@ const MyPendingChanges: React.FC = () => {
 
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-    useEffect(() => {
-        fetchMyPendingChanges();
-    }, []);
-
-    const fetchMyPendingChanges = async () => {
+    const fetchMyPendingChanges = useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await axios.get(`${API_URL}/api/pending-changes/my-submissions`, {
@@ -47,7 +43,11 @@ const MyPendingChanges: React.FC = () => {
             }
             setLoading(false);
         }
-    };
+    }, [API_URL]);
+
+    useEffect(() => {
+        fetchMyPendingChanges();
+    }, [fetchMyPendingChanges]);
 
     const getStatusColor = (status: string) => {
         switch (status) {

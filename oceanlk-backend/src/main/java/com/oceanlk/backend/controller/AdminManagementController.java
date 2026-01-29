@@ -7,6 +7,7 @@ import com.oceanlk.backend.service.EmailService;
 import com.oceanlk.backend.service.OtpService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/admin/management")
 @RequiredArgsConstructor
 @CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
+@Slf4j
 public class AdminManagementController {
 
     private final AdminUserService adminUserService;
@@ -53,7 +55,7 @@ public class AdminManagementController {
         try {
             emailService.sendAdminWelcomeEmail(created, plainPassword);
         } catch (MessagingException e) {
-            System.err.println("Failed to send welcome email to new admin: " + e.getMessage());
+            log.error("Failed to send welcome email to new admin: {}", e.getMessage());
         }
 
         auditLogService.logAction("SUPER_ADMIN", "CREATE_ADMIN", "AdminUser", created.getId(),

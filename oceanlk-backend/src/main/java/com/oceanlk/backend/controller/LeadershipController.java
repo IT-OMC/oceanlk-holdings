@@ -30,7 +30,7 @@ public class LeadershipController {
 
     @PostMapping
     public ResponseEntity<CorporateLeader> createLeader(@RequestBody CorporateLeader leader) {
-        CorporateLeader savedLeader = repository.save(leader);
+        CorporateLeader savedLeader = java.util.Objects.requireNonNull(repository.save(leader));
 
         // Log Action
         auditLogService.logAction("admin", "CREATE", "CorporateLeader", savedLeader.getId(),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Upload, Trash2, Edit2, Image as ImageIcon, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -42,11 +42,7 @@ const HRMediaManagement = () => {
     });
 
 
-    useEffect(() => {
-        fetchMediaItems();
-    }, []);
-
-    const fetchMediaItems = async () => {
+    const fetchMediaItems = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:8080/api/admin/media?group=HR_PANEL', {
                 headers: {
@@ -63,7 +59,11 @@ const HRMediaManagement = () => {
         } catch (error) {
             toast.error('Failed to fetch media items');
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchMediaItems();
+    }, [fetchMediaItems]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Mail,
@@ -39,43 +39,7 @@ const ManageContactMessages = () => {
         fetchStats();
     }, []);
 
-    useEffect(() => {
-        applyFilters();
-    }, [messages, filter, searchTerm]);
-
-    const fetchMessages = async () => {
-        const token = localStorage.getItem('adminToken');
-        try {
-            const response = await fetch('http://localhost:8080/api/contact/messages', {
-                headers: { 'Authorization': `Bearer ${token} ` }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setMessages(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch messages:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const fetchStats = async () => {
-        const token = localStorage.getItem('adminToken');
-        try {
-            const response = await fetch('http://localhost:8080/api/contact/stats', {
-                headers: { 'Authorization': `Bearer ${token} ` }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setStats(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch stats:', error);
-        }
-    };
-
-    const applyFilters = () => {
+    const applyFilters = useCallback(() => {
         let filtered = messages;
 
         // Apply read/unread filter
@@ -95,7 +59,11 @@ const ManageContactMessages = () => {
         }
 
         setFilteredMessages(filtered);
-    };
+    }, [messages, filter, searchTerm]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [applyFilters]);
 
     const toggleReadStatus = async (message: ContactMessage) => {
         const token = localStorage.getItem('adminToken');

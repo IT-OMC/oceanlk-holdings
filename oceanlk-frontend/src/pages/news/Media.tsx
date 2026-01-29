@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
@@ -36,11 +36,7 @@ const Media = () => {
         return true;
     });
 
-    useEffect(() => {
-        fetchMediaItems();
-    }, []);
-
-    const fetchMediaItems = async () => {
+    const fetchMediaItems = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await fetch('/api/media/media');
@@ -56,7 +52,11 @@ const Media = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchMediaItems();
+    }, [fetchMediaItems]);
 
     const getMediaIcon = (type?: string) => {
         switch (type?.toUpperCase()) {

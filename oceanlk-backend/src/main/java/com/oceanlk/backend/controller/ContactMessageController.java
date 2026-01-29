@@ -6,6 +6,7 @@ import com.oceanlk.backend.repository.ContactMessageRepository;
 import com.oceanlk.backend.service.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RequestMapping("/api/contact")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class ContactMessageController {
 
     private final ContactMessageRepository contactMessageRepository;
@@ -47,7 +49,7 @@ public class ContactMessageController {
                 emailService.sendContactNotificationToHR(savedMessage);
             } catch (Exception emailException) {
                 // Log email error but don't fail the request
-                System.err.println("Failed to send email notifications: " + emailException.getMessage());
+                log.error("Failed to send email notifications: {}", emailException.getMessage());
             }
 
             Map<String, Object> response = new HashMap<>();

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
@@ -22,11 +22,7 @@ const News = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchNews();
-    }, []);
-
-    const fetchNews = async () => {
+    const fetchNews = useCallback(async () => {
         try {
             const response = await fetch('/api/media/news');
             if (response.ok) {
@@ -55,7 +51,11 @@ const News = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchNews();
+    }, [fetchNews]);
 
     const getGridSpan = (index: number) => {
         if (index === 0) return 'md:col-span-2 md:row-span-2';

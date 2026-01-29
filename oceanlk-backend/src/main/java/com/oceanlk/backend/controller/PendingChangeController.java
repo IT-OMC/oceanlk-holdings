@@ -26,6 +26,9 @@ public class PendingChangeController {
     private final JobOpportunityService jobOpportunityService;
     private final AuditLogService auditLogService;
 
+    private final com.oceanlk.backend.repository.MediaItemRepository mediaItemRepository;
+    private final com.oceanlk.backend.repository.GlobalMetricRepository globalMetricRepository;
+
     /**
      * Get all pending changes (Superadmin only)
      */
@@ -152,6 +155,12 @@ public class PendingChangeController {
             case "JobOpportunity":
                 handleJobOpportunityChange(pendingChange, action);
                 break;
+            case "MediaItem":
+                handleMediaItemChange(pendingChange, action);
+                break;
+            case "GlobalMetric":
+                handleGlobalMetricChange(pendingChange, action);
+                break;
             default:
                 throw new RuntimeException("Unsupported entity type: " + entityType);
         }
@@ -236,6 +245,44 @@ public class PendingChangeController {
                 break;
             case "DELETE":
                 jobOpportunityService.deleteJob(job.getId());
+                break;
+        }
+    }
+
+    private void handleMediaItemChange(PendingChange pendingChange, String action) {
+        MediaItem mediaItem = pendingChangeService.parseChangeData(pendingChange.getChangeData(), MediaItem.class);
+
+        switch (action) {
+            case "CREATE":
+                mediaItem.setId(null); // Ensure new ID
+                if (mediaItem.getStatus() == null || mediaItem.getStatus().isEmpty()) {
+                    mediaItem.setStatus("PUBLISHED");
+                }
+                mediaItemRepository.save(mediaItem);
+                break;
+            case "UPDATE":
+                // We trust the data in pending change is what we want to save
+                mediaItemRepository.save(mediaItem);
+                break;
+            case "DELETE":
+                mediaItemRepository.deleteById(mediaItem.getId());
+                break;
+        }
+    }
+
+    private void handleGlobalMetricChange(PendingChange pendingChange, String action) {
+        GlobalMetric metric = pendingChangeService.parseChangeData(pendingChange.getChangeData(), GlobalMetric.class);
+
+        switch (action) {
+            case "CREATE":
+                metric.setId(null);
+                globalMetricRepository.save(metric);
+                break;
+            case "UPDATE":
+                globalMetricRepository.save(metric);
+                break;
+            case "DELETE":
+                globalMetricRepository.deleteById(metric.getId());
                 break;
         }
     }

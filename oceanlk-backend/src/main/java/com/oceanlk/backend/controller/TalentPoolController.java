@@ -6,6 +6,7 @@ import com.oceanlk.backend.repository.TalentPoolApplicationRepository;
 import com.oceanlk.backend.service.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.Map;
 @RequestMapping("/api/talent-pool")
 @RequiredArgsConstructor
 @CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
+@Slf4j
 public class TalentPoolController {
 
     private final TalentPoolApplicationRepository applicationRepository;
@@ -68,7 +70,7 @@ public class TalentPoolController {
                 emailService.sendHRNotification(savedApplication);
             } catch (MessagingException e) {
                 // Log error but don't fail the request
-                System.err.println("Failed to send email: " + e.getMessage());
+                log.error("Failed to send email: {}", e.getMessage());
             }
 
             Map<String, Object> response = new HashMap<>();
@@ -176,7 +178,7 @@ public class TalentPoolController {
                 try {
                     gridFsTemplate.delete(Query.query(Criteria.where("_id").is(application.getCvFileId())));
                 } catch (Exception e) {
-                    System.err.println("Failed to delete CV file from GridFS: " + e.getMessage());
+                    log.error("Failed to delete CV file from GridFS: {}", e.getMessage());
                 }
             }
 

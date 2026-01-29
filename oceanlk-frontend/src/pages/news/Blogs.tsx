@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
@@ -24,11 +24,7 @@ const Blogs = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchBlogs();
-    }, []);
-
-    const fetchBlogs = async () => {
+    const fetchBlogs = useCallback(async () => {
         try {
             const response = await fetch('/api/media/blogs');
             if (response.ok) {
@@ -60,7 +56,11 @@ const Blogs = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchBlogs();
+    }, [fetchBlogs]);
 
     const getGridSpan = (index: number) => {
         // Pattern: Big, Small, Small, Small...

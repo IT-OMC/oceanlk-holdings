@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader, Upload, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -69,12 +69,19 @@ const GalleryManagement = () => {
         pageCount: undefined
     });
 
-    useEffect(() => {
-        fetchMedia();
-        fetchCompanies();
+    const fetchCompanies = useCallback(async () => {
+        try {
+            const response = await fetch('/api/companies');
+            if (response.ok) {
+                const data = await response.json();
+                setCompanies(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch companies:', error);
+        }
     }, []);
 
-    const fetchMedia = async () => {
+    const fetchMedia = useCallback(async () => {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await fetch('/api/admin/media', {
@@ -108,19 +115,12 @@ const GalleryManagement = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    const fetchCompanies = async () => {
-        try {
-            const response = await fetch('/api/companies');
-            if (response.ok) {
-                const data = await response.json();
-                setCompanies(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch companies:', error);
-        }
-    };
+    useEffect(() => {
+        fetchMedia();
+        fetchCompanies();
+    }, [fetchMedia, fetchCompanies]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -135,6 +135,10 @@ const GalleryManagement = () => {
         } else {
             // Single file for normal mode
             const file = files[0];
+            if (file.size > 50 * 1024 * 1024) {
+                toast.error('File size exceeds 50MB limit');
+                return;
+            }
             setImageFile(file);
             setImagePreview(URL.createObjectURL(file));
         }
@@ -158,11 +162,26 @@ const GalleryManagement = () => {
         } else {
             // Single file for normal mode
             const file = files[0];
-            if (file && file.type.startsWith('image/')) {
-                setImageFile(file);
-                setImagePreview(URL.createObjectURL(file));
+            const isVideo = activeTab === 'videos';
+
+            if (isVideo) {
+                if (file && (file.type.startsWith('video/'))) {
+                    if (file.size > 50 * 1024 * 1024) {
+                        toast.error('File size exceeds 50MB limit');
+                        return;
+                    }
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                } else {
+                    toast.error('Please drop a valid video file');
+                }
             } else {
-                toast.error('Please drop a valid image file');
+                if (file && file.type.startsWith('image/')) {
+                    setImageFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                } else {
+                    toast.error('Please drop a valid image file');
+                }
             }
         }
     };
@@ -278,7 +297,7 @@ const GalleryManagement = () => {
                 }
             } else {
                 // Single file upload (existing logic)
-                let updatedFormData = {
+                const updatedFormData = {
                     ...formData,
                     category: 'GALLERY',
                     publishedDate: formData.publishedDate ? new Date(formData.publishedDate).toISOString() : new Date().toISOString()
@@ -287,7 +306,15 @@ const GalleryManagement = () => {
                 // Upload file if selected
                 if (imageFile) {
                     const fileUrl = await uploadFile(imageFile);
-                    updatedFormData.imageUrl = fileUrl;
+                    if (updatedFormData.type === 'VIDEO') {
+                        updatedFormData.videoUrl = fileUrl;
+                        updatedFormData.imageUrl = ''; // Clear image url if it was there? or keep as thumbnail? 
+                        // Ideally we might want a thumbnail for video, but for now let's just use empty or maybe the same URL if backend handles it? 
+                        // No, backend model has separate fields. 
+                        // Let's assume for now we don't auto-generate thumbnail, so imageUrl might be empty.
+                    } else {
+                        updatedFormData.imageUrl = fileUrl;
+                    }
                 }
 
                 const url = isEdit
@@ -305,12 +332,19 @@ const GalleryManagement = () => {
                 });
 
                 if (response.ok) {
+                    const responseData = await response.json();
+
+                    if (responseData.pendingChange) {
+                        toast.success('Media item submitted for approval');
+                    } else {
+                        toast.success(isEdit ? 'Item updated successfully' : 'Item created successfully');
+                    }
+
                     fetchMedia();
                     closeModal();
-                    toast.success(isEdit ? 'Gallery item updated successfully' : 'Gallery item created successfully');
                 } else {
                     const errorData = await response.json().catch(() => ({}));
-                    toast.error(errorData.error || 'Failed to save gallery item');
+                    toast.error(errorData.error || 'Failed to save item');
                 }
             }
         } catch (error: any) {
@@ -337,8 +371,15 @@ const GalleryManagement = () => {
             });
 
             if (response.ok) {
+                const data = await response.json().catch(() => ({}));
+
+                if (data.pendingChange) {
+                    toast.success('Deletion submitted for approval');
+                } else {
+                    toast.success('Gallery item deleted successfully');
+                }
+
                 fetchMedia();
-                toast.success('Gallery item deleted successfully');
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
             } else {
@@ -350,12 +391,18 @@ const GalleryManagement = () => {
         }
     };
 
-    const openModal = (media?: MediaItem, albumMode: boolean = false) => {
+    const openModal = (media?: MediaItem, albumMode: boolean = false, type?: string) => {
         setIsAlbumMode(albumMode);
         if (media) {
             setCurrentMedia(media);
             setFormData(media);
-            setImagePreview(media.imageUrl || '');
+            // If it's a video, use videoUrl as preview if available, else imageUrl
+            if (media.type === 'VIDEO') {
+                setImagePreview(media.videoUrl || media.imageUrl || '');
+            } else {
+                setImagePreview(media.imageUrl || '');
+            }
+
             if (media.type === 'ALBUM' && media.galleryImages) {
                 setIsAlbumMode(true);
                 setExistingGalleryImages(media.galleryImages);
@@ -377,7 +424,7 @@ const GalleryManagement = () => {
                 imageUrl: '',
                 videoUrl: '',
                 category: 'GALLERY',
-                type: 'GALLERY',
+                type: type || (albumMode ? 'ALBUM' : 'GALLERY'), // Default based on mode or explicit type
                 publishedDate: new Date().toISOString().split('T')[0],
                 featured: false,
                 status: 'PUBLISHED',
@@ -419,24 +466,39 @@ const GalleryManagement = () => {
                     <p className="text-gray-400 text-sm mt-1">Manage homepage gallery images</p>
                 </div>
                 <div className="flex gap-3">
-                    <button
-                        onClick={() => {
-                            setIsAlbumMode(true);
-                            openModal(undefined, true);
-                        }}
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
-                    >
-                        <Plus size={20} /> Add Album
-                    </button>
-                    <button
-                        onClick={() => {
-                            setIsAlbumMode(false);
-                            openModal(undefined, false);
-                        }}
-                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
-                    >
-                        <Plus size={20} /> Add Media
-                    </button>
+                    {activeTab === 'albums' && (
+                        <button
+                            onClick={() => {
+                                setIsAlbumMode(true);
+                                openModal(undefined, true);
+                            }}
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
+                        >
+                            <Plus size={20} /> Add Album
+                        </button>
+                    )}
+                    {activeTab === 'images' && (
+                        <button
+                            onClick={() => {
+                                setIsAlbumMode(false);
+                                openModal(undefined, false, 'GALLERY');
+                            }}
+                            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
+                        >
+                            <Plus size={20} /> Add Image
+                        </button>
+                    )}
+                    {activeTab === 'videos' && (
+                        <button
+                            onClick={() => {
+                                setIsAlbumMode(false);
+                                openModal(undefined, false, 'VIDEO');
+                            }}
+                            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
+                        >
+                            <Plus size={20} /> Add Video
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -507,6 +569,11 @@ const GalleryManagement = () => {
                                             </div>
                                         ))}
                                     </div>
+                                ) : item.type === 'VIDEO' && item.videoUrl ? (
+                                    <video
+                                        src={item.videoUrl}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
                                 ) : item.imageUrl ? (
                                     <img
                                         src={item.imageUrl}
@@ -576,7 +643,7 @@ const GalleryManagement = () => {
                         >
                             <div className="p-6 border-b border-white/10 flex justify-between items-center bg-[#0f1e3a]">
                                 <h2 className="text-xl font-bold text-white">
-                                    {currentMedia ? `Edit ${isAlbumMode ? 'Album' : 'Media'}` : isAlbumMode ? 'Create Album' : 'Add Media'}
+                                    {currentMedia ? `Edit ${isAlbumMode ? 'Album' : activeTab === 'videos' ? 'Video' : 'Image'}` : isAlbumMode ? 'Create Album' : activeTab === 'videos' ? 'Add Video' : 'Add Image'}
                                 </h2>
                                 <button onClick={closeModal}><X className="text-gray-400" /></button>
                             </div>
@@ -592,7 +659,7 @@ const GalleryManagement = () => {
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         required={!isAlbumMode}
                                         className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
-                                        placeholder={isAlbumMode ? "Album title (optional)" : "Image title"}
+                                        placeholder={isAlbumMode ? "Album title (optional)" : activeTab === 'videos' ? "Video title" : "Image title"}
                                     />
                                 </div>
 
@@ -625,7 +692,7 @@ const GalleryManagement = () => {
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-400">
-                                        {isAlbumMode ? 'Images (Multiple)' : 'Image'}
+                                        {isAlbumMode ? 'Images (Multiple)' : activeTab === 'videos' ? 'Video' : 'Image'}
                                     </label>
                                     <div
                                         onDrop={handleFileDrop}
@@ -633,7 +700,7 @@ const GalleryManagement = () => {
                                         className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer relative"
                                     >
                                         {/* Display Existing Images + New Preview Images */}
-                                        {(existingGalleryImages.length > 0 || imagePreviews.length > existingGalleryImages.length) ? (
+                                        {(existingGalleryImages.length > 0 || imagePreviews.length > existingGalleryImages.length) && isAlbumMode ? (
                                             <div className="grid grid-cols-3 gap-3">
                                                 {/* We just use imagePreviews because it should contain both existing AND new previews */}
                                                 {imagePreviews.map((preview, index) => (
@@ -676,7 +743,11 @@ const GalleryManagement = () => {
                                             </div>
                                         ) : !isAlbumMode && imagePreview ? (
                                             <div className="relative">
-                                                <img src={imagePreview} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                                                {activeTab === 'videos' || (currentMedia && currentMedia.type === 'VIDEO') ? (
+                                                    <video src={imagePreview} controls className="max-h-48 mx-auto rounded-lg w-full" />
+                                                ) : (
+                                                    <img src={imagePreview} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                                                )}
                                                 <button
                                                     type="button"
                                                     onClick={() => {
@@ -692,12 +763,14 @@ const GalleryManagement = () => {
                                             <>
                                                 <Upload className="mx-auto mb-2 text-gray-500" size={32} />
                                                 <p className="text-gray-400 mb-2">
-                                                    {isAlbumMode ? 'Drag and drop multiple images here, or click to browse' : 'Drag and drop an image here, or click to browse'}
+                                                    {isAlbumMode ? 'Drag and drop multiple images here, or click to browse' : activeTab === 'videos' ? 'Drag and drop a video here, or click to browse' : 'Drag and drop an image here, or click to browse'}
                                                 </p>
-                                                <p className="text-xs text-gray-600">Supports: JPG, PNG, GIF, WebP</p>
+                                                <p className="text-xs text-gray-600">
+                                                    {activeTab === 'videos' ? "Supports: MP4, WebM" : "Supports: JPG, PNG, GIF, WebP"}
+                                                </p>
                                                 <input
                                                     type="file"
-                                                    accept="image/*"
+                                                    accept={activeTab === 'videos' ? "video/*" : "image/*"}
                                                     multiple={isAlbumMode}
                                                     onChange={handleFileSelect}
                                                     className="absolute inset-0 opacity-0 cursor-pointer"
@@ -714,7 +787,7 @@ const GalleryManagement = () => {
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         rows={3}
                                         className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
-                                        placeholder="Image description..."
+                                        placeholder={activeTab === 'videos' ? "Video description..." : "Image description..."}
                                     />
                                 </div>
 
@@ -750,7 +823,7 @@ const GalleryManagement = () => {
                                                 <span>{uploadProgress}% Uploading...</span>
                                             </div>
                                         ) : (
-                                            currentMedia ? 'Update Image' : isAlbumMode ? 'Upload Album' : 'Add Image'
+                                            currentMedia ? (activeTab === 'videos' ? 'Update Video' : 'Update Image') : isAlbumMode ? 'Upload Album' : activeTab === 'videos' ? 'Add Video' : 'Add Image'
                                         )}
                                     </button>
                                 </div>

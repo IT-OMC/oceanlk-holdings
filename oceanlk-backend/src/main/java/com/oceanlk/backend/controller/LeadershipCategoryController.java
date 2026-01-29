@@ -71,18 +71,17 @@ public class LeadershipCategoryController {
 
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteCategory(@PathVariable String code) {
-        java.util.Optional<LeadershipCategory> categoryOpt = repository.findByCode(code.toUpperCase());
-        if (categoryOpt.isPresent()) {
-            LeadershipCategory category = categoryOpt.get();
-            repository.delete(category);
+        return repository.findByCode(code.toUpperCase())
+                .<ResponseEntity<Void>>map(category -> {
+                    repository.delete(java.util.Objects.requireNonNull(category));
 
-            // Log Action
-            auditLogService.logAction("admin", "DELETE", "LeadershipCategory", code,
-                    "Deleted leadership category: " + category.getTitle());
+                    // Log Action
+                    auditLogService.logAction("admin", "DELETE", "LeadershipCategory", code,
+                            "Deleted leadership category: " + category.getTitle());
 
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     private List<LeadershipCategory> initializeDefaultCategories() {

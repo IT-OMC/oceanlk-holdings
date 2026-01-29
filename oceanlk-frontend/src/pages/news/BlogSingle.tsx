@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import SectionWrapper from '../../components/SectionWrapper';
@@ -23,13 +23,7 @@ const BlogSingle = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (id) {
-            fetchBlog();
-        }
-    }, [id]);
-
-    const fetchBlog = async () => {
+    const fetchBlog = useCallback(async () => {
         try {
             const response = await fetch(`/api/media/${id}`);
             if (response.ok) {
@@ -57,7 +51,13 @@ const BlogSingle = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        if (id) {
+            fetchBlog();
+        }
+    }, [id, fetchBlog]);
 
     if (isLoading) {
         return (
