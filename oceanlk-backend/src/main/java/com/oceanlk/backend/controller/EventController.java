@@ -85,6 +85,11 @@ public class EventController {
         if (isSuperAdmin) {
             // Superadmin: Direct publish
             Event createdEvent = eventService.createEvent(event);
+
+            // Record in history for Super Admin
+            pendingChangeService.createApprovedChange(
+                    "Event", createdEvent.getId(), "CREATE", principal.getName(), createdEvent, null);
+
             auditLogService.logAction(principal.getName(), "CREATE", "Event", createdEvent.getId(),
                     "Created event: " + createdEvent.getTitle());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
@@ -111,7 +116,15 @@ public class EventController {
 
             if (isSuperAdmin) {
                 // Superadmin: Direct update
+                // Capture original state for history tracking
+                Event originalEvent = eventService.getEventById(id).orElse(null);
+
                 Event updatedEvent = eventService.updateEvent(id, event);
+
+                // Record in history for Super Admin
+                pendingChangeService.createApprovedChange(
+                        "Event", id, "UPDATE", principal.getName(), updatedEvent, originalEvent);
+
                 auditLogService.logAction(principal.getName(), "UPDATE", "Event", id,
                         "Updated event: " + updatedEvent.getTitle());
                 return ResponseEntity.ok(updatedEvent);
@@ -150,7 +163,15 @@ public class EventController {
 
         if (isSuperAdmin) {
             // Superadmin: Direct delete
+            // Get original event for history tracking
+            Event originalEvent = eventService.getEventById(id).orElse(null);
+
             eventService.deleteEvent(id);
+
+            // Record in history for Super Admin
+            pendingChangeService.createApprovedChange(
+                    "Event", id, "DELETE", principal.getName(), originalEvent, originalEvent);
+
             auditLogService.logAction(principal.getName(), "DELETE", "Event", id, "Deleted event ID: " + id);
             return ResponseEntity.noContent().build();
         } else {

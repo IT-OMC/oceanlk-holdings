@@ -28,6 +28,8 @@ public class PendingChangeController {
 
     private final com.oceanlk.backend.repository.MediaItemRepository mediaItemRepository;
     private final com.oceanlk.backend.repository.GlobalMetricRepository globalMetricRepository;
+    private final com.oceanlk.backend.repository.CorporateLeaderRepository corporateLeaderRepository;
+    private final com.oceanlk.backend.repository.PageContentRepository pageContentRepository;
 
     /**
      * Get all pending changes (Superadmin only)
@@ -161,6 +163,12 @@ public class PendingChangeController {
             case "GlobalMetric":
                 handleGlobalMetricChange(pendingChange, action);
                 break;
+            case "CorporateLeader":
+                handleCorporateLeaderChange(pendingChange, action);
+                break;
+            case "PageContent":
+                handlePageContentChange(pendingChange, action);
+                break;
             default:
                 throw new RuntimeException("Unsupported entity type: " + entityType);
         }
@@ -283,6 +291,39 @@ public class PendingChangeController {
                 break;
             case "DELETE":
                 globalMetricRepository.deleteById(metric.getId());
+                break;
+        }
+    }
+
+    private void handleCorporateLeaderChange(PendingChange pendingChange, String action) {
+        CorporateLeader leader = pendingChangeService.parseChangeData(pendingChange.getChangeData(),
+                CorporateLeader.class);
+
+        switch (action) {
+            case "CREATE":
+                leader.setId(null);
+                corporateLeaderRepository.save(leader);
+                break;
+            case "UPDATE":
+                corporateLeaderRepository.save(leader);
+                break;
+            case "DELETE":
+                corporateLeaderRepository.deleteById(leader.getId());
+                break;
+        }
+    }
+
+    private void handlePageContentChange(PendingChange pendingChange, String action) {
+        PageContent content = pendingChangeService.parseChangeData(pendingChange.getChangeData(), PageContent.class);
+
+        switch (action) {
+            case "CREATE":
+            case "UPDATE":
+                // For PageContent, it's usually upsert logic
+                pageContentRepository.save(content);
+                break;
+            case "DELETE":
+                pageContentRepository.deleteById(content.getId());
                 break;
         }
     }

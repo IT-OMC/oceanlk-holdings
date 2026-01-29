@@ -7,6 +7,7 @@ import {
     Eye, Filter, ArrowLeft,
     User, Calendar, Search
 } from 'lucide-react';
+import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
 
 interface PendingChange {
     id: string;
@@ -142,14 +143,6 @@ const PendingChanges: React.FC = () => {
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString();
-    };
-
-    const parseChangeData = (dataString: string) => {
-        try {
-            return JSON.parse(dataString);
-        } catch {
-            return null;
-        }
     };
 
     // Get the current dataset based on active tab
@@ -476,33 +469,12 @@ const PendingChanges: React.FC = () => {
                                 )}
 
                                 {/* Data Comparison */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {selectedChange.action === 'UPDATE' && selectedChange.originalData && (
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="text-sm font-semibold text-gray-400">Original Data</h3>
-                                                <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">Before</span>
-                                            </div>
-                                            <pre className="bg-[#0B1120] p-4 rounded-lg border border-gray-800 overflow-x-auto text-xs text-red-300 font-mono h-[300px]">
-                                                {JSON.stringify(parseChangeData(selectedChange.originalData), null, 2)}
-                                            </pre>
-                                        </div>
-                                    )}
-
-                                    <div className={`space-y-2 ${selectedChange.action !== 'UPDATE' ? 'col-span-full' : ''}`}>
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="text-sm font-semibold text-gray-400">
-                                                {selectedChange.action === 'DELETE' ? 'Data to Delete' : 'New Data'}
-                                            </h3>
-                                            <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">
-                                                {selectedChange.action === 'DELETE' ? 'Target' : 'After'}
-                                            </span>
-                                        </div>
-                                        <pre className="bg-[#0B1120] p-4 rounded-lg border border-gray-800 overflow-x-auto text-xs text-emerald-300 font-mono h-[300px]">
-                                            {JSON.stringify(parseChangeData(selectedChange.changeData), null, 2)}
-                                        </pre>
-                                    </div>
-                                </div>
+                                <ChangeVisualizer
+                                    entityType={selectedChange.entityType}
+                                    action={selectedChange.action}
+                                    changeData={selectedChange.changeData}
+                                    originalData={selectedChange.originalData}
+                                />
 
                                 {/* Review Actions (Super Admin Only) */}
                                 {activeTab === 'pending-approvals' && isSuperAdmin && selectedChange.status === 'PENDING' && (

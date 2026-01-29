@@ -171,6 +171,10 @@ public class MediaController {
             if (isSuperAdmin) {
                 MediaItem savedItem = mediaRepository.save(mediaItem);
 
+                // Record in history for Super Admin
+                pendingChangeService.createApprovedChange(
+                        "MediaItem", savedItem.getId(), "CREATE", principal.getName(), savedItem, null);
+
                 // Log Action
                 auditLogService.logAction(principal.getName(), "CREATE", "MediaItem", savedItem.getId(),
                         "Created media item: " + savedItem.getTitle() + " (Category: " + savedItem.getCategory() + ")");
@@ -234,6 +238,9 @@ public class MediaController {
         }
 
         // Super Admin - Proceed with update
+        // Capture original state for history tracking
+        MediaItem existingOriginal = mediaRepository.findById(id).orElse(null);
+
         // Update fields
         mediaItem.setTitle(updatedItem.getTitle());
         mediaItem.setDescription(updatedItem.getDescription());
@@ -270,6 +277,10 @@ public class MediaController {
         }
 
         MediaItem savedItem = mediaRepository.save(mediaItem);
+
+        // Record in history for Super Admin
+        pendingChangeService.createApprovedChange(
+                "MediaItem", id, "UPDATE", principal.getName(), savedItem, existingOriginal);
 
         // Log Action
         auditLogService.logAction(principal.getName(), "UPDATE", "MediaItem", savedItem.getId(),
@@ -326,6 +337,10 @@ public class MediaController {
         }
 
         mediaRepository.deleteById(id);
+
+        // Record in history for Super Admin
+        pendingChangeService.createApprovedChange(
+                "MediaItem", id, "DELETE", principal.getName(), mediaItem, mediaItem);
 
         // Log Action
         auditLogService.logAction(principal.getName(), "DELETE", "MediaItem", id,

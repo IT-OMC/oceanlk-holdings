@@ -38,6 +38,29 @@ public class PendingChangeService {
     }
 
     /**
+     * Create an automatically approved change for Super Admin history tracking
+     */
+    public PendingChange createApprovedChange(String entityType, String entityId, String action,
+            String submittedBy, Object changeData, Object originalData) {
+        try {
+            String changeDataJson = objectMapper.writeValueAsString(changeData);
+            String originalDataJson = originalData != null ? objectMapper.writeValueAsString(originalData) : null;
+
+            PendingChange pendingChange = new PendingChange(
+                    entityType, entityId, action, submittedBy, changeDataJson, originalDataJson);
+
+            pendingChange.setStatus("APPROVED");
+            pendingChange.setReviewedBy(submittedBy);
+            pendingChange.setReviewedAt(LocalDateTime.now());
+            pendingChange.setReviewComments("Automatically approved for Super Admin");
+
+            return pendingChangeRepository.save(pendingChange);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error serializing change data", e);
+        }
+    }
+
+    /**
      * Get all pending changes with PENDING status
      */
     public List<PendingChange> getAllPendingChanges() {

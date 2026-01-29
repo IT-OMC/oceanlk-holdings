@@ -60,6 +60,11 @@ public class JobOpportunityController {
 
             if (isSuperAdmin) {
                 JobOpportunity savedJob = jobRepository.save(job);
+
+                // Record in history for Super Admin
+                pendingChangeService.createApprovedChange(
+                        "JobOpportunity", savedJob.getId(), "CREATE", principal.getName(), savedJob, null);
+
                 auditLogService.logAction(principal.getName(), "CREATE", "JobOpportunity", savedJob.getId(),
                         "Created job: " + savedJob.getTitle());
                 return ResponseEntity.status(HttpStatus.CREATED).body(savedJob);
@@ -95,6 +100,9 @@ public class JobOpportunityController {
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
         if (isSuperAdmin) {
+            // Capture original state for history tracking
+            JobOpportunity existingOriginal = jobRepository.findById(id).orElse(null);
+
             // Update fields
             job.setTitle(updatedJob.getTitle());
             job.setCompany(updatedJob.getCompany());
@@ -109,6 +117,11 @@ public class JobOpportunityController {
             }
 
             JobOpportunity savedJob = jobRepository.save(job);
+
+            // Record in history for Super Admin
+            pendingChangeService.createApprovedChange(
+                    "JobOpportunity", id, "UPDATE", principal.getName(), savedJob, existingOriginal);
+
             auditLogService.logAction(principal.getName(), "UPDATE", "JobOpportunity", savedJob.getId(),
                     "Updated job: " + savedJob.getTitle());
             return ResponseEntity.ok(savedJob);
@@ -146,6 +159,11 @@ public class JobOpportunityController {
 
         if (isSuperAdmin) {
             jobRepository.deleteById(id);
+
+            // Record in history for Super Admin
+            pendingChangeService.createApprovedChange(
+                    "JobOpportunity", id, "DELETE", principal.getName(), existing, existing);
+
             auditLogService.logAction(principal.getName(), "DELETE", "JobOpportunity", id, "Deleted job ID: " + id);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Job deleted successfully");

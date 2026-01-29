@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './EventsManagement.css';
+import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
 
 interface PendingChange {
     id: string;
@@ -69,14 +70,6 @@ const MyPendingChanges: React.FC = () => {
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString();
-    };
-
-    const parseChangeData = (dataString: string) => {
-        try {
-            return JSON.parse(dataString);
-        } catch {
-            return null;
-        }
     };
 
     const filteredChanges = statusFilter === 'all'
@@ -293,33 +286,12 @@ const MyPendingChanges: React.FC = () => {
                             )}
                         </div>
 
-                        {selectedChange.action === 'UPDATE' && selectedChange.originalData && (
-                            <div style={{ marginBottom: '1.5rem' }}>
-                                <h3>Original Data:</h3>
-                                <pre style={{
-                                    backgroundColor: '#f9fafb',
-                                    padding: '1rem',
-                                    borderRadius: '4px',
-                                    overflow: 'auto',
-                                    fontSize: '0.875rem'
-                                }}>
-                                    {JSON.stringify(parseChangeData(selectedChange.originalData), null, 2)}
-                                </pre>
-                            </div>
-                        )}
-
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <h3>{selectedChange.action === 'DELETE' ? 'Data to Delete:' : 'New Data:'}</h3>
-                            <pre style={{
-                                backgroundColor: '#f9fafb',
-                                padding: '1rem',
-                                borderRadius: '4px',
-                                overflow: 'auto',
-                                fontSize: '0.875rem'
-                            }}>
-                                {JSON.stringify(parseChangeData(selectedChange.changeData), null, 2)}
-                            </pre>
-                        </div>
+                        <ChangeVisualizer
+                            entityType={selectedChange.entityType}
+                            action={selectedChange.action}
+                            changeData={selectedChange.changeData}
+                            originalData={selectedChange.originalData}
+                        />
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <button
