@@ -1,11 +1,14 @@
 package com.oceanlk.backend.controller;
 
+import com.oceanlk.backend.dto.UserCreateRequest;
+import com.oceanlk.backend.dto.UserUpdateRequest;
 import com.oceanlk.backend.model.AdminUser;
 import com.oceanlk.backend.service.AdminUserService;
 import com.oceanlk.backend.service.AuditLogService;
 import com.oceanlk.backend.service.EmailService;
 import com.oceanlk.backend.service.OtpService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,20 +38,27 @@ public class AdminManagementController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> addAdmin(@RequestBody AdminUser admin, @RequestHeader("Authorization") String auth) {
-        if (adminUserService.findByUsername(admin.getUsername()).isPresent()) {
+    public ResponseEntity<?> addAdmin(@Valid @RequestBody UserCreateRequest request,
+            @RequestHeader("Authorization") String auth) {
+        if (adminUserService.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.status(400).body(Map.of("error", "Username already exists"));
         }
-        if (adminUserService.findByEmail(admin.getEmail()).isPresent()) {
+        if (adminUserService.findByEmail(request.getEmail()).isPresent()) {
             return ResponseEntity.status(400).body(Map.of("error", "Email already exists"));
         }
 
-        // Initialize fields that might not be set from the frontend
+        AdminUser admin = new AdminUser(
+                request.getName(),
+                request.getUsername(),
+                request.getPassword(),
+                request.getEmail(),
+                request.getPhone(),
+                request.getRole() == null ? "ADMIN" : request.getRole());
         admin.setActive(true);
         admin.setVerified(false);
         admin.setCreatedDate(java.time.LocalDateTime.now());
 
-        String plainPassword = admin.getPassword();
+        String plainPassword = request.getPassword();
         AdminUser created = adminUserService.createAdmin(admin);
 
         // Send welcome email
@@ -73,24 +83,25 @@ public class AdminManagementController {
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> updateAdmin(@PathVariable String id, @RequestBody AdminUser adminDetails) {
+    public ResponseEntity<?> updateAdmin(@PathVariable String id, @Valid @RequestBody UserUpdateRequest request) {
         return adminUserService.findById(id)
                 .map(existingAdmin -> {
-                    // Update only specific fields to avoid overwriting password or sensitive data
-                    // unintentionally
-                    existingAdmin.setName(adminDetails.getName());
-                    existingAdmin.setEmail(adminDetails.getEmail());
-                    existingAdmin.setPhone(adminDetails.getPhone());
-                    existingAdmin.setRole(adminDetails.getRole());
-                    existingAdmin.setActive(adminDetails.isActive());
-                    // Username is usually kept constant, but let's allow it if provided and not
-                    // conflicting
-                    if (adminDetails.getUsername() != null
-                            && !adminDetails.getUsername().equals(existingAdmin.getUsername())) {
-                        if (adminUserService.findByUsername(adminDetails.getUsername()).isPresent()) {
+                    if (request.getName() != null)
+                        existingAdmin.setName(request.getName());
+                    if (request.getEmail() != null)
+                        existingAdmin.setEmail(request.getEmail());
+                    if (request.getPhone() != null)
+                        existingAdmin.setPhone(request.getPhone());
+                    if (request.getRole() != null)
+                        existingAdmin.setRole(request.getRole());
+                    if (request.getActive() != null)
+                        existingAdmin.setActive(request.getActive());
+
+                    if (request.getUsername() != null && !request.getUsername().equals(existingAdmin.getUsername())) {
+                        if (adminUserService.findByUsername(request.getUsername()).isPresent()) {
                             return ResponseEntity.status(400).body(Map.of("error", "Username already exists"));
                         }
-                        existingAdmin.setUsername(adminDetails.getUsername());
+                        existingAdmin.setUsername(request.getUsername());
                     }
 
                     AdminUser updated = adminUserService.updateAdmin(existingAdmin);

@@ -1,7 +1,9 @@
 package com.oceanlk.backend.controller;
 
+import com.oceanlk.backend.dto.NotificationRequest;
 import com.oceanlk.backend.model.Notification;
 import com.oceanlk.backend.service.NotificationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +20,18 @@ import java.util.Map;
 public class NotificationController {
 
     private final NotificationService notificationService;
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<?> createNotification(@Valid @RequestBody NotificationRequest request) {
+        notificationService.createNotification(
+                request.getTitle(),
+                request.getMessage(),
+                request.getType(),
+                request.getRecipientRole(),
+                request.getLink());
+        return ResponseEntity.ok(Map.of("message", "Notification created successfully"));
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
