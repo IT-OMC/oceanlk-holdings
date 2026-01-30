@@ -96,7 +96,7 @@ const MetricCard = ({ value, label, theme, index, icon: Icon }: MetricCardProps)
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1, duration: 0.6, type: "spring" }}
-            className={`relative group h-full p-6 flex flex-col items-center justify-between
+            className={`relative group h-full p-4 md:p-6 flex flex-col items-center justify-between
                 backdrop-blur-sm rounded-2xl border transition-all duration-500
                 hover:shadow-xl hover:-translate-y-2
                 bg-white/80 ${currentTheme.border} ${currentTheme.bg}
@@ -187,7 +187,7 @@ const GlobalMetrics = () => {
                 </motion.div>
 
                 {/* Metrics Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
                     {displayMetrics.map((metric, index) => (
                         <MetricCard
                             key={metric.id || index}

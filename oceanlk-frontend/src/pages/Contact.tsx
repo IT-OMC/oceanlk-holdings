@@ -182,7 +182,7 @@ const Contact = () => {
 
                     {/* Hero Title */}
                     <motion.h1
-                        className="text-6xl md:text-8xl font-bold mb-6 leading-tight"
+                        className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-tight"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
@@ -208,7 +208,7 @@ const Contact = () => {
                 </motion.div>
 
                 {/* Contact Info Cards */}
-                <div className="grid md:grid-cols-3 gap-6 mb-20">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
                     {contactInfo.map((info, index) => {
                         const Icon = info.icon;
                         return (
@@ -427,7 +427,7 @@ const Contact = () => {
                     >
                         <h2 className="text-3xl font-bold mb-6 text-white">{t('contact.map.title')}</h2>
                         <div
-                            className="rounded-2xl overflow-hidden h-[600px] relative"
+                            className="rounded-2xl overflow-hidden h-[300px] md:h-[400px] lg:h-[600px] relative"
                             style={{
                                 background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
                                 backdropFilter: 'blur(24px)',

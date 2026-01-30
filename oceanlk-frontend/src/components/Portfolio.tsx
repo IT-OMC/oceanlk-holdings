@@ -215,8 +215,8 @@ const Portfolio = () => {
         <section id="portfolio" className="relative py-24 overflow-hidden bg-slate-950">
             {/* Background Atmosphere */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-900/10 rounded-full blur-[120px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-full max-w-[800px] h-[400px] md:h-[600px] lg:h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-full max-w-[800px] h-[400px] md:h-[600px] lg:h-[800px] bg-cyan-900/10 rounded-full blur-[120px]" />
                 {/* Tech Grid */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
             </div>
@@ -256,7 +256,7 @@ const Portfolio = () => {
                     </motion.div>
 
                     {/* Solar System */}
-                    <div className="relative h-[600px] flex items-center justify-center perspective-1000">
+                    <div className="relative h-[400px] md:h-[500px] lg:h-[600px] flex items-center justify-center perspective-1000">
                         {/* Orbit Track Visuals - Static */}
                         <div className="absolute w-[560px] h-[560px] rounded-full border border-white/5" />
                         <div className="absolute w-[560px] h-[560px] rounded-full border border-white/5 animate-pulse opacity-50" />

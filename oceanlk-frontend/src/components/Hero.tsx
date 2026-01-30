@@ -120,8 +120,8 @@ const Hero = () => {
 
 
 
-                {/* Social Media Sidebar */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-6 py-6 px-3 bg-white rounded-l-2xl shadow-lg transform translate-x-0 transition-transform duration-300">
+                {/* Social Media Sidebar - Hidden on Mobile/Tablet */}
+                <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6 py-6 px-3 bg-white rounded-l-2xl shadow-lg transform translate-x-0 transition-transform duration-300">
                     {/* Facebook */}
                     <a href="#" className="hover:scale-110 transition-transform">
                         <svg className="w-7 h-7" viewBox="0 0 24 24" fill="#1877F2">
@@ -173,14 +173,14 @@ const Hero = () => {
 
             {/* Bottom Navigation Circles */}
             <div className="absolute bottom-16 lg:bottom-24 left-0 right-0 z-20 px-4 lg:px-6">
-                <div className="w-full max-w-[98%] mx-auto flex justify-between items-center overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 gap-4 no-scrollbar">
+                <div className="w-full max-w-[98%] mx-auto flex flex-wrap justify-center items-center gap-2 md:gap-4 pb-2 lg:pb-0">
                     {sectors.map((sector, index) => {
                         const isActive = currentSlide === index;
                         return (
                             <button
                                 key={sector.id}
                                 onClick={() => setCurrentSlide(index)}
-                                className="group flex-1 flex items-center gap-4 focus:outline-none min-w-fit lg:min-w-0"
+                                className="group flex items-center gap-2 md:gap-4 focus:outline-none"
                             >
                                 <div className="relative">
                                     {/* Dotted Outline Ring - Only Visible when Active */}

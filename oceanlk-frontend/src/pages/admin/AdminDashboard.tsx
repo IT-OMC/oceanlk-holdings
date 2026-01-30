@@ -174,7 +174,7 @@ const AdminDashboard = () => {
         >
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {statCards.map((stat, index) => (
                     <motion.div
                         key={index}
@@ -183,7 +183,7 @@ const AdminDashboard = () => {
                         className="relative group"
                     >
                         <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300`} />
-                        <div className="relative p-6 bg-[#0f1e3a] border border-white/10 rounded-2xl overflow-visible hover:border-white/20 transition-colors z-0">
+                        <div className="relative p-4 md:p-6 bg-[#0f1e3a] border border-white/10 rounded-2xl overflow-visible hover:border-white/20 transition-colors z-0">
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${stat.color} p-2.5 flex items-center justify-center shadow-lg`}>
                                     <stat.icon className="text-white w-6 h-6" />
@@ -193,7 +193,7 @@ const AdminDashboard = () => {
                                     onSelect={(period) => handlePeriodChange(stat.key, period)}
                                 />
                             </div>
-                            <h3 className="text-3xl font-bold text-white mb-1">{stat.value}</h3>
+                            <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</h3>
                             <p className="text-gray-400 text-sm mb-4">{stat.title}</p>
 
                             <Link
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Quick Actions / Recent Activity could go here */}
-            <motion.div variants={itemVars} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <motion.div variants={itemVars} className="grid grid-cols-1 gap-6 md:gap-8">
                 <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6">
                     <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
                     <div className="space-y-4">
