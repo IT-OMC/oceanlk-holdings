@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "首页",
+        "companies": "公司",
+        "corporate": "企业",
+        "news": "新闻",
+        "careers": "招聘",
+        "contact": "联系我们",
+        "allCompanies": "所有公司",
+        "profile": "简介",
+        "leadership": "领导团队",
+        "blogs": "博客",
+        "articles": "新闻",
+        "media": "媒体",
+        "culture": "文化",
+        "onboard": "加入",
+        "talentPool": "人才库"
+    },
+    "hero": {
+        "exploreButton": "探索部门"
+    },
+    "home": {
+        "memberships": {
+            "label": "全球合作",
+            "title": "我们的",
+            "titleAccent": "会员资格",
+            "description": "我们自豪地成为领先全球组织的成员，致力于卓越运营、可持续发展和行业最佳实践。",
+            "activeBadge": "活跃",
+            "memberSince": "成员自"
+        },
+        "metrics": {
+            "title": "全球影响力",
+            "subtitle": "为全球海运物流提供动力",
+            "activeRoutes": "活跃航线",
+            "weeklySailings": "每周航班",
+            "annualCapacity": "年度TEU容量",
+            "globalPorts": "全球港口",
+            "countriesServed": "服务国家"
+        },
+        "gallery": {
+            "label": "画廊",
+            "title": "我们的",
+            "titleAccent": "旅程",
+            "description": "通过我们的镜头看世界：照片和视频中的冒险",
+            "viewMore": "查看更多",
+            "filterAll": "全部"
+        },
+        "updates": {
+            "title": "最新",
+            "titleAccent": "动态",
+            "description": "与我们子公司的最新消息保持联系",
+            "followText": "在Instagram上关注我们，获取所有公司的实时更新"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "OCH的生活",
+        "subtitle": "了解我们的日常节奏和价值观。",
+        "islandwideOffices": "全岛办事处",
+        "cards": {
+            "highlight": "亮点",
+            "community": "社区",
+            "testimonial": "推荐",
+            "coreValue": "核心价值",
+            "upcoming": "即将到来",
+            "stats": "统计",
+            "active": "活跃"
+        }
+    },
+    "contact": {
+        "badge": "联系我们",
+        "heroTitle1": "让我们开始",
+        "heroTitle2": "对话",
+        "heroDescription": "我们很乐意听到您的声音。无论您对我们的服务、合作伙伴关系或其他任何问题有疑问，我们的团队都随时准备回答您的所有问题。",
+        "info": {
+            "headOffice": "总部",
+            "phone": "电话",
+            "email": "电子邮件"
+        },
+        "form": {
+            "title": "给我们留言",
+            "nameLabel": "全名",
+            "namePlaceholder": "张三",
+            "emailLabel": "电子邮件",
+            "emailPlaceholder": "zhangsan@example.com",
+            "phoneLabel": "电话",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "主题",
+            "subjectPlaceholder": "选择主题",
+            "subjectGeneral": "一般咨询",
+            "subjectPartnership": "合作机会",
+            "subjectInvestment": "投资咨询",
+            "subjectCareer": "职业机会",
+            "subjectOther": "其他",
+            "messageLabel": "消息",
+            "messagePlaceholder": "告诉我们更多关于您的咨询...",
+            "submitButton": "发送消息",
+            "required": "*"
+        },
+        "map": {
+            "title": "找到我们"
+        }
+    },
+    "globalConnections": {
+        "title": "连接斯里兰卡",
+        "subtitle": "与世界",
+        "description": "位于全球贸易路线交汇处的战略位置。探索我们横跨大陆和海洋的航运网络。",
+        "dragHint": "拖动",
+        "scrollHint": "滚动",
+        "dragText": "旋转",
+        "scrollText": "缩放",
+        "weeklySailings": "每周航班",
+        "tonnageMoved": "运输吨位",
+        "transitTime": "运输时间",
+        "activeRoutes": "活跃航线",
+        "annualTonnage": "年度吨位",
+        "globalPorts": "全球港口"
+    },
+    "testimonials": {
+        "title": "客户",
+        "titleAccent": "推荐",
+        "description": "来自全球各地宝贵合作伙伴的成功故事"
+    },
+    "footer": {
+        "quickLinks": "快速链接",
+        "contact": "联系",
+        "allRightsReserved": "版权所有",
+        "privacyPolicy": "隐私政策",
+        "termsOfService": "服务条款"
+    }
+}

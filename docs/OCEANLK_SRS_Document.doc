@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>OCEAN LK SRS Document</title>
+    <style>
+        body { font-family: 'Calibri', 'Arial', sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; margin-top: 40px; }
+        h2 { color: #34495e; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        h3 { color: #16a085; margin-top: 25px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        code { background-color: #f1f1f1; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .mermaid { background-color: #eef; padding: 15px; border-radius: 5px; border: 1px solid #dde; font-family: monospace; white-space: pre-wrap; margin: 15px 0; }
+        blockquote { border-left: 4px solid #3498db; margin: 0; padding-left: 15px; color: #555; background-color: #ecf0f1; padding: 10px; }
+    </style>
+</head>
+<body>
+
+<h1>Ocean LK Holdings - Software Requirements Specification (SRS)</h1>
+<h2>Corporate Website & Management System</h2>
+
+<p><strong>Document Version:</strong> 1.0<br>
+<strong>Date:</strong> January 27, 2026<br>
+<strong>Prepared For:</strong> Chief Executive Officer<br>
+<strong>Project:</strong> Ocean LK Holdings Corporate Digital Platform</p>
+
+<hr>
+
+<h2>1. Executive Summary</h2>
+
+<h3>What is this system?</h3>
+<p>The Ocean LK Holdings Digital Platform is a comprehensive <strong>corporate website</strong> combined with a powerful <strong>content management system (CMS)</strong>. It allows your company to:</p>
+<ul>
+    <li><strong>Showcase</strong> your group of companies, leadership team, and achievements to the world</li>
+    <li><strong>Attract talent</strong> through a modern careers portal with job listings and talent pool collection</li>
+    <li><strong>Communicate</strong> with stakeholders through news, blogs, and media galleries</li>
+    <li><strong>Manage content</strong> securely with role-based access and approval workflows</li>
+    <li><strong>Track engagement</strong> through contact message management and analytics</li>
+</ul>
+
+<h3>Key Business Benefits</h3>
+<table>
+    <tr><th>Benefit</th><th>Description</th></tr>
+    <tr><td>🌍 <strong>Global Reach</strong></td><td>Website supports 13 languages including English, Arabic, Chinese, Hindi, and more</td></tr>
+    <tr><td>🔒 <strong>Enterprise Security</strong></td><td>Industry-standard JWT authentication with encrypted passwords</td></tr>
+    <tr><td>✅ <strong>Quality Control</strong></td><td>All content changes require Super Admin approval before going live</td></tr>
+    <tr><td>📊 <strong>Complete Audit Trail</strong></td><td>Every action is logged for compliance and accountability</td></tr>
+    <tr><td>📱 <strong>Modern Experience</strong></td><td>Responsive design works on phones, tablets, and computers</td></tr>
+</table>
+
+<h2>2. System Overview</h2>
+
+<h3>2.1 What the System Does</h3>
+<div class="mermaid">
+(Diagram Description: A visual flow showing Website Visitors viewing the public site, Admins managing content, and the Super Admin approving those changes, all connected to the central API and Database.)
+</div>
+
+<h3>2.2 Technical Architecture (Simplified)</h3>
+<table>
+    <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+    <tr><td><strong>Frontend</strong></td><td>React.js</td><td>What users see and interact with</td></tr>
+    <tr><td><strong>Backend</strong></td><td>Java Spring Boot</td><td>Processes requests and business logic</td></tr>
+    <tr><td><strong>Database</strong></td><td>MongoDB</td><td>Stores all content, users, and data</td></tr>
+    <tr><td><strong>Security</strong></td><td>JWT + BCrypt</td><td>Protects login and encrypts passwords</td></tr>
+</table>
+
+<h2>3. User Roles & Permissions</h2>
+
+<h3>3.1 Permission Matrix</h3>
+<table>
+    <tr><th>Action</th><th>Visitor</th><th>Admin</th><th>Super Admin</th></tr>
+    <tr><td>View public website</td><td>✅</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Submit contact form</td><td>✅</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Apply for jobs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Login to admin panel</td><td>❌</td><td>✅</td><td>✅</td></tr>
+    <tr><td>Create/Edit content</td><td>❌</td><td>✅*</td><td>✅</td></tr>
+    <tr><td>Approve content changes</td><td>❌</td><td>❌</td><td>✅</td></tr>
+    <tr><td>Manage other admins</td><td>❌</td><td>❌</td><td>✅</td></tr>
+</table>
+<p><em>*Admin changes require Super Admin approval before becoming visible on the public website</em></p>
+
+<h2>4. Functional Requirements</h2>
+
+<h3>4.1 Authentication & Access</h3>
+<ul>
+    <li>FR-1.1: System shall require username/password login for admin access</li>
+    <li>FR-1.2: Passwords shall be encrypted before storage</li>
+    <li>FR-1.3: Sessions shall expire after inactivity</li>
+    <li>FR-1.4: OTP verification for password reset</li>
+</ul>
+
+<h3>4.2 Multi-Language Support</h3>
+<p><strong>Supported Languages:</strong> Arabic, Chinese, Dutch, English, French, German, Greek, Hindi, Italian, Portuguese, Russian, Sinhala, Spanish</p>
+
+<h2>5. Security Requirements</h2>
+<table>
+    <tr><th>Category</th><th>Requirement</th></tr>
+    <tr><td><strong>Encryption</strong></td><td>All passwords encrypted using BCrypt algorithm</td></tr>
+    <tr><td><strong>Authorization</strong></td><td>Role-based access control (RBAC)</td></tr>
+    <tr><td><strong>Audit</strong></td><td>All admin actions logged with timestamp and user</td></tr>
+    <tr><td><strong>Backup</strong></td><td>Secure database backups daily</td></tr>
+</table>
+
+<h2>6. Glossary of Terms</h2>
+<table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><strong>Admin Panel</strong></td><td>The secure password-protected area where staff members manage website content.</td></tr>
+    <tr><td><strong>API</strong></td><td>The "bridge" that allows the public website to communicate with the database.</td></tr>
+    <tr><td><strong>Audit Log</strong></td><td>A permanent security record that tracks who performed what action and when.</td></tr>
+    <tr><td><strong>CMS</strong></td><td>Software that allows users to create and manage digital content without writing code.</td></tr>
+    <tr><td><strong>Frontend</strong></td><td>The visible part of the website that visitors interact with.</td></tr>
+    <tr><td><strong>GridFS</strong></td><td>A specialized storage system used for handling large files like user CVs.</td></tr>
+    <tr><td><strong>JWT</strong></td><td>A digital "key card" for secure login sessions.</td></tr>
+    <tr><td><strong>Maker-Checker</strong></td><td>A security workflow where one person creates changes and another must approve them.</td></tr>
+    <tr><td><strong>OTP</strong></td><td>One-Time Password used for identity verification.</td></tr>
+    <tr><td><strong>Super Admin</strong></td><td>The highest-level user role with full control over the system.</td></tr>
+</table>
+
+<hr>
+<p><em>Document prepared by the Development Team for Ocean LK Holdings</em></p>
+
+</body>
+</html>
