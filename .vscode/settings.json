@@ -1,13 +1,1 @@
-{
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "antigravity.customProviders": [
-        {
-            "name": "Ollama",
-            "baseUrl": "http://localhost:11434/v1",
-            "models": [
-                "qwen2.5-coder:14b"
-            ]
-        }
-    ]
-}
+{}

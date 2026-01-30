@@ -1,95 +1,97 @@
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause } from 'lucide-react';
-import { useState } from 'react';
+import { Play, Pause, Quote } from 'lucide-react';
 
-const voices = [
+const employees = [
     {
-        name: 'Sarah Chen',
-        role: 'Senior Developer',
-        quote: "The automomy here is incredible. I'm trusted to make architectural decisions.",
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200'
+        id: 1,
+        name: "David Chen",
+        role: "Senior Engineer",
+        word: "Family",
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
+        color: "bg-blue-500"
     },
     {
-        name: 'James Wilson',
-        role: 'Product Manager',
-        quote: "Every Friday demo day amazes me. The speed of innovation is unmatched.",
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200'
-    },
-    {
-        name: 'Priya Patel',
+        id: 2,
+        name: "Priya Patel",
         role: "UX Designer",
-        quote: "Design isn't an afterthought here. It's woven into every product decision.",
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200'
+        word: "Electric",
+        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
+        color: "bg-purple-500"
+    },
+    {
+        id: 3,
+        name: "James Wilson",
+        role: "Project Manager",
+        word: "Home",
+        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop",
+        color: "bg-teal-500"
+    },
+    {
+        id: 4,
+        name: "Sarah Kim",
+        role: "Marketing Lead",
+        word: "Limitless",
+        image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop",
+        color: "bg-rose-500"
     }
 ];
 
 const EmployeeVoices = () => {
-    const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+    const [playingId, setPlayingId] = useState<number | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const handlePlay = (id: number) => {
+        if (playingId === id) {
+            audioRef.current?.pause();
+            setPlayingId(null);
+        } else {
+            // In a real app, you'd set the source based on the ID
+            // audioRef.current.src = `/audio/${id}.mp3`;
+            // but for now we simulate
+            setPlayingId(id);
+            setTimeout(() => setPlayingId(null), 2000); // Simulate 2s clip
+        }
+    };
 
     return (
-        <div className="py-20">
-            <div className="max-w-7xl mx-auto px-6">
-                <h2 className="text-4xl font-bold mb-16 text-center">Voices of OceanLK</h2>
-
-                <div className="grid md:grid-cols-3 gap-8">
-                    {voices.map((voice, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="glass p-8 rounded-2xl relative group hover:bg-white/10 transition-colors"
-                        >
-                            <div className="flex items-center gap-4 mb-6">
-                                <img
-                                    src={voice.avatar}
-                                    alt={voice.name}
-                                    className="w-16 h-16 rounded-full object-cover border-2 border-accent"
-                                />
-                                <div>
-                                    <h3 className="font-bold text-lg">{voice.name}</h3>
-                                    <p className="text-accent text-sm">{voice.role}</p>
-                                </div>
-                            </div>
-
-                            <p className="text-xl text-gray-300 italic mb-8">"{voice.quote}"</p>
-
-                            <button
-                                onClick={() => setPlayingIndex(playingIndex === index ? null : index)}
-                                className="flex items-center gap-3 text-sm font-semibold text-accent hover:text-white transition-colors"
-                            >
-                                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center group-hover:bg-accent group-hover:text-black transition-all">
-                                    {playingIndex === index ? <Pause size={18} /> : <Play size={18} />}
-                                </div>
-                                Listen to Story
-                            </button>
-
-                            {/* Audio visualizer bar placeholder */}
-                            {playingIndex === index && (
-                                <motion.div
-                                    initial={{ height: 0 }}
-                                    animate={{ height: 'auto' }}
-                                    className="mt-6 flex gap-1 h-8 items-end justify-center"
-                                >
-                                    {[...Array(20)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            animate={{ height: [5, 25, 5] }}
-                                            transition={{
-                                                repeat: Infinity,
-                                                duration: 0.8,
-                                                delay: i * 0.05
-                                            }}
-                                            className="w-1 bg-accent rounded-full"
-                                        />
-                                    ))}
-                                </motion.div>
-                            )}
-                        </motion.div>
-                    ))}
-                </div>
+        <section className="py-24 bg-ocean-dark relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 mb-12">
+                <h2 className="text-4xl font-bold text-white mb-4">The Crew</h2>
+                <p className="text-gray-400">Hear what our people have to say.</p>
             </div>
-        </div>
+
+            <div className="flex gap-8 overflow-x-auto pb-12 px-6 scrollbar-hide">
+                {employees.map((emp) => (
+                    <motion.div
+                        key={emp.id}
+                        whileHover={{ y: -10 }}
+                        className="flex-shrink-0 w-80 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6 relative group"
+                    >
+                        <div className="absolute top-6 right-6 text-white/20">
+                            <Quote size={40} />
+                        </div>
+
+                        <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-white/10">
+                            <img src={emp.image} alt={emp.name} className="w-full h-full object-cover" />
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-white mb-1">{emp.name}</h3>
+                        <p className="text-sm text-gray-400 mb-6">{emp.role}</p>
+
+                        <div className="bg-white/5 rounded-xl p-4 flex items-center justify-between group-hover:bg-white/10 transition-colors">
+                            <span className="text-lg font-medium text-white">"{emp.word}"</span>
+                            <button
+                                onClick={() => handlePlay(emp.id)}
+                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${playingId === emp.id ? 'bg-accent text-white' : 'bg-white text-primary'}`}
+                            >
+                                {playingId === emp.id ? <Pause size={18} /> : <Play size={18} />}
+                            </button>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </section >
     );
 };
 
