@@ -137,7 +137,12 @@ const HRMediaManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Media updated successfully' : 'Media created successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Media updated successfully' : 'Media created successfully');
+                }
                 setIsModalOpen(false);
                 setEditingItem(null);
                 setFormData({ title: '', description: '', imageUrl: '', category: 'GALLERY', group: 'HR_PANEL' });
@@ -169,7 +174,19 @@ const HRMediaManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Media deleted successfully');
+                // Check if response has content
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Media deleted successfully');
+                    }
+                } else {
+                    toast.success('Media deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchMediaItems();

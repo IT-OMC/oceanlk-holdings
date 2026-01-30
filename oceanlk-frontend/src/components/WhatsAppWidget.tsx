@@ -19,12 +19,25 @@ const WhatsAppWidget = () => {
         return () => clearTimeout(timer);
     }, [config]);
 
-    if (loading || error || !config?.active) return null;
+    if (error) {
+        console.error('WhatsApp Widget Error:', error);
+        return null;
+    }
+
+    if (loading || !config?.active) return null;
 
     const handleSendMessage = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
+        // CLEAN THE PHONE NUMBER: Remove spaces, dashes, plus signs, brackets
+        let cleanNumber = config.phoneNumber.replace(/[^0-9]/g, '');
+
+        // SMART FORMATTING: If it's a local Sri Lankan number (starts with 0, 10 digits), convert to international
+        if (cleanNumber.startsWith('0') && cleanNumber.length === 10) {
+            cleanNumber = '94' + cleanNumber.substring(1);
+        }
+
         const encodedMessage = encodeURIComponent(message || config.welcomeMessage);
-        const url = `https://wa.me/${config.phoneNumber}?text=${encodedMessage}`;
+        const url = `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
         window.open(url, '_blank', 'noopener,noreferrer');
         setMessage('');
         setIsOpen(false);

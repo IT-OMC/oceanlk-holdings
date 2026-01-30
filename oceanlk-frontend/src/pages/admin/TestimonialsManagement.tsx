@@ -140,7 +140,13 @@ const TestimonialsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Testimonial updated successfully' : 'Testimonial created successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Testimonial updated successfully' : 'Testimonial created successfully');
+                }
+
                 setIsModalOpen(false);
                 setEditingItem(null);
                 setImageFile(null);
@@ -179,7 +185,19 @@ const TestimonialsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Testimonial deleted successfully');
+                // Check if response has content
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Testimonial deleted successfully');
+                    }
+                } else {
+                    toast.success('Testimonial deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchTestimonials();

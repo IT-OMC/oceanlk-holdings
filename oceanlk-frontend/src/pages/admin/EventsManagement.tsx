@@ -107,7 +107,12 @@ const EventsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Event updated successfully' : 'Event created successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Event updated successfully' : 'Event created successfully');
+                }
                 setIsModalOpen(false);
                 setEditingItem(null);
                 setFormData({
@@ -144,7 +149,19 @@ const EventsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Event deleted successfully');
+                // Check if response has content
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Event deleted successfully');
+                    }
+                } else {
+                    toast.success('Event deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchEvents();

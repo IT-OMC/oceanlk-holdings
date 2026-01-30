@@ -112,7 +112,12 @@ const LeadershipManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Leader updated successfully' : 'Leader added successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Leader updated successfully' : 'Leader added successfully');
+                }
                 setIsModalOpen(false);
                 setEditingItem(null);
                 resetForm();
@@ -141,7 +146,19 @@ const LeadershipManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Leader deleted successfully');
+                // Check if response has content
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Leader deleted successfully');
+                    }
+                } else {
+                    toast.success('Leader deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchLeaders();

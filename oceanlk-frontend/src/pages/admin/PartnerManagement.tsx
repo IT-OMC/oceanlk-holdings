@@ -102,7 +102,12 @@ const PartnerManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Partner updated successfully' : 'Partner added successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Partner updated successfully' : 'Partner added successfully');
+                }
                 setIsModalOpen(false);
                 setEditingItem(null);
                 setFormData({ name: '', logoUrl: '', websiteUrl: '', category: 'PARTNER', displayOrder: 0 });
@@ -134,7 +139,19 @@ const PartnerManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Partner deleted successfully');
+                // Check if the response has content (it might be 200 OK with empty body if deleted immediately, or JSON if pending)
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Partner deleted successfully');
+                    }
+                } else {
+                    toast.success('Partner deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchPartners();

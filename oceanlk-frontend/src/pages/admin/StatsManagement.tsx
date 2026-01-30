@@ -63,7 +63,12 @@ const StatsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success(editingItem ? 'Stat updated successfully' : 'Stat added successfully');
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Change submitted for approval');
+                } else {
+                    toast.success(editingItem ? 'Stat updated successfully' : 'Stat added successfully');
+                }
                 setIsModalOpen(false);
                 setEditingItem(null);
                 setFormData({ label: '', value: '', icon: 'BarChart', displayOrder: 0 });
@@ -92,7 +97,19 @@ const StatsManagement = () => {
             });
 
             if (response.ok) {
-                toast.success('Stat deleted successfully');
+                // Check if response has content
+                const text = await response.text();
+                if (text) {
+                    const data = JSON.parse(text);
+                    if (data.pendingChange) {
+                        toast.success('Deletion submitted for approval');
+                    } else {
+                        toast.success('Stat deleted successfully');
+                    }
+                } else {
+                    toast.success('Stat deleted successfully');
+                }
+
                 setDeleteModalOpen(false);
                 setItemToDelete(null);
                 fetchStats();

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import {
     LayoutDashboard,
     Briefcase,
@@ -27,6 +28,39 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
     const location = useLocation();
     const adminRole = localStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
+
+    const [pendingCount, setPendingCount] = useState(0);
+
+    useEffect(() => {
+        const fetchPendingCount = async () => {
+            try {
+                const token = localStorage.getItem('adminToken');
+                // Fetch based on role
+                const endpoint = isSuperAdmin
+                    ? import.meta.env.VITE_API_BASE_URL + '/api/pending-changes' // Use direct URL or import API_ENDPOINTS if available
+                    : import.meta.env.VITE_API_BASE_URL + '/api/pending-changes/my-submissions';
+
+                const response = await fetch(endpoint, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Filter for 'PENDING' status
+                    const count = data.filter((item: any) => item.status === 'PENDING').length;
+                    setPendingCount(count);
+                }
+            } catch (error) {
+                console.error('Error fetching pending count:', error);
+            }
+        };
+
+        fetchPendingCount();
+
+        // Poll every 30 seconds to keep count updated
+        const interval = setInterval(fetchPendingCount, 30000);
+        return () => clearInterval(interval);
+    }, [isSuperAdmin]);
 
     const pageMenuItems = [
         { path: '/admin/companies', icon: Building2, label: 'Companies' },
@@ -177,19 +211,31 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 {location.pathname === '/admin/pending-changes' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 rounded-full" />
                 )}
-                <CheckSquare
-                    size={20}
-                    className={`${location.pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
-                />
+                <div className="relative">
+                    <CheckSquare
+                        size={20}
+                        className={`${location.pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
+                    />
+                    {pendingCount > 0 && (
+                        <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                            {pendingCount > 99 ? '99+' : pendingCount}
+                        </span>
+                    )}
+                </div>
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (
                         <motion.span
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
-                            className="font-medium truncate"
+                            className="font-medium truncate flex-1 flex justify-between items-center"
                         >
-                            Pending Changes
+                            <span>Pending Changes</span>
+                            {pendingCount > 0 && (
+                                <span className="bg-orange-500/20 text-orange-400 text-xs font-bold px-2 py-0.5 rounded-full ml-auto">
+                                    {pendingCount}
+                                </span>
+                            )}
                         </motion.span>
                     )}
                 </AnimatePresence>

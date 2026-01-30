@@ -21,6 +21,7 @@ export const useWhatsApp = () => {
             const data = await response.json();
             setConfig(data);
         } catch (err: any) {
+            console.error('Failed to fetch WhatsApp config:', err);
             setError(err.message);
         } finally {
             setLoading(false);
