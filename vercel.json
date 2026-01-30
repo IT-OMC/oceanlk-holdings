@@ -1,0 +1,7 @@
+{
+    "buildCommand": "cd oceanlk-frontend && npm install && npm run build",
+    "outputDirectory": "oceanlk-frontend/dist",
+    "installCommand": "cd oceanlk-frontend && npm install",
+    "framework": null,
+    "devCommand": "cd oceanlk-frontend && npm run dev"
+}
