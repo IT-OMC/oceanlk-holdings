@@ -1,21 +1,23 @@
 package com.oceanlk.backend.service;
 
+import com.mongodb.client.gridfs.model.GridFSFile;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FileStorageService {
 
-    private final Path uploadDir = Paths.get("uploads/media");
+    private final GridFsOperations gridFsOperations;
 
     // Allowed file types
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
@@ -23,64 +25,70 @@ public class FileStorageService {
     private static final List<String> ALLOWED_VIDEO_TYPES = Arrays.asList(
             "video/mp4", "video/webm", "video/quicktime");
 
-    public FileStorageService() {
-        try {
-            Files.createDirectories(uploadDir);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory!", e);
-        }
+    public FileStorageService(GridFsOperations gridFsOperations) {
+        this.gridFsOperations = gridFsOperations;
     }
 
     /**
-     * Save uploaded file to the server
-     * 
+     * Save uploaded file to MongoDB GridFS
+     *
      * @param file  MultipartFile to save
-     * @param group Group name for subdirectory (e.g., MEDIA_PANEL, HR_PANEL)
-     * @return relative URL path to the saved file
+     * @param group Group name for metadata (e.g., MEDIA_PANEL, HR_PANEL)
+     * @return URL path to retrieve the saved file (e.g., /api/files/{id})
      */
     public String saveFile(MultipartFile file, String group) throws IOException {
         // Validate file
         validateFile(file);
 
-        // Determine subdirectory
-        String subDir = "general";
-        if ("HR_PANEL".equalsIgnoreCase(group)) {
-            subDir = "hr";
-        }
-
-        Path targetDir = uploadDir.resolve(subDir);
-        Files.createDirectories(targetDir);
-
-        // Generate unique filename
+        String contentType = file.getContentType();
         String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".")
-                ? originalFilename.substring(originalFilename.lastIndexOf("."))
-                : "";
-        String uniqueFilename = UUID.randomUUID().toString() + extension;
 
-        // Save file
-        Path targetLocation = targetDir.resolve(uniqueFilename);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-        // Return relative URL
-        return "/uploads/media/" + subDir + "/" + uniqueFilename;
+        // Store file in GridFS
+        try (InputStream inputStream = file.getInputStream()) {
+            ObjectId fileId = gridFsOperations.store(
+                    inputStream,
+                    originalFilename,
+                    contentType,
+                    new org.bson.Document("group", group));
+            // Return a URL that the FileController will serve
+            return "/api/files/" + fileId.toHexString();
+        }
     }
 
     /**
-     * Delete file from server
-     * 
-     * @param fileUrl URL path to the file (e.g., /uploads/media/hr/filename.jpg)
+     * Delete file from MongoDB GridFS
+     *
+     * @param fileUrl URL path to the file (e.g., /api/files/{id})
      */
-    public void deleteFile(String fileUrl) throws IOException {
-        if (fileUrl == null || !fileUrl.startsWith("/uploads/media/")) {
-            return; // Not a local file or invalid path
+    public void deleteFile(String fileUrl) {
+        if (fileUrl == null || !fileUrl.startsWith("/api/files/")) {
+            // Might be an old local file or an external URL, ignore.
+            return;
         }
 
-        String remainingPath = fileUrl.substring("/uploads/media/".length());
-        Path filePath = uploadDir.resolve(remainingPath);
+        String fileId = fileUrl.substring("/api/files/".length());
+        try {
+            gridFsOperations.delete(new Query(Criteria.where("_id").is(new ObjectId(fileId))));
+        } catch (IllegalArgumentException e) {
+            // Invalid ObjectId format, ignore
+        }
+    }
 
-        if (Files.exists(filePath)) {
-            Files.delete(filePath);
+    /**
+     * Get a file from GridFS by its ID
+     *
+     * @param id The ObjectId string of the file
+     * @return GridFsResource containing the file stream
+     */
+    public GridFsResource getFile(String id) {
+        try {
+            GridFSFile file = gridFsOperations.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
+            if (file == null) {
+                return null;
+            }
+            return gridFsOperations.getResource(file);
+        } catch (IllegalArgumentException e) {
+            return null; // Invalid ObjectId
         }
     }
 

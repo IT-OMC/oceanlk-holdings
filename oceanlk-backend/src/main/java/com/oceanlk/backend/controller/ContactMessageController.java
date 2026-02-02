@@ -59,7 +59,15 @@ public class ContactMessageController {
                     "New message from " + savedMessage.getName() + " regarding " + savedMessage.getSubject(),
                     "INFO",
                     "ROLE_ADMIN",
-                    "/admin/messages");
+                    "/admin/contact-messages");
+
+            // Also notify Super Admin
+            notificationService.createNotification(
+                    "New Contact Message",
+                    "New message from " + savedMessage.getName() + " regarding " + savedMessage.getSubject(),
+                    "INFO",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/contact-messages");
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

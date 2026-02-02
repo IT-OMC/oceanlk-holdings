@@ -13,9 +13,11 @@ import {
     User,
     Settings,
     CheckSquare,
-    MessageSquare
+    MessageSquare,
+    TrendingUp
 } from 'lucide-react';
 import { useState } from 'react';
+import { API_ENDPOINTS } from '../../utils/api';
 
 interface AdminSidebarProps {
     isSidebarOpen: boolean;
@@ -37,8 +39,8 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 const token = localStorage.getItem('adminToken');
                 // Fetch based on role
                 const endpoint = isSuperAdmin
-                    ? import.meta.env.VITE_API_BASE_URL + '/api/pending-changes' // Use direct URL or import API_ENDPOINTS if available
-                    : import.meta.env.VITE_API_BASE_URL + '/api/pending-changes/my-submissions';
+                    ? API_ENDPOINTS.PENDING_CHANGES
+                    : API_ENDPOINTS.PENDING_CHANGES_MY;
 
                 const response = await fetch(endpoint, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -64,6 +66,9 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
 
     const pageMenuItems = [
         { path: '/admin/companies', icon: Building2, label: 'Companies' },
+        { path: '/admin/pages/leadership', icon: Users, label: 'Leadership' },
+        { path: '/admin/pages/partners', icon: Briefcase, label: 'Partners & Memberships' },
+        { path: '/admin/pages/stats', icon: TrendingUp, label: 'Global Impact Metrics' },
     ];
 
     const mediaMenuItems = [

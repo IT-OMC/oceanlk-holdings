@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
 
-import Navbar from '../../components/Navbar';
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface NewsArticle {
@@ -67,7 +66,6 @@ const News = () => {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <Navbar />
                 <div className="flex items-center justify-center h-screen">
                     <Loader className="animate-spin text-blue-500" size={48} />
                 </div>
@@ -78,7 +76,6 @@ const News = () => {
     if (error) {
         return (
             <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <Navbar />
                 <div className="flex flex-col items-center justify-center h-screen">
                     <p className="text-red-500 text-xl mb-4">{error}</p>
                     <button
@@ -94,7 +91,6 @@ const News = () => {
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
-            <Navbar />
 
             <section className="pt-32 pb-8 px-4 md:px-6 w-full max-w-[95%] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12">

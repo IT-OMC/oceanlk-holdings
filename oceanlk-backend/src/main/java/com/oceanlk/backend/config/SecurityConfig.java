@@ -25,88 +25,111 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final com.oceanlk.backend.filter.RateLimitFilter rateLimitFilter;
+        private final JwtAuthenticationFilter jwtAuthFilter;
+        private final com.oceanlk.backend.filter.RateLimitFilter rateLimitFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/contact").permitAll()
-                        .requestMatchers("/api/admin/login").permitAll()
-                        .requestMatchers("/api/admin/validate").permitAll()
-                        .requestMatchers("/api/admin/otp/**").permitAll()
-                        .requestMatchers("/api/admin/forgot-password").permitAll()
-                        .requestMatchers("/api/admin/reset-password").permitAll()
-                        .requestMatchers("/api/talent-pool/submit").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/media/**").permitAll()
-                        .requestMatchers("/api/public/whatsapp").permitAll()
-                        .requestMatchers("/uploads/**").permitAll() // Allow public access to uploaded files
-                        .requestMatchers("/api/test/**").hasRole("ADMIN") // Protect email testing
-                        .requestMatchers("/api/talent-pool/cv/**").hasRole("ADMIN") // Protect CV download
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .authorizeHttpRequests(auth -> auth
+                                                // Public endpoints
+                                                .requestMatchers("/api/contact").permitAll()
+                                                .requestMatchers("/api/admin/login").permitAll()
+                                                .requestMatchers("/api/admin/validate").permitAll()
+                                                .requestMatchers("/api/admin/otp/**").permitAll()
+                                                .requestMatchers("/api/admin/forgot-password").permitAll()
+                                                .requestMatchers("/api/admin/reset-password").permitAll()
+                                                .requestMatchers("/api/talent-pool/submit").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/media/**").permitAll()
+                                                .requestMatchers("/api/public/whatsapp").permitAll()
+                                                .requestMatchers("/uploads/**").permitAll() // Allow public access to
+                                                                                            // uploaded files (legacy)
+                                                .requestMatchers(HttpMethod.GET, "/api/files/**").permitAll() // Allow
+                                                                                                              // public
+                                                                                                              // access
+                                                                                                              // to
+                                                                                                              // GridFS
+                                                                                                              // files
+                                                .requestMatchers("/api/test/**").hasRole("ADMIN") // Protect email
+                                                                                                  // testing
+                                                .requestMatchers("/api/talent-pool/cv/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN") // Protect
+                                                // CV
+                                                // download
 
-                        // Admin endpoints
-                        .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/admin/whatsapp").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/management/delete/**").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/management/edit/**").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/management/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/jobs").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/media").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/media/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/media/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/talent-pool/application/**")
-                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/talent-pool/application/**")
-                        .hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers("/api/talent-pool/applications").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                // Admin endpoints
+                                                .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/api/admin/whatsapp")
+                                                .hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/delete/**")
+                                                .hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/edit/**").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.POST, "/api/jobs")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/api/jobs/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/jobs/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.POST, "/api/media")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/api/media/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/media/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.PATCH, "/api/talent-pool/application/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/talent-pool/application/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/talent-pool/applications")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
 
-                        // Default deny for non-GET public access
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                                                // Default deny for non-GET public access
+                                                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:4173",
-                "https://test.ocean.lk", "http://test.ocean.lk"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept",
-                "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        configuration
-                .setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:4173",
+                                "https://test.ocean.lk", "http://test.ocean.lk"));
+                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+                configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With",
+                                "Accept",
+                                "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+                configuration
+                                .setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin",
+                                                "Access-Control-Allow-Credentials"));
+                configuration.setAllowCredentials(true);
+                configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+                return config.getAuthenticationManager();
+        }
 }

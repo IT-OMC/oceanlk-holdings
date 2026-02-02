@@ -58,9 +58,9 @@ const MediaManagement = () => {
         excerpt: '',
         imageUrl: '',
         videoUrl: '',
-        category: 'NEWS',
+        category: 'MEDIA',
         group: 'MEDIA_PANEL',
-        type: 'ARTICLE',
+        type: 'VIDEO',
         publishedDate: new Date().toISOString().split('T')[0],
         featured: false,
         status: 'PUBLISHED',
@@ -269,9 +269,9 @@ const MediaManagement = () => {
                 excerpt: '',
                 imageUrl: '',
                 videoUrl: '',
-                category: 'NEWS',
+                category: 'MEDIA',
                 group: 'MEDIA_PANEL',
-                type: 'ARTICLE',
+                type: 'VIDEO',
                 publishedDate: new Date().toISOString().split('T')[0],
                 featured: false,
                 status: 'PUBLISHED',
@@ -471,7 +471,12 @@ const MediaManagement = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-400">Category</label>
+                                    <label className="text-sm font-medium text-gray-400">
+                                        Category
+                                        <span className="text-xs text-gray-500 ml-2">
+                                            (Choose MEDIA or GALLERY for Media Center page)
+                                        </span>
+                                    </label>
                                     <select
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}

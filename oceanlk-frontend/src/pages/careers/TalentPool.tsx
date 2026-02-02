@@ -296,23 +296,28 @@ const TalentPool = () => {
                                     className="group relative"
                                 >
                                     {/* Glow Effect */}
-                                    <div className={`absolute - inset - 1 bg - gradient - to - r ${benefit.color} rounded - 2xl opacity - 0 group - hover: opacity - 30 blur - xl transition - opacity duration - 500`} />
+                                    <div className={`absolute -inset-1 bg-gradient-to-r ${benefit.color} rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500`} />
 
-                                    {/* Card */}
+                                    {/* Liquid Glass Card */}
                                     <div
-                                        className="relative h-full p-6 rounded-2xl overflow-hidden"
+                                        className="relative h-full p-6 rounded-3xl overflow-hidden transition-all duration-500"
                                         style={{
                                             background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                                            backdropFilter: 'blur(20px)',
+                                            backdropFilter: 'blur(24px)',
                                             border: '1px solid rgba(255,255,255,0.2)',
-                                            boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+                                            boxShadow: '0 25px 70px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15)'
                                         }}
                                     >
-                                        <div className={`w - 12 h - 12 rounded - xl bg - gradient - to - r ${benefit.color} p - 2.5 mb - 4 group - hover: scale - 110 transition - transform duration - 300`}>
-                                            <Icon className="w-full h-full text-white" />
+                                        {/* Adaptive Lighting Effect */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-white/0 group-hover:from-white/10 group-hover:via-transparent group-hover:to-transparent transition-all duration-500" />
+
+                                        <div className="relative z-10 flex flex-col h-full">
+                                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-r ${benefit.color} p-3 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-lg`}>
+                                                <Icon className="w-full h-full text-white" />
+                                            </div>
+                                            <h3 className="text-xl font-bold text-white mb-3 group-hover:translate-x-1 transition-transform duration-300">{benefit.title}</h3>
+                                            <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors duration-300">{benefit.description}</p>
                                         </div>
-                                        <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
-                                        <p className="text-gray-300 text-sm leading-relaxed">{benefit.description}</p>
                                     </div>
                                 </motion.div>
                             );
@@ -397,41 +402,53 @@ const TalentPool = () => {
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />
 
                                 {/* Progress Indicator */}
-                                <div className="px-8 pt-8 pb-8 bg-gradient-to-b from-white/5 to-transparent rounded-t-2xl">
-                                    <div className="flex items-center justify-between relative">
+                                <div className="px-8 pt-10 pb-10 relative overflow-hidden">
+                                    {/* Subtle background for header */}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+
+                                    <div className="flex items-center justify-between relative max-w-lg mx-auto">
                                         {/* Background Track */}
-                                        <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 rounded-full -z-10" />
+                                        <div className="absolute top-1/2 left-0 w-full h-1 bg-emerald-900/30 rounded-full -z-10 backdrop-blur-sm" />
+
+                                        {/* Animated Progress Fill Line */}
+                                        <div className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full -z-10 transition-all duration-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                                            style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
+                                        />
 
                                         {[1, 2, 3].map((step) => (
-                                            <div key={step} className="relative flex flex-col items-center">
+                                            <div key={step} className="relative flex flex-col items-center group">
                                                 <motion.div
-                                                    className={`w - 12 h - 12 rounded - full flex items - center justify - center font - bold text - lg transition - all duration - 300 relative z - 10 border - 4 ${currentStep >= step
-                                                            ? 'bg-emerald-500 border-[#0f1e3a] text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                                                            : 'bg-[#0f1e3a] border-white/10 text-gray-500'
-                                                        } `}
+                                                    className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 relative z-10 border-[3px] backdrop-blur-md ${currentStep >= step
+                                                        ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                                                        : 'bg-[#0f1e3a]/80 border-white/10 text-gray-500'
+                                                        }`}
                                                     animate={{
-                                                        scale: currentStep === step ? 1.1 : 1,
-                                                        borderColor: currentStep >= step ? '#0f1e3a' : 'rgba(255,255,255,0.1)'
+                                                        scale: currentStep === step ? 1.15 : 1,
+                                                        borderColor: currentStep >= step ? '#10b981' : 'rgba(255,255,255,0.1)'
                                                     }}
                                                 >
                                                     {currentStep > step ? (
-                                                        <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }}>✓</motion.span>
+                                                        <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-white">✓</motion.span>
                                                     ) : (
                                                         step
                                                     )}
+
+                                                    {/* Ripple effect for active step */}
+                                                    {currentStep === step && (
+                                                        <motion.div
+                                                            className="absolute inset-0 rounded-full border-2 border-emerald-500"
+                                                            animate={{ scale: [1, 1.5], opacity: [1, 0] }}
+                                                            transition={{ duration: 1.5, repeat: Infinity }}
+                                                        />
+                                                    )}
                                                 </motion.div>
-                                                {/* Step Label (Optional) */}
-                                                <span className={`absolute - bottom - 6 text - xs font - medium uppercase tracking - wider ${currentStep >= step ? 'text-emerald-400' : 'text-gray-600'
-                                                    } `}>
+                                                {/* Step Label */}
+                                                <span className={`absolute -bottom-8 text-xs font-bold uppercase tracking-widest transition-colors duration-300 ${currentStep >= step ? 'text-emerald-400' : 'text-gray-600'
+                                                    }`}>
                                                     {step === 1 ? 'About' : step === 2 ? 'Experience' : 'CV'}
                                                 </span>
                                             </div>
                                         ))}
-
-                                        {/* Progress Fill Line */}
-                                        <div className="absolute top-1/2 left-0 h-1 bg-emerald-500 rounded-full -z-10 transition-all duration-500"
-                                            style={{ width: `${((currentStep - 1) / 2) * 100}% ` }}
-                                        />
                                     </div>
                                 </div>
 
@@ -470,11 +487,14 @@ const TalentPool = () => {
                                                                     value={formData[field.id as keyof typeof formData] as string}
                                                                     onChange={handleChange}
                                                                     required
-                                                                    className={`w - full px - 5 py - 4 rounded - xl bg - white / 5 border text - white placeholder - gray - 500 focus: outline - none focus: bg - white / 10 transition - all duration - 300 ${errors[field.id] ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500/50'} `}
+                                                                    className={`w-full px-6 py-4 rounded-2xl bg-white/5 border text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition-all duration-300 
+                                                                    ${errors[field.id]
+                                                                            ? 'border-red-500/50 focus:border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.1)]'
+                                                                            : 'border-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:border-white/20'}`}
                                                                     placeholder={field.placeholder}
                                                                 />
                                                                 {errors[field.id] && (
-                                                                    <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn">
+                                                                    <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn ml-1">
                                                                         <AlertCircle className="w-3 h-3" />
                                                                         <span>{errors[field.id]}</span>
                                                                     </div>
@@ -526,11 +546,14 @@ const TalentPool = () => {
                                                                 value={formData.position}
                                                                 onChange={handleChange}
                                                                 required
-                                                                className={`w - full px - 5 py - 4 rounded - xl bg - white / 5 border text - white placeholder - gray - 500 focus: outline - none focus: bg - white / 10 transition - all duration - 300 ${errors.position ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500/50'} `}
+                                                                className={`w-full px-6 py-4 rounded-2xl bg-white/5 border text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition-all duration-300 
+                                                                ${errors.position
+                                                                        ? 'border-red-500/50 focus:border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.1)]'
+                                                                        : 'border-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:border-white/20'}`}
                                                                 placeholder="e.g. Senior Software Engineer"
                                                             />
                                                             {errors.position && (
-                                                                <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn">
+                                                                <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn ml-1">
                                                                     <AlertCircle className="w-3 h-3" />
                                                                     <span>{errors.position}</span>
                                                                 </div>
@@ -549,7 +572,10 @@ const TalentPool = () => {
                                                                 value={formData.experience}
                                                                 onChange={handleChange}
                                                                 required
-                                                                className={`w - full px - 5 py - 4 rounded - xl bg - white / 5 border text - white focus: outline - none focus: bg - white / 10 transition - all duration - 300 appearance - none cursor - pointer ${errors.experience ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500/50'} `}
+                                                                className={`w-full px-6 py-4 rounded-2xl bg-white/5 border text-white focus:outline-none focus:bg-white/10 transition-all duration-300 appearance-none cursor-pointer
+                                                                ${errors.experience
+                                                                        ? 'border-red-500/50 focus:border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.1)]'
+                                                                        : 'border-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:border-white/20'}`}
                                                             >
                                                                 <option value="" className="bg-[#0f1e3a] text-gray-400">Select your experience level</option>
                                                                 <option value="0-2" className="bg-[#0f1e3a] text-white">0-2 years (Junior)</option>
@@ -557,9 +583,9 @@ const TalentPool = () => {
                                                                 <option value="6-10" className="bg-[#0f1e3a] text-white">6-10 years (Senior)</option>
                                                                 <option value="10+" className="bg-[#0f1e3a] text-white">10+ years (Expert)</option>
                                                             </select>
-                                                            <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 rotate-90 pointer-events-none" />
+                                                            <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 rotate-90 pointer-events-none" />
                                                             {errors.experience && (
-                                                                <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn">
+                                                                <div className="flex items-center gap-1 mt-2 text-red-400 text-xs animate-fadeIn ml-1">
                                                                     <AlertCircle className="w-3 h-3" />
                                                                     <span>{errors.experience}</span>
                                                                 </div>
@@ -578,7 +604,7 @@ const TalentPool = () => {
                                                                 value={formData.message}
                                                                 onChange={handleChange}
                                                                 rows={4}
-                                                                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-emerald-500/50 transition-all duration-300 resize-none"
+                                                                className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-emerald-500/50 transition-all duration-300 resize-none hover:border-white/20 focus:shadow-[0_0_20px_rgba(16,185,129,0.1)]"
                                                                 placeholder="What makes you a great fit for us?"
                                                             />
                                                         </div>
@@ -626,11 +652,14 @@ const TalentPool = () => {
 
                                                 <div className="mb-10">
                                                     <div
-                                                        className="relative border-2 border-dashed rounded-3xl p-16 text-center hover:border-emerald-400 transition-all duration-300 cursor-pointer group overflow-hidden bg-white/[0.02]"
+                                                        className="relative border-2 border-dashed rounded-3xl p-10 md:p-16 text-center hover:border-emerald-400 transition-all duration-300 cursor-pointer group overflow-hidden bg-white/[0.02]"
                                                         style={{
                                                             borderColor: formData.file ? '#10b981' : 'rgba(255,255,255,0.1)'
                                                         }}
                                                     >
+                                                        {/* Hover glow for upload area */}
+                                                        <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/5 transition-colors duration-300" />
+
                                                         <input
                                                             type="file"
                                                             accept=".pdf,.doc,.docx"
@@ -644,27 +673,27 @@ const TalentPool = () => {
                                                                     <motion.div
                                                                         initial={{ scale: 0 }}
                                                                         animate={{ scale: 1 }}
-                                                                        className="w-24 h-24 mb-6 rounded-full bg-emerald-500/10 flex items-center justify-center"
+                                                                        className="w-24 h-24 mb-6 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]"
                                                                     >
                                                                         <CheckCircle className="w-12 h-12 text-emerald-400" />
                                                                     </motion.div>
-                                                                    <p className="text-2xl font-bold text-white mb-2">CV Uploaded!</p>
-                                                                    <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                                                                        <FileText className="w-4 h-4 text-emerald-400" />
-                                                                        <p className="text-emerald-300 font-medium truncate max-w-[200px]">{formData.file.name}</p>
+                                                                    <p className="text-2xl font-bold text-white mb-3">CV Uploaded!</p>
+                                                                    <div className="flex items-center gap-3 px-6 py-3 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                                                                        <FileText className="w-5 h-5 text-emerald-400" />
+                                                                        <p className="text-emerald-300 font-medium truncate max-w-[250px]">{formData.file.name}</p>
                                                                     </div>
-                                                                    <p className="mt-6 text-sm text-gray-400">Click to change file</p>
+                                                                    <p className="mt-8 text-sm text-gray-400 hover:text-white transition-colors">Click to change file</p>
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex flex-col items-center">
-                                                                    <div className="w-24 h-24 mb-6 rounded-full bg-[#0f1e3a] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-emerald-500/50 transition-all duration-300 shadow-lg">
+                                                                    <div className="w-24 h-24 mb-8 rounded-full bg-[#0f1e3a] border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:border-emerald-500/50 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                                                                         <Upload className="w-10 h-10 text-gray-400 group-hover:text-emerald-400 transition-colors" />
                                                                     </div>
                                                                     <p className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
                                                                         Drop your resume here
                                                                     </p>
-                                                                    <p className="text-gray-400 mb-6">or click to browse</p>
-                                                                    <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-widest font-medium">
+                                                                    <p className="text-gray-400 mb-8 max-w-xs mx-auto">Upload your CV to help us match you with the right opportunities.</p>
+                                                                    <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-widest font-medium bg-white/5 px-4 py-2 rounded-full">
                                                                         <span>PDF</span>
                                                                         <span className="w-1 h-1 rounded-full bg-gray-600" />
                                                                         <span>DOC</span>
@@ -693,9 +722,9 @@ const TalentPool = () => {
                                                         disabled={!formData.file || isLoading}
                                                         whileHover={formData.file && !isLoading ? { scale: 1.02, x: 5 } : {}}
                                                         whileTap={formData.file && !isLoading ? { scale: 0.98 } : {}}
-                                                        className={`px - 8 py - 4 rounded - xl font - bold text - lg flex items - center gap - 3 transition - all duration - 300 ${formData.file && !isLoading
-                                                                ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60'
-                                                                : 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
+                                                        className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all duration-300 ${formData.file && !isLoading
+                                                            ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60'
+                                                            : 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
                                                             } `}
                                                     >
                                                         {isLoading ? (

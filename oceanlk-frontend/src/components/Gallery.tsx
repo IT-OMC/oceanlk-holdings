@@ -22,23 +22,40 @@ const Gallery = () => {
     const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch gallery data from backend
+    // Fetch gallery data from backend (Media Center items)
     useEffect(() => {
         const fetchGalleryData = async () => {
             try {
-                const response = await fetch(API_ENDPOINTS.MEDIA_GALLERY);
+                // Fetch from Media Center endpoint to get latest media per company
+                const response = await fetch(API_ENDPOINTS.MEDIA_MEDIA);
                 if (response.ok) {
                     const data = await response.json();
-                    // Map backend data to gallery format
-                    const mappedData: GalleryItem[] = data.map((item: any) => ({
+
+                    // Group by company and get latest item per company for "Our Journey"
+                    const companyMap = new Map<string, any>();
+
+                    data.forEach((item: any) => {
+                        const companyKey = item.companyId || item.company || 'General';
+                        const existingItem = companyMap.get(companyKey);
+
+                        // Keep the latest item (by publishedDate) for each company
+                        if (!existingItem || new Date(item.publishedDate) > new Date(existingItem.publishedDate)) {
+                            companyMap.set(companyKey, item);
+                        }
+                    });
+
+                    // Convert map back to array and map to gallery format
+                    const latestPerCompany = Array.from(companyMap.values());
+                    const mappedData: GalleryItem[] = latestPerCompany.map((item: any) => ({
                         id: item.id,
                         title: item.title,
                         description: item.description,
                         imageUrl: item.imageUrl,
                         videoUrl: item.videoUrl,
-                        category: item.company || 'General',
-                        company: item.company
+                        category: item.company || item.companyName || 'General',
+                        company: item.company || item.companyName
                     }));
+
                     setGalleryItems(mappedData);
                 }
             } catch (error) {
@@ -51,7 +68,8 @@ const Gallery = () => {
     }, []);
 
     // Get unique categories (companies) plus 'All'
-    const categories = ['All', ...Array.from(new Set(galleryItems.map(item => item.category)))];
+    // Get unique categories (companies) plus 'All'
+    const categories = ['All', ...Array.from(new Set(galleryItems.map(item => item.category))).filter(c => c !== 'General')];
 
     const filteredItems = filter === 'All'
         ? galleryItems
@@ -229,7 +247,7 @@ const Gallery = () => {
                     </button>
 
                     <button
-                        onClick={() => window.location.href = '/companies'}
+                        onClick={() => window.location.href = '/news/media'}
                         className="px-8 py-4 bg-white border border-slate-200 text-navy font-semibold rounded-full hover:bg-navy hover:text-white hover:border-navy transition-all duration-300 flex items-center gap-2 group shadow-sm hover:shadow-lg"
                     >
                         {t('home.gallery.viewMore')}

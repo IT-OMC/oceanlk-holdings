@@ -100,7 +100,15 @@ public class TalentPoolController {
                     "New application from " + application.getFullName(),
                     "INFO",
                     "ROLE_ADMIN",
-                    "/admin/talent-pool");
+                    "/admin/hr/applications");
+
+            // Also notify Super Admin
+            notificationService.createNotification(
+                    "New Talent Pool Application",
+                    "New application from " + application.getFullName(),
+                    "INFO",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/hr/applications");
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -145,13 +153,17 @@ public class TalentPoolController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
 
-            GridFsResource resource = gridFsTemplate.getResource(application.getCvFileId());
+            // Find the file in GridFS by ObjectId
+            com.mongodb.client.gridfs.model.GridFSFile gridFSFile = gridFsTemplate.findOne(
+                    Query.query(Criteria.where("_id").is(new org.bson.types.ObjectId(application.getCvFileId()))));
 
-            if (!resource.exists()) {
+            if (gridFSFile == null) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "CV file not found in storage");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
+
+            GridFsResource resource = gridFsTemplate.getResource(gridFSFile);
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)

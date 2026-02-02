@@ -66,6 +66,12 @@ function App() {
                     <Route path="management" element={<AdminManagement />} />
                     <Route path="whatsapp" element={<WhatsAppSettings />} />
                     <Route path="companies" element={<CompanyManagement />} />
+
+                    {/* Page Management Routes */}
+                    <Route path="pages/leadership" element={<LeadershipManagement />} />
+                    <Route path="pages/partners" element={<PartnerManagement />} />
+                    <Route path="pages/stats" element={<StatsManagement />} />
+
                     <Route path="media" element={<MediaManagement />} />
 
                     {/* News & Media Routes */}

@@ -1,6 +1,18 @@
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
-import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Facebook, ArrowRight, Instagram, Youtube } from 'lucide-react';
+
+const XIcon = ({ className }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+    </svg>
+);
+
+const WeChatIcon = ({ className }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M8.691 2.188C12.872 2.188 16.3 5.033 16.3 8.7c0 3.666-3.428 6.512-7.609 6.512-.86 0-1.68-.106-2.45-.296l-3.08 1.636.566-2.583c-2.228-1.53-3.613-3.799-3.613-6.27 0-3.667 3.428-6.512 7.577-6.512zm9.143 7.028c-2.41 0-4.522 1.09-5.918 2.852.368.167.747.28 1.139.317.073.003.146.01.219.01 4.966 0 9.06 3.036 9.06 6.918 0 1.25-.429 2.42-1.182 3.44l.43 2.126-2.338-1.242c-.93.308-1.922.484-2.96.484-5.266 0-9.492-3.238-9.492-7.394 0-4.156 4.226-7.394 9.492-7.394zm-11.45 4.062c-.456 0-.825-.333-.825-.744 0-.411.37-.744.825-.744s.825.333.825.744c0 .411-.369.744-.825.744zm3.903 0c-.456 0-.825-.333-.825-.744 0-.411.37-.744.825-.744s.825.333.825.744c0 .411-.37.744-.825.744zm7.26 7.647c-.378 0-.684-.277-.684-.618 0-.341.306-.618.684-.618.378 0 .684.277.684.618 0 .341-.306.618-.684.618zm3.235 0c-.378 0-.684-.277-.684-.618 0-.341.306-.618.684-.618.378 0 .684.277.684.618 0 .341-.306.618-.684.618z" />
+    </svg>
+);
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -100,11 +112,18 @@ const Footer = () => {
 
                         {/* Social Media - Moved here from Contact */}
                         <div className="flex gap-3 mt-8">
-                            {[Linkedin, Twitter, Facebook].map((Icon, index) => (
+                            {[
+                                { Icon: Facebook, href: '#' },
+                                { Icon: Linkedin, href: '#' },
+                                { Icon: Instagram, href: '#' },
+                                { Icon: XIcon, href: '#' },
+                                { Icon: WeChatIcon, href: '#' },
+                                { Icon: Youtube, href: '#' }
+                            ].map(({ Icon, href }, index) => (
                                 <motion.a
                                     key={index}
                                     whileHover={{ scale: 1.1, y: -2 }}
-                                    href="#"
+                                    href={href}
                                     className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-all text-slate-400"
                                 >
                                     <Icon className="w-4 h-4" />

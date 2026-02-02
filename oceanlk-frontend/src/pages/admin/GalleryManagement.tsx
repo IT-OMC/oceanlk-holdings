@@ -127,17 +127,27 @@ const GalleryManagement = () => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
 
+        const maxSize = 20 * 1024 * 1024; // 20MB for optimal performance
+
         if (isAlbumMode) {
             // Multiple files for album mode
             const filesArray = Array.from(files);
+            const oversizedFiles = filesArray.filter(f => f.size > maxSize);
+
+            if (oversizedFiles.length > 0) {
+                toast.error(`${oversizedFiles.length} file(s) exceed 20MB limit. Please compress for optimal web performance.`);
+                return;
+            }
+
             setImageFiles(prev => [...prev, ...filesArray]);
             const newPreviews = filesArray.map(file => URL.createObjectURL(file));
             setImagePreviews(prev => [...prev, ...newPreviews]);
         } else {
             // Single file for normal mode
             const file = files[0];
-            if (file.size > 50 * 1024 * 1024) {
-                toast.error('File size exceeds 50MB limit');
+            if (file.size > maxSize) {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                toast.error(`File size (${sizeMB}MB) exceeds 20MB limit. Please compress for optimal web performance.`);
                 return;
             }
             setImageFile(file);
@@ -150,6 +160,8 @@ const GalleryManagement = () => {
         const files = e.dataTransfer.files;
         if (!files || files.length === 0) return;
 
+        const maxSize = 20 * 1024 * 1024; // 20MB for optimal performance
+
         if (isAlbumMode) {
             // Multiple files for album mode
             const filesArray = Array.from(files).filter(file => file.type.startsWith('image/'));
@@ -157,6 +169,13 @@ const GalleryManagement = () => {
                 toast.error('Please drop valid image files');
                 return;
             }
+
+            const oversizedFiles = filesArray.filter(f => f.size > maxSize);
+            if (oversizedFiles.length > 0) {
+                toast.error(`${oversizedFiles.length} file(s) exceed 20MB limit. Please compress for optimal web performance.`);
+                return;
+            }
+
             setImageFiles(prev => [...prev, ...filesArray]);
             const newPreviews = filesArray.map(file => URL.createObjectURL(file));
             setImagePreviews(prev => [...prev, ...newPreviews]);
@@ -167,8 +186,9 @@ const GalleryManagement = () => {
 
             if (isVideo) {
                 if (file && (file.type.startsWith('video/'))) {
-                    if (file.size > 50 * 1024 * 1024) {
-                        toast.error('File size exceeds 50MB limit');
+                    if (file.size > maxSize) {
+                        const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                        toast.error(`Video size (${sizeMB}MB) exceeds 20MB limit. Please compress for optimal web performance.`);
                         return;
                     }
                     setImageFile(file);
@@ -178,6 +198,11 @@ const GalleryManagement = () => {
                 }
             } else {
                 if (file && file.type.startsWith('image/')) {
+                    if (file.size > maxSize) {
+                        const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                        toast.error(`Image size (${sizeMB}MB) exceeds 20MB limit. Please compress for optimal web performance.`);
+                        return;
+                    }
                     setImageFile(file);
                     setImagePreview(URL.createObjectURL(file));
                 } else {
@@ -461,11 +486,7 @@ const GalleryManagement = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-white">Gallery</h1>
-                    <p className="text-gray-400 text-sm mt-1">Manage homepage gallery images</p>
-                </div>
+            <div className="flex items-center justify-end">
                 <div className="flex gap-3">
                     {activeTab === 'albums' && (
                         <button
@@ -669,7 +690,15 @@ const GalleryManagement = () => {
                                         <label className="text-sm font-medium text-gray-400">Company (Optional)</label>
                                         <select
                                             value={formData.companyId || ''}
-                                            onChange={(e) => setFormData({ ...formData, companyId: e.target.value })}
+                                            onChange={(e) => {
+                                                const selectedCompany = companies.find(c => c.id === e.target.value);
+                                                setFormData({
+                                                    ...formData,
+                                                    companyId: e.target.value,
+                                                    company: selectedCompany?.title,
+                                                    companyName: selectedCompany?.title
+                                                });
+                                            }}
                                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
                                         >
                                             <option value="" className="bg-[#0f1e3a]">None</option>
@@ -767,7 +796,10 @@ const GalleryManagement = () => {
                                                     {isAlbumMode ? 'Drag and drop multiple images here, or click to browse' : activeTab === 'videos' ? 'Drag and drop a video here, or click to browse' : 'Drag and drop an image here, or click to browse'}
                                                 </p>
                                                 <p className="text-xs text-gray-600">
-                                                    {activeTab === 'videos' ? "Supports: MP4, WebM" : "Supports: JPG, PNG, GIF, WebP"}
+                                                    {activeTab === 'videos' ? "Supports: MP4, WebM (Max 20MB)" : "Supports: JPG, PNG, GIF, WebP (Max 20MB)"}
+                                                </p>
+                                                <p className="text-xs text-emerald-500/70 mt-1">
+                                                    💡 Tip: Compress files for faster loading & better user experience
                                                 </p>
                                                 <input
                                                     type="file"

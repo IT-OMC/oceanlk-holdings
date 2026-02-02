@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
 
-import Navbar from '../../components/Navbar';
+
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface MediaItem {
@@ -118,7 +118,6 @@ const Media = () => {
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
-            <Navbar />
 
             <section className="pt-32 pb-8 px-4 md:px-6 w-full max-w-[95%] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-8">

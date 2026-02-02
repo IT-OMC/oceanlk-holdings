@@ -266,101 +266,232 @@ const SuperAdminApproval: React.FC = () => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        backgroundColor: 'rgba(0,0,0,0.75)',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        zIndex: 1000
+                        zIndex: 1000,
+                        padding: '2rem'
                     }}
                     onClick={() => setSelectedChange(null)}
                 >
                     <div
                         style={{
-                            backgroundColor: 'white',
-                            padding: '2rem',
-                            borderRadius: '8px',
-                            maxWidth: '800px',
-                            maxHeight: '80vh',
-                            overflow: 'auto',
-                            width: '90%'
+                            backgroundColor: '#1a1f2e',
+                            padding: '0',
+                            borderRadius: '12px',
+                            maxWidth: '1200px',
+                            maxHeight: '90vh',
+                            width: '100%',
+                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                            border: '1px solid #2d3748',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            overflow: 'hidden'
                         }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 style={{ marginTop: 0 }}>Review Change</h2>
-
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <p><strong>Action:</strong> <span style={{ color: getActionColor(selectedChange.action) }}>{selectedChange.action}</span></p>
-                            <p><strong>Entity Type:</strong> {selectedChange.entityType}</p>
-                            <p><strong>Submitted by:</strong> {selectedChange.submittedBy}</p>
-                            <p><strong>Submitted at:</strong> {formatDate(selectedChange.submittedAt)}</p>
-                        </div>
-
-                        <ChangeVisualizer
-                            entityType={selectedChange.entityType}
-                            action={selectedChange.action}
-                            changeData={selectedChange.changeData}
-                            originalData={selectedChange.originalData}
-                        />
-
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                                Review Comments:
-                            </label>
-                            <textarea
-                                value={reviewComments}
-                                onChange={(e) => setReviewComments(e.target.value)}
-                                placeholder="Add your comments here (required for rejection)"
+                        {/* Modal Header */}
+                        <div style={{
+                            padding: '1.5rem 2rem',
+                            borderBottom: '1px solid #2d3748',
+                            backgroundColor: '#0f1419',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <div>
+                                <h2 style={{
+                                    margin: 0,
+                                    fontSize: '1.5rem',
+                                    fontWeight: '600',
+                                    color: '#f7fafc'
+                                }}>Review Change Request</h2>
+                                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', alignItems: 'center' }}>
+                                    <span
+                                        style={{
+                                            padding: '0.25rem 0.75rem',
+                                            backgroundColor: getActionColor(selectedChange.action),
+                                            color: 'white',
+                                            borderRadius: '6px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase'
+                                        }}
+                                    >
+                                        {selectedChange.action}
+                                    </span>
+                                    <span style={{ color: '#a0aec0', fontSize: '0.875rem' }}>
+                                        {selectedChange.entityType}
+                                    </span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSelectedChange(null)}
                                 style={{
-                                    width: '100%',
-                                    minHeight: '100px',
                                     padding: '0.5rem',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '4px',
-                                    fontFamily: 'inherit'
+                                    backgroundColor: 'transparent',
+                                    color: '#a0aec0',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontSize: '1.5rem',
+                                    lineHeight: 1,
+                                    transition: 'all 0.2s'
                                 }}
-                            />
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#2d3748';
+                                    e.currentTarget.style.color = '#f7fafc';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                    e.currentTarget.style.color = '#a0aec0';
+                                }}
+                            >
+                                ×
+                            </button>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                        {/* Modal Body - Scrollable */}
+                        <div style={{
+                            flex: 1,
+                            overflow: 'auto',
+                            padding: '2rem',
+                            backgroundColor: '#151c2c'
+                        }}>
+                            {/* Metadata */}
+                            <div style={{
+                                marginBottom: '2rem',
+                                padding: '1.25rem',
+                                backgroundColor: '#1a1f2e',
+                                borderRadius: '8px',
+                                border: '1px solid #2d3748'
+                            }}>
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                    gap: '1rem'
+                                }}>
+                                    <div>
+                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Submitted By</p>
+                                        <p style={{ margin: '0.25rem 0 0 0', color: '#e2e8f0', fontWeight: '500' }}>{selectedChange.submittedBy}</p>
+                                    </div>
+                                    <div>
+                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#718096', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Submitted At</p>
+                                        <p style={{ margin: '0.25rem 0 0 0', color: '#e2e8f0', fontWeight: '500' }}>{formatDate(selectedChange.submittedAt)}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Change Visualizer */}
+                            <ChangeVisualizer
+                                entityType={selectedChange.entityType}
+                                action={selectedChange.action}
+                                changeData={selectedChange.changeData}
+                                originalData={selectedChange.originalData}
+                            />
+
+                            {/* Review Comments */}
+                            <div style={{ marginTop: '2rem' }}>
+                                <label style={{
+                                    display: 'block',
+                                    marginBottom: '0.75rem',
+                                    fontWeight: '600',
+                                    color: '#e2e8f0',
+                                    fontSize: '0.875rem'
+                                }}>
+                                    Review Comments
+                                    <span style={{ color: '#fc8181', marginLeft: '0.25rem' }}>*</span>
+                                    <span style={{ fontWeight: 'normal', color: '#718096', fontSize: '0.75rem', marginLeft: '0.5rem' }}>
+                                        (required for rejection)
+                                    </span>
+                                </label>
+                                <textarea
+                                    value={reviewComments}
+                                    onChange={(e) => setReviewComments(e.target.value)}
+                                    placeholder="Add your comments here..."
+                                    style={{
+                                        width: '100%',
+                                        minHeight: '120px',
+                                        padding: '0.75rem',
+                                        backgroundColor: '#1a1f2e',
+                                        border: '1px solid #2d3748',
+                                        borderRadius: '8px',
+                                        fontFamily: 'inherit',
+                                        color: '#e2e8f0',
+                                        fontSize: '0.875rem',
+                                        resize: 'vertical',
+                                        transition: 'border-color 0.2s'
+                                    }}
+                                    onFocus={(e) => e.currentTarget.style.borderColor = '#4299e1'}
+                                    onBlur={(e) => e.currentTarget.style.borderColor = '#2d3748'}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div style={{
+                            padding: '1.5rem 2rem',
+                            borderTop: '1px solid #2d3748',
+                            backgroundColor: '#0f1419',
+                            display: 'flex',
+                            gap: '0.75rem',
+                            justifyContent: 'flex-end'
+                        }}>
                             <button
                                 onClick={() => {
                                     setSelectedChange(null);
                                     setReviewComments('');
                                 }}
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#6b7280',
-                                    color: 'white',
+                                    padding: '0.625rem 1.25rem',
+                                    backgroundColor: '#2d3748',
+                                    color: '#e2e8f0',
                                     border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '0.875rem',
+                                    transition: 'all 0.2s'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4a5568'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2d3748'}
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleReject(selectedChange.id)}
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#ef4444',
+                                    padding: '0.625rem 1.25rem',
+                                    backgroundColor: '#f56565',
                                     color: 'white',
                                     border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '0.875rem',
+                                    transition: 'all 0.2s'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e53e3e'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f56565'}
                             >
                                 Reject
                             </button>
                             <button
                                 onClick={() => handleApprove(selectedChange.id)}
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#10b981',
+                                    padding: '0.625rem 1.25rem',
+                                    backgroundColor: '#48bb78',
                                     color: 'white',
                                     border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    fontWeight: '500',
+                                    fontSize: '0.875rem',
+                                    transition: 'all 0.2s'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#38a169'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#48bb78'}
                             >
                                 Approve & Publish
                             </button>

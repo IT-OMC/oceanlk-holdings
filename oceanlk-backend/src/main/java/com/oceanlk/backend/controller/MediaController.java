@@ -101,6 +101,16 @@ public class MediaController {
     public ResponseEntity<List<MediaItem>> getMediaItems() {
         List<MediaItem> media = mediaRepository.findByCategoryInAndGroupAndStatusOrderByPublishedDateDesc(
                 java.util.Arrays.asList("MEDIA", "GALLERY"), "MEDIA_PANEL", "PUBLISHED");
+
+        // Enrich with company name if companyId is present
+        media.forEach(item -> {
+            if (item.getCompanyId() != null && !item.getCompanyId().isEmpty()) {
+                companyRepository.findById(item.getCompanyId()).ifPresent(company -> {
+                    item.setCompany(company.getTitle());
+                });
+            }
+        });
+
         return ResponseEntity.ok(media);
     }
 
@@ -139,11 +149,12 @@ public class MediaController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
             @RequestParam(value = "group", defaultValue = "MEDIA_PANEL") String group) {
         try {
-            // Security: Scaleable size limit
+            // Security: Scaleable size limit (optimized for web performance)
             long maxSize = 20 * 1024 * 1024; // 20MB
             if (file.getSize() > maxSize) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("error", "File too large. Maximum size is 20MB."));
+                        .body(Map.of("error",
+                                "File too large. Maximum size is 20MB. Please compress your file for optimal web performance."));
             }
 
             // Security: Basic type validation
