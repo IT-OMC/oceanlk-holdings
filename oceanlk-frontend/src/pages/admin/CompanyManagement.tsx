@@ -74,7 +74,7 @@ const CompanyManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -110,7 +110,7 @@ const CompanyManagement = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentCompany?.id;
 
         try {
@@ -162,7 +162,7 @@ const CompanyManagement = () => {
     const confirmDelete = async () => {
         if (!itemToDelete) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.ADMIN_COMPANY_BY_ID(itemToDelete), {
                 method: 'DELETE',

@@ -91,7 +91,7 @@ const MediaManagement = () => {
 
     const fetchMedia = useCallback(async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=MEDIA_PANEL`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -147,7 +147,7 @@ const MediaManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -183,7 +183,7 @@ const MediaManagement = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentMedia?.id;
 
         try {
@@ -235,7 +235,7 @@ const MediaManagement = () => {
     const confirmDelete = async () => {
         if (!itemToDelete) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',
@@ -500,6 +500,7 @@ const MediaManagement = () => {
                                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:border-emerald-500 outline-none"
                                         >
                                             <option value="VIDEO" className="bg-[#0f1e3a]">Video</option>
+                                            <option value="IMAGE" className="bg-[#0f1e3a]">Image</option>
                                             <option value="GALLERY" className="bg-[#0f1e3a]">Photo Gallery</option>
                                             <option value="DOCUMENT" className="bg-[#0f1e3a]">Document</option>
                                         </select>

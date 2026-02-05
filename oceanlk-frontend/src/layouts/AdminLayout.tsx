@@ -21,16 +21,16 @@ const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
-    const adminName = localStorage.getItem('adminName') || 'Administrator';
-    const adminUsername = localStorage.getItem('adminUsername') || 'admin';
-    const adminRole = localStorage.getItem('adminRole');
+    const adminName = sessionStorage.getItem('adminName') || 'Administrator';
+    const adminUsername = sessionStorage.getItem('adminUsername') || 'admin';
+    const adminRole = sessionStorage.getItem('adminRole');
 
     // Verification State
     const [isVerified, setIsVerified] = useState(() => {
         // Super Admins are always verified, or rely on the flag
         // However, for safety, we trust the flag. 
-        // Note: localStorage stores strings
-        return localStorage.getItem('adminVerified') === 'true';
+        // Note: sessionStorage stores strings
+        return sessionStorage.getItem('adminVerified') === 'true';
     });
 
     const [verificationStep, setVerificationStep] = useState<'initial' | 'sent'>('initial');
@@ -40,7 +40,7 @@ const AdminLayout = () => {
     useEffect(() => {
         const checkVerification = async () => {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = sessionStorage.getItem('adminToken');
                 if (!token) return;
 
                 const res = await fetch(API_ENDPOINTS.VALIDATE_TOKEN, {
@@ -49,7 +49,7 @@ const AdminLayout = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setIsVerified(data.verified);
-                    localStorage.setItem('adminVerified', String(data.verified));
+                    sessionStorage.setItem('adminVerified', String(data.verified));
                 }
             } catch (e) {
                 console.error("Failed to validate token", e);
@@ -59,11 +59,11 @@ const AdminLayout = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminName');
-        localStorage.removeItem('adminUsername');
-        localStorage.removeItem('adminRole');
-        localStorage.removeItem('adminVerified');
+        sessionStorage.removeItem('adminToken');
+        sessionStorage.removeItem('adminName');
+        sessionStorage.removeItem('adminUsername');
+        sessionStorage.removeItem('adminRole');
+        sessionStorage.removeItem('adminVerified');
         navigate('/admin');
     };
 
@@ -102,7 +102,7 @@ const AdminLayout = () => {
             if (res.ok) {
                 toast.success('Account verified successfully!');
                 setIsVerified(true);
-                localStorage.setItem('adminVerified', 'true');
+                sessionStorage.setItem('adminVerified', 'true');
             } else {
                 toast.error(data.error || 'Invalid OTP');
             }

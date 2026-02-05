@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         // Fetch stats from backend
         const fetchStats = async () => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             try {
                 const [appsRes, jobsRes, mediaRes, contactRes] = await Promise.all([
                     fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {

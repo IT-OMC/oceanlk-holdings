@@ -6,6 +6,10 @@ export const API_ENDPOINTS = {
     VALIDATE_TOKEN: `${BASE_URL}/api/admin/validate`,
     RESET_PASSWORD: `${BASE_URL}/api/admin/reset-password`,
 
+    // System
+    SYSTEM_EMAIL_TEST: `${BASE_URL}/api/admin/system/test-email`,
+    TEST_EMAIL: `${BASE_URL}/api/test/send-email`,
+
     // Admin Management
     ADMIN_LIST: `${BASE_URL}/api/admin/management/list`,
     ADMIN_ADD: `${BASE_URL}/api/admin/management/add`,
@@ -100,14 +104,31 @@ export const API_ENDPOINTS = {
     COMPANY_BY_ID: (id: string) => `${BASE_URL}/api/companies/${id}`,
     ADMIN_COMPANIES: `${BASE_URL}/api/admin/companies`,
     ADMIN_COMPANY_BY_ID: (id: string) => `${BASE_URL}/api/admin/companies/${id}`,
+
+    // Content
+    CONTENT_BY_PAGE: (page: string) => `${BASE_URL}/api/content/${page}`,
+    CONTENT_BY_SECTION: (page: string, section: string) => `${BASE_URL}/api/content/${page}/${section}`,
+    CONTENT_UPDATE: `${BASE_URL}/api/content`,
+
+    // Search
+    SEARCH: `${BASE_URL}/api/search`,
+    SEARCH_QUERY: (q: string) => `${BASE_URL}/api/search?q=${q}`,
 };
 
 export const getAuthHeaders = () => {
-    const token = localStorage.getItem('adminToken');
+    const token = sessionStorage.getItem('adminToken');
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
     };
+};
+
+// Helper to get full media URL
+export const getMediaUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/')) return `${BASE_URL}${url}`;
+    return `${BASE_URL}/${url}`;
 };
 
 export default BASE_URL;

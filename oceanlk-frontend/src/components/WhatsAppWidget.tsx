@@ -64,7 +64,7 @@ const WhatsAppWidget = () => {
                                     e.stopPropagation();
                                     setShowBubble(false);
                                 }}
-                                className="absolute -top-6 -right-6 p-1 text-gray-400 hover:text-gray-600"
+                                className="absolute -top-2 -right-2 p-1 text-gray-400 hover:text-gray-600"
                             >
                                 <X size={14} />
                             </button>

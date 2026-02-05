@@ -52,7 +52,7 @@ const ApplicationViewer = () => {
     }, [searchQuery, statusFilter, applications]);
 
     const fetchApplications = async () => {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -70,7 +70,7 @@ const ApplicationViewer = () => {
     };
 
     const handleDownloadCV = async (appId: string, filename: string) => {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         setIsLoadingDownloading(true);
         try {
             const response = await fetch(API_ENDPOINTS.TALENT_POOL_CV(appId), {
@@ -100,7 +100,7 @@ const ApplicationViewer = () => {
     };
 
     const handleStatusUpdate = async (appId: string, newStatus: string) => {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(`${API_ENDPOINTS.TALENT_POOL_STATUS(appId)}?status=${newStatus}`, {
                 method: 'PATCH',
@@ -130,7 +130,7 @@ const ApplicationViewer = () => {
         if (!deleteConfirmation) return;
 
         const { appId } = deleteConfirmation;
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
 
         try {
             const response = await fetch(API_ENDPOINTS.TALENT_POOL_DELETE(appId), {

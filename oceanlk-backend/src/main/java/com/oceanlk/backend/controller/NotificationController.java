@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/notifications")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 public class NotificationController {
 
     private final NotificationService notificationService;

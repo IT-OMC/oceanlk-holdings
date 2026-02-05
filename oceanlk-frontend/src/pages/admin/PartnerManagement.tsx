@@ -57,7 +57,7 @@ const PartnerManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             let currentLogoUrl = formData.logoUrl;
 
             // Upload file if selected
@@ -130,7 +130,7 @@ const PartnerManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PARTNER_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {

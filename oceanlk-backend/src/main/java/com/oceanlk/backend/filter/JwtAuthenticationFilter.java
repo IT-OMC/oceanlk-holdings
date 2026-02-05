@@ -68,6 +68,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         Collections.singletonList(
                                 new org.springframework.security.core.authority.SimpleGrantedAuthority(role)));
 
+                // DEBUG: Log the authorities
+                System.out.println("DEBUG - JWT Filter: Setting authentication for user: " + finalUsername +
+                        ", Authorities: " + userDetails.getAuthorities());
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 

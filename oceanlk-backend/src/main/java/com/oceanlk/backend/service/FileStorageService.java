@@ -2,22 +2,23 @@ package com.oceanlk.backend.service;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class FileStorageService {
 
-    private final GridFsOperations gridFsOperations;
+    @Autowired
+    private GridFsTemplate gridFsTemplate;
 
     // Allowed file types
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
@@ -25,71 +26,58 @@ public class FileStorageService {
     private static final List<String> ALLOWED_VIDEO_TYPES = Arrays.asList(
             "video/mp4", "video/webm", "video/quicktime");
 
-    public FileStorageService(GridFsOperations gridFsOperations) {
-        this.gridFsOperations = gridFsOperations;
-    }
-
     /**
      * Save uploaded file to MongoDB GridFS
-     *
+     * 
      * @param file  MultipartFile to save
-     * @param group Group name for metadata (e.g., MEDIA_PANEL, HR_PANEL)
-     * @return URL path to retrieve the saved file (e.g., /api/files/{id})
+     * @param group Group name (stored as metadata)
+     * @return relative URL path to the saved file (/api/files/{id})
      */
     public String saveFile(MultipartFile file, String group) throws IOException {
-        // Validate file
         validateFile(file);
 
-        String contentType = file.getContentType();
-        String originalFilename = file.getOriginalFilename();
+        // Store file with metadata
+        ObjectId fileId = gridFsTemplate.store(
+                file.getInputStream(),
+                file.getOriginalFilename(),
+                file.getContentType(),
+                new com.mongodb.BasicDBObject("group", group));
 
-        // Store file in GridFS
-        try (InputStream inputStream = file.getInputStream()) {
-            ObjectId fileId = gridFsOperations.store(
-                    inputStream,
-                    originalFilename,
-                    contentType,
-                    new org.bson.Document("group", group));
-            // Return a URL that the FileController will serve
-            return "/api/files/" + fileId.toHexString();
-        }
+        // Return URL to access the file
+        return "/api/files/" + fileId.toString();
     }
 
     /**
-     * Delete file from MongoDB GridFS
-     *
+     * Delete file from GridFS
+     * 
      * @param fileUrl URL path to the file (e.g., /api/files/{id})
      */
     public void deleteFile(String fileUrl) {
-        if (fileUrl == null || !fileUrl.startsWith("/api/files/")) {
-            // Might be an old local file or an external URL, ignore.
+        if (fileUrl == null || !fileUrl.contains("/api/files/")) {
             return;
         }
 
-        String fileId = fileUrl.substring("/api/files/".length());
         try {
-            gridFsOperations.delete(new Query(Criteria.where("_id").is(new ObjectId(fileId))));
-        } catch (IllegalArgumentException e) {
-            // Invalid ObjectId format, ignore
+            String fileId = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+            gridFsTemplate.delete(new Query(Criteria.where("_id").is(fileId)));
+        } catch (Exception e) {
+            // Log error but don't throw exception to avoid breaking flow
+            System.err.println("Error deleting file: " + e.getMessage());
         }
     }
 
     /**
-     * Get a file from GridFS by its ID
-     *
-     * @param id The ObjectId string of the file
-     * @return GridFsResource containing the file stream
+     * Retrieve file resource from GridFS
+     * 
+     * @param id File ObjectId string
+     * @return GridFsResource
      */
     public GridFsResource getFile(String id) {
-        try {
-            GridFSFile file = gridFsOperations.findOne(new Query(Criteria.where("_id").is(new ObjectId(id))));
-            if (file == null) {
-                return null;
-            }
-            return gridFsOperations.getResource(file);
-        } catch (IllegalArgumentException e) {
-            return null; // Invalid ObjectId
+        GridFSFile gridFSFile = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
+        if (gridFSFile == null) {
+            return null;
         }
+        return gridFsTemplate.getResource(gridFSFile);
     }
 
     /**

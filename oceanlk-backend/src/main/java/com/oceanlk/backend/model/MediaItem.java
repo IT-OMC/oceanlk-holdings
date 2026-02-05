@@ -55,5 +55,6 @@ public class MediaItem {
         this.featured = featured;
         this.publishedDate = LocalDate.now();
         this.status = "PUBLISHED";
+        this.group = "MEDIA_PANEL";
     }
 }

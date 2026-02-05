@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -36,6 +38,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 // Public endpoints
                                                 .requestMatchers("/api/contact").permitAll()
+                                                .requestMatchers("/api/search").permitAll()
                                                 .requestMatchers("/api/admin/login").permitAll()
                                                 .requestMatchers("/api/admin/validate").permitAll()
                                                 .requestMatchers("/api/admin/otp/**").permitAll()
@@ -64,11 +67,14 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/api/admin/whatsapp")
                                                 .hasRole("SUPER_ADMIN")
-                                                .requestMatchers("/api/admin/management/list").hasRole("SUPER_ADMIN")
-                                                .requestMatchers("/api/admin/management/add").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/list")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/add")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
                                                 .requestMatchers("/api/admin/management/delete/**")
-                                                .hasRole("SUPER_ADMIN")
-                                                .requestMatchers("/api/admin/management/edit/**").hasRole("SUPER_ADMIN")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/management/edit/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
                                                 .requestMatchers("/api/admin/management/**")
                                                 .hasAnyRole("ADMIN", "SUPER_ADMIN")
                                                 .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
@@ -97,6 +103,15 @@ public class SecurityConfig {
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                // Security Headers
+                                .headers(headers -> headers
+                                                .contentSecurityPolicy(csp -> csp
+                                                                .policyDirectives(
+                                                                                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"))
+                                                .frameOptions(frame -> frame.deny())
+                                                .httpStrictTransportSecurity(hsts -> hsts
+                                                                .maxAgeInSeconds(31536000)
+                                                                .includeSubDomains(true)))
                                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -106,8 +121,17 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:4173",
-                                "https://test.ocean.lk", "http://test.ocean.lk"));
+
+                // Get allowed origins from environment variable
+                String allowedOriginsEnv = System.getenv("CORS_ALLOWED_ORIGINS");
+                if (allowedOriginsEnv != null && !allowedOriginsEnv.isEmpty()) {
+                        configuration.setAllowedOrigins(Arrays.asList(allowedOriginsEnv.split(",")));
+                } else {
+                        // Default for development
+                        configuration.setAllowedOrigins(
+                                        Arrays.asList("http://localhost:5173", "http://localhost:4173"));
+                }
+
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                 configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With",
                                 "Accept",

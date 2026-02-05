@@ -75,7 +75,7 @@ const TestimonialsManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -125,7 +125,7 @@ const TestimonialsManagement = () => {
                 }
             }
 
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const url = editingItem
                 ? API_ENDPOINTS.TESTIMONIAL_BY_ID(editingItem.id)
                 : API_ENDPOINTS.TESTIMONIALS;
@@ -176,7 +176,7 @@ const TestimonialsManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.TESTIMONIAL_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {

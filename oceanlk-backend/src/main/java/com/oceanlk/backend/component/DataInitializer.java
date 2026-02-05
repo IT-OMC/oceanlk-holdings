@@ -2,7 +2,9 @@ package com.oceanlk.backend.component;
 
 import com.oceanlk.backend.model.*;
 import com.oceanlk.backend.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,8 +13,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
 public class DataInitializer implements CommandLineRunner {
+
+        @Value("${default.admin.username:admin}")
+        private String defaultAdminUsername;
+
+        @Value("${default.admin.password:admin123}")
+        private String defaultAdminPassword;
+
+        @Value("${default.superadmin.username:superadmin}")
+        private String defaultSuperAdminUsername;
+
+        @Value("${default.superadmin.password:superadmin123}")
+        private String defaultSuperAdminPassword;
 
         @Autowired
         private CompanyRepository companyRepository;
@@ -27,145 +42,115 @@ public class DataInitializer implements CommandLineRunner {
         private MediaItemRepository mediaItemRepository;
         @Autowired
         private PartnerRepository partnerRepository;
-        @Autowired
-        private CorporateLeaderRepository corporateLeaderRepository;
-        @Autowired
-        private GlobalMetricRepository globalMetricRepository;
 
         @Override
         public void run(String... args) throws Exception {
-                seedCompanies();
-
-                seedTestimonials();
+                // seedCompanies();
+                //
+                // seedTestimonials();
                 seedAdminUser();
-                seedJobOpportunities();
-                seedMediaItems();
-                seedPartners();
-                seedCorporateLeaders();
-                seedGlobalMetrics();
+                // seedJobOpportunities();
+
+                // Clear existing media items (news, blogs, videos, etc.)
+                // mediaItemRepository.deleteAll();
+                // log.info("Cleared all media items");
+
+                // seedMediaItems();
+                // seedPartners();
         }
 
         private void seedPartners() {
                 if (partnerRepository.count() == 0) {
                         List<Partner> partners = new ArrayList<>();
-                        partners.add(new Partner("World Shipping Council", "/partner_logos/partner1.png",
+                        partners.add(new Partner("World Shipping Council",
+                                        "https://images.unsplash.com/photo-1566938096894-0ba9bd747306?q=80&w=200",
                                         "https://www.worldshipping.org"));
-                        partners.add(new Partner("Int. Chamber of Shipping", "/partner_logos/partner2.png",
+                        partners.add(new Partner("Int. Chamber of Shipping",
+                                        "https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=200",
                                         "https://www.ics-shipping.org"));
-                        partners.add(new Partner("BIMCO Member", "/partner_logos/partner3.png",
+                        partners.add(new Partner("BIMCO Member",
+                                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=200",
                                         "https://www.bimco.org"));
-                        partners.add(new Partner("Marine Environment Pro.", "/partner_logos/partner4.png",
+                        partners.add(new Partner("Marine Environment Pro.",
+                                        "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=200",
                                         "https://www.mepc.org"));
                         partnerRepository.saveAll(partners);
-                        System.out.println("Seeded Partners");
-                }
-        }
-
-        private void seedCorporateLeaders() {
-                if (corporateLeaderRepository.count() == 0) {
-                        List<CorporateLeader> leaders = new ArrayList<>();
-
-                        // Board
-                        leaders.add(new CorporateLeader(
-                                        "Dr. Sarah Perera", "Chairperson", "BOARD",
-                                        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
-                                        "Dr. Perera brings over 25 years of maritime law and policy experience...",
-                                        "Strategic Visionary"));
-
-                        leaders.add(new CorporateLeader(
-                                        "Mr. David Alwis", "Non-Executive Director", "BOARD",
-                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
-                                        "A veteran in global logistics and supply chain management...",
-                                        "Governance Expert"));
-
-                        // Executive
-                        leaders.add(new CorporateLeader(
-                                        "James Fernando", "Chief Executive Officer", "EXECUTIVE",
-                                        "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop",
-                                        "James has led OceanLK through its most transformative years...",
-                                        "Operational Excellence"));
-
-                        leaders.add(new CorporateLeader(
-                                        "Mrs. Kamala Silva", "Chief Financial Officer", "EXECUTIVE",
-                                        "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop",
-                                        "Expert in maritime finance and international taxation...",
-                                        "Financial Steward"));
-
-                        // Senior
-                        leaders.add(new CorporateLeader(
-                                        "Mr. Rajan Selvam", "Head of Engineering", "SENIOR",
-                                        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop",
-                                        "Overseeing our technical fleet and engineering projects...",
-                                        "Technical Lead"));
-
-                        corporateLeaderRepository.saveAll(leaders);
-                        System.out.println("Seeded Corporate Leaders");
-                }
-        }
-
-        private void seedGlobalMetrics() {
-                if (globalMetricRepository.count() == 0) {
-                        List<GlobalMetric> metrics = new ArrayList<>();
-                        // Icon names must match frontend mapping: Ship, Calendar, Anchor, MapPin, Globe
-                        metrics.add(new GlobalMetric("Active Routes", "15+", "Ship", 1));
-                        metrics.add(new GlobalMetric("Weekly Sailings", "113", "Calendar", 2));
-                        metrics.add(new GlobalMetric("Annual Capacity", "3M", "Anchor", 3));
-                        metrics.add(new GlobalMetric("Global Ports", "50+", "MapPin", 4));
-                        metrics.add(new GlobalMetric("Countries Served", "25+", "Globe", 5));
-
-                        globalMetricRepository.saveAll(metrics);
-                        System.out.println("Seeded Global Metrics");
+                        log.info("Seeded {} partners", partners.size());
+                } else {
+                        // Fix existing broken URLs from previous seed
+                        List<Partner> partners = partnerRepository.findAll();
+                        boolean updated = false;
+                        for (Partner p : partners) {
+                                if (p.getLogoUrl() != null && p.getLogoUrl().startsWith("/partner_logos/")) {
+                                        if (p.getName().contains("World Shipping")) {
+                                                p.setLogoUrl("https://images.unsplash.com/photo-1566938096894-0ba9bd747306?q=80&w=200");
+                                        } else if (p.getName().contains("Int. Chamber")) {
+                                                p.setLogoUrl("https://images.unsplash.com/photo-1524522173746-f628baad3644?q=80&w=200");
+                                        } else if (p.getName().contains("BIMCO")) {
+                                                p.setLogoUrl("https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=200");
+                                        } else if (p.getName().contains("Marine Environment")) {
+                                                p.setLogoUrl("https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=200");
+                                        }
+                                        updated = true;
+                                }
+                        }
+                        if (updated) {
+                                partnerRepository.saveAll(partners);
+                                log.info("Updated partners with new URLs");
+                        }
                 }
         }
 
         private void seedAdminUser() {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-                adminUserRepository.findByUsername("admin").ifPresentOrElse(
+                adminUserRepository.findByUsername(defaultAdminUsername).ifPresentOrElse(
                                 existingAdmin -> {
                                         if (existingAdmin.getName() == null || existingAdmin.getName().isEmpty()) {
                                                 existingAdmin.setName("Admin User");
                                                 existingAdmin.setVerified(true);
+                                                existingAdmin.setRole("SUPER_ADMIN"); // Ensure SUPER_ADMIN role
                                                 adminUserRepository.save(existingAdmin);
-                                                System.out.println(
-                                                                "Updated existing admin user with name 'Admin User'");
-                                        } else if (!existingAdmin.isVerified()) {
+                                                log.info("Updated existing admin user: {}", defaultAdminUsername);
+                                        } else if (!existingAdmin.isVerified()
+                                                        || !"SUPER_ADMIN".equals(existingAdmin.getRole())) {
                                                 existingAdmin.setVerified(true);
+                                                existingAdmin.setRole("SUPER_ADMIN"); // Upgrade to SUPER_ADMIN
                                                 adminUserRepository.save(existingAdmin);
                                         }
                                 },
                                 () -> {
-                                        AdminUser admin = new AdminUser("Admin User", "admin",
-                                                        encoder.encode("admin123"),
+                                        AdminUser admin = new AdminUser("Admin User", defaultAdminUsername,
+                                                        encoder.encode(defaultAdminPassword),
                                                         "admin@oceanlk.com",
                                                         "+94771234567", "SUPER_ADMIN");
                                         admin.setVerified(true);
                                         adminUserRepository.save(admin);
-                                        System.out.println("Seeded Super Admin User (admin / admin123)");
+                                        log.info("Seeded Super Admin User: {}", defaultAdminUsername);
                                 });
 
-                adminUserRepository.findByUsername("superadmin").ifPresentOrElse(
+                adminUserRepository.findByUsername(defaultSuperAdminUsername).ifPresentOrElse(
                                 existingSuperAdmin -> {
                                         if (existingSuperAdmin.getName() == null
                                                         || existingSuperAdmin.getName().isEmpty()) {
                                                 existingSuperAdmin.setName("Super Admin");
                                                 existingSuperAdmin.setVerified(true);
                                                 adminUserRepository.save(existingSuperAdmin);
-                                                System.out.println(
-                                                                "Updated existing superadmin user with name 'Super Admin'");
+                                                log.info("Updated existing superadmin user: {}",
+                                                                defaultSuperAdminUsername);
                                         } else if (!existingSuperAdmin.isVerified()) {
                                                 existingSuperAdmin.setVerified(true);
                                                 adminUserRepository.save(existingSuperAdmin);
                                         }
                                 },
                                 () -> {
-                                        AdminUser superAdmin = new AdminUser("Super Admin", "superadmin",
-                                                        encoder.encode("superadmin123"),
+                                        AdminUser superAdmin = new AdminUser("Super Admin", defaultSuperAdminUsername,
+                                                        encoder.encode(defaultSuperAdminPassword),
                                                         "superadmin@oceanlk.com",
                                                         "+94771234567", "SUPER_ADMIN");
                                         superAdmin.setVerified(true);
                                         adminUserRepository.save(superAdmin);
-                                        System.out.println("Seeded Super Admin User (superadmin / superadmin123)");
+                                        log.info("Seeded Super Admin User: {}", defaultSuperAdminUsername);
                                 });
         }
 
@@ -205,7 +190,7 @@ public class DataInitializer implements CommandLineRunner {
                                         "Manager"));
 
                         jobOpportunityRepository.saveAll(jobs);
-                        System.out.println("Seeded Job Opportunities");
+                        log.info("Seeded {} job opportunities", jobs.size());
                 }
         }
 
@@ -220,7 +205,7 @@ public class DataInitializer implements CommandLineRunner {
                         omc.setDescription("Takes orders and delivers supplies for ships in operation side.");
                         omc.setLongDescription(
                                         "Ocean Maritime Ceylon is a premier maritime service provider spanning the major ports of Sri Lanka. We specialize in the operational aspect of ship supply, taking orders and ensuring the seamless delivery of essential provisions, spare parts, and technical supplies to vessels in operation. Our 24/7 service ensures that ships face zero downtime due to supply chain delays.");
-                        omc.setLogoUrl("/company logos/Ocean Maritime Ceylon logo.png");
+                        omc.setLogoUrl("https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=200");
                         omc.setImage(
                                         "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?q=80&w=2000&auto=format&fit=crop");
                         omc.setVideo("https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4");
@@ -242,7 +227,7 @@ public class DataInitializer implements CommandLineRunner {
                                         "The engineering company which completes the engineering requests of the company.");
                         oec.setLongDescription(
                                         "Ocean Engineering Ceylon serves as the technical backbone of our marine operations. We handle all engineering requests, from routine maintenance to complex structural repairs and modifications. Our team of expert marine engineers ensures that every vessel operates at peak performance and meets all safety and compliance rigor.");
-                        oec.setLogoUrl("/company logos/Ocean engineering ceylon.png");
+                        oec.setLogoUrl("https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=200");
                         oec.setImage(
                                         "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=2000&auto=format&fit=crop");
                         oec.setVideo("https://videos.pexels.com/video-files/2043509/2043509-uhd_2560_1440_25fps.mp4");
@@ -263,7 +248,7 @@ public class DataInitializer implements CommandLineRunner {
                         omch.setDescription("Does the supply side, handling logistics and channel management.");
                         omch.setLongDescription(
                                         "Ocean Maritime Channel focuses on the broader supply side of the maritime industry. We manage the complex logistics channels that keep the maritime world moving. From sourcing global products to managing port-to-port logistics chains, we ensure the steady flow of goods required for maritime operations.");
-                        omch.setLogoUrl("/company logos/ocean maritime channel.png");
+                        omch.setLogoUrl("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=200");
                         omch.setImage(
                                         "https://images.unsplash.com/photo-1494412574643-35d3d4706f6e?q=80&w=2000&auto=format&fit=crop");
                         omch.setEstablished("2012");
@@ -283,7 +268,7 @@ public class DataInitializer implements CommandLineRunner {
                         cc.setDescription("A traveling agency creating personalized travel experiences.");
                         cc.setLongDescription(
                                         "Connecting Cubes is your gateway to the world. As a premier travel agency, we specialize in curating personalized travel experiences that go beyond the ordinary. Whether it's corporate travel management, luxury vacations, or adventure tours, we connect the 'cubes' of your journey to create a seamless picture.");
-                        cc.setLogoUrl("/company logos/connecting cubes logo..png");
+                        cc.setLogoUrl("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=200");
                         cc.setImage(
                                         "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2000&auto=format&fit=crop");
                         cc.setVideo("https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_24fps.mp4");
@@ -304,7 +289,7 @@ public class DataInitializer implements CommandLineRunner {
                         db.setDescription("A digital marketing company driving brand visibility.");
                         db.setLongDescription(
                                         "Digital Books is a forward-thinking digital marketing agency. We help brands tell their stories in the digital age. From social media management and SEO to comprehensive digital campaigns and content creation, we provide the tools and strategies needed to stand out in a crowded digital marketplace.");
-                        db.setLogoUrl("/company logos/digital books.png");
+                        db.setLogoUrl("https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=200");
                         db.setImage(
                                         "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop");
                         db.setEstablished("2018");
@@ -318,7 +303,31 @@ public class DataInitializer implements CommandLineRunner {
                         companies.add(db);
 
                         companyRepository.saveAll(companies);
-                        System.out.println("Seeded Companies");
+                        log.info("Seeded {} companies", companies.size());
+                } else {
+                        // Fix existing broken company logo URLs
+                        List<Company> companies = companyRepository.findAll();
+                        boolean updated = false;
+                        for (Company c : companies) {
+                                if (c.getLogoUrl() != null && c.getLogoUrl().startsWith("/company logos/")) {
+                                        if (c.getId().equals("omc")) {
+                                                c.setLogoUrl("https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=200");
+                                        } else if (c.getId().equals("oec")) {
+                                                c.setLogoUrl("https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=200");
+                                        } else if (c.getId().equals("omch")) {
+                                                c.setLogoUrl("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=200");
+                                        } else if (c.getId().equals("connecting-cubes")) {
+                                                c.setLogoUrl("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=200");
+                                        } else if (c.getId().equals("digital-books")) {
+                                                c.setLogoUrl("https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=200");
+                                        }
+                                        updated = true;
+                                }
+                        }
+                        if (updated) {
+                                companyRepository.saveAll(companies);
+                                log.info("Updated companies with new logo URLs");
+                        }
                 }
         }
 
@@ -358,7 +367,7 @@ public class DataInitializer implements CommandLineRunner {
                                         5));
 
                         testimonialRepository.saveAll(items);
-                        System.out.println("Seeded Testimonials");
+                        log.info("Seeded {} testimonials", items.size());
                 }
         }
 
@@ -528,7 +537,7 @@ public class DataInitializer implements CommandLineRunner {
                         items.add(press1);
 
                         mediaItemRepository.saveAll(items);
-                        System.out.println("Seeded Media Items");
+                        log.info("Seeded {} media items", items.size());
                 }
         }
 }

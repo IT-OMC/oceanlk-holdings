@@ -63,11 +63,11 @@ const AdminLogin = () => {
             }
 
             const data: LoginResponse = await response.json();
-            localStorage.setItem('adminToken', data.token);
-            localStorage.setItem('adminName', data.name || '');
-            localStorage.setItem('adminUsername', data.username);
-            localStorage.setItem('adminRole', data.role);
-            localStorage.setItem('adminVerified', String(data.verified));
+            sessionStorage.setItem('adminToken', data.token);
+            sessionStorage.setItem('adminName', data.name || '');
+            sessionStorage.setItem('adminUsername', data.username);
+            sessionStorage.setItem('adminRole', data.role);
+            sessionStorage.setItem('adminVerified', String(data.verified));
             navigate('/admin/dashboard');
         } catch (err: any) {
             setError(err.message || 'An error occurred during login');

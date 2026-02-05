@@ -48,7 +48,7 @@ const StatsManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const url = editingItem
                 ? API_ENDPOINTS.METRIC_BY_ID(editingItem.id)
                 : API_ENDPOINTS.METRICS;
@@ -88,7 +88,7 @@ const StatsManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.METRIC_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {

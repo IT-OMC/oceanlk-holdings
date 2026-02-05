@@ -45,8 +45,8 @@ i18n
             escapeValue: false
         },
         detection: {
-            order: ['localStorage', 'navigator'],
-            caches: ['localStorage']
+            order: ['sessionStorage', 'navigator'],
+            caches: ['sessionStorage']
         }
     });
 

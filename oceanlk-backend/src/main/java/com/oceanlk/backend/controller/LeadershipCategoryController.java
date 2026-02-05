@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/leadership-categories")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 public class LeadershipCategoryController {
 
     private final LeadershipCategoryRepository repository;

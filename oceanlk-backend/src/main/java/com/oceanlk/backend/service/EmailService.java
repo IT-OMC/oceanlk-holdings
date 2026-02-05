@@ -86,18 +86,18 @@ public class EmailService {
                             margin: 0;
                             padding: 0;
                             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            background: linear-gradient(135deg, #0a1628 0%, #1a2847 100%);
+                            background: linear-gradient(135deg, #0a1628 0%%, #1a2847 100%%);
                         }
                         .container {
                             max-width: 600px;
                             margin: 40px auto;
-                            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+                            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%%, rgba(255,255,255,0.98) 100%%);
                             border-radius: 20px;
                             overflow: hidden;
                             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
                         }
                         .header {
-                            background: linear-gradient(135deg, #10b981 0%, #0056b3 100%);
+                            background: linear-gradient(135deg, #10b981 0%%, #0056b3 100%%);
                             padding: 40px 30px;
                             text-align: center;
                             color: white;
@@ -118,7 +118,7 @@ public class EmailService {
                             margin-top: 0;
                         }
                         .info-box {
-                            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                            background: linear-gradient(135deg, #f0fdf4 0%%, #ecfdf5 100%%);
                             border-left: 4px solid #10b981;
                             padding: 20px;
                             margin: 25px 0;
@@ -134,7 +134,7 @@ public class EmailService {
                         .cta-button {
                             display: inline-block;
                             padding: 16px 40px;
-                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            background: linear-gradient(135deg, #10b981 0%%, #059669 100%%);
                             color: white;
                             text-decoration: none;
                             border-radius: 50px;
@@ -157,8 +157,8 @@ public class EmailService {
                         .checkmark {
                             width: 60px;
                             height: 60px;
-                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                            border-radius: 50%;
+                            background: linear-gradient(135deg, #10b981 0%%, #059669 100%%);
+                            border-radius: 50%%;
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -259,7 +259,7 @@ public class EmailService {
                             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
                         }
                         .header {
-                            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+                            background: linear-gradient(135deg, #0056b3 0%%, #003d82 100%%);
                             padding: 30px;
                             color: white;
                         }
@@ -280,7 +280,7 @@ public class EmailService {
                             padding: 35px;
                         }
                         .applicant-card {
-                            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                            background: linear-gradient(135deg, #f0f9ff 0%%, #e0f2fe 100%%);
                             padding: 25px;
                             border-radius: 12px;
                             border: 2px solid #0ea5e9;
@@ -311,7 +311,7 @@ public class EmailService {
                         .action-button {
                             display: inline-block;
                             padding: 14px 32px;
-                            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+                            background: linear-gradient(135deg, #0056b3 0%%, #003d82 100%%);
                             color: white;
                             text-decoration: none;
                             border-radius: 8px;
@@ -392,7 +392,7 @@ public class EmailService {
 
                             <div style="margin-top: 30px; text-align: center;">
                                 <a href="http://localhost:5173/admin/applications" class="action-button">View in Admin Panel</a>
-                                <a href="mailto:%s" class="action-button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 8px 20px rgba(16,185,129,0.3);">Contact Applicant</a>
+                                <a href="mailto:%%s" class="action-button" style="background: linear-gradient(135deg, #10b981 0%%, #059669 100%%); box-shadow: 0 8px 20px rgba(16,185,129,0.3);">Contact Applicant</a>
                             </div>
                         </div>
 
@@ -482,18 +482,18 @@ public class EmailService {
                             margin: 0;
                             padding: 0;
                             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            background: linear-gradient(135deg, #0a1628 0%, #1a2847 100%);
+                            background: linear-gradient(135deg, #0a1628 0%%, #1a2847 100%%);
                         }
                         .container {
                             max-width: 600px;
                             margin: 40px auto;
-                            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+                            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%%, rgba(255,255,255,0.98) 100%%);
                             border-radius: 20px;
                             overflow: hidden;
                             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
                         }
                         .header {
-                            background: linear-gradient(135deg, #059669 0%, #0056b3 100%);
+                            background: linear-gradient(135deg, #059669 0%%, #0056b3 100%%);
                             padding: 40px 30px;
                             text-align: center;
                             color: white;
@@ -514,7 +514,7 @@ public class EmailService {
                             margin-top: 0;
                         }
                         .info-box {
-                            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                            background: linear-gradient(135deg, #f0fdf4 0%%, #ecfdf5 100%%);
                             border-left: 4px solid #059669;
                             padding: 20px;
                             margin: 25px 0;
@@ -527,8 +527,8 @@ public class EmailService {
                         .checkmark {
                             width: 60px;
                             height: 60px;
-                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                            border-radius: 50%;
+                            background: linear-gradient(135deg, #10b981 0%%, #059669 100%%);
+                            border-radius: 50%%;
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -627,7 +627,7 @@ public class EmailService {
                             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
                         }
                         .header {
-                            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+                            background: linear-gradient(135deg, #0056b3 0%%, #003d82 100%%);
                             padding: 30px;
                             color: white;
                         }
@@ -648,7 +648,7 @@ public class EmailService {
                             padding: 35px;
                         }
                         .contact-card {
-                            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                            background: linear-gradient(135deg, #f0f9ff 0%%, #e0f2fe 100%%);
                             padding: 25px;
                             border-radius: 12px;
                             border: 2px solid #0ea5e9;
@@ -679,7 +679,7 @@ public class EmailService {
                         .action-button {
                             display: inline-block;
                             padding: 14px 32px;
-                            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+                            background: linear-gradient(135deg, #0056b3 0%%, #003d82 100%%);
                             color: white;
                             text-decoration: none;
                             border-radius: 8px;
@@ -744,7 +744,7 @@ public class EmailService {
 
                             <div style="margin-top: 30px; text-align: center;">
                                 <a href="http://localhost:5173/admin/contact-messages" class="action-button">View in Admin Panel</a>
-                                <a href="mailto:%s" class="action-button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 8px 20px rgba(16,185,129,0.3);">Reply to Contact</a>
+                                <a href="mailto:%%s" class="action-button" style="background: linear-gradient(135deg, #10b981 0%%, #059669 100%%); box-shadow: 0 8px 20px rgba(16,185,129,0.3);">Reply to Contact</a>
                             </div>
                         </div>
 
@@ -806,7 +806,7 @@ public class EmailService {
                     <style>
                         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #f3f4f6; }
                         .container { max-width: 600px; margin: 30px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-                        .header { background: linear-gradient(135deg, #0f1e3a 0%, #1a2847 100%); padding: 30px; color: white; text-align: center; }
+                        .header { background: linear-gradient(135deg, #0f1e3a 0%%, #1a2847 100%%); padding: 30px; color: white; text-align: center; }
                         .header h1 { margin: 0; font-size: 24px; color: white !important; }
                         .content { padding: 40px; color: #333; line-height: 1.6; }
                         .alert-box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }

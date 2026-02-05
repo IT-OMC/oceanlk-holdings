@@ -97,7 +97,7 @@ const LeadershipManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const url = editingItem
                 ? API_ENDPOINTS.LEADERSHIP_BY_ID(editingItem.id)
                 : API_ENDPOINTS.LEADERSHIP;
@@ -137,7 +137,7 @@ const LeadershipManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.LEADERSHIP_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
@@ -176,7 +176,7 @@ const LeadershipManagement = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORIES, {
                 method: 'POST',
                 headers: {
@@ -212,7 +212,7 @@ const LeadershipManagement = () => {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_UPLOAD, {
                 method: 'POST',
                 headers: {
@@ -238,7 +238,7 @@ const LeadershipManagement = () => {
     const handleUpdateCategory = async (category: LeadershipCategory) => {
         setIsLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORY_BY_CODE(category.code), {
                 method: 'PUT',
                 headers: {
@@ -271,7 +271,7 @@ const LeadershipManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.LEADERSHIP_CATEGORY_BY_CODE(categoryToDelete.code), {
                 method: 'DELETE',
                 headers: {

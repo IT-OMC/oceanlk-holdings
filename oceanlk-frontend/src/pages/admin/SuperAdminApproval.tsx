@@ -28,7 +28,7 @@ const SuperAdminApproval: React.FC = () => {
 
     const fetchPendingChanges = React.useCallback(async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGES, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -53,7 +53,7 @@ const SuperAdminApproval: React.FC = () => {
 
     const handleApprove = async (changeId: string) => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_APPROVE(changeId), {
                 method: 'POST',
                 headers: {
@@ -84,7 +84,7 @@ const SuperAdminApproval: React.FC = () => {
         }
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_REJECT(changeId), {
                 method: 'POST',
                 headers: {

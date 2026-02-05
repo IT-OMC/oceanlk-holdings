@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,10 +47,6 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(createErrorResponse("Account is inactive"));
             }
-
-            // Update last login
-            admin.setLastLoginDate(LocalDateTime.now());
-            adminUserRepository.save(admin);
 
             // Generate JWT token
             String token = jwtUtil.generateToken(admin.getUsername());
@@ -132,10 +127,11 @@ public class AuthController {
                                 "Password reset via OTP");
                         return ResponseEntity.ok(Map.of("message", "Password reset successfully"));
                     } else {
-                        return ResponseEntity.status(400).body(Map.of("error", "Invalid or expired OTP"));
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(Map.of("error", "Invalid or expired OTP"));
                     }
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "User not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
     }
 
     private Map<String, String> createErrorResponse(String message) {

@@ -1,317 +1,338 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Phone, Lock, Shield, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Shield, Lock, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
+import { toast } from 'react-hot-toast';
 
 const AdminProfile = () => {
-    const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [saving, setSaving] = useState(false);
+    const [admin, setAdmin] = useState<any>(null);
+
+    // Form States
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
 
     // Password Change State
-    const [showPasswordModal, setShowPasswordModal] = useState(false);
-    const [passwordStep, setPasswordStep] = useState(1); // 1: New Password, 2: OTP Verification
+    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [otp, setOtp] = useState('');
-    const [otpLoading, setOtpLoading] = useState(false);
+
+    const [activeTab, setActiveTab] = useState<'details' | 'security'>('details');
 
     useEffect(() => {
         fetchProfile();
     }, []);
 
     const fetchProfile = async () => {
-        const username = localStorage.getItem('adminUsername');
-        const token = localStorage.getItem('adminToken');
-        if (!username) return;
+        setLoading(true);
+        const username = sessionStorage.getItem('adminUsername');
+        const token = sessionStorage.getItem('adminToken');
+
+        if (!username || !token) {
+            setLoading(false);
+            return;
+        }
 
         try {
             const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE(username), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+
             if (res.ok) {
                 const data = await res.json();
-                setProfile(data);
+                setAdmin(data);
+                setName(data.name);
+                setEmail(data.email);
+                setPhone(data.phone);
+            } else {
+                toast.error("Failed to load profile");
             }
-        } catch (err) {
-            setError('Failed to load profile');
+        } catch (error) {
+            console.error(error);
+            toast.error("Connection error");
         } finally {
             setLoading(false);
         }
     };
 
-    const handlePasswordResetInit = async (e: React.FormEvent) => {
+    const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (newPassword !== confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-        setError('');
-        setOtpLoading(true);
+        setSaving(true);
+        const username = sessionStorage.getItem('adminUsername');
+        const token = sessionStorage.getItem('adminToken');
 
-        const username = localStorage.getItem('adminUsername');
         try {
-            const res = await fetch(API_ENDPOINTS.OTP_SEND, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, method: 'email' })
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/update-name`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ username, name })
             });
 
             if (res.ok) {
-                setPasswordStep(2);
+                toast.success("Profile updated successfully");
+                // Update session storage if name changed
+                sessionStorage.setItem('adminName', name);
+                fetchProfile();
             } else {
                 const data = await res.json();
-                setError(data.error || 'Failed to send OTP');
+                toast.error(data.error || "Update failed");
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (error) {
+            toast.error("Network error");
         } finally {
-            setOtpLoading(false);
+            setSaving(false);
         }
     };
 
-    const handlePasswordResetComplete = async (e: React.FormEvent) => {
+    const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-        setOtpLoading(true);
+        if (newPassword !== confirmPassword) {
+            toast.error("New passwords do not match");
+            return;
+        }
 
-        const username = localStorage.getItem('adminUsername');
+        setSaving(true);
+        const username = sessionStorage.getItem('adminUsername');
+        const token = sessionStorage.getItem('adminToken');
+
         try {
-            // Re-verify OTP for security
-            const verifyRes = await fetch(API_ENDPOINTS.OTP_VERIFY, {
+            const res = await fetch(API_ENDPOINTS.ADMIN_CHANGE_PASSWORD, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, otp })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ username, currentPassword, newPassword }) // Note: Backend usually handles auth verification properly
             });
 
-            if (verifyRes.ok) {
-                const changeRes = await fetch(API_ENDPOINTS.ADMIN_CHANGE_PASSWORD, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, newPassword, otp })
-                });
-
-                if (changeRes.ok) {
-                    setSuccess('Password updated successfully!');
-                    setShowPasswordModal(false);
-                    setPasswordStep(1);
-                    setNewPassword('');
-                    setConfirmPassword('');
-                    setOtp('');
-                } else {
-                    setError('Failed to update password');
-                }
+            if (res.ok) {
+                toast.success("Password changed successfully");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
             } else {
-                setError('Invalid or expired OTP');
+                const data = await res.json();
+                toast.error(data.error || "Password change failed");
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (error) {
+            toast.error("Network error");
         } finally {
-            setOtpLoading(false);
+            setSaving(false);
         }
     };
 
-    if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-emerald-500" size={40} /></div>;
+    // Exposed for future use in UI or other tabs
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handleInitiateContactUpdate = (type: 'email' | 'phone', value: string) => {
+        initiateContactUpdate(type, value);
+    };
+
+    const initiateContactUpdate = async (type: 'email' | 'phone', value: string) => {
+        toast.promise(
+            (async () => {
+                const username = sessionStorage.getItem('adminUsername');
+                const token = sessionStorage.getItem('adminToken');
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/contact-update/init`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ username, type, value })
+                });
+                if (!res.ok) throw new Error("Failed to send verification");
+                return res.json();
+            })(),
+            {
+                loading: 'Sending verification code...',
+                success: 'Verification code sent!',
+                error: 'Failed to send code'
+            }
+        );
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="animate-spin text-emerald-500" size={40} />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">My Profile</h1>
-                    <p className="text-gray-400 mt-2">Manage your account information and security</p>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-sm text-gray-300">
-                    <Shield size={16} className="text-emerald-400" />
-                    {profile?.role}
+            {/* Header Card */}
+            <div className="bg-[#0f1e3a] border border-white/10 rounded-3xl p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-3xl font-bold text-white shadow-xl">
+                        {admin?.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="text-center md:text-left flex-1">
+                        <h1 className="text-3xl font-bold text-white mb-2">{admin?.name}</h1>
+                        <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400">
+                            <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full">
+                                <User size={14} /> @{admin?.username}
+                            </span>
+                            <span className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full">
+                                <Shield size={14} /> {admin?.role}
+                            </span>
+                            {admin?.verified && (
+                                <span className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                                    <CheckCircle2 size={14} /> Verified Account
+                                </span>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Profile Card */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-8 space-y-8">
-                        <div className="flex items-center gap-6">
-                            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                                {profile?.username?.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-white">{profile?.username}</h2>
-                                <p className="text-gray-400">{profile?.email}</p>
-                            </div>
-                        </div>
+            <div className="grid md:grid-cols-3 gap-8">
+                {/* Sidebar Nav */}
+                <div className="space-y-4">
+                    <button
+                        onClick={() => setActiveTab('details')}
+                        className={`w-full text-left px-6 py-4 rounded-xl transition-all flex items-center gap-3 font-medium ${activeTab === 'details'
+                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                            : 'bg-[#0f1e3a] text-gray-400 hover:text-white hover:bg-white/5 border border-white/5'
+                            }`}
+                    >
+                        <User size={18} />
+                        Personal Details
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('security')}
+                        className={`w-full text-left px-6 py-4 rounded-xl transition-all flex items-center gap-3 font-medium ${activeTab === 'security'
+                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                            : 'bg-[#0f1e3a] text-gray-400 hover:text-white hover:bg-white/5 border border-white/5'
+                            }`}
+                    >
+                        <Lock size={18} />
+                        Security & Password
+                    </button>
+                </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email Address</label>
-                                <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-xl text-white">
-                                    <Mail size={18} className="text-gray-400" />
-                                    <span>{profile?.email || 'Not set'}</span>
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone Number</label>
-                                <div className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-xl text-white">
-                                    <Phone size={18} className="text-gray-400" />
-                                    <span>{profile?.phone || 'Not set'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-8">
-                        <h3 className="text-xl font-bold text-white mb-6">Security Settings</h3>
-                        <div className="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/20 rounded-xl">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-red-500/10 rounded-lg text-red-400">
-                                    <Lock size={20} />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-white">Password</h4>
-                                    <p className="text-sm text-gray-400">Regularly updating your password improves security</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => setShowPasswordModal(true)}
-                                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium"
+                {/* Content Area */}
+                <div className="md:col-span-2">
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'details' ? (
+                            <motion.div
+                                key="details"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6"
                             >
-                                Change Password
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                                <h3 className="text-xl font-bold text-white mb-6">Personal Information</h3>
+                                <form onSubmit={handleUpdateProfile} className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-400">Full Name</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-white focus:border-emerald-500 outline-none transition-colors"
+                                            />
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                                        </div>
+                                    </div>
 
-                {/* Sidebar Info */}
-                <div className="space-y-6">
-                    <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6">
-                        <h3 className="font-bold text-white mb-4">Account Status</h3>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-400">Verified Status</span>
-                                <div className="flex items-center gap-1.5 text-emerald-400">
-                                    <CheckCircle size={14} />
-                                    <span>Verified</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-400">Account Type</span>
-                                <span className="text-white font-medium">{profile?.role}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-400">Member Since</span>
-                                <span className="text-white font-medium">Jan 26, 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-400">Email Address</label>
+                                            <div className="relative group">
+                                                <input
+                                                    type="email"
+                                                    value={email}
+                                                    disabled
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-gray-400 cursor-not-allowed"
+                                                />
+                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                    <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded">Contact Admin via Settings to Change</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-400">Phone Number</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="tel"
+                                                    value={phone}
+                                                    disabled
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-gray-400 cursor-not-allowed"
+                                                />
+                                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                                            </div>
+                                        </div>
+                                    </div>
 
-            {/* Password Change Modal */}
-            <AnimatePresence>
-                {showPasswordModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setShowPasswordModal(false)}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-                        />
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="relative bg-[#0f1e3a] border border-white/10 rounded-3xl p-8 w-full max-w-md shadow-2xl"
-                        >
-                            <h2 className="text-2xl font-bold text-white mb-2">Change Password</h2>
-                            <p className="text-gray-400 text-sm mb-6">
-                                {passwordStep === 1
-                                    ? 'Enter your new password below. You will need to verify via OTP.'
-                                    : `A 6-digit code has been sent to ${profile?.email}.`}
-                            </p>
-
-                            {success && (
-                                <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3 text-emerald-400 text-sm">
-                                    <CheckCircle size={18} />
-                                    {success}
-                                </div>
-                            )}
-
-                            {error && (
-                                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">
-                                    <AlertCircle size={18} />
-                                    {error}
-                                </div>
-                            )}
-
-                            {passwordStep === 1 ? (
-                                <form onSubmit={handlePasswordResetInit} className="space-y-4">
+                                    <div className="pt-4 border-t border-white/10 flex justify-end">
+                                        <button
+                                            type="submit"
+                                            disabled={saving}
+                                            className="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-all flex items-center gap-2"
+                                        >
+                                            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="security"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6"
+                            >
+                                <h3 className="text-xl font-bold text-white mb-6">Change Password</h3>
+                                <form onSubmit={handleChangePassword} className="space-y-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-400">New Password</label>
                                         <input
                                             type="password"
-                                            required
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition-colors"
+                                            placeholder="Enter new password"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-400">Confirm New Password</label>
                                         <input
                                             type="password"
-                                            required
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-emerald-500 outline-none transition-colors"
+                                            placeholder="Confirm new password"
                                         />
                                     </div>
-                                    <button
-                                        type="submit"
-                                        disabled={otpLoading}
-                                        className="w-full py-4 bg-gradient-to-r from-emerald-500 to-blue-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                                    >
-                                        {otpLoading && <Loader2 className="animate-spin" size={20} />}
-                                        Get OTP Code
-                                    </button>
-                                </form>
-                            ) : (
-                                <form onSubmit={handlePasswordResetComplete} className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Enter 6-Digit Code</label>
-                                        <input
-                                            type="text"
-                                            required
-                                            maxLength={6}
-                                            value={otp}
-                                            placeholder="000000"
-                                            onChange={(e) => setOtp(e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white text-center text-2xl font-bold tracking-[1em] focus:border-emerald-500 outline-none transition-colors"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-3">
+
+                                    <div className="pt-4 border-t border-white/10 flex justify-end">
                                         <button
                                             type="submit"
-                                            disabled={otpLoading}
-                                            className="w-full py-4 bg-emerald-500 text-white rounded-xl font-bold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
+                                            disabled={saving}
+                                            className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all flex items-center gap-2"
                                         >
-                                            {otpLoading && <Loader2 className="animate-spin" size={20} />}
-                                            Verify & Update Password
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setPasswordStep(1)}
-                                            className="w-full py-2 text-gray-400 hover:text-white transition-colors text-sm"
-                                        >
-                                            Back to password
+                                            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                                            Update Password
                                         </button>
                                     </div>
                                 </form>
-                            )}
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
         </div>
     );
 };

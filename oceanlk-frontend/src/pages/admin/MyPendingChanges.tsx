@@ -27,7 +27,7 @@ const MyPendingChanges: React.FC = () => {
 
     const fetchMyPendingChanges = useCallback(async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGES_MY, {
                 headers: { Authorization: `Bearer ${token}` }
             });

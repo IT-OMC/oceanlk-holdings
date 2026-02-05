@@ -13,7 +13,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     useEffect(() => {
         const validateToken = async () => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
 
             if (!token) {
                 setIsAuthenticated(false);
@@ -35,8 +35,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
                     setIsAuthenticated(true);
                 } else {
                     // Token invalid or expired
-                    localStorage.removeItem('adminToken');
-                    localStorage.removeItem('adminUser');
+                    sessionStorage.removeItem('adminToken');
+                    sessionStorage.removeItem('adminUser');
                     setIsAuthenticated(false);
                     navigate('/admin');
                 }

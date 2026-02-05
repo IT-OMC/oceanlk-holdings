@@ -12,15 +12,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/audit-logs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Adjust based on your security config
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 public class AuditLogController {
 
     private final AuditLogService auditLogService;
 
     @GetMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<List<AuditLog>> getAllLogs() {
-        return ResponseEntity.ok(auditLogService.getAllLogs());
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    public ResponseEntity<List<AuditLog>> getRecentLogs() {
+        return ResponseEntity.ok(auditLogService.getRecentLogs());
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    public ResponseEntity<String> exportLogs() {
+        String csvContent = auditLogService.exportLogs();
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=audit_logs.csv")
+                .header(org.springframework.http.HttpHeaders.CONTENT_TYPE, "text/csv")
+                .body(csvContent);
     }
 
     @GetMapping("/user/{username}")

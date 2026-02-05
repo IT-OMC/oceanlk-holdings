@@ -77,7 +77,7 @@ const BlogManagement = () => {
 
     const fetchMedia = useCallback(async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -136,7 +136,7 @@ const BlogManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -172,7 +172,7 @@ const BlogManagement = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentMedia?.id;
 
         try {
@@ -224,7 +224,7 @@ const BlogManagement = () => {
     const confirmDelete = async () => {
         if (!itemToDelete) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',

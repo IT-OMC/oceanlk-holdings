@@ -28,7 +28,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
     const [isMediaExpanded, setIsMediaExpanded] = useState(true);
     const [isHRExpanded, setIsHRExpanded] = useState(true);
     const location = useLocation();
-    const adminRole = localStorage.getItem('adminRole');
+    const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
     const [pendingCount, setPendingCount] = useState(0);
@@ -36,7 +36,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
     useEffect(() => {
         const fetchPendingCount = async () => {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = sessionStorage.getItem('adminToken');
                 // Fetch based on role
                 const endpoint = isSuperAdmin
                     ? API_ENDPOINTS.PENDING_CHANGES

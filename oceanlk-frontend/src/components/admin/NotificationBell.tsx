@@ -21,7 +21,7 @@ const NotificationBell = () => {
 
     const fetchNotifications = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             if (!token) return;
 
             const res = await fetch(API_ENDPOINTS.NOTIFICATIONS, {
@@ -55,7 +55,7 @@ const NotificationBell = () => {
 
     const markAsRead = async (id: string) => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const res = await fetch(API_ENDPOINTS.MARK_READ(id), {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -70,7 +70,7 @@ const NotificationBell = () => {
 
     const markAllRead = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const res = await fetch(API_ENDPOINTS.MARK_ALL_READ, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }

@@ -21,7 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/contact")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 @Slf4j
 public class ContactMessageController {
 
@@ -86,7 +86,7 @@ public class ContactMessageController {
 
     // Admin endpoints - require authentication
     @GetMapping("/messages")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<ContactMessage>> getAllMessages(
             @RequestParam(required = false) Boolean isRead) {
 
@@ -102,7 +102,7 @@ public class ContactMessageController {
     }
 
     @GetMapping("/messages/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> getMessageById(@PathVariable @NonNull String id) {
         Optional<ContactMessage> message = contactMessageRepository.findById(id);
 
@@ -114,7 +114,7 @@ public class ContactMessageController {
     }
 
     @PutMapping("/messages/{id}/read")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> markAsRead(@PathVariable @NonNull String id) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
@@ -135,7 +135,7 @@ public class ContactMessageController {
     }
 
     @PutMapping("/messages/{id}/unread")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> markAsUnread(@PathVariable @NonNull String id) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
@@ -156,7 +156,7 @@ public class ContactMessageController {
     }
 
     @DeleteMapping("/messages/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> deleteMessage(@PathVariable @NonNull String id) {
         if (contactMessageRepository.existsById(id)) {
             contactMessageRepository.deleteById(id);
@@ -174,7 +174,7 @@ public class ContactMessageController {
     }
 
     @GetMapping("/stats")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> getStats() {
         long totalMessages = contactMessageRepository.count();
         long unreadMessages = contactMessageRepository.countByIsRead(false);

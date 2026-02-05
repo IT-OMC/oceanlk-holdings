@@ -173,7 +173,7 @@ const Hero = () => {
 
             {/* Bottom Navigation Circles */}
             <div className="absolute bottom-16 lg:bottom-24 left-0 right-0 z-20 px-4 lg:px-6">
-                <div className="w-full max-w-[98%] mx-auto flex flex-wrap justify-center items-center gap-2 md:gap-4 pb-2 lg:pb-0">
+                <div className="w-full max-w-[98%] mx-auto flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-12 pb-2 lg:pb-0">
                     {sectors.map((sector, index) => {
                         const isActive = currentSlide === index;
                         return (

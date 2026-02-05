@@ -43,6 +43,7 @@ public class MediaController {
     public ResponseEntity<?> getGalleryMedia() {
         try {
             List<MediaItem> mediaItems = mediaRepository.findByStatusOrderByPublishedDateDesc("PUBLISHED");
+            log.info("Gallery endpoint: Found {} published media items", mediaItems.size());
 
             // Enrich with company information
             List<Map<String, Object>> enrichedItems = mediaItems.stream()
@@ -74,8 +75,10 @@ public class MediaController {
 
             return ResponseEntity.ok(enrichedItems);
         } catch (Exception e) {
+            log.error("Failed to fetch gallery media: {}", e.getMessage(), e);
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Failed to fetch gallery media: " + e.getMessage());
+            error.put("error", "Failed to fetch gallery media");
+            error.put("details", e.getClass().getSimpleName() + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
@@ -172,8 +175,10 @@ public class MediaController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.error("File upload failed: {}", e.getMessage(), e);
             Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
+            error.put("error", "File upload failed");
+            error.put("details", e.getClass().getSimpleName() + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
@@ -216,8 +221,10 @@ public class MediaController {
                         "pendingChange", pendingChange));
             }
         } catch (Exception e) {
+            log.error("Failed to create media item: {}", e.getMessage(), e);
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Failed to create media item: " + e.getMessage());
+            error.put("error", "Failed to create media item");
+            error.put("details", e.getClass().getSimpleName() + ": " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }

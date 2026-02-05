@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/pending-changes")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 public class PendingChangeController {
 
     private final PendingChangeService pendingChangeService;

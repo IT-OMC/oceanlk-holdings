@@ -3,6 +3,7 @@ package com.oceanlk.backend.controller;
 import com.oceanlk.backend.service.AdminUserService;
 import com.oceanlk.backend.service.OtpService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class OtpController {
                     otpService.sendOtp(user, method);
                     return ResponseEntity.ok(Map.of("message", "OTP sent successfully to your " + method));
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "Admin user not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Admin user not found")));
     }
 
     @PostMapping("/send-by-email")
@@ -56,9 +57,10 @@ public class OtpController {
                         adminUserService.updateAdmin(user);
                         return ResponseEntity.ok(Map.of("message", "OTP verified successfully", "verified", true));
                     } else {
-                        return ResponseEntity.status(400).body(Map.of("error", "Invalid or expired OTP"));
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(Map.of("error", "Invalid or expired OTP"));
                     }
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "Admin user not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Admin user not found")));
     }
 }

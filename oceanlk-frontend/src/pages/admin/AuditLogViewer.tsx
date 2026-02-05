@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, ShieldAlert, ArrowLeft, Trash2 } from 'lucide-react';
+import { Search, Filter, ShieldAlert, ArrowLeft, Trash2, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -24,8 +24,8 @@ const AuditLogViewer = () => {
 
     useEffect(() => {
         fetchLogs();
-        // Get user role from localStorage or token
-        const role = localStorage.getItem('adminRole');
+        // Get user role from sessionStorage or token
+        const role = sessionStorage.getItem('adminRole');
         setUserRole(role || '');
     }, []);
 
@@ -35,7 +35,7 @@ const AuditLogViewer = () => {
 
     const fetchLogs = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.AUDIT_LOGS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -70,13 +70,39 @@ const AuditLogViewer = () => {
         setFilteredLogs(result);
     };
 
+    const handleExport = async () => {
+        try {
+            const token = sessionStorage.getItem('adminToken');
+            const response = await fetch(`${API_ENDPOINTS.AUDIT_LOGS}/export`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'audit_logs.csv';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                alert('Failed to export audit logs.');
+            }
+        } catch (error) {
+            console.error('Error exporting logs:', error);
+            alert('An error occurred while exporting logs.');
+        }
+    };
+
     const handleDeleteLog = async (id: string) => {
         if (!window.confirm('Are you sure you want to delete this audit log? This action cannot be undone.')) {
             return;
         }
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.AUDIT_LOG_DELETE(id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -113,9 +139,17 @@ const AuditLogViewer = () => {
                     </h1>
                     <p className="text-gray-400 mt-1">Track system activities and administrative actions</p>
                 </div>
-                <Link to="/admin/dashboard" className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors flex items-center gap-2">
-                    <ArrowLeft size={18} /> Back to Dashboard
-                </Link>
+                <div className="flex gap-4">
+                    <button
+                        onClick={handleExport}
+                        className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg transition-colors flex items-center gap-2"
+                    >
+                        <Download size={18} /> Export Report
+                    </button>
+                    <Link to="/admin/dashboard" className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors flex items-center gap-2">
+                        <ArrowLeft size={18} /> Back to Dashboard
+                    </Link>
+                </div>
             </div>
 
             {/* Filters */}

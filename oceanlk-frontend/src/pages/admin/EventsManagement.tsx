@@ -92,7 +92,7 @@ const EventsManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const url = editingItem
                 ? API_ENDPOINTS.EVENT_BY_ID(editingItem.id)
                 : API_ENDPOINTS.EVENTS;
@@ -140,7 +140,7 @@ const EventsManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.EVENT_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {

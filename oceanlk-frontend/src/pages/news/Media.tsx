@@ -30,8 +30,10 @@ const Media = () => {
 
     const filteredItems = mediaItems.filter(item => {
         if (activeTab === 'all') return true;
-        if (activeTab === 'images') return item.type !== 'VIDEO' && item.type !== 'ALBUM' && item.type !== 'DOCUMENT' && item.type !== 'GALLERY'; // Explicitly exclude others
+        // Images tab: Show items explicitly marked as IMAGE, OR items marked as GALLERY but with <= 1 photo (handling miscategorized singles)
+        if (activeTab === 'images') return item.type === 'IMAGE' || (item.type === 'GALLERY' && (!item.photoCount || item.photoCount <= 1));
         if (activeTab === 'videos') return item.type === 'VIDEO';
+        // Albums tab: Show items marked as ALBUM, or GALLERY with > 1 photo
         if (activeTab === 'albums') return item.type === 'ALBUM' || (item.type === 'GALLERY' && (item.photoCount && item.photoCount > 1));
         if (activeTab === 'documents') return item.type === 'DOCUMENT';
         return true;
@@ -164,8 +166,12 @@ const Media = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[minmax(200px,auto)]">
                         {filteredItems.map((item, index) => {
+                            console.log('Media Item:', item.title, 'Type:', item.type, 'ImageURL:', item.imageUrl, 'VideoURL:', item.videoUrl);
                             const span = getGridSpan(index);
                             const isLarge = span.includes('row-span-2');
+
+                            const videoSrc = item.videoUrl || (item.imageUrl && /\.(mp4|webm|ogg)$/i.test(item.imageUrl) ? item.imageUrl : null);
+                            const isActuallyVideo = item.type === 'VIDEO' || !!videoSrc;
 
                             return (
                                 <motion.div
@@ -178,11 +184,26 @@ const Media = () => {
                                     className={`${span} group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white border border-gray-100/50`}
                                 >
                                     <Link to={`/news/media/${item.id}`} className="block h-full w-full">
-                                        {/* Background Image */}
-                                        <div
-                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                            style={{ backgroundImage: `url('${item.imageUrl}')` }}
-                                        />
+                                        {/* Background Image or Video */}
+                                        {isActuallyVideo && videoSrc ? (
+                                            <video
+                                                src={videoSrc}
+                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                muted
+                                                loop
+                                                playsInline
+                                                autoPlay // Consider adding logic to only autoplay on hover or if visible to save resources
+                                            />
+                                        ) : item.imageUrl ? (
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                                style={{ backgroundImage: `url('${item.imageUrl}')` }}
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                                                <Play className="w-12 h-12 text-gray-300" />
+                                            </div>
+                                        )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
                                         {/* Top badges */}

@@ -11,6 +11,7 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,20 +32,41 @@ public class AdminManagementController {
     private final OtpService otpService;
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<AdminUser>> getAllAdmins() {
+        System.out.println("DEBUG: getAllAdmins accessed by user");
         return ResponseEntity.ok(adminUserService.getAllAdmins());
     }
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> addAdmin(@Valid @RequestBody UserCreateRequest request,
-            @RequestHeader("Authorization") String auth) {
+            @RequestHeader("Authorization") String auth,
+            org.springframework.security.core.Authentication authentication) {
+        // DEBUG: Log authentication details
+        System.out.println("DEBUG - addAdmin called by user: " +
+                (authentication != null ? authentication.getName() : "null"));
+        System.out.println("DEBUG - addAdmin authorities: " +
+                (authentication != null ? authentication.getAuthorities() : "null"));
+
+        // Check if trying to create SUPER_ADMIN
+        String requestedRole = request.getRole() == null ? "ADMIN" : request.getRole();
+        if ("SUPER_ADMIN".equals(requestedRole)) {
+            // Only SUPER_ADMIN can create SUPER_ADMIN users
+            boolean isSuperAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(granted -> granted.getAuthority().equals("ROLE_SUPER_ADMIN"));
+            System.out.println("DEBUG - User is SUPER_ADMIN: " + isSuperAdmin);
+            if (!isSuperAdmin) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("error", "Only SUPER_ADMIN can create SUPER_ADMIN users"));
+            }
+        }
+
         if (adminUserService.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.status(400).body(Map.of("error", "Username already exists"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Username already exists"));
         }
         if (adminUserService.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.status(400).body(Map.of("error", "Email already exists"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email already exists"));
         }
 
         AdminUser admin = new AdminUser(
@@ -74,7 +96,7 @@ public class AdminManagementController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> deleteAdmin(@PathVariable String id) {
         adminUserService.deleteAdmin(id);
         auditLogService.logAction("SUPER_ADMIN", "DELETE_ADMIN", "AdminUser", id, "Deleted admin with ID: " + id);
@@ -82,7 +104,7 @@ public class AdminManagementController {
     }
 
     @PutMapping("/edit/{id}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> updateAdmin(@PathVariable String id, @Valid @RequestBody UserUpdateRequest request) {
         return adminUserService.findById(id)
                 .map(existingAdmin -> {
@@ -99,7 +121,8 @@ public class AdminManagementController {
 
                     if (request.getUsername() != null && !request.getUsername().equals(existingAdmin.getUsername())) {
                         if (adminUserService.findByUsername(request.getUsername()).isPresent()) {
-                            return ResponseEntity.status(400).body(Map.of("error", "Username already exists"));
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(Map.of("error", "Username already exists"));
                         }
                         existingAdmin.setUsername(request.getUsername());
                     }
@@ -109,7 +132,7 @@ public class AdminManagementController {
                             "Updated admin details for: " + updated.getUsername());
                     return ResponseEntity.ok(updated);
                 })
-                .orElse(ResponseEntity.status(404).build());
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/profile/{username}")
@@ -120,13 +143,13 @@ public class AdminManagementController {
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
         if (!isOwner && !isSuperAdmin) {
-            return ResponseEntity.status(403)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("error", "Access denied. You can only view your own profile."));
         }
 
         return adminUserService.findByUsername(username)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).build());
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping("/change-password")
@@ -136,7 +159,8 @@ public class AdminManagementController {
         String newPassword = request.get("newPassword");
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(403).body(Map.of("error", "You can only change your own password."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "You can only change your own password."));
         }
 
         return adminUserService.findByUsername(username)
@@ -146,7 +170,7 @@ public class AdminManagementController {
                             "Changed password");
                     return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
                 })
-                .orElse(ResponseEntity.status(404).build());
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping("/profile/update-name")
@@ -156,7 +180,8 @@ public class AdminManagementController {
         String newName = request.get("name");
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(403).body(Map.of("error", "You can only update your own profile."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "You can only update your own profile."));
         }
 
         return adminUserService.findByUsername(username)
@@ -167,7 +192,7 @@ public class AdminManagementController {
                             "Updated profile name");
                     return ResponseEntity.ok(Map.of("message", "Name updated successfully"));
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "User not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
     }
 
     @PostMapping("/profile/contact-update/init")
@@ -178,7 +203,7 @@ public class AdminManagementController {
         String value = request.get("value");
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(403).body(Map.of("error", "Unauthorized access."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Unauthorized access."));
         }
 
         return adminUserService.findByUsername(username)
@@ -186,7 +211,8 @@ public class AdminManagementController {
                     // Check if email/phone already exists in another account
                     if ("email".equals(type)) {
                         if (adminUserService.findByEmail(value).isPresent()) {
-                            return ResponseEntity.status(400).body(Map.of("error", "Email already in use"));
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(Map.of("error", "Email already in use"));
                         }
                         user.setTempEmail(value);
                         user.setTempPhone(null); // Clear other temp field
@@ -203,7 +229,7 @@ public class AdminManagementController {
 
                     return ResponseEntity.ok(Map.of("message", "OTP sent to new " + type));
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "User not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
     }
 
     @PostMapping("/profile/contact-update/verify")
@@ -213,7 +239,7 @@ public class AdminManagementController {
         String otp = request.get("otp");
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(403).body(Map.of("error", "Unauthorized access."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Unauthorized access."));
         }
 
         return adminUserService.findByUsername(username)
@@ -233,9 +259,10 @@ public class AdminManagementController {
                         adminUserService.updateAdmin(user);
                         return ResponseEntity.ok(Map.of("message", "Contact info updated successfully"));
                     } else {
-                        return ResponseEntity.status(400).body(Map.of("error", "Invalid or expired OTP"));
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(Map.of("error", "Invalid or expired OTP"));
                     }
                 })
-                .orElse(ResponseEntity.status(404).body(Map.of("error", "User not found")));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
     }
 }

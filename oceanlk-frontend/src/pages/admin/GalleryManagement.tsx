@@ -84,35 +84,53 @@ const GalleryManagement = () => {
 
     const fetchMedia = useCallback(async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            console.log('✓ Gallery management fetch status:', response.status);
+
             if (response.ok) {
                 const data = await response.json();
+                console.log('✓ Fetched media items:', data?.length);
+
                 // Filter items based on category/type
-                // We'll filter in the render or effect, but let's store all and filter later
-                const galleryItems = data.filter((item: MediaItem) => item.category === 'GALLERY' || item.type === 'ALBUM' || item.type === 'VIDEO');
+                const galleryItems = data.filter((item: MediaItem) =>
+                    item.category === 'GALLERY' || item.type === 'ALBUM' || item.type === 'VIDEO'
+                );
+                console.log('✓ Filtered gallery items:', galleryItems?.length);
 
                 // Enrich with company names
                 const enrichedData = await Promise.all(
                     galleryItems.map(async (item: MediaItem) => {
-                        if (item.companyId) {
-                            const companyRes = await fetch(API_ENDPOINTS.COMPANY_BY_ID(item.companyId));
-                            if (companyRes.ok) {
-                                const company = await companyRes.json();
-                                item.companyName = company.title;
+                        if (item?.companyId) {
+                            try {
+                                const companyRes = await fetch(API_ENDPOINTS.COMPANY_BY_ID(item.companyId));
+                                if (companyRes.ok) {
+                                    const company = await companyRes.json();
+                                    return { ...item, companyName: company?.title };
+                                }
+                            } catch (e) {
+                                console.warn('⚠ Failed to fetch company for item:', item.id, e);
                             }
                         }
                         return item;
                     })
                 );
+
+                console.log('✓ Enriched gallery items:', enrichedData?.length);
                 setMediaItems(enrichedData);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('✗ Failed to fetch gallery items:', response.status, errorData);
+                toast.error(`Failed to load gallery: ${errorData?.error || response.statusText}`);
             }
-        } catch (error) {
-            console.error('Failed to fetch gallery items:', error);
+        } catch (error: any) {
+            console.error('✗ Failed to fetch gallery items:', error);
+            toast.error(`Error loading gallery: ${error?.message || 'Unknown error'}`);
         } finally {
             setIsLoading(false);
         }
@@ -214,7 +232,7 @@ const GalleryManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -250,7 +268,7 @@ const GalleryManagement = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentMedia?.id;
 
         try {
@@ -389,7 +407,7 @@ const GalleryManagement = () => {
     const confirmDelete = async () => {
         if (!itemToDelete) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',

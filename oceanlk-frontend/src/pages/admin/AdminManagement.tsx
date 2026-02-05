@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2 } from 'lucide-react';
+import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2, ChevronDown, CheckCircle2, XCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
 import { AdminUser, UserCreateRequest, UserUpdateRequest, UserRole } from '../../types/api';
 
@@ -22,6 +22,7 @@ const AdminManagement = () => {
         role: 'ADMIN'
     });
     const [adding, setAdding] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     // Edit Admin State
     const [showEditModal, setShowEditModal] = useState(false);
@@ -33,21 +34,41 @@ const AdminManagement = () => {
         fetchAdmins();
     }, []);
 
+    // Password strength validation
+    const getPasswordStrength = (password: string) => {
+        const checks = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+        const score = Object.values(checks).filter(Boolean).length;
+        return { checks, score };
+    };
+
+    const passwordStrength = getPasswordStrength(newAdmin.password || '');
+    const passwordsMatch = newAdmin.password === confirmPassword && confirmPassword !== '';
+
     const fetchAdmins = async () => {
         setLoading(true);
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const res = await fetch(API_ENDPOINTS.ADMIN_LIST, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
                 const data = await res.json();
+                console.log('✓ Fetched admins:', data?.length, 'records');
                 setAdmins(data);
             } else {
-                setError('Failed to load admins. Are you a Super Admin?');
+                const errorData = await res.json().catch(() => ({}));
+                const errorMsg = errorData.error || errorData.details || res.statusText;
+                console.error('✗ Admin fetch failed:', res.status, errorData);
+                setError(`Failed to load admins (${res.status}): ${errorMsg}`);
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (err: any) {
+            console.error('✗ Admin fetch error:', err);
+            setError(`Connection error: ${err?.message || 'Unknown error'}`);
         } finally {
             setLoading(false);
         }
@@ -55,9 +76,16 @@ const AdminManagement = () => {
 
     const handleAddAdmin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate password match
+        if (newAdmin.password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         setAdding(true);
         setError('');
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const res = await fetch(API_ENDPOINTS.ADMIN_ADD, {
                 method: 'POST',
@@ -72,13 +100,15 @@ const AdminManagement = () => {
                 setSuccess('Admin added successfully!');
                 setShowAddModal(false);
                 setNewAdmin({ name: '', username: '', email: '', phone: '', password: '', role: 'ADMIN' });
+                setConfirmPassword('');
                 fetchAdmins();
             } else {
                 const data = await res.json();
                 setError(data.error || 'Failed to add admin');
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (err: any) {
+            console.error('✗ Add admin error:', err);
+            setError(`Failed to add admin: ${err?.message || 'Unknown error'}`);
         } finally {
             setAdding(false);
         }
@@ -87,7 +117,7 @@ const AdminManagement = () => {
     const handleDeleteAdmin = async (id: string) => {
         if (!window.confirm('Are you sure you want to delete this admin?')) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const res = await fetch(API_ENDPOINTS.ADMIN_DELETE(id), {
                 method: 'DELETE',
@@ -100,8 +130,9 @@ const AdminManagement = () => {
             } else {
                 setError('Failed to delete admin');
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (err: any) {
+            console.error('✗ Delete admin error:', err);
+            setError(`Failed to delete: ${err?.message || 'Unknown error'}`);
         }
     };
 
@@ -110,7 +141,7 @@ const AdminManagement = () => {
         if (!editingAdmin) return;
         setUpdating(true);
         setError('');
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
 
         const updateRequest: UserUpdateRequest = {
             name: editingAdmin.name,
@@ -139,8 +170,9 @@ const AdminManagement = () => {
                 const data = await res.json();
                 setError(data.error || 'Failed to update admin');
             }
-        } catch (err) {
-            setError('Connection error');
+        } catch (err: any) {
+            console.error('✗ Edit admin error:', err);
+            setError(`Failed to update: ${err?.message || 'Unknown error'}`);
         } finally {
             setUpdating(false);
         }
@@ -152,10 +184,12 @@ const AdminManagement = () => {
     };
 
 
-    const filteredAdmins = admins.filter(a =>
-        a.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredAdmins = admins.filter(a => {
+        const usernameMatch = (a.username || '').toLowerCase().includes(searchTerm.toLowerCase());
+        const emailMatch = (a.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+        const nameMatch = (a.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+        return usernameMatch || emailMatch || nameMatch;
+    });
 
     return (
         <div className="space-y-8">
@@ -321,36 +355,121 @@ const AdminManagement = () => {
                                         placeholder="e.g. John Doe"
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Username</label>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-400">Username</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={newAdmin.username}
+                                        onChange={(e) => setNewAdmin({ ...newAdmin, username: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors"
+                                    />
+                                </div>
+
+                                {/* Password Section */}
+                                <div className="space-y-3">
+                                    <label className="text-sm font-medium text-gray-400">Password</label>
+                                    <div className="relative">
                                         <input
-                                            type="text"
+                                            type={showPassword ? "text" : "password"}
                                             required
-                                            value={newAdmin.username}
-                                            onChange={(e) => setNewAdmin({ ...newAdmin, username: e.target.value })}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors"
+                                            value={newAdmin.password}
+                                            onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors"
+                                            placeholder="Enter password"
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-400">Password</label>
-                                        <div className="relative">
-                                            <input
-                                                type={showPassword ? "text" : "password"}
-                                                required
-                                                value={newAdmin.password}
-                                                onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
-                                            >
-                                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                            </button>
+
+                                    {/* Password Strength Guide */}
+                                    {newAdmin.password && (
+                                        <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-2">
+                                            <div className="text-xs font-medium text-gray-400 mb-2">Password Requirements:</div>
+                                            <div className="space-y-1">
+                                                <div className={`flex items-center gap-2 text-xs ${passwordStrength.checks.length ? 'text-emerald-400' : 'text-gray-500'}`}>
+                                                    {passwordStrength.checks.length ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                                                    At least 8 characters
+                                                </div>
+                                                <div className={`flex items-center gap-2 text-xs ${passwordStrength.checks.uppercase ? 'text-emerald-400' : 'text-gray-500'}`}>
+                                                    {passwordStrength.checks.uppercase ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                                                    One uppercase letter
+                                                </div>
+                                                <div className={`flex items-center gap-2 text-xs ${passwordStrength.checks.number ? 'text-emerald-400' : 'text-gray-500'}`}>
+                                                    {passwordStrength.checks.number ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                                                    One number
+                                                </div>
+                                                <div className={`flex items-center gap-2 text-xs ${passwordStrength.checks.special ? 'text-emerald-400' : 'text-gray-500'}`}>
+                                                    {passwordStrength.checks.special ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                                                    One special character
+                                                </div>
+                                            </div>
+                                            <div className="mt-2 pt-2 border-t border-white/10">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs text-gray-400">Strength:</span>
+                                                    <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full transition-all ${passwordStrength.score === 4 ? 'bg-emerald-500 w-full' :
+                                                                passwordStrength.score === 3 ? 'bg-yellow-500 w-3/4' :
+                                                                    passwordStrength.score === 2 ? 'bg-orange-500 w-1/2' :
+                                                                        'bg-red-500 w-1/4'
+                                                                }`}
+                                                        />
+                                                    </div>
+                                                    <span className={`text-xs font-medium ${passwordStrength.score === 4 ? 'text-emerald-400' :
+                                                        passwordStrength.score === 3 ? 'text-yellow-400' :
+                                                            passwordStrength.score === 2 ? 'text-orange-400' :
+                                                                'text-red-400'
+                                                        }`}>
+                                                        {passwordStrength.score === 4 ? 'Strong' :
+                                                            passwordStrength.score === 3 ? 'Good' :
+                                                                passwordStrength.score === 2 ? 'Fair' :
+                                                                    'Weak'}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    )}
+                                </div>
+
+                                {/* Confirm Password */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-400">Confirm Password</label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className={`w-full bg-white/5 border rounded-xl pl-4 pr-12 py-2.5 text-white outline-none transition-colors ${confirmPassword && passwordsMatch
+                                                ? 'border-emerald-500 focus:border-emerald-500'
+                                                : confirmPassword && !passwordsMatch
+                                                    ? 'border-red-500 focus:border-red-500'
+                                                    : 'border-white/10 focus:border-emerald-500'
+                                                }`}
+                                            placeholder="Re-enter password"
+                                        />
+                                        {confirmPassword && (
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                {passwordsMatch ? (
+                                                    <CheckCircle2 size={18} className="text-emerald-500" />
+                                                ) : (
+                                                    <XCircle size={18} className="text-red-500" />
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
+                                    {confirmPassword && !passwordsMatch && (
+                                        <p className="text-xs text-red-400 flex items-center gap-1">
+                                            <AlertCircle size={12} />
+                                            Passwords do not match
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-400">Email Address</label>
@@ -374,17 +493,20 @@ const AdminManagement = () => {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-400">Role</label>
-                                    <select
-                                        value={newAdmin.role}
-                                        onChange={(e) => setNewAdmin({ ...newAdmin, role: e.target.value as UserRole })}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:border-emerald-500 outline-none transition-colors appearance-none"
-                                    >
-                                        <option value="ADMIN" className="bg-[#0f1e3a]">Standard Admin</option>
-                                        <option value="SUPER_ADMIN" className="bg-[#0f1e3a]">Super Admin</option>
-                                        <option value="CONTENT_EDITOR" className="bg-[#0f1e3a]">Content Editor</option>
-                                        <option value="HR_MANAGER" className="bg-[#0f1e3a]">HR Manager</option>
-                                        <option value="RECRUITER" className="bg-[#0f1e3a]">Recruiter</option>
-                                    </select>
+                                    <div className="relative">
+                                        <select
+                                            value={newAdmin.role}
+                                            onChange={(e) => setNewAdmin({ ...newAdmin, role: e.target.value as UserRole })}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-white focus:border-emerald-500 outline-none transition-colors appearance-none"
+                                        >
+                                            <option value="ADMIN" className="bg-[#0f1e3a]">Standard Admin</option>
+                                            <option value="SUPER_ADMIN" className="bg-[#0f1e3a]">Super Admin</option>
+                                            <option value="CONTENT_EDITOR" className="bg-[#0f1e3a]">Content Editor</option>
+                                            <option value="HR_MANAGER" className="bg-[#0f1e3a]">HR Manager</option>
+                                            <option value="RECRUITER" className="bg-[#0f1e3a]">Recruiter</option>
+                                        </select>
+                                        <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                                    </div>
                                 </div>
 
                                 <div className="pt-4 flex gap-3">

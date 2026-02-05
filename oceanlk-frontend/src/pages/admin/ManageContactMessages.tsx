@@ -37,7 +37,7 @@ const ManageContactMessages = () => {
 
     const fetchMessages = async () => {
         setIsLoading(true);
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.CONTACT_MESSAGES, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -55,7 +55,7 @@ const ManageContactMessages = () => {
     };
 
     const fetchStats = async () => {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.CONTACT_STATS, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -101,7 +101,7 @@ const ManageContactMessages = () => {
     }, [applyFilters]);
 
     const toggleReadStatus = async (message: ContactMessage) => {
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const endpoint = message.isRead ? API_ENDPOINTS.CONTACT_MARK_UNREAD(message.id) : API_ENDPOINTS.CONTACT_MARK_READ(message.id);
 
         try {
@@ -128,7 +128,7 @@ const ManageContactMessages = () => {
     const deleteMessage = async (id: string) => {
         if (!confirm('Are you sure you want to delete this message?')) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.CONTACT_DELETE(id), {
                 method: 'DELETE',

@@ -7,6 +7,8 @@ import java.util.List;
 public interface AuditLogRepository extends MongoRepository<AuditLog, String> {
     List<AuditLog> findAllByOrderByTimestampDesc();
 
+    List<AuditLog> findTop10ByOrderByTimestampDesc();
+
     List<AuditLog> findByUsernameOrderByTimestampDesc(String username);
 
     List<AuditLog> findByEntityTypeOrderByTimestampDesc(String entityType);

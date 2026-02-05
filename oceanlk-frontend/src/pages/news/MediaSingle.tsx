@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader, Download } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -102,18 +102,21 @@ const MediaSingle = () => {
                     {/* Video Player */}
                     {isVideo && (
                         <div className="bg-black rounded-3xl overflow-hidden aspect-video shadow-2xl mb-12 relative group">
-                            {media.videoUrl ? (
-                                <video
-                                    src={media.videoUrl}
-                                    controls
-                                    className="w-full h-full object-contain"
-                                    poster={media.imageUrl}
-                                />
-                            ) : (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <p className="text-white">Video unavailable</p>
-                                </div>
-                            )}
+                            {(() => {
+                                const videoSource = media.videoUrl || (media.imageUrl && /\.(mp4|webm|ogg)$/i.test(media.imageUrl) ? media.imageUrl : null);
+                                return videoSource ? (
+                                    <video
+                                        src={getMediaUrl(videoSource)}
+                                        controls
+                                        className="w-full h-full object-contain"
+                                        poster={media.videoUrl ? getMediaUrl(media.imageUrl) : undefined} // Only use imageUrl as poster if it's NOT the video source
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <p className="text-white">Video unavailable</p>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     )}
 
@@ -129,10 +132,10 @@ const MediaSingle = () => {
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.4, delay: index * 0.1 }}
                                         className="group relative aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer"
-                                        onClick={() => window.open(image, '_blank')}
+                                        onClick={() => window.open(getMediaUrl(image), '_blank')}
                                     >
                                         <img
-                                            src={image}
+                                            src={getMediaUrl(image)}
                                             alt={`${media.title} - ${index + 1}`}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
@@ -141,7 +144,7 @@ const MediaSingle = () => {
                                 ))
                             ) : (
                                 <div className="col-span-full text-center py-10">
-                                    <img src={media.imageUrl} alt={media.title} className="max-w-4xl mx-auto rounded-3xl shadow-xl" />
+                                    <img src={getMediaUrl(media.imageUrl)} alt={media.title} className="max-w-4xl mx-auto rounded-3xl shadow-xl" />
                                 </div>
                             )}
                         </div>
@@ -152,7 +155,7 @@ const MediaSingle = () => {
                         <div className="bg-gray-50 border border-gray-200 rounded-3xl p-10 mb-12 text-center">
                             <div className="mb-8">
                                 <img
-                                    src={media.imageUrl}
+                                    src={getMediaUrl(media.imageUrl)}
                                     alt={media.title}
                                     className="h-64 mx-auto rounded-xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500"
                                 />
@@ -160,7 +163,7 @@ const MediaSingle = () => {
                             <p className="text-gray-500 mb-6">{media.pageCount ? `${media.pageCount} pages` : 'Document'}</p>
                             {media.videoUrl && (
                                 <a
-                                    href={media.videoUrl}
+                                    href={getMediaUrl(media.videoUrl)}
                                     download
                                     className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                                 >

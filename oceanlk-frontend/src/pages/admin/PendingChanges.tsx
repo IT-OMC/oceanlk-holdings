@@ -35,14 +35,14 @@ const PendingChanges: React.FC = () => {
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
     const navigate = useNavigate();
 
-    const adminRole = localStorage.getItem('adminRole');
+    const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
 
     const fetchData = React.useCallback(async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
 
             // Fetch data based on role
             if (isSuperAdmin) {
@@ -84,7 +84,7 @@ const PendingChanges: React.FC = () => {
 
     const handleApprove = async (changeId: string) => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_APPROVE(changeId), {
                 method: 'POST',
                 headers: {
@@ -115,7 +115,7 @@ const PendingChanges: React.FC = () => {
         }
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_REJECT(changeId), {
                 method: 'POST',
                 headers: {

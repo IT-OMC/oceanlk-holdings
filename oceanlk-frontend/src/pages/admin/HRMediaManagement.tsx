@@ -36,7 +36,7 @@ const HRMediaManagement = () => {
         try {
             const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=HR_PANEL`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
                 }
             });
             if (response.ok) {
@@ -76,7 +76,7 @@ const HRMediaManagement = () => {
 
     const uploadFile = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const formData = new FormData();
             formData.append('file', file);
 
@@ -119,7 +119,7 @@ const HRMediaManagement = () => {
                 updatedFormData.imageUrl = fileUrl;
             }
 
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const url = editingItem
                 ? API_ENDPOINTS.ADMIN_MEDIA_BY_ID(editingItem.id)
                 : API_ENDPOINTS.ADMIN_MEDIA;
@@ -165,7 +165,7 @@ const HRMediaManagement = () => {
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {

@@ -32,7 +32,7 @@ const JobManagement = () => {
 
     const fetchJobs = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = sessionStorage.getItem('adminToken');
             const response = await fetch(API_ENDPOINTS.ADMIN_JOBS, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -55,7 +55,7 @@ const JobManagement = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentJob?.id;
         const url = isEdit
             ? API_ENDPOINTS.ADMIN_JOB_BY_ID(currentJob!.id!)
@@ -98,7 +98,7 @@ const JobManagement = () => {
     const confirmDelete = async () => {
         if (!jobToDelete) return;
 
-        const token = localStorage.getItem('adminToken');
+        const token = sessionStorage.getItem('adminToken');
         try {
             const response = await fetch(API_ENDPOINTS.ADMIN_JOB_BY_ID(jobToDelete), {
                 method: 'DELETE',

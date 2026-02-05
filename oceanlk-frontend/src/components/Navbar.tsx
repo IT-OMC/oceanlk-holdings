@@ -1,19 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ChevronDown, X, Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { oceanData } from '../data/mockData';
 import LanguageSwitcher from './LanguageSwitcher';
+import SearchModal from './SearchModal';
 
 const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const searchTriggerRef = useRef<HTMLButtonElement>(null);
     const { t } = useTranslation();
     const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
     const isHomePage = location.pathname === '/';
+
+    // Keyboard shortcut for search (Ctrl+K or Cmd+K)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setIsSearchOpen(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -127,39 +142,21 @@ const Navbar = () => {
                         <div className="flex items-center gap-3">
                             {/* Search - Desktop Only */}
                             <div className="hidden md:block">
-                                <AnimatePresence>
-                                    {isSearchOpen ? (
-                                        <motion.div
-                                            initial={{ width: 0, opacity: 0 }}
-                                            animate={{ width: 200, opacity: 1 }}
-                                            exit={{ width: 0, opacity: 0 }}
-                                            className="relative"
-                                        >
-                                            <input
-                                                type="text"
-                                                placeholder={t('Search...')}
-                                                className="w-full pl-4 pr-10 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-accent text-black"
-                                                autoFocus
-                                            />
-                                            <button
-                                                onClick={() => setIsSearchOpen(false)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                        </motion.div>
-                                    ) : (
-                                        <motion.button
-                                            whileHover={{ scale: 1.1 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            onClick={() => setIsSearchOpen(true)}
-                                            className={`p-3 rounded-full transition-colors ${(isHomePage && !isScrolled) ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
-                                            aria-label="Search"
-                                        >
-                                            <Search className={`w-5 h-5 ${(isHomePage && !isScrolled) ? 'text-white' : 'text-primary'}`} />
-                                        </motion.button>
-                                    )}
-                                </AnimatePresence>
+                                <motion.button
+                                    ref={searchTriggerRef}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => setIsSearchOpen(true)}
+                                    className={`p-3 rounded-full transition-colors relative group ${(isHomePage && !isScrolled) ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
+                                    aria-label="Search"
+                                    title="Search (Ctrl+K)"
+                                >
+                                    <Search className={`w-5 h-5 ${(isHomePage && !isScrolled) ? 'text-white' : 'text-primary'}`} />
+                                    {/* Keyboard shortcut hint */}
+                                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                        Ctrl+K
+                                    </span>
+                                </motion.button>
                             </div>
 
                             {/* Language Switcher */}
@@ -283,6 +280,13 @@ const Navbar = () => {
                     </>
                 )}
             </AnimatePresence>
+
+            {/* Search Modal */}
+            <SearchModal
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                triggerRef={searchTriggerRef} // Only used for desktop positioning
+            />
         </motion.nav>
     );
 };

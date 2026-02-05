@@ -3,11 +3,13 @@ package com.oceanlk.backend.service;
 import com.oceanlk.backend.model.AdminUser;
 import com.oceanlk.backend.repository.AdminUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OtpService {
@@ -33,8 +35,9 @@ public class OtpService {
                 throw new RuntimeException("Failed to send OTP email", e);
             }
         } else if ("phone".equalsIgnoreCase(method)) {
-            // Placeholder for SMS integration
-            System.out.println("OTP for " + user.getPhone() + ": " + otp);
+            // TODO: Integrate SMS service for production
+            log.warn("SMS integration not implemented. OTP would be sent to: {}", user.getPhone());
+            log.debug("OTP for {}: {}", user.getPhone(), otp);
         }
     }
 
@@ -56,8 +59,9 @@ public class OtpService {
                 throw new RuntimeException("Failed to send OTP to new email", e);
             }
         } else if ("phone".equalsIgnoreCase(method)) {
-            // Placeholder for SMS integration to new phone
-            System.out.println("OTP for new phone " + target + ": " + otp);
+            // TODO: Integrate SMS service for production
+            log.warn("SMS integration not implemented. OTP would be sent to: {}", target);
+            log.debug("OTP for new phone {}: {}", target, otp);
         }
     }
 
