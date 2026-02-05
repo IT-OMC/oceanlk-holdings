@@ -15,7 +15,7 @@ public class PartnerService {
     private PartnerRepository partnerRepository;
 
     public List<Partner> getAllPartners() {
-        return partnerRepository.findAll();
+        return partnerRepository.findAllByOrderByDisplayOrderAsc();
     }
 
     public Optional<Partner> getPartnerById(String id) {

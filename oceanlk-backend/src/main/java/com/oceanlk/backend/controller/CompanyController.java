@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 @Slf4j
 public class CompanyController {
 

@@ -20,13 +20,12 @@ import org.springframework.lang.NonNull;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 @Slf4j
 public class MediaController {
 
     private final MediaItemRepository mediaRepository;
+    private final com.oceanlk.backend.service.MediaItemService mediaItemService;
     private final FileStorageService fileStorageService;
-    private final CompanyRepository companyRepository;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
@@ -34,45 +33,14 @@ public class MediaController {
     // Public endpoint - get all published media
     @GetMapping("/media")
     public ResponseEntity<List<MediaItem>> getAllPublishedMedia() {
-        List<MediaItem> mediaItems = mediaRepository.findByStatusOrderByPublishedDateDesc("PUBLISHED");
-        return ResponseEntity.ok(mediaItems);
+        return ResponseEntity.ok(mediaItemService.getPublishedMedia());
     }
 
     // Public endpoint - get gallery media with company info
     @GetMapping("/media/gallery")
     public ResponseEntity<?> getGalleryMedia() {
         try {
-            List<MediaItem> mediaItems = mediaRepository.findByStatusOrderByPublishedDateDesc("PUBLISHED");
-
-            // Enrich with company information
-            List<Map<String, Object>> enrichedItems = mediaItems.stream()
-                    .filter(item -> "Gallery".equalsIgnoreCase(item.getCategory())
-                            && "MEDIA_PANEL".equalsIgnoreCase(item.getGroup()))
-                    .map(item -> {
-                        Map<String, Object> enriched = new HashMap<>();
-                        enriched.put("id", item.getId());
-                        enriched.put("title", item.getTitle());
-                        enriched.put("description", item.getDescription());
-                        enriched.put("imageUrl", item.getImageUrl());
-                        enriched.put("videoUrl", item.getVideoUrl());
-                        enriched.put("category", item.getCategory());
-                        enriched.put("featured", item.isFeatured());
-
-                        // Add company info if associated
-                        String companyId = item.getCompanyId();
-                        if (companyId != null) {
-                            companyRepository.findById(companyId)
-                                    .ifPresent(company -> {
-                                        enriched.put("company", company.getTitle());
-                                        enriched.put("companyId", company.getId());
-                                    });
-                        }
-
-                        return enriched;
-                    })
-                    .collect(java.util.stream.Collectors.toList());
-
-            return ResponseEntity.ok(enrichedItems);
+            return ResponseEntity.ok(mediaItemService.getEnrichedGalleryMedia());
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Failed to fetch gallery media: " + e.getMessage());
@@ -83,41 +51,25 @@ public class MediaController {
     // Public endpoint - get news articles
     @GetMapping("/media/news")
     public ResponseEntity<List<MediaItem>> getNewsArticles() {
-        List<MediaItem> news = mediaRepository.findByCategoryAndGroupAndStatusOrderByPublishedDateDesc("NEWS",
-                "MEDIA_PANEL", "PUBLISHED");
-        return ResponseEntity.ok(news);
+        return ResponseEntity.ok(mediaItemService.getNewsArticles());
     }
 
     // Public endpoint - get blog posts
     @GetMapping("/media/blogs")
     public ResponseEntity<List<MediaItem>> getBlogPosts() {
-        List<MediaItem> blogs = mediaRepository.findByCategoryAndGroupAndStatusOrderByPublishedDateDesc("BLOG",
-                "MEDIA_PANEL", "PUBLISHED");
-        return ResponseEntity.ok(blogs);
+        return ResponseEntity.ok(mediaItemService.getBlogPosts());
     }
 
     // Public endpoint - get media items (videos, galleries, documents)
     @GetMapping("/media/media")
     public ResponseEntity<List<MediaItem>> getMediaItems() {
-        List<MediaItem> media = mediaRepository.findByCategoryInAndGroupAndStatusOrderByPublishedDateDesc(
-                java.util.Arrays.asList("MEDIA", "GALLERY"), "MEDIA_PANEL", "PUBLISHED");
-
-        // Enrich with company name if companyId is present
-        media.forEach(item -> {
-            if (item.getCompanyId() != null && !item.getCompanyId().isEmpty()) {
-                companyRepository.findById(item.getCompanyId()).ifPresent(company -> {
-                    item.setCompany(company.getTitle());
-                });
-            }
-        });
-
-        return ResponseEntity.ok(media);
+        return ResponseEntity.ok(mediaItemService.getMediaItems());
     }
 
     // Public endpoint - get single media item
     @GetMapping("/media/{id}")
     public ResponseEntity<?> getMediaItemById(@PathVariable @NonNull String id) {
-        return mediaRepository.findById(id)
+        return mediaItemService.getMediaItemById(id)
                 .map(item -> {
                     if (!"PUBLISHED".equalsIgnoreCase(item.getStatus())) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -135,13 +87,7 @@ public class MediaController {
     // Admin endpoints
     @GetMapping("/admin/media")
     public ResponseEntity<List<MediaItem>> getAllMedia(@RequestParam(required = false) String group) {
-        List<MediaItem> mediaItems;
-        if (group != null && !group.isEmpty()) {
-            mediaItems = mediaRepository.findByGroupOrderByPublishedDateDesc(group);
-        } else {
-            mediaItems = mediaRepository.findAll();
-        }
-        return ResponseEntity.ok(mediaItems);
+        return ResponseEntity.ok(mediaItemService.getAdminMedia(group));
     }
 
     // File upload endpoint

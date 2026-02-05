@@ -15,7 +15,7 @@ public class GlobalMetricService {
     private GlobalMetricRepository globalMetricRepository;
 
     public List<GlobalMetric> getAllMetrics() {
-        return globalMetricRepository.findAll();
+        return globalMetricRepository.findAllByOrderByDisplayOrderAsc();
     }
 
     public Optional<GlobalMetric> getMetricById(String id) {

@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/pending-changes")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class PendingChangeController {
 
     private final PendingChangeService pendingChangeService;
@@ -26,10 +25,10 @@ public class PendingChangeController {
     private final JobOpportunityService jobOpportunityService;
     private final AuditLogService auditLogService;
 
-    private final com.oceanlk.backend.repository.MediaItemRepository mediaItemRepository;
-    private final com.oceanlk.backend.repository.GlobalMetricRepository globalMetricRepository;
-    private final com.oceanlk.backend.repository.CorporateLeaderRepository corporateLeaderRepository;
-    private final com.oceanlk.backend.repository.PageContentRepository pageContentRepository;
+    private final com.oceanlk.backend.service.MediaItemService mediaItemService;
+    private final com.oceanlk.backend.service.GlobalMetricService globalMetricService;
+    private final com.oceanlk.backend.service.LeadershipService leadershipService;
+    private final com.oceanlk.backend.service.PageContentService pageContentService;
 
     /**
      * Get all pending changes (Superadmin only)
@@ -266,14 +265,14 @@ public class PendingChangeController {
                 if (mediaItem.getStatus() == null || mediaItem.getStatus().isEmpty()) {
                     mediaItem.setStatus("PUBLISHED");
                 }
-                mediaItemRepository.save(mediaItem);
+                mediaItemService.createMediaItem(mediaItem);
                 break;
             case "UPDATE":
                 // We trust the data in pending change is what we want to save
-                mediaItemRepository.save(mediaItem);
+                mediaItemService.createMediaItem(mediaItem); // Save/Update uses same repo method
                 break;
             case "DELETE":
-                mediaItemRepository.deleteById(mediaItem.getId());
+                mediaItemService.deleteMediaItem(mediaItem.getId());
                 break;
         }
     }
@@ -284,15 +283,15 @@ public class PendingChangeController {
         switch (action) {
             case "CREATE":
                 metric.setId(null);
-                globalMetricRepository.save(metric);
+                globalMetricService.createMetric(metric);
                 break;
             case "UPDATE":
                 if (metric != null) {
-                    globalMetricRepository.save(metric);
+                    globalMetricService.createMetric(metric);
                 }
                 break;
             case "DELETE":
-                globalMetricRepository.deleteById(metric.getId());
+                globalMetricService.deleteMetric(metric.getId());
                 break;
         }
     }
@@ -304,15 +303,15 @@ public class PendingChangeController {
         switch (action) {
             case "CREATE":
                 leader.setId(null);
-                corporateLeaderRepository.save(leader);
+                leadershipService.createLeader(leader);
                 break;
             case "UPDATE":
                 if (leader != null) {
-                    corporateLeaderRepository.save(leader);
+                    leadershipService.createLeader(leader);
                 }
                 break;
             case "DELETE":
-                corporateLeaderRepository.deleteById(leader.getId());
+                leadershipService.deleteLeader(leader.getId());
                 break;
         }
     }
@@ -325,11 +324,11 @@ public class PendingChangeController {
             case "UPDATE":
                 // For PageContent, it's usually upsert logic
                 if (content != null) {
-                    pageContentRepository.save(content);
+                    pageContentService.createOrUpdateContent(content);
                 }
                 break;
             case "DELETE":
-                pageContentRepository.deleteById(content.getId());
+                pageContentService.deleteContent(content.getId());
                 break;
         }
     }

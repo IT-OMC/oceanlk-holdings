@@ -18,6 +18,10 @@ public class PageContentService {
         return pageContentRepository.findAll();
     }
 
+    public List<PageContent> getContentByPage(String page) {
+        return pageContentRepository.findByPageIdentifier(page);
+    }
+
     public Optional<PageContent> getContentByPageAndSection(String page, String section) {
         return pageContentRepository.findByPageIdentifierAndSectionIdentifier(page, section);
     }

@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/audit-logs")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Adjust based on your security config
 public class AuditLogController {
 
     private final AuditLogService auditLogService;

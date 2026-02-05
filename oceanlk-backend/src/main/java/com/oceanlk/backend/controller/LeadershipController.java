@@ -17,21 +17,21 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/leadership")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class LeadershipController {
 
     private final CorporateLeaderRepository repository;
+    private final com.oceanlk.backend.service.LeadershipService leadershipService;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
     @GetMapping
     public ResponseEntity<List<CorporateLeader>> getAllLeaders() {
-        return ResponseEntity.ok(repository.findAllByOrderByDisplayOrderAsc());
+        return ResponseEntity.ok(leadershipService.getAllLeaders());
     }
 
     @GetMapping("/department/{dept}")
     public ResponseEntity<List<CorporateLeader>> getLeadersByDepartment(@PathVariable @NonNull String dept) {
-        return ResponseEntity.ok(repository.findByDepartmentOrderByDisplayOrderAsc(dept.toUpperCase()));
+        return ResponseEntity.ok(leadershipService.getLeadersByDepartment(dept.toUpperCase()));
     }
 
     @PostMapping

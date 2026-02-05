@@ -16,23 +16,23 @@ import org.springframework.security.core.Authentication;
 @RestController
 @RequestMapping("/api/content")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class PageContentController {
 
     private final PageContentRepository repository;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
+    private final com.oceanlk.backend.service.PageContentService pageContentService;
 
     @GetMapping("/{page}")
     public ResponseEntity<List<PageContent>> getPageContent(@PathVariable String page) {
-        return ResponseEntity.ok(repository.findByPageIdentifier(page.toUpperCase()));
+        return ResponseEntity.ok(pageContentService.getContentByPage(page.toUpperCase()));
     }
 
     @GetMapping("/{page}/{section}")
     public ResponseEntity<PageContent> getSectionContent(
             @PathVariable String page,
             @PathVariable String section) {
-        return repository.findByPageIdentifierAndSectionIdentifier(page.toUpperCase(), section.toUpperCase())
+        return pageContentService.getContentByPageAndSection(page.toUpperCase(), section.toUpperCase())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -44,14 +44,14 @@ public class PageContentController {
         boolean isSuperAdmin = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
-        Optional<PageContent> existing = repository.findByPageIdentifierAndSectionIdentifier(
+        Optional<PageContent> existing = pageContentService.getContentByPageAndSection(
                 content.getPageIdentifier(), content.getSectionIdentifier());
 
         if (isSuperAdmin) {
             PageContent saved;
             if (existing.isPresent()) {
                 PageContent toUpdate = existing.get();
-                PageContent existingOriginal = repository.findById(toUpdate.getId()).orElse(null);
+                PageContent existingOriginal = pageContentService.getContentById(toUpdate.getId()).orElse(null);
 
                 toUpdate.setTitle(content.getTitle());
                 toUpdate.setSubtitle(content.getSubtitle());

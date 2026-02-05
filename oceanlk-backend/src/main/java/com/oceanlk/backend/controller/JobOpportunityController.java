@@ -19,26 +19,24 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 @Slf4j
 public class JobOpportunityController {
 
     private final JobOpportunityRepository jobRepository;
+    private final com.oceanlk.backend.service.JobOpportunityService jobService;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
     // Public endpoint - get all active jobs
     @GetMapping("/jobs")
     public ResponseEntity<List<JobOpportunity>> getAllActiveJobs() {
-        List<JobOpportunity> jobs = jobRepository.findByStatusOrderByPostedDateDesc("ACTIVE");
-        return ResponseEntity.ok(jobs);
+        return ResponseEntity.ok(jobService.getActiveJobs());
     }
 
     // Admin endpoints
     @GetMapping("/admin/jobs")
     public ResponseEntity<List<JobOpportunity>> getAllJobs() {
-        List<JobOpportunity> jobs = jobRepository.findAll();
-        return ResponseEntity.ok(jobs);
+        return ResponseEntity.ok(jobService.getAllJobs());
     }
 
     @PostMapping("/admin/jobs")

@@ -3,12 +3,11 @@ package com.oceanlk.backend.controller;
 import com.oceanlk.backend.dto.LoginRequest;
 import com.oceanlk.backend.dto.LoginResponse;
 import com.oceanlk.backend.model.AdminUser;
-import com.oceanlk.backend.repository.AdminUserRepository;
 import com.oceanlk.backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,20 +17,18 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 public class AuthController {
 
-    private final AdminUserRepository adminUserRepository;
     private final JwtUtil jwtUtil;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.AdminUserService adminUserService;
     private final com.oceanlk.backend.service.OtpService otpService;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            AdminUser admin = adminUserRepository.findByUsername(loginRequest.getUsername())
+            AdminUser admin = adminUserService.findByUsername(loginRequest.getUsername())
                     .orElse(null);
 
             if (admin == null) {
@@ -51,7 +48,7 @@ public class AuthController {
 
             // Update last login
             admin.setLastLoginDate(LocalDateTime.now());
-            adminUserRepository.save(admin);
+            adminUserService.updateAdmin(admin);
 
             // Generate JWT token
             String token = jwtUtil.generateToken(admin.getUsername());
@@ -81,7 +78,7 @@ public class AuthController {
             String token = authHeader.substring(7);
             String username = jwtUtil.extractUsername(token);
 
-            AdminUser admin = adminUserRepository.findByUsername(username).orElse(null);
+            AdminUser admin = adminUserService.findByUsername(username).orElse(null);
             if (admin == null || !jwtUtil.validateToken(token, username)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(createErrorResponse("Invalid or expired token"));
@@ -105,7 +102,7 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        return adminUserRepository.findByEmail(email)
+        return adminUserService.findByEmail(email)
                 .map(user -> {
                     // In a real app, you might want to send a specific reset token or OTP
                     // For now, we'll use the existing OtpService logic
@@ -124,7 +121,7 @@ public class AuthController {
         String otp = request.get("otp");
         String newPassword = request.get("newPassword");
 
-        return adminUserRepository.findByEmail(email)
+        return adminUserService.findByEmail(email)
                 .map(user -> {
                     if (otpService.verifyOtp(user, otp)) {
                         adminUserService.changePassword(user, newPassword);

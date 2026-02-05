@@ -17,17 +17,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/partners")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Slf4j
 public class PartnerController {
 
         private final PartnerRepository repository;
+        private final com.oceanlk.backend.service.PartnerService partnerService;
         private final com.oceanlk.backend.service.AuditLogService auditLogService;
         private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
         @GetMapping
         public ResponseEntity<List<Partner>> getAllPartners() {
-                return ResponseEntity.ok(repository.findAllByOrderByDisplayOrderAsc());
+                return ResponseEntity.ok(partnerService.getAllPartners());
         }
 
         @PostMapping

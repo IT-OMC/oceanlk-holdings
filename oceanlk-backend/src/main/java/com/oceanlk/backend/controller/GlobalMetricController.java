@@ -17,17 +17,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/metrics")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Slf4j
 public class GlobalMetricController {
 
         private final GlobalMetricRepository repository;
+        private final com.oceanlk.backend.service.GlobalMetricService globalMetricService;
         private final com.oceanlk.backend.service.AuditLogService auditLogService;
         private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
         @GetMapping
         public ResponseEntity<List<GlobalMetric>> getAllMetrics() {
-                return ResponseEntity.ok(repository.findAllByOrderByDisplayOrderAsc());
+                return ResponseEntity.ok(globalMetricService.getAllMetrics());
         }
 
         @PostMapping

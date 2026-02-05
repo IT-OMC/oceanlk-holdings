@@ -5,7 +5,7 @@ import com.oceanlk.backend.model.PendingChange;
 import com.oceanlk.backend.service.EventService;
 import com.oceanlk.backend.service.PendingChangeService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +20,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
-
-    @Autowired
-    private PendingChangeService pendingChangeService;
-
-    @Autowired
-    private com.oceanlk.backend.service.AuditLogService auditLogService;
+    private final EventService eventService;
+    private final PendingChangeService pendingChangeService;
+    private final com.oceanlk.backend.service.AuditLogService auditLogService;
 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents(

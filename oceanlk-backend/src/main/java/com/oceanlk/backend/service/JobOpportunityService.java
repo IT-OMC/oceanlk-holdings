@@ -19,7 +19,7 @@ public class JobOpportunityService {
     }
 
     public List<JobOpportunity> getActiveJobs() {
-        return jobOpportunityRepository.findByStatus("ACTIVE");
+        return jobOpportunityRepository.findByStatusOrderByPostedDateDesc("ACTIVE");
     }
 
     public Optional<JobOpportunity> getJobById(String id) {

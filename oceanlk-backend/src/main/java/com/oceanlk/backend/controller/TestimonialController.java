@@ -16,20 +16,17 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/testimonials")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @Slf4j
 public class TestimonialController {
 
-        @Autowired
-        private TestimonialService testimonialService;
-
-        @Autowired
-        private com.oceanlk.backend.service.AuditLogService auditLogService;
-
-        @Autowired
-        private com.oceanlk.backend.service.PendingChangeService pendingChangeService;
+        private final TestimonialService testimonialService;
+        private final com.oceanlk.backend.service.AuditLogService auditLogService;
+        private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
         @GetMapping
         public ResponseEntity<List<Testimonial>> getAllTestimonials() {

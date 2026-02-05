@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/contact")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Slf4j
 public class ContactMessageController {
 
@@ -115,7 +115,7 @@ public class ContactMessageController {
 
     @PutMapping("/messages/{id}/read")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> markAsRead(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> markAsRead(@PathVariable @NonNull String id, Principal principal) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
         if (messageOpt.isPresent()) {
@@ -125,7 +125,7 @@ public class ContactMessageController {
             contactMessageRepository.save(message);
 
             // Log Action
-            auditLogService.logAction("admin", "UPDATE", "ContactMessage", id,
+            auditLogService.logAction(principal.getName(), "UPDATE", "ContactMessage", id,
                     "Marked message from " + message.getName() + " as READ");
 
             return ResponseEntity.ok(message);
@@ -136,7 +136,7 @@ public class ContactMessageController {
 
     @PutMapping("/messages/{id}/unread")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> markAsUnread(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> markAsUnread(@PathVariable @NonNull String id, Principal principal) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
         if (messageOpt.isPresent()) {
@@ -146,7 +146,7 @@ public class ContactMessageController {
             contactMessageRepository.save(message);
 
             // Log Action
-            auditLogService.logAction("admin", "UPDATE", "ContactMessage", id,
+            auditLogService.logAction(principal.getName(), "UPDATE", "ContactMessage", id,
                     "Marked message from " + message.getName() + " as UNREAD");
 
             return ResponseEntity.ok(message);
@@ -157,12 +157,13 @@ public class ContactMessageController {
 
     @DeleteMapping("/messages/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteMessage(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> deleteMessage(@PathVariable @NonNull String id, Principal principal) {
         if (contactMessageRepository.existsById(id)) {
             contactMessageRepository.deleteById(id);
 
             // Log Action
-            auditLogService.logAction("admin", "DELETE", "ContactMessage", id, "Deleted contact message ID: " + id);
+            auditLogService.logAction(principal.getName(), "DELETE", "ContactMessage", id,
+                    "Deleted contact message ID: " + id);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

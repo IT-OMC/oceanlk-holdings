@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/talent-pool")
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:4173" })
 @Slf4j
 public class TalentPoolController {
 
@@ -179,9 +179,11 @@ public class TalentPoolController {
     }
 
     @PatchMapping("/application/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateApplicationStatus(
             @PathVariable @NonNull String id,
-            @RequestParam String status) {
+            @RequestParam String status,
+            Principal principal) {
         var applicationOpt = applicationRepository.findById(id);
 
         if (applicationOpt.isEmpty()) {
@@ -195,7 +197,7 @@ public class TalentPoolController {
         applicationRepository.save(application);
 
         // Log Action
-        auditLogService.logAction("admin", "UPDATE", "TalentPoolApplication", id,
+        auditLogService.logAction(principal.getName(), "UPDATE", "TalentPoolApplication", id,
                 "Updated application status for " + application.getFullName() + " to " + status);
 
         return ResponseEntity.ok(application);
@@ -203,7 +205,7 @@ public class TalentPoolController {
 
     @DeleteMapping("/application/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id, Principal principal) {
         try {
             var applicationOpt = applicationRepository.findById(id);
 
@@ -228,7 +230,7 @@ public class TalentPoolController {
             applicationRepository.deleteById(id);
 
             // Log Action
-            auditLogService.logAction("admin", "DELETE", "TalentPoolApplication", id,
+            auditLogService.logAction(principal.getName(), "DELETE", "TalentPoolApplication", id,
                     "Deleted application from " + application.getFullName());
 
             Map<String, Object> response = new HashMap<>();
