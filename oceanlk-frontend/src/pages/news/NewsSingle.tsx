@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, Share2, Loader } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface NewsArticle {
     id: string;
@@ -81,7 +81,7 @@ const NewsSingle = () => {
         <div className="min-h-screen">
             <div className="relative h-[60vh] overflow-hidden">
                 <img
-                    src={article.imageUrl}
+                    src={getMediaUrl(article.imageUrl)}
                     alt={article.title}
                     className="w-full h-full object-cover"
                 />

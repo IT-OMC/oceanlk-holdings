@@ -26,9 +26,12 @@ public class PendingChangeController {
     private final JobOpportunityService jobOpportunityService;
     private final AuditLogService auditLogService;
 
-    private final com.oceanlk.backend.repository.MediaItemRepository mediaItemRepository;
+    // Injected Services for cleanup logic
+    private final com.oceanlk.backend.service.MediaItemService mediaItemService;
+    private final com.oceanlk.backend.service.LeadershipService leadershipService;
+
+    // Repositories for entites that don't need complex cleanup yet
     private final com.oceanlk.backend.repository.GlobalMetricRepository globalMetricRepository;
-    private final com.oceanlk.backend.repository.CorporateLeaderRepository corporateLeaderRepository;
     private final com.oceanlk.backend.repository.PageContentRepository pageContentRepository;
 
     /**
@@ -203,6 +206,7 @@ public class PendingChangeController {
                 companyService.updateCompany(company.getId(), company);
                 break;
             case "DELETE":
+                // Use Service to ensure file cleanup
                 companyService.deleteCompany(company.getId());
                 break;
         }
@@ -236,6 +240,7 @@ public class PendingChangeController {
                 partnerService.updatePartner(partner.getId(), partner);
                 break;
             case "DELETE":
+                // Use service for file cleanup
                 partnerService.deletePartner(partner.getId());
                 break;
         }
@@ -266,14 +271,15 @@ public class PendingChangeController {
                 if (mediaItem.getStatus() == null || mediaItem.getStatus().isEmpty()) {
                     mediaItem.setStatus("PUBLISHED");
                 }
-                mediaItemRepository.save(mediaItem);
+                // Use service for consistency and any future logic
+                mediaItemService.createMediaItem(mediaItem);
                 break;
             case "UPDATE":
-                // We trust the data in pending change is what we want to save
-                mediaItemRepository.save(mediaItem);
+                mediaItemService.updateMediaItem(mediaItem.getId(), mediaItem);
                 break;
             case "DELETE":
-                mediaItemRepository.deleteById(mediaItem.getId());
+                // CRITICAL: Use service to ensure S3/Local file cleanup
+                mediaItemService.deleteMediaItem(mediaItem.getId());
                 break;
         }
     }
@@ -304,15 +310,14 @@ public class PendingChangeController {
         switch (action) {
             case "CREATE":
                 leader.setId(null);
-                corporateLeaderRepository.save(leader);
+                leadershipService.createLeader(leader);
                 break;
             case "UPDATE":
-                if (leader != null) {
-                    corporateLeaderRepository.save(leader);
-                }
+                leadershipService.updateLeader(leader.getId(), leader);
                 break;
             case "DELETE":
-                corporateLeaderRepository.deleteById(leader.getId());
+                // Use service for file cleanup
+                leadershipService.deleteLeader(leader.getId());
                 break;
         }
     }

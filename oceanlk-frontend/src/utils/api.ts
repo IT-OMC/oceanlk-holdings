@@ -76,8 +76,8 @@ export const API_ENDPOINTS = {
     LEADERSHIP_BY_ID: (id: string) => `${BASE_URL}/api/leadership/${id}`,
     LEADERSHIP_CATEGORIES: `${BASE_URL}/api/leadership-categories`,
     LEADERSHIP_CATEGORY_BY_CODE: (code: string) => `${BASE_URL}/api/leadership-categories/${code}`,
-    ADMIN_LEADERSHIP: `${BASE_URL}/api/admin/leadership`,
-    ADMIN_LEADERSHIP_CATEGORIES: `${BASE_URL}/api/admin/leadership/categories`,
+    ADMIN_LEADERSHIP: `${BASE_URL}/api/leadership`,
+    ADMIN_LEADERSHIP_CATEGORIES: `${BASE_URL}/api/leadership-categories`,
 
     // Events
     EVENTS: `${BASE_URL}/api/events`,

@@ -14,6 +14,9 @@ public class LeadershipService {
     @Autowired
     private CorporateLeaderRepository corporateLeaderRepository;
 
+    @Autowired
+    private FileStorageService fileStorageService;
+
     public List<CorporateLeader> getAllLeaders() {
         return corporateLeaderRepository.findAllByOrderByDisplayOrderAsc();
     }
@@ -34,6 +37,16 @@ public class LeadershipService {
         CorporateLeader leader = corporateLeaderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Leader not found with id: " + id));
 
+        // Delete old image if it exists and is being replaced
+        try {
+            if (leaderDetails.getImage() != null && !leaderDetails.getImage().equals(leader.getImage())
+                    && leader.getImage() != null) {
+                fileStorageService.deleteFile(leader.getImage());
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting old image during update: " + e.getMessage());
+        }
+
         leader.setName(leaderDetails.getName());
         leader.setPosition(leaderDetails.getPosition());
         leader.setDepartment(leaderDetails.getDepartment());
@@ -48,6 +61,18 @@ public class LeadershipService {
     }
 
     public void deleteLeader(String id) {
+        CorporateLeader leader = corporateLeaderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Leader not found with id: " + id));
+
+        // Delete associated image if it exists
+        try {
+            if (leader.getImage() != null) {
+                fileStorageService.deleteFile(leader.getImage());
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting leader image: " + e.getMessage());
+        }
+
         corporateLeaderRepository.deleteById(id);
     }
 }

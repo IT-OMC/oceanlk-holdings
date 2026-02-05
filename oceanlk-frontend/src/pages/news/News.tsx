@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
 
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface NewsArticle {
     id: string;
@@ -124,7 +124,7 @@ const News = () => {
                                         <>
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${article.imageUrl}')` }}
+                                                style={{ backgroundImage: `url('${getMediaUrl(article.imageUrl)}')` }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                                             <div className="absolute top-6 left-6">
@@ -153,7 +153,7 @@ const News = () => {
                                         <>
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${article.imageUrl}')` }}
+                                                style={{ backgroundImage: `url('${getMediaUrl(article.imageUrl)}')` }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                                             <div className="absolute top-4 left-4">

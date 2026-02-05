@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
 
 
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -187,7 +187,7 @@ const Media = () => {
                                         {/* Background Image or Video */}
                                         {isActuallyVideo && videoSrc ? (
                                             <video
-                                                src={videoSrc}
+                                                src={getMediaUrl(videoSrc)}
                                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                 muted
                                                 loop
@@ -197,7 +197,7 @@ const Media = () => {
                                         ) : item.imageUrl ? (
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${item.imageUrl}')` }}
+                                                style={{ backgroundImage: `url('${getMediaUrl(item.imageUrl)}')` }}
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

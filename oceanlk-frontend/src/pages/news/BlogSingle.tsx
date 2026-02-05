@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, User, Share2, Loader } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface BlogPost {
     id: string;
@@ -86,7 +86,7 @@ const BlogSingle = () => {
         <div className="min-h-screen">
             <div className="relative h-[60vh] overflow-hidden">
                 <img
-                    src={blog.imageUrl}
+                    src={getMediaUrl(blog.imageUrl)}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                 />

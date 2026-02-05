@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
 
-import { API_ENDPOINTS } from '../../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
 interface BlogPost {
     id: string;
@@ -126,7 +126,7 @@ const Blogs = () => {
                                 <Link to={`/news/blogs/${post.id}`} className="block h-full w-full">
                                     <div
                                         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                        style={{ backgroundImage: `url('${post.imageUrl}')` }}
+                                        style={{ backgroundImage: `url('${getMediaUrl(post.imageUrl)}')` }}
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 

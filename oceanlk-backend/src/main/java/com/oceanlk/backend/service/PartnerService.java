@@ -14,6 +14,9 @@ public class PartnerService {
     @Autowired
     private PartnerRepository partnerRepository;
 
+    @Autowired
+    private FileStorageService fileStorageService;
+
     public List<Partner> getAllPartners() {
         return partnerRepository.findAll();
     }
@@ -30,6 +33,16 @@ public class PartnerService {
         Partner partner = partnerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Partner not found with id: " + id));
 
+        // Delete old logo if it exists and is being replaced
+        try {
+            if (partnerDetails.getLogoUrl() != null && !partnerDetails.getLogoUrl().equals(partner.getLogoUrl())
+                    && partner.getLogoUrl() != null) {
+                fileStorageService.deleteFile(partner.getLogoUrl());
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting old logo during update: " + e.getMessage());
+        }
+
         partner.setName(partnerDetails.getName());
         partner.setLogoUrl(partnerDetails.getLogoUrl());
         partner.setWebsiteUrl(partnerDetails.getWebsiteUrl());
@@ -40,6 +53,18 @@ public class PartnerService {
     }
 
     public void deletePartner(String id) {
+        Partner partner = partnerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Partner not found with id: " + id));
+
+        // Delete associated logo if it exists
+        try {
+            if (partner.getLogoUrl() != null) {
+                fileStorageService.deleteFile(partner.getLogoUrl());
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting partner logo: " + e.getMessage());
+        }
+
         partnerRepository.deleteById(id);
     }
 }

@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { API_ENDPOINTS } from '../utils/api';
+import { API_ENDPOINTS, getMediaUrl } from '../utils/api';
 
 interface GalleryItem {
     id: string;
@@ -192,7 +192,7 @@ const Gallery = () => {
                                             {/* Media Content */}
                                             {item.videoUrl && isActive ? (
                                                 <video
-                                                    src={item.videoUrl}
+                                                    src={getMediaUrl(item.videoUrl)}
                                                     className="w-full h-full object-cover"
                                                     autoPlay
                                                     muted
@@ -201,7 +201,7 @@ const Gallery = () => {
                                                 />
                                             ) : (
                                                 <img
-                                                    src={item.imageUrl}
+                                                    src={getMediaUrl(item.imageUrl)}
                                                     alt={item.title}
                                                     className="w-full h-full object-cover"
                                                 />

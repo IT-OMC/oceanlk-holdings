@@ -97,9 +97,13 @@ const GalleryManagement = () => {
                 const data = await response.json();
                 console.log('✓ Fetched media items:', data?.length);
 
-                // Filter items based on category/type
+                // Filter items based on type (not category)
+                // Gallery items can have category='MEDIA' but type='GALLERY'/'VIDEO'/'ALBUM'
                 const galleryItems = data.filter((item: MediaItem) =>
-                    item.category === 'GALLERY' || item.type === 'ALBUM' || item.type === 'VIDEO'
+                    item.type === 'ALBUM' ||
+                    item.type === 'VIDEO' ||
+                    item.type === 'GALLERY' ||
+                    item.category === 'GALLERY' // Keep for backwards compatibility
                 );
                 console.log('✓ Filtered gallery items:', galleryItems?.length);
 
