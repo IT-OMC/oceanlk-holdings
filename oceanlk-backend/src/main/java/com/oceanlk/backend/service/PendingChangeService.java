@@ -65,7 +65,19 @@ public class PendingChangeService {
             pendingChange.setReviewedAt(LocalDateTime.now());
             pendingChange.setReviewComments("Automatically approved for Super Admin");
 
-            return pendingChangeRepository.save(pendingChange);
+            PendingChange saved = pendingChangeRepository.save(pendingChange);
+
+            // Notify other Super Admins about this direct action
+            notificationService.createNotification(
+                    "Super Admin Action",
+                    submittedBy + " performed a " + action + " on " + entityType,
+                    "INFO",
+                    "ROLE_SUPER_ADMIN",
+                    null, // No specific link for approved changes usually, but could be added
+                    submittedBy // Exclude the person who did it
+            );
+
+            return saved;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error serializing change data", e);
         }
@@ -89,14 +101,14 @@ public class PendingChangeService {
      * Get all pending changes submitted by a specific admin
      */
     public List<PendingChange> getPendingChangesForAdmin(String username) {
-        return pendingChangeRepository.findBySubmittedBy(username);
+        return pendingChangeRepository.findBySubmittedByIgnoreCaseOrderBySubmittedAtDesc(username);
     }
 
     /**
      * Get pending changes for a specific admin with specific status
      */
     public List<PendingChange> getPendingChangesForAdminByStatus(String username, String status) {
-        return pendingChangeRepository.findBySubmittedByAndStatus(username, status);
+        return pendingChangeRepository.findBySubmittedByIgnoreCaseAndStatusOrderBySubmittedAtDesc(username, status);
     }
 
     /**

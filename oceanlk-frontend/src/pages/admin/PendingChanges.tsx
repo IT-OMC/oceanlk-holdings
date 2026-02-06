@@ -82,6 +82,24 @@ const PendingChanges: React.FC = () => {
         }
     }, [fetchData, isSuperAdmin]);
 
+    // Auto-refresh My Changes every 30 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (activeTab === 'my-changes') {
+                fetchData();
+            }
+        }, 30000); // 30 seconds
+
+        return () => clearInterval(interval);
+    }, [activeTab, fetchData]);
+
+    // Refresh when switching to My Changes tab
+    useEffect(() => {
+        if (activeTab === 'my-changes') {
+            fetchData();
+        }
+    }, [activeTab, fetchData]);
+
     const handleApprove = async (changeId: string) => {
         try {
             const token = sessionStorage.getItem('adminToken');

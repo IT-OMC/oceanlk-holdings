@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
 import moment from 'moment';
@@ -102,7 +103,7 @@ const UpcomingEvents = () => {
                     <motion.div
                         key={event.id}
                         whileHover={{ y: -5 }}
-                        className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 group"
+                        className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 group flex flex-col"
                     >
                         <div className="h-48 overflow-hidden relative">
                             {event.imageUrl ? (
@@ -120,7 +121,7 @@ const UpcomingEvents = () => {
                                 {moment(event.date).format('MMM DD')}
                             </div>
                         </div>
-                        <div className="p-6">
+                        <div className="p-6 flex-grow">
                             <h3 className="text-xl font-bold text-gray-900 mb-1">{event.title}</h3>
                             <p className="text-sm text-gray-500 mb-4">
                                 {event.location}
@@ -129,6 +130,17 @@ const UpcomingEvents = () => {
                             <span className={`text-[10px] font-bold tracking-wider uppercase ${getCategoryColor(event.category)}`}>
                                 {event.category}
                             </span>
+                        </div>
+                        <div className="px-6 pb-6 mt-auto">
+                            <Link
+                                to={`/careers/events/${event.id}`}
+                                className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                            >
+                                See More
+                                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </Link>
                         </div>
                     </motion.div>
                 ))}

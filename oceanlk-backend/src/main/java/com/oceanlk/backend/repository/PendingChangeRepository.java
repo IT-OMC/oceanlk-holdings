@@ -14,9 +14,13 @@ public interface PendingChangeRepository extends MongoRepository<PendingChange, 
 
     List<PendingChange> findByEntityTypeAndStatus(String entityType, String status);
 
-    List<PendingChange> findBySubmittedBy(String username);
+    List<PendingChange> findBySubmittedByOrderBySubmittedAtDesc(String username);
 
-    List<PendingChange> findBySubmittedByAndStatus(String username, String status);
+    List<PendingChange> findBySubmittedByIgnoreCaseOrderBySubmittedAtDesc(String username);
+
+    List<PendingChange> findBySubmittedByAndStatusOrderBySubmittedAtDesc(String username, String status);
+
+    List<PendingChange> findBySubmittedByIgnoreCaseAndStatusOrderBySubmittedAtDesc(String username, String status);
 
     Optional<PendingChange> findByEntityIdAndStatus(String entityId, String status);
 

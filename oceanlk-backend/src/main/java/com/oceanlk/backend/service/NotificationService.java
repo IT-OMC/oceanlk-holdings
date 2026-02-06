@@ -19,6 +19,11 @@ public class NotificationService {
     private final EmailService emailService;
 
     public void createNotification(String title, String message, String type, String recipientRole, String link) {
+        createNotification(title, message, type, recipientRole, link, null);
+    }
+
+    public void createNotification(String title, String message, String type, String recipientRole, String link,
+            String excludeUsername) {
         try {
             if (message == null || type == null || recipientRole == null) {
                 log.warn("Attempted to create notification with null required fields");
@@ -33,8 +38,14 @@ public class NotificationService {
             var admins = adminUserRepository.findByRole(roleForQuery);
             for (var admin : admins) {
                 if (admin.getEmail() != null) {
+                    // Skip the admin if they are the one who performed the action
+                    if (excludeUsername != null && excludeUsername.equals(admin.getUsername())) {
+                        continue;
+                    }
+
                     try {
-                        emailService.sendAdminNotification(admin.getEmail(), "New System Alert", message, link);
+                        emailService.sendAdminNotification(admin.getEmail(), title != null ? title : "New System Alert",
+                                message, link);
                     } catch (Exception emailEx) {
                         log.error("Failed to send email alert to {}: {}", admin.getEmail(), emailEx.getMessage());
                     }

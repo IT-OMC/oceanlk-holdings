@@ -170,8 +170,12 @@ const Media = () => {
                             const span = getGridSpan(index);
                             const isLarge = span.includes('row-span-2');
 
-                            const videoSrc = item.videoUrl || (item.imageUrl && /\.(mp4|webm|ogg)$/i.test(item.imageUrl) ? item.imageUrl : null);
-                            const isActuallyVideo = item.type === 'VIDEO' || !!videoSrc;
+                            // For documents, check if cover image exists in videoUrl
+                            const isDocument = item.type === 'DOCUMENT';
+                            const displayImageUrl = isDocument && item.videoUrl ? item.videoUrl : item.imageUrl;
+
+                            const videoSrc = !isDocument && (item.videoUrl || (item.imageUrl && /\.(mp4|webm|ogg)$/i.test(item.imageUrl) ? item.imageUrl : null));
+                            const isActuallyVideo = !isDocument && (item.type === 'VIDEO' || !!videoSrc);
 
                             return (
                                 <motion.div
@@ -194,10 +198,10 @@ const Media = () => {
                                                 playsInline
                                                 autoPlay // Consider adding logic to only autoplay on hover or if visible to save resources
                                             />
-                                        ) : item.imageUrl ? (
+                                        ) : displayImageUrl ? (
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${getMediaUrl(item.imageUrl)}')` }}
+                                                style={{ backgroundImage: `url('${getMediaUrl(displayImageUrl)}')` }}
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

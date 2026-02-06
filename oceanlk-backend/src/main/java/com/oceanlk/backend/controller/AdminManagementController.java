@@ -6,6 +6,7 @@ import com.oceanlk.backend.model.AdminUser;
 import com.oceanlk.backend.service.AdminUserService;
 import com.oceanlk.backend.service.AuditLogService;
 import com.oceanlk.backend.service.EmailService;
+import com.oceanlk.backend.service.NotificationService;
 import com.oceanlk.backend.service.OtpService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class AdminManagementController {
     private final AuditLogService auditLogService;
     private final EmailService emailService;
     private final OtpService otpService;
+    private final NotificationService notificationService;
 
     @GetMapping("/list")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
@@ -53,7 +55,7 @@ public class AdminManagementController {
         String requestedRole = request.getRole() == null ? "ADMIN" : request.getRole();
         if ("SUPER_ADMIN".equals(requestedRole)) {
             // Only SUPER_ADMIN can create SUPER_ADMIN users
-            boolean isSuperAdmin = authentication.getAuthorities().stream()
+            boolean isSuperAdmin = authentication != null && authentication.getAuthorities().stream()
                     .anyMatch(granted -> granted.getAuthority().equals("ROLE_SUPER_ADMIN"));
             System.out.println("DEBUG - User is SUPER_ADMIN: " + isSuperAdmin);
             if (!isSuperAdmin) {
@@ -92,14 +94,41 @@ public class AdminManagementController {
 
         auditLogService.logAction("SUPER_ADMIN", "CREATE_ADMIN", "AdminUser", created.getId(),
                 "Created new admin: " + created.getUsername());
+
+        // Notify Super Admins
+        notificationService.createNotification(
+                "Admin Management Action",
+                authentication.getName() + " created a new admin account: " + created.getUsername(),
+                "INFO",
+                "ROLE_SUPER_ADMIN",
+                "/admin/management",
+                authentication.getName());
+
         return ResponseEntity.ok(created);
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> deleteAdmin(@PathVariable String id) {
+    public ResponseEntity<?> deleteAdmin(@PathVariable String id,
+            org.springframework.security.core.Authentication authentication) {
         adminUserService.deleteAdmin(id);
         auditLogService.logAction("SUPER_ADMIN", "DELETE_ADMIN", "AdminUser", id, "Deleted admin with ID: " + id);
+
+        // Notify Super Admins
+        try {
+            org.springframework.security.core.Authentication auth_obj = authentication != null ? authentication
+                    : org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            notificationService.createNotification(
+                    "Admin Management Action",
+                    (auth_obj != null ? auth_obj.getName() : "System") + " deleted an admin account (ID: " + id + ")",
+                    "WARNING",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/management",
+                    (auth_obj != null ? auth_obj.getName() : null));
+        } catch (Exception e) {
+            log.error("Failed to send delete admin notification: {}", e.getMessage());
+        }
+
         return ResponseEntity.ok(Map.of("message", "Admin deleted successfully"));
     }
 
@@ -130,6 +159,23 @@ public class AdminManagementController {
                     AdminUser updated = adminUserService.updateAdmin(existingAdmin);
                     auditLogService.logAction("SUPER_ADMIN", "UPDATE_ADMIN", "AdminUser", updated.getId(),
                             "Updated admin details for: " + updated.getUsername());
+
+                    // Notify Super Admins
+                    try {
+                        org.springframework.security.core.Authentication auth_obj = org.springframework.security.core.context.SecurityContextHolder
+                                .getContext().getAuthentication();
+                        notificationService.createNotification(
+                                "Admin Management Action",
+                                (auth_obj != null ? auth_obj.getName() : "System") + " updated admin details for: "
+                                        + updated.getUsername(),
+                                "INFO",
+                                "ROLE_SUPER_ADMIN",
+                                "/admin/management",
+                                (auth_obj != null ? auth_obj.getName() : null));
+                    } catch (Exception e) {
+                        log.error("Failed to send update admin notification: {}", e.getMessage());
+                    }
+
                     return ResponseEntity.ok(updated);
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -173,11 +219,13 @@ public class AdminManagementController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PutMapping("/profile/update-name")
-    public ResponseEntity<?> updateProfileName(@RequestBody Map<String, String> request,
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> request,
             java.security.Principal principal) {
         String username = request.get("username");
         String newName = request.get("name");
+        String newEmail = request.get("email");
+        String newPhone = request.get("phone");
 
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -186,11 +234,23 @@ public class AdminManagementController {
 
         return adminUserService.findByUsername(username)
                 .map(user -> {
-                    user.setName(newName);
+                    if (newName != null)
+                        user.setName(newName);
+                    if (newEmail != null) {
+                        // Check if email already exists in another account
+                        if (!newEmail.equals(user.getEmail()) && adminUserService.findByEmail(newEmail).isPresent()) {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(Map.of("error", "Email already in use"));
+                        }
+                        user.setEmail(newEmail);
+                    }
+                    if (newPhone != null)
+                        user.setPhone(newPhone);
+
                     adminUserService.updateAdmin(user);
                     auditLogService.logAction(username, "UPDATE_PROFILE", "AdminUser", user.getId(),
-                            "Updated profile name");
-                    return ResponseEntity.ok(Map.of("message", "Name updated successfully"));
+                            "Updated profile details");
+                    return ResponseEntity.ok(Map.of("message", "Profile updated successfully"));
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
     }

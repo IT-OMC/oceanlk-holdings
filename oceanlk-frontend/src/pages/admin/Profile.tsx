@@ -64,13 +64,13 @@ const AdminProfile = () => {
         const token = sessionStorage.getItem('adminToken');
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/update-name`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ username, name })
+                body: JSON.stringify({ username, name, email, phone })
             });
 
             if (res.ok) {
@@ -251,13 +251,10 @@ const AdminProfile = () => {
                                                 <input
                                                     type="email"
                                                     value={email}
-                                                    disabled
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-gray-400 cursor-not-allowed"
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-white focus:border-emerald-500 outline-none transition-colors"
                                                 />
                                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-                                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                    <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded">Contact Admin via Settings to Change</span>
-                                                </div>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
@@ -266,8 +263,8 @@ const AdminProfile = () => {
                                                 <input
                                                     type="tel"
                                                     value={phone}
-                                                    disabled
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-gray-400 cursor-not-allowed"
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pl-11 text-white focus:border-emerald-500 outline-none transition-colors"
                                                 />
                                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                                             </div>

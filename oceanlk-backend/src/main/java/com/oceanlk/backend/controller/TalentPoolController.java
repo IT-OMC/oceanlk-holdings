@@ -181,7 +181,8 @@ public class TalentPoolController {
     @PatchMapping("/application/{id}/status")
     public ResponseEntity<?> updateApplicationStatus(
             @PathVariable @NonNull String id,
-            @RequestParam String status) {
+            @RequestParam String status,
+            org.springframework.security.core.Authentication authentication) {
         var applicationOpt = applicationRepository.findById(id);
 
         if (applicationOpt.isEmpty()) {
@@ -195,15 +196,28 @@ public class TalentPoolController {
         applicationRepository.save(application);
 
         // Log Action
-        auditLogService.logAction("admin", "UPDATE", "TalentPoolApplication", id,
+        auditLogService.logAction(authentication.getName(), "UPDATE", "TalentPoolApplication", id,
                 "Updated application status for " + application.getFullName() + " to " + status);
+
+        // Notify Super Admins if it's a Super Admin action
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
+            notificationService.createNotification(
+                    "Talent Pool Action",
+                    authentication.getName() + " updated application status for " + application.getFullName() + " to "
+                            + status,
+                    "INFO",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/hr/applications",
+                    authentication.getName());
+        }
 
         return ResponseEntity.ok(application);
     }
 
     @DeleteMapping("/application/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> deleteApplication(@PathVariable @NonNull String id,
+            org.springframework.security.core.Authentication authentication) {
         try {
             var applicationOpt = applicationRepository.findById(id);
 
@@ -228,8 +242,17 @@ public class TalentPoolController {
             applicationRepository.deleteById(id);
 
             // Log Action
-            auditLogService.logAction("admin", "DELETE", "TalentPoolApplication", id,
+            auditLogService.logAction(authentication.getName(), "DELETE", "TalentPoolApplication", id,
                     "Deleted application from " + application.getFullName());
+
+            // Notify Super Admins
+            notificationService.createNotification(
+                    "Talent Pool Action",
+                    authentication.getName() + " deleted an application from " + application.getFullName(),
+                    "WARNING",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/hr/applications",
+                    authentication.getName());
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

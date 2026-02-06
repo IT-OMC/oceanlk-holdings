@@ -7,6 +7,7 @@ import Leadership from './pages/corporate/Leadership';
 import Companies from './pages/companies/Companies';
 import CompanySingle from './pages/companies/CompanySingle';
 import Culture from './pages/careers/Culture';
+import EventSingle from './pages/careers/EventSingle';
 import Onboard from './pages/careers/Onboard';
 import JobApplication from './pages/careers/JobApplication';
 import TalentPool from './pages/careers/TalentPool';
@@ -29,6 +30,7 @@ import MediaManagement from './pages/admin/MediaManagement';
 import NewsManagement from './pages/admin/NewsManagement';
 import BlogManagement from './pages/admin/BlogManagement';
 import GalleryManagement from './pages/admin/GalleryManagement';
+import DocumentsManagement from './pages/admin/DocumentsManagement';
 import ApplicationViewer from './pages/admin/ApplicationViewer';
 import JobManagement from './pages/admin/JobManagement';
 import ManageContactMessages from './pages/admin/ManageContactMessages';
@@ -78,6 +80,7 @@ function App() {
                     <Route path="news-media/news" element={<NewsManagement />} />
                     <Route path="news-media/blog" element={<BlogManagement />} />
                     <Route path="news-media/gallery" element={<GalleryManagement />} />
+                    <Route path="news-media/documents" element={<DocumentsManagement />} />
 
                     <Route path="contact-messages" element={<ManageContactMessages />} />
 
@@ -120,6 +123,7 @@ function App() {
 
                                     {/* Careers Routes */}
                                     <Route path="/careers/culture" element={<Culture />} />
+                                    <Route path="/careers/events/:id" element={<EventSingle />} />
                                     <Route path="/careers/opportunities" element={<Onboard />} />
                                     <Route path="/careers/opportunities/:id" element={<JobApplication />} />
                                     <Route path="/careers/talent-pool" element={<TalentPool />} />

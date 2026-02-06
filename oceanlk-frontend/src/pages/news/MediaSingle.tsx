@@ -73,9 +73,9 @@ const MediaSingle = () => {
     }
 
     // Determine type for correct rendering
-    const isVideo = media.type === 'VIDEO' || !!media.videoUrl;
-    const isGallery = media.type === 'GALLERY' || media.type === 'ALBUM';
     const isDocument = media.type === 'DOCUMENT';
+    const isVideo = !isDocument && (media.type === 'VIDEO' || !!media.videoUrl);
+    const isGallery = media.type === 'GALLERY' || media.type === 'ALBUM';
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
@@ -153,17 +153,28 @@ const MediaSingle = () => {
                     {/* Document View */}
                     {isDocument && (
                         <div className="bg-gray-50 border border-gray-200 rounded-3xl p-10 mb-12 text-center">
-                            <div className="mb-8">
-                                <img
-                                    src={getMediaUrl(media.imageUrl)}
-                                    alt={media.title}
-                                    className="h-64 mx-auto rounded-xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500"
-                                />
-                            </div>
+                            {/* Show cover image if available, otherwise show document icon */}
+                            {media.videoUrl ? (
+                                <div className="mb-8">
+                                    <img
+                                        src={getMediaUrl(media.videoUrl)}
+                                        alt={media.title}
+                                        className="max-w-2xl mx-auto rounded-xl shadow-lg"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="mb-8">
+                                    <div className="h-64 flex items-center justify-center">
+                                        <svg className="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            )}
                             <p className="text-gray-500 mb-6">{media.pageCount ? `${media.pageCount} pages` : 'Document'}</p>
-                            {media.videoUrl && (
+                            {media.imageUrl && (
                                 <a
-                                    href={getMediaUrl(media.videoUrl)}
+                                    href={getMediaUrl(media.imageUrl)}
                                     download
                                     className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                                 >

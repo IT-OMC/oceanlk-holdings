@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Linkedin, Mail, ArrowRight, X } from 'lucide-react';
@@ -171,7 +173,9 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
 };
 
 const Leadership = () => {
+    const navigate = useNavigate();
     const [leaders, setLeaders] = useState<CorporateLeader[]>([]);
+
     const [categories, setCategories] = useState<LeadershipCategory[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -303,11 +307,13 @@ const Leadership = () => {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate('/careers/opportunities')}
                             className="px-8 py-4 bg-gradient-to-r from-accent to-primary text-white font-semibold rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all duration-300 inline-flex items-center gap-2"
                         >
                             Explore Opportunities
                             <ArrowRight className="w-5 h-5" />
                         </motion.button>
+
                     </div>
                 </motion.div>
             </SectionWrapper>

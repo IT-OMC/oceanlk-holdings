@@ -14,7 +14,8 @@ import {
     Settings,
     CheckSquare,
     MessageSquare,
-    TrendingUp
+    TrendingUp,
+    FileText
 } from 'lucide-react';
 import { useState } from 'react';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -32,6 +33,8 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
     const [pendingCount, setPendingCount] = useState(0);
+    const [contactUnreadCount, setContactUnreadCount] = useState(0);
+    const [newApplicationsCount, setNewApplicationsCount] = useState(0);
 
     useEffect(() => {
         const fetchPendingCount = async () => {
@@ -57,10 +60,50 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
             }
         };
 
-        fetchPendingCount();
+        const fetchContactUnreadCount = async () => {
+            try {
+                const token = sessionStorage.getItem('adminToken');
+                const response = await fetch(API_ENDPOINTS.CONTACT_STATS, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
-        // Poll every 30 seconds to keep count updated
-        const interval = setInterval(fetchPendingCount, 30000);
+                if (response.ok) {
+                    const data = await response.json();
+                    setContactUnreadCount(data.unread || 0);
+                }
+            } catch (error) {
+                console.error('Error fetching contact unread count:', error);
+            }
+        };
+
+        const fetchApplicationsCount = async () => {
+            try {
+                const token = sessionStorage.getItem('adminToken');
+                const response = await fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Filter for 'NEW' status
+                    const count = data.filter((item: any) => item.status === 'NEW').length;
+                    setNewApplicationsCount(count);
+                }
+            } catch (error) {
+                console.error('Error fetching applications count:', error);
+            }
+        };
+
+        fetchPendingCount();
+        fetchContactUnreadCount();
+        fetchApplicationsCount();
+
+        // Poll every 30 seconds to keep counts updated
+        const interval = setInterval(() => {
+            fetchPendingCount();
+            fetchContactUnreadCount();
+            fetchApplicationsCount();
+        }, 30000);
         return () => clearInterval(interval);
     }, [isSuperAdmin]);
 
@@ -75,6 +118,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         { path: '/admin/news-media/news', icon: ImageIcon, label: 'News' },
         { path: '/admin/news-media/blog', icon: ImageIcon, label: 'Blog' },
         { path: '/admin/news-media/gallery', icon: ImageIcon, label: 'Gallery' },
+        { path: '/admin/news-media/documents', icon: FileText, label: 'Documents' },
     ];
 
     const hrMenuItems = [
@@ -221,7 +265,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                         size={20}
                         className={`${location.pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
                     />
-                    {pendingCount > 0 && (
+                    {!isSidebarOpen && pendingCount > 0 && (
                         <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
                             {pendingCount > 99 ? '99+' : pendingCount}
                         </span>
@@ -414,6 +458,9 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                         >
                             {hrMenuItems.map((item) => {
                                 const isActive = location.pathname === item.path;
+                                const isApplications = item.path === '/admin/hr/applications';
+                                const showBadge = isApplications && newApplicationsCount > 0;
+
                                 return (
                                     <Link
                                         key={item.path}
@@ -426,12 +473,24 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                                         {isActive && (
                                             <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-purple-400 rounded-full" />
                                         )}
-                                        <item.icon
-                                            size={16}
-                                            className={`${isActive ? 'text-purple-400' : 'text-gray-600 group-hover:text-purple-400'} transition-colors`}
-                                        />
-                                        <span className="font-medium truncate">
-                                            {item.label}
+                                        <div className="relative">
+                                            <item.icon
+                                                size={16}
+                                                className={`${isActive ? 'text-purple-400' : 'text-gray-600 group-hover:text-purple-400'} transition-colors`}
+                                            />
+                                            {!isSidebarOpen && showBadge && (
+                                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 text-white text-[8px] flex items-center justify-center rounded-full font-bold">
+                                                    {newApplicationsCount > 9 ? '9+' : newApplicationsCount}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <span className="font-medium truncate flex-1 flex justify-between items-center">
+                                            <span>{item.label}</span>
+                                            {isSidebarOpen && showBadge && (
+                                                <span className="bg-orange-500/20 text-orange-400 text-xs font-bold px-1.5 py-0.5 rounded-full ml-auto">
+                                                    {newApplicationsCount}
+                                                </span>
+                                            )}
                                         </span>
                                     </Link>
                                 );
@@ -452,19 +511,31 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 {location.pathname === '/admin/contact-messages' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
                 )}
-                <Mail
-                    size={20}
-                    className={`${location.pathname === '/admin/contact-messages' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
-                />
+                <div className="relative">
+                    <Mail
+                        size={20}
+                        className={`${location.pathname === '/admin/contact-messages' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
+                    />
+                    {!isSidebarOpen && contactUnreadCount > 0 && (
+                        <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
+                            {contactUnreadCount > 99 ? '99+' : contactUnreadCount}
+                        </span>
+                    )}
+                </div>
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (
                         <motion.span
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
-                            className="font-medium truncate"
+                            className="font-medium truncate flex-1 flex justify-between items-center"
                         >
-                            Contact Messages
+                            <span>Contact Messages</span>
+                            {contactUnreadCount > 0 && (
+                                <span className="bg-orange-500/20 text-orange-400 text-xs font-bold px-2 py-0.5 rounded-full ml-auto">
+                                    {contactUnreadCount}
+                                </span>
+                            )}
                         </motion.span>
                     )}
                 </AnimatePresence>

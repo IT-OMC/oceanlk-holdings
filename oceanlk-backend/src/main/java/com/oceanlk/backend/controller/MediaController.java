@@ -162,16 +162,26 @@ public class MediaController {
 
             // Security: Basic type validation
             String contentType = file.getContentType();
-            if (contentType == null || (!contentType.startsWith("image/") && !contentType.startsWith("video/"))) {
+            boolean isValidType = contentType != null && (contentType.startsWith("image/") ||
+                    contentType.startsWith("video/") ||
+                    contentType.equals("application/pdf") ||
+                    contentType.equals("application/msword") ||
+                    contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+
+            if (!isValidType) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("error", "Invalid file type. Only images and videos are allowed."));
+                        .body(Map.of("error",
+                                "Invalid file type. Only images, videos, and documents (PDF, DOC, DOCX) are allowed."));
             }
 
             String fileUrl = fileStorageService.saveFile(file, group);
 
             Map<String, String> response = new HashMap<>();
             response.put("url", fileUrl);
-            response.put("type", fileStorageService.isImage(file) ? "image" : "video");
+            String fileType = fileStorageService.isImage(file) ? "image"
+                    : fileStorageService.isVideo(file) ? "video"
+                            : "document";
+            response.put("type", fileType);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

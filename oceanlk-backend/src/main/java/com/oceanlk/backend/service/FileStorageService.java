@@ -25,6 +25,9 @@ public class FileStorageService {
             "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp");
     private static final List<String> ALLOWED_VIDEO_TYPES = Arrays.asList(
             "video/mp4", "video/webm", "video/quicktime");
+    private static final List<String> ALLOWED_DOCUMENT_TYPES = Arrays.asList(
+            "application/pdf", "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
     /**
      * Save uploaded file to MongoDB GridFS
@@ -95,11 +98,12 @@ public class FileStorageService {
 
         // Check if file type is allowed
         boolean isAllowed = ALLOWED_IMAGE_TYPES.contains(contentType)
-                || ALLOWED_VIDEO_TYPES.contains(contentType);
+                || ALLOWED_VIDEO_TYPES.contains(contentType)
+                || ALLOWED_DOCUMENT_TYPES.contains(contentType);
 
         if (!isAllowed) {
             throw new IOException(
-                    "File type not allowed. Allowed types: images (jpg, png, gif, webp) and videos (mp4, webm)");
+                    "File type not allowed. Allowed types: images (jpg, png, gif, webp), videos (mp4, webm), and documents (pdf, doc, docx)");
         }
 
         // Check file size (max 50MB)
@@ -123,5 +127,13 @@ public class FileStorageService {
     public boolean isVideo(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null && ALLOWED_VIDEO_TYPES.contains(contentType);
+    }
+
+    /**
+     * Check if file is a document
+     */
+    public boolean isDocument(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && ALLOWED_DOCUMENT_TYPES.contains(contentType);
     }
 }

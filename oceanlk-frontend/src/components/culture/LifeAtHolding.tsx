@@ -73,7 +73,7 @@ const LifeAtHolding = () => {
     const StatIcon = stat.icon;
 
     return (
-        <section className="pt-20 pb-8 px-4 md:px-6 w-full max-w-[95%] mx-auto">
+        <section id="life-at-och" className="pt-20 pb-8 px-4 md:px-6 w-full max-w-[95%] mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                 <div>
                     <h2 className="text-4xl font-bold text-gray-900 mb-2">{t('lifeAtOCH.title')}</h2>

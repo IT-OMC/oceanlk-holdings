@@ -91,7 +91,12 @@ const RefreshedCultureHero = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="flex flex-wrap gap-4"
                     >
-                        <button className="px-8 py-4 bg-white text-black hover:bg-slate-200 rounded-full font-semibold transition-all flex items-center gap-2 group">
+                        <button
+                            onClick={() => {
+                                const element = document.getElementById('life-at-och');
+                                element?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="px-8 py-4 bg-white text-black hover:bg-slate-200 rounded-full font-semibold transition-all flex items-center gap-2 group">
                             Start Your Journey
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </button>

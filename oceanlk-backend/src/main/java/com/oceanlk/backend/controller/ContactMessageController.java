@@ -115,7 +115,8 @@ public class ContactMessageController {
 
     @PutMapping("/messages/{id}/read")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> markAsRead(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> markAsRead(@PathVariable @NonNull String id,
+            org.springframework.security.core.Authentication authentication) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
         if (messageOpt.isPresent()) {
@@ -125,8 +126,19 @@ public class ContactMessageController {
             contactMessageRepository.save(message);
 
             // Log Action
-            auditLogService.logAction("admin", "UPDATE", "ContactMessage", id,
+            auditLogService.logAction(authentication.getName(), "UPDATE", "ContactMessage", id,
                     "Marked message from " + message.getName() + " as READ");
+
+            // Notify Super Admins if it's a Super Admin action
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
+                notificationService.createNotification(
+                        "Contact Message Action",
+                        authentication.getName() + " marked a message from " + message.getName() + " as READ",
+                        "INFO",
+                        "ROLE_SUPER_ADMIN",
+                        "/admin/contact-messages",
+                        authentication.getName());
+            }
 
             return ResponseEntity.ok(message);
         } else {
@@ -136,7 +148,8 @@ public class ContactMessageController {
 
     @PutMapping("/messages/{id}/unread")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> markAsUnread(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> markAsUnread(@PathVariable @NonNull String id,
+            org.springframework.security.core.Authentication authentication) {
         Optional<ContactMessage> messageOpt = contactMessageRepository.findById(id);
 
         if (messageOpt.isPresent()) {
@@ -146,8 +159,19 @@ public class ContactMessageController {
             contactMessageRepository.save(message);
 
             // Log Action
-            auditLogService.logAction("admin", "UPDATE", "ContactMessage", id,
+            auditLogService.logAction(authentication.getName(), "UPDATE", "ContactMessage", id,
                     "Marked message from " + message.getName() + " as UNREAD");
+
+            // Notify Super Admins if it's a Super Admin action
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
+                notificationService.createNotification(
+                        "Contact Message Action",
+                        authentication.getName() + " marked a message from " + message.getName() + " as UNREAD",
+                        "INFO",
+                        "ROLE_SUPER_ADMIN",
+                        "/admin/contact-messages",
+                        authentication.getName());
+            }
 
             return ResponseEntity.ok(message);
         } else {
@@ -157,12 +181,25 @@ public class ContactMessageController {
 
     @DeleteMapping("/messages/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> deleteMessage(@PathVariable @NonNull String id) {
+    public ResponseEntity<?> deleteMessage(@PathVariable @NonNull String id,
+            org.springframework.security.core.Authentication authentication) {
         if (contactMessageRepository.existsById(id)) {
             contactMessageRepository.deleteById(id);
 
             // Log Action
-            auditLogService.logAction("admin", "DELETE", "ContactMessage", id, "Deleted contact message ID: " + id);
+            auditLogService.logAction(authentication.getName(), "DELETE", "ContactMessage", id,
+                    "Deleted contact message ID: " + id);
+
+            // Notify Super Admins if it's a Super Admin action
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
+                notificationService.createNotification(
+                        "Contact Message Action",
+                        authentication.getName() + " deleted a contact message (ID: " + id + ")",
+                        "WARNING",
+                        "ROLE_SUPER_ADMIN",
+                        "/admin/contact-messages",
+                        authentication.getName());
+            }
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

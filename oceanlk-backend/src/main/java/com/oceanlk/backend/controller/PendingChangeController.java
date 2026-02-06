@@ -87,16 +87,27 @@ public class PendingChangeController {
             PendingChange pendingChange = pendingChangeService.getPendingChangeById(id)
                     .orElseThrow(() -> new RuntimeException("Pending change not found"));
 
-            // Publish the change based on entity type and action
-            publishChange(pendingChange);
-
-            // Mark as approved
+            // Mark as approved FIRST (before publishing)
             String comments = request != null ? request.getReviewComments() : null;
             PendingChange approved = pendingChangeService.approvePendingChange(id, principal.getName(), comments);
 
             // Log the approval
             auditLogService.logAction(principal.getName(), "APPROVE", "PendingChange", id,
                     "Approved " + pendingChange.getAction() + " for " + pendingChange.getEntityType());
+
+            // Then publish the change based on entity type and action
+            try {
+                publishChange(pendingChange);
+            } catch (Exception publishError) {
+                // Log the publishing error but don't fail the approval
+                auditLogService.logAction(principal.getName(), "ERROR", "PendingChange", id,
+                        "Approved but failed to publish: " + publishError.getMessage());
+                return ResponseEntity.ok(Map.of(
+                        "message", "Change approved but publishing failed: " + publishError.getMessage(),
+                        "pendingChange", approved,
+                        "warning",
+                        "The approval was successful, but the change could not be published. Please apply manually."));
+            }
 
             return ResponseEntity.ok(Map.of(
                     "message", "Change approved and published successfully",
