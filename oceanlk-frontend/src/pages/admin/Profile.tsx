@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Phone, Shield, Lock, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, Shield, Lock, Save, Loader2, CheckCircle2 } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
 import { toast } from 'react-hot-toast';
 
@@ -126,35 +126,6 @@ const AdminProfile = () => {
         }
     };
 
-    // Exposed for future use in UI or other tabs
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleInitiateContactUpdate = (type: 'email' | 'phone', value: string) => {
-        initiateContactUpdate(type, value);
-    };
-
-    const initiateContactUpdate = async (type: 'email' | 'phone', value: string) => {
-        toast.promise(
-            (async () => {
-                const username = sessionStorage.getItem('adminUsername');
-                const token = sessionStorage.getItem('adminToken');
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/contact-update/init`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ username, type, value })
-                });
-                if (!res.ok) throw new Error("Failed to send verification");
-                return res.json();
-            })(),
-            {
-                loading: 'Sending verification code...',
-                success: 'Verification code sent!',
-                error: 'Failed to send code'
-            }
-        );
-    };
 
     if (loading) {
         return (

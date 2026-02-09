@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ChevronDown, X, Menu } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+
 import { oceanData } from '../data/mockData';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchModal from './SearchModal';
@@ -12,7 +12,7 @@ const Navbar = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const searchTriggerRef = useRef<HTMLButtonElement>(null);
-    const { t } = useTranslation();
+
     const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
     const isHomePage = location.pathname === '/';
