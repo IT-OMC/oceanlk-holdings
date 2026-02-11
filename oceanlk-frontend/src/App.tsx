@@ -17,8 +17,6 @@ import News from './pages/news/News';
 import NewsSingle from './pages/news/NewsSingle';
 import Media from './pages/news/Media';
 import MediaSingle from './pages/news/MediaSingle';
-import WhatsAppSettings from './pages/admin/WhatsAppSettings';
-import WhatsAppWidget from './components/WhatsAppWidget';
 import Contact from './pages/Contact';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -66,7 +64,7 @@ function App() {
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="profile" element={<AdminProfile />} />
                     <Route path="management" element={<AdminManagement />} />
-                    <Route path="whatsapp" element={<WhatsAppSettings />} />
+
                     <Route path="companies" element={<CompanyManagement />} />
 
                     {/* Page Management Routes */}
@@ -141,7 +139,6 @@ function App() {
                                 </Routes>
                             </MainLayout>
                             <Footer />
-                            <WhatsAppWidget />
                         </>
                     }
                 />

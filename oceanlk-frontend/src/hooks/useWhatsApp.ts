@@ -1,36 +1,23 @@
-import { useState, useEffect } from 'react';
-import { API_ENDPOINTS } from '../utils/api';
+import { useState } from 'react';
 
 export interface WhatsAppConfig {
     id?: string;
-    phoneNumber: string;
+    phoneNumber: string; // Kept for interface compatibility but unused
     agentName: string;
     active: boolean;
     welcomeMessage: string;
 }
 
 export const useWhatsApp = () => {
-    const [config, setConfig] = useState<WhatsAppConfig | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    // Static config since we are removing the admin panel settings
+    const [config] = useState<WhatsAppConfig>({
+        phoneNumber: '',
+        agentName: 'Ocean Assistant',
+        active: true,
+        welcomeMessage: 'Hello! How can I help you today?'
+    });
+    const [loading] = useState(false);
+    const [error] = useState<string | null>(null);
 
-    const fetchConfig = async () => {
-        try {
-            const response = await fetch(API_ENDPOINTS.WHATSAPP_PUBLIC);
-            if (!response.ok) throw new Error('Failed to fetch WhatsApp config');
-            const data = await response.json();
-            setConfig(data);
-        } catch (err: any) {
-            console.error('Failed to fetch WhatsApp config:', err);
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchConfig();
-    }, []);
-
-    return { config, loading, error, refetch: fetchConfig };
+    return { config, loading, error, refetch: () => { } };
 };

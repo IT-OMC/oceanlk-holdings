@@ -34,7 +34,7 @@ export default {
                 },
             },
             fontFamily: {
-                sans: ['"Saira Semi Condensed"', 'system-ui', 'sans-serif'],
+                sans: ['"Saira Semi Condensed"', 'sans-serif'],
             },
             animation: {
                 'buoyancy': 'buoyancy 6s ease-in-out infinite',

@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import ChatWidget from '../components/ChatWidget';
 import Partners from '../components/Partners';
 import GlobalMetrics from '../components/GlobalMetrics';
 // import GlobalConnections from '../components/GlobalConnections';
@@ -22,7 +23,7 @@ const Home = () => {
             </ErrorBoundary>
             <Gallery />
             <LatestUpdates />
-
+            <ChatWidget />
         </div>
     );
 };

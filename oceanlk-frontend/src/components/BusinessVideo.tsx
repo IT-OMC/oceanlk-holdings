@@ -11,16 +11,31 @@ const BusinessVideo = () => {
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
-    const [bgVideo, setBgVideo] = useState("https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1");
+    // Video URLs
+    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
+    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
+
+    // State for transition management
+    const [mountSecondVideo, setMountSecondVideo] = useState(false);
+    const [showSecondVideo, setShowSecondVideo] = useState(false);
     const [frontVideo, setFrontVideo] = useState("https://www.youtube.com/embed/FjXRWYYuq_0?si=R-ohWNzHB__2fYgr");
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setBgVideo("https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1");
+        // Preload second video 4 seconds before transition
+        const preloadTimer = setTimeout(() => {
+            setMountSecondVideo(true);
+        }, 26000);
+
+        // Perform transition
+        const switchTimer = setTimeout(() => {
+            setShowSecondVideo(true);
             setFrontVideo("https://www.youtube.com/embed/XsVN3OLJ0qA?si=8oQ6yXb7mkRTShsY");
         }, 30000);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(preloadTimer);
+            clearTimeout(switchTimer);
+        };
     }, []);
 
     const addRelZero = (url: string) => {
@@ -31,17 +46,41 @@ const BusinessVideo = () => {
 
     return (
         <section ref={containerRef} className="relative min-h-screen overflow-hidden flex items-center justify-center bg-black">
-            {/* Background Video */}
+            {/* Background Video Wrapper */}
             <motion.div
                 style={{ y }}
                 className="absolute inset-0 z-0 h-[120%]"
             >
-                <iframe
-                    className="w-full h-full pointer-events-none scale-[3] lg:scale-125 border-0"
-                    src={bgVideo}
-                    title="Background Video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
+                {/* First Background Video */}
+                <motion.div
+                    animate={{ opacity: showSecondVideo ? 0 : 1 }}
+                    transition={{ duration: 1 }}
+                    className="absolute inset-0 w-full h-full"
+                >
+                    <iframe
+                        className="w-full h-full pointer-events-none scale-[3] lg:scale-125 border-0"
+                        src={bgVideo1}
+                        title="Background Video 1"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    />
+                </motion.div>
+
+                {/* Second Background Video (Preloaded) */}
+                {mountSecondVideo && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: showSecondVideo ? 1 : 0 }}
+                        transition={{ duration: 1 }}
+                        className="absolute inset-0 w-full h-full"
+                    >
+                        <iframe
+                            className="w-full h-full pointer-events-none scale-[3] lg:scale-125 border-0"
+                            src={bgVideo2}
+                            title="Background Video 2"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        />
+                    </motion.div>
+                )}
             </motion.div>
 
             {/* Dark Overlay */}

@@ -13,7 +13,6 @@ import {
     User,
     Settings,
     CheckSquare,
-    MessageSquare,
     TrendingUp,
     FileText
 } from 'lucide-react';
@@ -218,36 +217,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 </Link>
             )}
 
-            {/* WhatsApp Settings (Super Admin only) */}
-            {isSuperAdmin && (
-                <Link
-                    to="/admin/whatsapp"
-                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/whatsapp'
-                        ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-white'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                        }`}
-                >
-                    {location.pathname === '/admin/whatsapp' && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
-                    )}
-                    <MessageSquare
-                        size={20}
-                        className={`${location.pathname === '/admin/whatsapp' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
-                    />
-                    <AnimatePresence mode="wait">
-                        {isSidebarOpen && (
-                            <motion.span
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                className="font-medium truncate"
-                            >
-                                WhatsApp Settings
-                            </motion.span>
-                        )}
-                    </AnimatePresence>
-                </Link>
-            )}
+
 
             {/* Pending Changes (for both Admin and SuperAdmin) */}
             <Link
