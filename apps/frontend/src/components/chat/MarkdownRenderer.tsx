@@ -16,18 +16,19 @@ const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
             remarkPlugins={[remarkGfm]}
             components={{
                 // Custom code block rendering with syntax highlighting
-                code({ node, inline, className, children, ...props }) {
+                code({ node, className, children, ...props }: any) {
                     const match = /language-(\w+)/.exec(className || '');
+                    const inline = props.inline;
                     return !inline && match ? (
                         <SyntaxHighlighter
-                            style={vscDarkPlus}
+                            style={vscDarkPlus as any}
                             language={match[1]}
                             PreTag="div"
                             customStyle={{
                                 margin: '0.5rem 0',
                                 borderRadius: '0.5rem',
                                 fontSize: '0.875rem',
-                            }}
+                            } as any}
                             {...props}
                         >
                             {String(children).replace(/\n$/, '')}
