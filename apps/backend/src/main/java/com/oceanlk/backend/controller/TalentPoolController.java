@@ -86,13 +86,8 @@ public class TalentPoolController {
             TalentPoolApplication savedApplication = applicationRepository.save(application);
 
             // Send emails asynchronously (in a real app, use @Async)
-            try {
-                emailService.sendApplicantConfirmation(savedApplication);
-                emailService.sendHRNotification(savedApplication);
-            } catch (MessagingException e) {
-                // Log error but don't fail the request
-                log.error("Failed to send email: {}", e.getMessage());
-            }
+            emailService.sendApplicantConfirmation(savedApplication);
+            emailService.sendHRNotification(savedApplication);
 
             // Create Notification for Admin
             notificationService.createNotification(

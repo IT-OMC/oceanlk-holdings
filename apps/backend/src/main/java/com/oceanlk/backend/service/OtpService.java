@@ -52,12 +52,8 @@ public class OtpService {
     public void sendOtpToTarget(AdminUser user, String method, String target) {
         String otp = generateTempOtp(user);
         if ("email".equalsIgnoreCase(method)) {
-            try {
-                // We assume target is the new email address
-                emailService.sendOtpEmail(target, otp, user.getUsername());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to send OTP to new email", e);
-            }
+            // We assume target is the new email address
+            emailService.sendOtpEmail(target, otp, user.getUsername());
         } else if ("phone".equalsIgnoreCase(method)) {
             // TODO: Integrate SMS service for production
             log.warn("SMS integration not implemented. OTP would be sent to: {}", target);

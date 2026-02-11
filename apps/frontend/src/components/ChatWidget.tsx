@@ -320,6 +320,7 @@ const ChatWidget = () => {
                                     className="flex-1 bg-gray-100 dark:bg-gray-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-gray-700 transition-all outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50"
                                 />
                                 <button
+                                    aria-label="Send message"
                                     onClick={() => handleSendMessage()}
                                     disabled={!inputValue.trim() || isTyping}
                                     className={`p-3 rounded-xl transition-all shadow-md ${!inputValue.trim() || isTyping
@@ -342,6 +343,7 @@ const ChatWidget = () => {
 
             {/* Main Toggle Button */}
             <motion.button
+                aria-label="Toggle chat"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}

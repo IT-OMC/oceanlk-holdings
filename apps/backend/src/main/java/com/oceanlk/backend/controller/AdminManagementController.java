@@ -86,11 +86,7 @@ public class AdminManagementController {
         AdminUser created = adminUserService.createAdmin(admin);
 
         // Send welcome email
-        try {
-            emailService.sendAdminWelcomeEmail(created, plainPassword);
-        } catch (MessagingException e) {
-            log.error("Failed to send welcome email to new admin: {}", e.getMessage());
-        }
+        emailService.sendAdminWelcomeEmail(created, plainPassword);
 
         auditLogService.logAction("SUPER_ADMIN", "CREATE_ADMIN", "AdminUser", created.getId(),
                 "Created new admin: " + created.getUsername());

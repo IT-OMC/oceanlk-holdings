@@ -20,3 +20,6 @@ api-test-report.json
 # Local environment files
 .env.local
 .env.production
+
+# Build artifacts
+test-reports/

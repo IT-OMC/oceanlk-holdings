@@ -47,3 +47,7 @@ coverage
 
 .vercel
 .env*.local
+
+# Playwright reports
+playwright-report/
+test-results/

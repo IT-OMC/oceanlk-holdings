@@ -28,49 +28,57 @@ public class EmailService {
     @Value("${app.email.enabled:false}")
     private boolean emailEnabled;
 
-    public void sendApplicantConfirmation(TalentPoolApplication application) throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println(
-                    "Email sending is disabled. Skipping applicant confirmation for: " + application.getEmail());
-            return;
+    public void sendApplicantConfirmation(TalentPoolApplication application) {
+        try {
+            if (!emailEnabled) {
+                System.out.println(
+                        "Email sending is disabled. Skipping applicant confirmation for: " + application.getEmail());
+                return;
+            }
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            String toEmail = application.getEmail();
+            if (toEmail == null || fromEmail == null)
+                return;
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("[TEST] Thank You for Joining Our Talent Pool - Ocean Ceylon Holdings");
+
+            String htmlContent = buildApplicantEmailTemplate(application);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send applicant confirmation email to {}", application.getEmail(), e);
         }
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        String toEmail = application.getEmail();
-        if (toEmail == null || fromEmail == null)
-            return;
-
-        helper.setFrom(fromEmail);
-        helper.setTo(toEmail);
-        helper.setSubject("[TEST] Thank You for Joining Our Talent Pool - Ocean Ceylon Holdings");
-
-        String htmlContent = buildApplicantEmailTemplate(application);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(message);
     }
 
-    public void sendHRNotification(TalentPoolApplication application) throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println("Email sending is disabled. Skipping HR notification for application: "
-                    + application.getFullName());
-            return;
+    public void sendHRNotification(TalentPoolApplication application) {
+        try {
+            if (!emailEnabled) {
+                System.out.println("Email sending is disabled. Skipping HR notification for application: "
+                        + application.getFullName());
+                return;
+            }
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            if (fromEmail == null || hrEmail == null)
+                return;
+
+            helper.setFrom(fromEmail);
+            helper.setTo(hrEmail);
+            helper.setSubject("[TEST] New Talent Pool Application - " + application.getFullName());
+
+            String htmlContent = buildHREmailTemplate(application);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send HR notification for application: {}", application.getFullName(), e);
         }
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        if (fromEmail == null || hrEmail == null)
-            return;
-
-        helper.setFrom(fromEmail);
-        helper.setTo(hrEmail);
-        helper.setSubject("[TEST] New Talent Pool Application - " + application.getFullName());
-
-        String htmlContent = buildHREmailTemplate(application);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(message);
     }
 
     private String buildApplicantEmailTemplate(TalentPoolApplication application) {
@@ -425,48 +433,57 @@ public class EmailService {
                         application.getEmail());
     }
 
-    public void sendContactConfirmation(ContactMessage message) throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println("Email sending is disabled. Skipping contact confirmation for: " + message.getEmail());
-            return;
+    public void sendContactConfirmation(ContactMessage message) {
+        try {
+            if (!emailEnabled) {
+                System.out
+                        .println("Email sending is disabled. Skipping contact confirmation for: " + message.getEmail());
+                return;
+            }
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            String toEmail = message.getEmail();
+            if (toEmail == null || fromEmail == null)
+                return;
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("[TEST] Thank You for Contacting Ocean Ceylon Holdings");
+
+            String htmlContent = buildContactConfirmationTemplate(message);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("Failed to send contact confirmation email to {}", message.getEmail(), e);
         }
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-        String toEmail = message.getEmail();
-        if (toEmail == null || fromEmail == null)
-            return;
-
-        helper.setFrom(fromEmail);
-        helper.setTo(toEmail);
-        helper.setSubject("[TEST] Thank You for Contacting Ocean Ceylon Holdings");
-
-        String htmlContent = buildContactConfirmationTemplate(message);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(mimeMessage);
     }
 
-    public void sendContactNotificationToHR(ContactMessage message) throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println("Email sending is disabled. Skipping HR notification for contact message from: "
-                    + message.getName());
-            return;
+    public void sendContactNotificationToHR(ContactMessage message) {
+        try {
+            if (!emailEnabled) {
+                System.out.println("Email sending is disabled. Skipping HR notification for contact message from: "
+                        + message.getName());
+                return;
+            }
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            if (fromEmail == null || hrEmail == null)
+                return;
+
+            helper.setFrom(fromEmail);
+            helper.setTo(hrEmail);
+            helper.setSubject("[TEST] New Contact Form Submission - " + message.getSubject());
+
+            String htmlContent = buildContactHRNotificationTemplate(message);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("Failed to send contact notification to HR for: {}", message.getName(), e);
         }
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-        if (fromEmail == null || hrEmail == null)
-            return;
-
-        helper.setFrom(fromEmail);
-        helper.setTo(hrEmail);
-        helper.setSubject("[TEST] New Contact Form Submission - " + message.getSubject());
-
-        String htmlContent = buildContactHRNotificationTemplate(message);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(mimeMessage);
     }
 
     private String buildContactConfirmationTemplate(ContactMessage message) {
@@ -770,24 +787,27 @@ public class EmailService {
                         message.getEmail());
     }
 
-    public void sendAdminNotification(String email, String subject, String message, String link)
-            throws MessagingException {
-        if (!emailEnabled) {
-            log.info("Email sending disabled. Admin notification for {}: {}", email, message);
-            return;
+    public void sendAdminNotification(String email, String subject, String message, String link) {
+        try {
+            if (!emailEnabled) {
+                log.info("Email sending disabled. Admin notification for {}: {}", email, message);
+                return;
+            }
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(email);
+            helper.setSubject("[OceanLK Alert] " + subject);
+
+            String htmlContent = buildAdminNotificationTemplate(subject, message, link);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("Failed to send admin notification to {}", email, e);
         }
-
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-        helper.setFrom(fromEmail);
-        helper.setTo(email);
-        helper.setSubject("[OceanLK Alert] " + subject);
-
-        String htmlContent = buildAdminNotificationTemplate(subject, message, link);
-        helper.setText(htmlContent, true);
-
-        mailSender.send(mimeMessage);
     }
 
     private String buildAdminNotificationTemplate(String subject, String message, String link) {
@@ -852,108 +872,116 @@ public class EmailService {
         return String.format("%.2f MB", bytes / (1024.0 * 1024.0));
     }
 
-    public void sendOtpEmail(String email, String otp, String username) throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println("Email sending is disabled. OTP for " + email + " is: " + otp);
-            return;
-        }
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+    public void sendOtpEmail(String email, String otp, String username) {
+        try {
+            if (!emailEnabled) {
+                System.out.println("Email sending is disabled. OTP for " + email + " is: " + otp);
+                return;
+            }
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        if (fromEmail == null || email == null)
-            return;
+            if (fromEmail == null || email == null)
+                return;
 
-        helper.setFrom(fromEmail);
-        helper.setTo(email);
-        helper.setSubject("[OceanLK] Your Verification Code");
+            helper.setFrom(fromEmail);
+            helper.setTo(email);
+            helper.setSubject("[OceanLK] Your Verification Code");
 
-        String htmlContent = """
-                <!DOCTYPE html>
-                <html>
-                <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                    <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                        <h2 style="color: #10b981; text-align: center;">Verification Code</h2>
-                        <p>Hello %s,</p>
-                        <p>Your verification code for OceanLK Admin Portal is:</p>
-                        <div style="background: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0056b3; border-radius: 5px; margin: 20px 0;">
-                            %s
+            String htmlContent = """
+                    <!DOCTYPE html>
+                    <html>
+                    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                            <h2 style="color: #10b981; text-align: center;">Verification Code</h2>
+                            <p>Hello %s,</p>
+                            <p>Your verification code for OceanLK Admin Portal is:</p>
+                            <div style="background: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0056b3; border-radius: 5px; margin: 20px 0;">
+                                %s
+                            </div>
+                            <p>This code will expire in 10 minutes. If you did not request this code, please ignore this email.</p>
+                            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                            <p style="font-size: 12px; color: #888; text-align: center;">
+                                This is an automated message from Ocean Ceylon Holdings.
+                            </p>
                         </div>
-                        <p>This code will expire in 10 minutes. If you did not request this code, please ignore this email.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                        <p style="font-size: 12px; color: #888; text-align: center;">
-                            This is an automated message from Ocean Ceylon Holdings.
-                        </p>
-                    </div>
-                </body>
-                </html>
-                """
-                .formatted(username, otp);
+                    </body>
+                    </html>
+                    """
+                    .formatted(username, otp);
 
-        helper.setText(htmlContent, true);
-        mailSender.send(message);
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send OTP email to {}", email, e);
+        }
     }
 
-    public void sendAdminWelcomeEmail(com.oceanlk.backend.model.AdminUser admin, String plainPassword)
-            throws MessagingException {
-        if (!emailEnabled) {
-            System.out.println("Email sending is disabled. Skipping welcome email for new admin: " + admin.getEmail());
-            return;
+    public void sendAdminWelcomeEmail(com.oceanlk.backend.model.AdminUser admin, String plainPassword) {
+        try {
+            if (!emailEnabled) {
+                System.out.println(
+                        "Email sending is disabled. Skipping welcome email for new admin: " + admin.getEmail());
+                return;
+            }
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(admin.getEmail());
+            helper.setSubject("[OceanLK] Welcome to the Admin Team");
+
+            String loginUrl = "http://localhost:5173/admin/login";
+
+            String htmlContent = """
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            .button {
+                                display: inline-block;
+                                padding: 12px 24px;
+                                background-color: #10b981;
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
+                        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <h2 style="color: #0056b3; margin-top: 0;">Welcome, %s!</h2>
+                            <p>A new administrator account has been created for you on the <strong>OceanLK Admin Portal</strong>.</p>
+
+                            <div style="background: #f3f4f6; padding: 25px; border-radius: 12px; margin: 25px 0;">
+                                <h3 style="margin-top: 0; font-size: 16px; color: #4b5563;">Your Login Credentials</h3>
+                                <p style="margin: 5px 0;"><strong>Username:</strong> %s</p>
+                                <p style="margin: 5px 0;"><strong>Password:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">%s</code></p>
+                                <p style="margin: 5px 0;"><strong>Role:</strong> %s</p>
+                            </div>
+
+                            <p>You can log in to the admin panel using the link below:</p>
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="%s" class="button" style="color: white !important;">Login to Admin Panel</a>
+                            </div>
+
+                            <p style="font-size: 14px; color: #6b7280;">Security Note: Please change your password immediately after your first login.</p>
+
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+                            <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+                                This is an automated message from Ocean Ceylon Holdings.
+                            </p>
+                        </div>
+                    </body>
+                    </html>
+                    """
+                    .formatted(admin.getUsername(), admin.getUsername(), plainPassword, admin.getRole(), loginUrl);
+
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send admin welcome email to {}", admin.getEmail(), e);
         }
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        helper.setFrom(fromEmail);
-        helper.setTo(admin.getEmail());
-        helper.setSubject("[OceanLK] Welcome to the Admin Team");
-
-        String loginUrl = "http://localhost:5173/admin/login";
-
-        String htmlContent = """
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        .button {
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #10b981;
-                            color: white;
-                            text-decoration: none;
-                            border-radius: 8px;
-                            font-weight: bold;
-                        }
-                    </style>
-                </head>
-                <body style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
-                    <div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <h2 style="color: #0056b3; margin-top: 0;">Welcome, %s!</h2>
-                        <p>A new administrator account has been created for you on the <strong>OceanLK Admin Portal</strong>.</p>
-
-                        <div style="background: #f3f4f6; padding: 25px; border-radius: 12px; margin: 25px 0;">
-                            <h3 style="margin-top: 0; font-size: 16px; color: #4b5563;">Your Login Credentials</h3>
-                            <p style="margin: 5px 0;"><strong>Username:</strong> %s</p>
-                            <p style="margin: 5px 0;"><strong>Password:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">%s</code></p>
-                            <p style="margin: 5px 0;"><strong>Role:</strong> %s</p>
-                        </div>
-
-                        <p>You can log in to the admin panel using the link below:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="%s" class="button" style="color: white !important;">Login to Admin Panel</a>
-                        </div>
-
-                        <p style="font-size: 14px; color: #6b7280;">Security Note: Please change your password immediately after your first login.</p>
-
-                        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-                        <p style="font-size: 12px; color: #9ca3af; text-align: center;">
-                            This is an automated message from Ocean Ceylon Holdings.
-                        </p>
-                    </div>
-                </body>
-                </html>
-                """
-                .formatted(admin.getUsername(), admin.getUsername(), plainPassword, admin.getRole(), loginUrl);
-
-        helper.setText(htmlContent, true);
-        mailSender.send(message);
     }
 }

@@ -45,13 +45,8 @@ public class ContactMessageController {
             ContactMessage savedMessage = contactMessageRepository.save(message);
 
             // Send email notifications
-            try {
-                emailService.sendContactConfirmation(savedMessage);
-                emailService.sendContactNotificationToHR(savedMessage);
-            } catch (Exception emailException) {
-                // Log email error but don't fail the request
-                log.error("Failed to send email notifications: {}", emailException.getMessage());
-            }
+            emailService.sendContactConfirmation(savedMessage);
+            emailService.sendContactNotificationToHR(savedMessage);
 
             // Create Notification for Admin
             notificationService.createNotification(
