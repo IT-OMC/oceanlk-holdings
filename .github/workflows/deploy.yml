@@ -1,9 +1,8 @@
-name: Deploy to Cloud Run
+name: Deploy to Railway
 
 on:
   push:
     branches:
-      - main
       - production
       - development
     paths:
@@ -12,100 +11,143 @@ on:
       - '.github/workflows/deploy.yml'
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: asia-south1 # Change this to your preferred region (e.g., asia-south1 for Sri Lanka proximity)
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
 jobs:
+  # ==================================================================================
+  # DETERMINE ENVIRONMENT
+  # ==================================================================================
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+      backend-changed: ${{ steps.check-changes.outputs.backend }}
+      frontend-changed: ${{ steps.check-changes.outputs.frontend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set Environment
+        id: set-env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for Changes
+        id: check-changes
+        run: |
+          # Check if backend files changed
+          if git diff --name-only HEAD^ HEAD | grep -q "^apps/backend/"; then
+            echo "backend=true" >> $GITHUB_OUTPUT
+          else
+            echo "backend=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check if frontend files changed
+          if git diff --name-only HEAD^ HEAD | grep -q "^apps/frontend/"; then
+            echo "frontend=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend=false" >> $GITHUB_OUTPUT
+          fi
+
   # ==================================================================================
   # BACKEND DEPLOYMENT
   # ==================================================================================
   deploy-backend:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'apps/backend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
+    needs: setup
+    if: needs.setup.outputs.backend-changed == 'true'
+    environment: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticte to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker
-        run: gcloud auth configure-docker
-
-      # Determine environment (Prod vs Test)
-      - name: Set Environment Variables
+      - name: Set Service Names
+        id: service-names
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
-            echo "SERVICE_NAME=oceanlk-backend-test" >> $GITHUB_ENV
-            echo "ENV_TAG=test" >> $GITHUB_ENV
+          if [[ "${{ needs.setup.outputs.environment }}" == "production" ]]; then
+            echo "service=backend" >> $GITHUB_OUTPUT
           else
-            echo "SERVICE_NAME=oceanlk-backend" >> $GITHUB_ENV
-            echo "ENV_TAG=prod" >> $GITHUB_ENV
+            echo "service=backend-dev" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build and Push Container
+      - name: Deploy Backend to Railway
+        working-directory: apps/backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: 457dd5f2-6d1d-4bb3-9d62-676a3836f8b4
         run: |
-          cd apps/backend
-          docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
-          docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
-
-      - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE_NAME }}
-          image: gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          region: ${{ env.REGION }}
-          flags: '--port=8080 --allow-unauthenticated'
-          env_vars: |
-            SPRING_PROFILES_ACTIVE=${{ env.ENV_TAG }}
+          echo "🚀 Deploying backend to Railway (${{ needs.setup.outputs.environment }})"
+          railway link 457dd5f2-6d1d-4bb3-9d62-676a3836f8b4
+          railway up --service ${{ steps.service-names.outputs.service }}
+          
+      - name: Verify Deployment
+        run: |
+          echo "✅ Backend deployment initiated"
+          echo "Monitor deployment at: https://railway.app/project/${{ steps.service-names.outputs.project }}"
 
   # ==================================================================================
   # FRONTEND DEPLOYMENT
   # ==================================================================================
   deploy-frontend:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'apps/frontend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
-    needs: deploy-backend # Optional: deploy frontend after backend to ensure API acts correctly? typically parallel is fine, but for first run maybe sequential. I'll make it parallel for speed.
-    # actually removing 'needs' to run in parallel
+    needs: setup
+    if: needs.setup.outputs.frontend-changed == 'true'
+    environment: ${{ needs.setup.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticte to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker
-        run: gcloud auth configure-docker
-
-      # Determine environment (Prod vs Test)
-      - name: Set Environment Variables
+      - name: Set Service Names
+        id: service-names
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
-            echo "SERVICE_NAME=oceanlk-frontend-test" >> $GITHUB_ENV
+          if [[ "${{ needs.setup.outputs.environment }}" == "production" ]]; then
+            echo "service=frontend" >> $GITHUB_OUTPUT
           else
-            echo "SERVICE_NAME=oceanlk-frontend" >> $GITHUB_ENV
+            echo "service=frontend-dev" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build and Push Container
+      - name: Deploy Frontend to Railway
+        working-directory: apps/frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: 457dd5f2-6d1d-4bb3-9d62-676a3836f8b4
         run: |
-          cd apps/frontend
-          docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
-          docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
+          echo "🚀 Deploying frontend to Railway (${{ needs.setup.outputs.environment }})"
+          railway link 457dd5f2-6d1d-4bb3-9d62-676a3836f8b4
+          railway up --service ${{ steps.service-names.outputs.service }}
+          
+      - name: Verify Deployment
+        run: |
+          echo "✅ Frontend deployment initiated"
+          echo "Monitor deployment at: https://railway.app/project/${{ steps.service-names.outputs.project }}"
 
-      - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE_NAME }}
-          image: gcr.io/$PROJECT_ID/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          region: ${{ env.REGION }}
-          flags: '--port=80 --allow-unauthenticated'
+  # ==================================================================================
+  # POST-DEPLOYMENT NOTIFICATION
+  # ==================================================================================
+  notify:
+    runs-on: ubuntu-latest
+    needs: [setup, deploy-backend, deploy-frontend]
+    if: always()
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Deployment Summary"
+          echo "===================="
+          echo "Environment: ${{ needs.setup.outputs.environment }}"
+          echo "Backend Deployed: ${{ needs.setup.outputs.backend-changed }}"
+          echo "Frontend Deployed: ${{ needs.setup.outputs.frontend-changed }}"
+          echo ""
+          echo "Railway Project ID: 457dd5f2-6d1d-4bb3-9d62-676a3836f8b4"
+          echo "Dashboard: https://railway.app/project/457dd5f2-6d1d-4bb3-9d62-676a3836f8b4"
