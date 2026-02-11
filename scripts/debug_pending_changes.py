@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv('oceanlk-backend/.env')
+load_dotenv('../apps/backend/.env')
 
 # Get MongoDB URI
 mongo_uri = os.getenv('MONGO_URI')

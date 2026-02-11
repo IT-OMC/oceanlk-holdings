@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./oceanlk-backend
+      context: ./apps/backend
       dockerfile: Dockerfile
     container_name: oceanlk-backend
     restart: unless-stopped
@@ -35,7 +35,7 @@ services:
 
   frontend:
     build:
-      context: ./oceanlk-frontend
+      context: ./apps/frontend
       dockerfile: Dockerfile
     container_name: oceanlk-frontend
     restart: unless-stopped

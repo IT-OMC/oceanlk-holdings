@@ -7,8 +7,8 @@ on:
       - production
       - development
     paths:
-      - 'oceanlk-backend/**'
-      - 'oceanlk-frontend/**'
+      - 'apps/backend/**'
+      - 'apps/frontend/**'
       - '.github/workflows/deploy.yml'
 
 env:
@@ -21,7 +21,7 @@ jobs:
   # ==================================================================================
   deploy-backend:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'oceanlk-backend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'apps/backend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
 
       - name: Build and Push Container
         run: |
-          cd oceanlk-backend
+          cd apps/backend
           docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
           docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
 
@@ -69,7 +69,7 @@ jobs:
   # ==================================================================================
   deploy-frontend:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'oceanlk-frontend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.modified, 'apps/frontend/') || contains(github.event.head_commit.modified, '.github/workflows/'))
     needs: deploy-backend # Optional: deploy frontend after backend to ensure API acts correctly? typically parallel is fine, but for first run maybe sequential. I'll make it parallel for speed.
     # actually removing 'needs' to run in parallel
     steps:
@@ -98,7 +98,7 @@ jobs:
 
       - name: Build and Push Container
         run: |
-          cd oceanlk-frontend
+          cd apps/frontend
           docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }} .
           docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:${{ github.sha }}
 

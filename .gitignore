@@ -10,3 +10,13 @@ target/
 .vercel
 .env*.local
 *.tar.gz
+
+# Deployment artifacts
+*.zip
+
+# Test reports
+api-test-report.json
+
+# Local environment files
+.env.local
+.env.production
