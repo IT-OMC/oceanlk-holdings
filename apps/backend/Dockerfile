@@ -1,18 +1,4 @@
-# Multi-stage build for Java Spring Boot backend
-
-# Stage 1: Build
-FROM maven:3.9-eclipse-temurin-21 AS build
-WORKDIR /app
-
-# Copy pom.xml and download dependencies (cached layer)
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy source code and build
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# Stage 2: Runtime
+# Optimized runtime-only Dockerfile for Spring Boot
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
@@ -20,8 +6,9 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 
-# Copy JAR from build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy the pre-built JAR directly from the current directory
+# Since GitHub Actions already handles the Maven build
+COPY *.jar app.jar
 
 # Expose port
 EXPOSE 8080
