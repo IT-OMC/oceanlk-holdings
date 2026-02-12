@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "Home",
+        "companies": "Bedrijven",
+        "corporate": "Bedrijf",
+        "news": "Nieuws",
+        "careers": "Carrières",
+        "contact": "Contact",
+        "allCompanies": "Alle Bedrijven",
+        "profile": "Profiel",
+        "leadership": "Leiderschap",
+        "blogs": "Blogs",
+        "articles": "Nieuws",
+        "media": "Media",
+        "culture": "Cultuur",
+        "onboard": "Aanmelden",
+        "talentPool": "Talentenpool"
+    },
+    "hero": {
+        "exploreButton": "Ontdek Divisie"
+    },
+    "home": {
+        "memberships": {
+            "label": "Wereldwijde Samenwerkingen",
+            "title": "ONZE",
+            "titleAccent": "LIDMAATSCHAPPEN",
+            "description": "We zijn trots lid van toonaangevende wereldwijde organisaties, toegewijd aan operationele excellentie, duurzaamheid en best practices in de sector.",
+            "activeBadge": "Actief",
+            "memberSince": "Lid Sinds"
+        },
+        "metrics": {
+            "title": "Wereldwijde Impact",
+            "subtitle": "Maritieme Logistiek Wereldwijd Aandrijven",
+            "activeRoutes": "Actieve Routes",
+            "weeklySailings": "Wekelijkse Vaarten",
+            "annualCapacity": "Jaarlijkse TEU Capaciteit",
+            "globalPorts": "Wereldwijde Havens",
+            "countriesServed": "Gediende Landen"
+        },
+        "gallery": {
+            "label": "GALERIJ",
+            "title": "Onze",
+            "titleAccent": "Reis",
+            "description": "Zie de wereld door onze lens: avonturen in foto's en video's",
+            "viewMore": "Bekijk Meer",
+            "filterAll": "Alle"
+        },
+        "updates": {
+            "title": "Laatste",
+            "titleAccent": "Updates",
+            "description": "Blijf verbonden met het laatste nieuws van onze dochterbedrijven",
+            "followText": "Volg ons op Instagram voor real-time updates van al onze bedrijven"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "Leven bij OCH",
+        "subtitle": "Een blik op ons dagelijks ritme en waarden.",
+        "islandwideOffices": "Kantoren op het Eiland",
+        "cards": {
+            "highlight": "HOOGTEPUNT",
+            "community": "GEMEENSCHAP",
+            "testimonial": "GETUIGENIS",
+            "coreValue": "KERNWAARDE",
+            "upcoming": "BINNENKORT",
+            "stats": "STATISTIEKEN",
+            "active": "Actief"
+        }
+    },
+    "contact": {
+        "badge": "Neem Contact Op",
+        "heroTitle1": "Laten We Beginnen",
+        "heroTitle2": "Een Gesprek",
+        "heroDescription": "We horen graag van u. Of u nu een vraag heeft over onze diensten, partnerschappen of iets anders, ons team staat klaar om al uw vragen te beantwoorden.",
+        "info": {
+            "headOffice": "Hoofdkantoor",
+            "phone": "Telefoon",
+            "email": "E-mail"
+        },
+        "form": {
+            "title": "Stuur Ons een Bericht",
+            "nameLabel": "Volledige Naam",
+            "namePlaceholder": "Jan de Vries",
+            "emailLabel": "E-mail",
+            "emailPlaceholder": "jan@voorbeeld.nl",
+            "phoneLabel": "Telefoon",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "Onderwerp",
+            "subjectPlaceholder": "Selecteer een onderwerp",
+            "subjectGeneral": "Algemene Vraag",
+            "subjectPartnership": "Partnerschapsmogelijkheid",
+            "subjectInvestment": "Investeringsvraag",
+            "subjectCareer": "Carrièremogelijkheid",
+            "subjectOther": "Anders",
+            "messageLabel": "Bericht",
+            "messagePlaceholder": "Vertel ons meer over uw vraag...",
+            "submitButton": "Bericht Verzenden",
+            "required": "*"
+        },
+        "map": {
+            "title": "Vind Ons"
+        }
+    },
+    "globalConnections": {
+        "title": "Sri Lanka Verbinden",
+        "subtitle": "Met de Wereld",
+        "description": "Strategische locatie op het kruispunt van wereldwijde handelsroutes. Ontdek ons scheepvaartnetwerk dat zich uitstrekt over continenten en oceanen.",
+        "dragHint": "Sleep",
+        "scrollHint": "Scroll",
+        "dragText": "om te draaien",
+        "scrollText": "om te zoomen",
+        "weeklySailings": "Wekelijkse Vaarten",
+        "tonnageMoved": "Verplaatste Tonnage",
+        "transitTime": "Transittijd",
+        "activeRoutes": "Actieve Routes",
+        "annualTonnage": "Jaarlijkse Tonnage",
+        "globalPorts": "Wereldwijde Havens"
+    },
+    "testimonials": {
+        "title": "Klant",
+        "titleAccent": "Getuigenissen",
+        "description": "Succesverhalen van onze gewaardeerde partners over de hele wereld"
+    },
+    "footer": {
+        "quickLinks": "Snelle Links",
+        "contact": "Contact",
+        "allRightsReserved": "Alle rechten voorbehouden",
+        "privacyPolicy": "Privacybeleid",
+        "termsOfService": "Servicevoorwaarden"
+    }
+}

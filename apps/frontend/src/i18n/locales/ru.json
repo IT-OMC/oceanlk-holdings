@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "Главная",
+        "companies": "Компании",
+        "corporate": "Корпоративный",
+        "news": "Новости",
+        "careers": "Карьера",
+        "contact": "Связаться с нами",
+        "allCompanies": "Все Компании",
+        "profile": "Профиль",
+        "leadership": "Руководство",
+        "blogs": "Блоги",
+        "articles": "Новости",
+        "media": "Медиа",
+        "culture": "Культура",
+        "onboard": "Присоединиться",
+        "talentPool": "Кадровый Резерв"
+    },
+    "hero": {
+        "exploreButton": "Исследовать Подразделение"
+    },
+    "home": {
+        "memberships": {
+            "label": "Глобальные Партнерства",
+            "title": "НАШИ",
+            "titleAccent": "ЧЛЕНСТВА",
+            "description": "Мы гордимся тем, что являемся членами ведущих мировых организаций, приверженных операционному превосходству, устойчивости и лучшим отраслевым практикам.",
+            "activeBadge": "Активный",
+            "memberSince": "Член С"
+        },
+        "metrics": {
+            "title": "Глобальное Влияние",
+            "subtitle": "Обеспечение Морской Логистики по Всему Миру",
+            "activeRoutes": "Активные Маршруты",
+            "weeklySailings": "Еженедельные Рейсы",
+            "annualCapacity": "Годовая Вместимость TEU",
+            "globalPorts": "Мировые Порты",
+            "countriesServed": "Обслуживаемые Страны"
+        },
+        "gallery": {
+            "label": "ГАЛЕРЕЯ",
+            "title": "Наше",
+            "titleAccent": "Путешествие",
+            "description": "Посмотрите на мир нашими глазами: приключения в фотографиях и видео",
+            "viewMore": "Посмотреть Больше",
+            "filterAll": "Все"
+        },
+        "updates": {
+            "title": "Последние",
+            "titleAccent": "Обновления",
+            "description": "Оставайтесь в курсе последних новостей наших дочерних компаний",
+            "followText": "Подписывайтесь на нас в Instagram, чтобы получать обновления в реальном времени от всех наших компаний"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "Жизнь в OCH",
+        "subtitle": "Взгляд на наш повседневный ритм и ценности.",
+        "islandwideOffices": "Офисы по Всему Острову",
+        "cards": {
+            "highlight": "ОСОБЕННОСТЬ",
+            "community": "СООБЩЕСТВО",
+            "testimonial": "ОТЗЫВ",
+            "coreValue": "ОСНОВНАЯ ЦЕННОСТЬ",
+            "upcoming": "ПРЕДСТОЯЩЕЕ",
+            "stats": "СТАТИСТИКА",
+            "active": "Активный"
+        }
+    },
+    "contact": {
+        "badge": "Связаться с Нами",
+        "heroTitle1": "Давайте Начнем",
+        "heroTitle2": "Разговор",
+        "heroDescription": "Мы хотели бы услышать от вас. Есть ли у вас вопрос о наших услугах, партнерствах или чем-то еще, наша команда готова ответить на все ваши вопросы.",
+        "info": {
+            "headOffice": "Головной Офис",
+            "phone": "Телефон",
+            "email": "Электронная Почта"
+        },
+        "form": {
+            "title": "Отправьте Нам Сообщение",
+            "nameLabel": "Полное Имя",
+            "namePlaceholder": "Иван Иванов",
+            "emailLabel": "Электронная Почта",
+            "emailPlaceholder": "ivan@primer.ru",
+            "phoneLabel": "Телефон",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "Тема",
+            "subjectPlaceholder": "Выберите тему",
+            "subjectGeneral": "Общий Запрос",
+            "subjectPartnership": "Возможность Партнерства",
+            "subjectInvestment": "Инвестиционный Запрос",
+            "subjectCareer": "Возможность Карьеры",
+            "subjectOther": "Другое",
+            "messageLabel": "Сообщение",
+            "messagePlaceholder": "Расскажите нам больше о вашем запросе...",
+            "submitButton": "Отправить Сообщение",
+            "required": "*"
+        },
+        "map": {
+            "title": "Найдите Нас"
+        }
+    },
+    "globalConnections": {
+        "title": "Связывая Шри-Ланку",
+        "subtitle": "С Миром",
+        "description": "Стратегическое расположение на перекрестке мировых торговых путей. Исследуйте нашу судоходную сеть, охватывающую континенты и океаны.",
+        "dragHint": "Перетащить",
+        "scrollHint": "Прокрутить",
+        "dragText": "чтобы повернуть",
+        "scrollText": "чтобы увеличить",
+        "weeklySailings": "Еженедельные Рейсы",
+        "tonnageMoved": "Перемещенный Тоннаж",
+        "transitTime": "Время Транзита",
+        "activeRoutes": "Активные Маршруты",
+        "annualTonnage": "Годовой Тоннаж",
+        "globalPorts": "Мировые Порты"
+    },
+    "testimonials": {
+        "title": "Отзывы",
+        "titleAccent": "Клиентов",
+        "description": "Истории успеха наших ценных партнеров по всему миру"
+    },
+    "footer": {
+        "quickLinks": "Быстрые Ссылки",
+        "contact": "Контакт",
+        "allRightsReserved": "Все права защищены",
+        "privacyPolicy": "Политика Конфиденциальности",
+        "termsOfService": "Условия Обслуживания"
+    }
+}

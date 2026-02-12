@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "الرئيسية",
+        "companies": "الشركات",
+        "corporate": "الشركة",
+        "news": "الأخبار",
+        "careers": "الوظائف",
+        "contact": "اتصل بنا",
+        "allCompanies": "جميع الشركات",
+        "profile": "الملف الشخصي",
+        "leadership": "القيادة",
+        "blogs": "المدونات",
+        "articles": "الأخبار",
+        "media": "الوسائط",
+        "culture": "الثقافة",
+        "onboard": "انضم",
+        "talentPool": "مجموعة المواهب"
+    },
+    "hero": {
+        "exploreButton": "استكشف القسم"
+    },
+    "home": {
+        "memberships": {
+            "label": "الانتماءات العالمية",
+            "title": "عضوياتنا",
+            "titleAccent": "الدولية",
+            "description": "نحن أعضاء فخورون في المنظمات العالمية الرائدة، ملتزمون بالتميز التشغيلي والاستدامة وأفضل ممارسات الصناعة.",
+            "activeBadge": "نشط",
+            "memberSince": "عضو منذ"
+        },
+        "metrics": {
+            "title": "التأثير العالمي",
+            "subtitle": "تشغيل الخدمات اللوجستية البحرية في جميع أنحاء العالم",
+            "activeRoutes": "الطرق النشطة",
+            "weeklySailings": "الرحلات الأسبوعية",
+            "annualCapacity": "السعة السنوية TEU",
+            "globalPorts": "الموانئ العالمية",
+            "countriesServed": "البلدان المخدومة"
+        },
+        "gallery": {
+            "label": "المعرض",
+            "title": "رحلتنا",
+            "titleAccent": "المذهلة",
+            "description": "شاهد العالم من خلال عدساتنا: مغامرات في الصور ومقاطع الفيديو",
+            "viewMore": "عرض المزيد",
+            "filterAll": "الكل"
+        },
+        "updates": {
+            "title": "آخر",
+            "titleAccent": "التحديثات",
+            "description": "ابق على اتصال بآخر الأخبار من شركاتنا الفرعية",
+            "followText": "تابعنا على Instagram للحصول على تحديثات فورية من جميع شركاتنا"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "الحياة في OCH",
+        "subtitle": "لمحة عن إيقاعنا اليومي وقيمنا.",
+        "islandwideOffices": "المكاتب في جميع أنحاء الجزيرة",
+        "cards": {
+            "highlight": "تسليط الضوء",
+            "community": "المجتمع",
+            "testimonial": "شهادة",
+            "coreValue": "القيمة الأساسية",
+            "upcoming": "قادم",
+            "stats": "إحصائيات",
+            "active": "نشط"
+        }
+    },
+    "contact": {
+        "badge": "تواصل معنا",
+        "heroTitle1": "لنبدأ",
+        "heroTitle2": "محادثة",
+        "heroDescription": "نود أن نسمع منك. سواء كان لديك سؤال حول خدماتنا أو الشراكات أو أي شيء آخر، فريقنا جاهز للإجابة على جميع أسئلتك.",
+        "info": {
+            "headOffice": "المكتب الرئيسي",
+            "phone": "الهاتف",
+            "email": "البريد الإلكتروني"
+        },
+        "form": {
+            "title": "أرسل لنا رسالة",
+            "nameLabel": "الاسم الكامل",
+            "namePlaceholder": "أحمد محمد",
+            "emailLabel": "البريد الإلكتروني",
+            "emailPlaceholder": "ahmed@example.com",
+            "phoneLabel": "الهاتف",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "الموضوع",
+            "subjectPlaceholder": "اختر موضوعاً",
+            "subjectGeneral": "استفسار عام",
+            "subjectPartnership": "فرصة شراكة",
+            "subjectInvestment": "استفسار استثماري",
+            "subjectCareer": "فرصة وظيفية",
+            "subjectOther": "أخرى",
+            "messageLabel": "الرسالة",
+            "messagePlaceholder": "أخبرنا المزيد عن استفسارك...",
+            "submitButton": "إرسال الرسالة",
+            "required": "*"
+        },
+        "map": {
+            "title": "اعثر علينا"
+        }
+    },
+    "globalConnections": {
+        "title": "ربط سريلانكا",
+        "subtitle": "بالعالم",
+        "description": "موقع استراتيجي عند مفترق طرق التجارة العالمية. استكشف شبكة الشحن لدينا الممتدة عبر القارات والمحيطات.",
+        "dragHint": "اسحب",
+        "scrollHint": "مرر",
+        "dragText": "للتدوير",
+        "scrollText": "للتكبير",
+        "weeklySailings": "الرحلات الأسبوعية",
+        "tonnageMoved": "الحمولة المنقولة",
+        "transitTime": "وقت العبور",
+        "activeRoutes": "الطرق النشطة",
+        "annualTonnage": "الحمولة السنوية",
+        "globalPorts": "الموانئ العالمية"
+    },
+    "testimonials": {
+        "title": "شهادات",
+        "titleAccent": "العملاء",
+        "description": "قصص نجاح من شركائنا القيمين حول العالم"
+    },
+    "footer": {
+        "quickLinks": "روابط سريعة",
+        "contact": "اتصل",
+        "allRightsReserved": "جميع الحقوق محفوظة",
+        "privacyPolicy": "سياسة الخصوصية",
+        "termsOfService": "شروط الخدمة"
+    }
+}
