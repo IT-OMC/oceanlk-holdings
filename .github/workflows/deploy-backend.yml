@@ -155,7 +155,7 @@ jobs:
             --name ${{ env.BACKEND_CONTAINER }} \
             --restart always \
             --network oceanlk-network \
-            -p ${{ env.BACKEND_PORT }}:8080 \
+            -p ${{ env.BACKEND_PORT }}:${{ env.BACKEND_PORT }} \
             --env-file .env \
             oceanlk-backend:${{ env.DEPLOY_ENV }}
             
