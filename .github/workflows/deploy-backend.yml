@@ -42,9 +42,9 @@ jobs:
     - name: Set Environment Variables for Build
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
-          echo "VITE_API_BASE_URL=https://api.ocean.lk" >> apps/frontend/.env
+          echo "VITE_API_BASE_URL=/api" >> apps/frontend/.env
         else
-          echo "VITE_API_BASE_URL=https://test-api.ocean.lk" >> apps/frontend/.env
+          echo "VITE_API_BASE_URL=/api" >> apps/frontend/.env
         fi
     - name: Install dependencies
       run: cd apps/frontend && npm install
