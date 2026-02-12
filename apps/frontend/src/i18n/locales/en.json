@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "Home",
+        "companies": "Companies",
+        "corporate": "Corporate",
+        "news": "News",
+        "careers": "Careers",
+        "contact": "Contact Us",
+        "allCompanies": "All Companies",
+        "profile": "Profile",
+        "leadership": "Leadership",
+        "blogs": "Blogs",
+        "articles": "News",
+        "media": "Media",
+        "culture": "Culture",
+        "onboard": "Onboard",
+        "talentPool": "Talent Pool"
+    },
+    "hero": {
+        "exploreButton": "Explore Division"
+    },
+    "home": {
+        "memberships": {
+            "label": "Global Affiliations",
+            "title": "OUR",
+            "titleAccent": "MEMBERSHIPS",
+            "description": "We are proud members of leading global organizations, committed to operational excellence, sustainability, and industry best practices.",
+            "activeBadge": "Active",
+            "memberSince": "Member Since"
+        },
+        "metrics": {
+            "title": "Global Impact",
+            "subtitle": "Powering Maritime Logistics Worldwide",
+            "activeRoutes": "Active Routes",
+            "weeklySailings": "Weekly Sailings",
+            "annualCapacity": "Annual TEU Capacity",
+            "globalPorts": "Global Ports",
+            "countriesServed": "Countries Served"
+        },
+        "gallery": {
+            "label": "GALLERY",
+            "title": "Our",
+            "titleAccent": "Journey",
+            "description": "See the world through our lens: adventures in photos and videos",
+            "viewMore": "View More",
+            "filterAll": "All"
+        },
+        "updates": {
+            "title": "Latest",
+            "titleAccent": "Updates",
+            "description": "Stay connected with the latest from our subsidiary companies",
+            "followText": "Follow us on Instagram for real-time updates from all our companies"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "Life at OCH",
+        "subtitle": "A glimpse into our daily rhythm and values.",
+        "islandwideOffices": "Islandwide Offices",
+        "cards": {
+            "highlight": "HIGHLIGHT",
+            "community": "COMMUNITY",
+            "testimonial": "TESTIMONIAL",
+            "coreValue": "CORE VALUE",
+            "upcoming": "UPCOMING",
+            "stats": "STATS",
+            "active": "Active"
+        }
+    },
+    "contact": {
+        "badge": "Get in Touch",
+        "heroTitle1": "Let's Start",
+        "heroTitle2": "A Conversation",
+        "heroDescription": "We'd love to hear from you. Whether you have a question about our services, partnerships, or anything else, our team is ready to answer all your questions.",
+        "info": {
+            "headOffice": "Head Office",
+            "phone": "Phone",
+            "email": "Email"
+        },
+        "form": {
+            "title": "Send us a Message",
+            "nameLabel": "Full Name",
+            "namePlaceholder": "John Doe",
+            "emailLabel": "Email",
+            "emailPlaceholder": "john@example.com",
+            "phoneLabel": "Phone",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "Subject",
+            "subjectPlaceholder": "Select a subject",
+            "subjectGeneral": "General Inquiry",
+            "subjectPartnership": "Partnership Opportunity",
+            "subjectInvestment": "Investment Inquiry",
+            "subjectCareer": "Career Opportunity",
+            "subjectOther": "Other",
+            "messageLabel": "Message",
+            "messagePlaceholder": "Tell us more about your inquiry...",
+            "submitButton": "Send Message",
+            "required": "*"
+        },
+        "map": {
+            "title": "Find Us"
+        }
+    },
+    "globalConnections": {
+        "title": "Connecting Sri Lanka",
+        "subtitle": "To The World",
+        "description": "Strategic location at the crossroads of global trade routes. Explore our shipping network spanning across continents and oceans.",
+        "dragHint": "Drag",
+        "scrollHint": "Scroll",
+        "dragText": "to rotate",
+        "scrollText": "to zoom",
+        "weeklySailings": "Weekly Sailings",
+        "tonnageMoved": "Tonnage Moved",
+        "transitTime": "Transit Time",
+        "activeRoutes": "Active Routes",
+        "annualTonnage": "Annual Tonnage",
+        "globalPorts": "Global Ports"
+    },
+    "testimonials": {
+        "title": "Client",
+        "titleAccent": "Testimonials",
+        "description": "Success stories from our valued partners around the globe"
+    },
+    "footer": {
+        "quickLinks": "Quick Links",
+        "contact": "Contact",
+        "allRightsReserved": "All rights reserved",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service"
+    }
+}

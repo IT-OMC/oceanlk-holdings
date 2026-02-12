@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "Startseite",
+        "companies": "Unternehmen",
+        "corporate": "Unternehmen",
+        "news": "Nachrichten",
+        "careers": "Karriere",
+        "contact": "Kontakt",
+        "allCompanies": "Alle Unternehmen",
+        "profile": "Profil",
+        "leadership": "Führung",
+        "blogs": "Blogs",
+        "articles": "Nachrichten",
+        "media": "Medien",
+        "culture": "Kultur",
+        "onboard": "Beitreten",
+        "talentPool": "Talentpool"
+    },
+    "hero": {
+        "exploreButton": "Abteilung Erkunden"
+    },
+    "home": {
+        "memberships": {
+            "label": "Globale Mitgliedschaften",
+            "title": "UNSERE",
+            "titleAccent": "MITGLIEDSCHAFTEN",
+            "description": "Wir sind stolze Mitglieder führender globaler Organisationen und setzen uns für operative Exzellenz, Nachhaltigkeit und bewährte Branchenpraktiken ein.",
+            "activeBadge": "Aktiv",
+            "memberSince": "Mitglied Seit"
+        },
+        "metrics": {
+            "title": "Globale Auswirkungen",
+            "subtitle": "Antrieb der Maritimen Logistik Weltweit",
+            "activeRoutes": "Aktive Routen",
+            "weeklySailings": "Wöchentliche Fahrten",
+            "annualCapacity": "Jährliche TEU-Kapazität",
+            "globalPorts": "Globale Häfen",
+            "countriesServed": "Bediente Länder"
+        },
+        "gallery": {
+            "label": "GALERIE",
+            "title": "Unsere",
+            "titleAccent": "Reise",
+            "description": "Sehen Sie die Welt durch unsere Linse: Abenteuer in Fotos und Videos",
+            "viewMore": "Mehr Anzeigen",
+            "filterAll": "Alle"
+        },
+        "updates": {
+            "title": "Neueste",
+            "titleAccent": "Updates",
+            "description": "Bleiben Sie mit den neuesten Nachrichten unserer Tochtergesellschaften verbunden",
+            "followText": "Folgen Sie uns auf Instagram für Echtzeit-Updates von allen unseren Unternehmen"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "Leben bei OCH",
+        "subtitle": "Ein Einblick in unseren täglichen Rhythmus und unsere Werte.",
+        "islandwideOffices": "Inselweite Büros",
+        "cards": {
+            "highlight": "HÖHEPUNKT",
+            "community": "GEMEINSCHAFT",
+            "testimonial": "ZEUGNIS",
+            "coreValue": "KERNWERT",
+            "upcoming": "BEVORSTEHEND",
+            "stats": "STATISTIKEN",
+            "active": "Aktiv"
+        }
+    },
+    "contact": {
+        "badge": "Kontaktieren Sie Uns",
+        "heroTitle1": "Lassen Sie Uns",
+        "heroTitle2": "Ein Gespräch Beginnen",
+        "heroDescription": "Wir würden gerne von Ihnen hören. Ob Sie eine Frage zu unseren Dienstleistungen, Partnerschaften oder etwas anderem haben, unser Team ist bereit, alle Ihre Fragen zu beantworten.",
+        "info": {
+            "headOffice": "Hauptsitz",
+            "phone": "Telefon",
+            "email": "E-Mail"
+        },
+        "form": {
+            "title": "Senden Sie Uns eine Nachricht",
+            "nameLabel": "Vollständiger Name",
+            "namePlaceholder": "Max Mustermann",
+            "emailLabel": "E-Mail",
+            "emailPlaceholder": "max@beispiel.de",
+            "phoneLabel": "Telefon",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "Betreff",
+            "subjectPlaceholder": "Wählen Sie einen Betreff",
+            "subjectGeneral": "Allgemeine Anfrage",
+            "subjectPartnership": "Partnerschaftsmöglichkeit",
+            "subjectInvestment": "Investitionsanfrage",
+            "subjectCareer": "Karrieremöglichkeit",
+            "subjectOther": "Sonstiges",
+            "messageLabel": "Nachricht",
+            "messagePlaceholder": "Erzählen Sie uns mehr über Ihre Anfrage...",
+            "submitButton": "Nachricht Senden",
+            "required": "*"
+        },
+        "map": {
+            "title": "Finden Sie Uns"
+        }
+    },
+    "globalConnections": {
+        "title": "Sri Lanka Verbinden",
+        "subtitle": "Mit der Welt",
+        "description": "Strategische Lage an der Kreuzung globaler Handelsrouten. Erkunden Sie unser Schifffahrtsnetzwerk, das sich über Kontinente und Ozeane erstreckt.",
+        "dragHint": "Ziehen",
+        "scrollHint": "Scrollen",
+        "dragText": "zum Drehen",
+        "scrollText": "zum Zoomen",
+        "weeklySailings": "Wöchentliche Fahrten",
+        "tonnageMoved": "Bewegte Tonnage",
+        "transitTime": "Transitzeit",
+        "activeRoutes": "Aktive Routen",
+        "annualTonnage": "Jährliche Tonnage",
+        "globalPorts": "Globale Häfen"
+    },
+    "testimonials": {
+        "title": "Kunden",
+        "titleAccent": "Referenzen",
+        "description": "Erfolgsgeschichten unserer geschätzten Partner auf der ganzen Welt"
+    },
+    "footer": {
+        "quickLinks": "Schnelle Links",
+        "contact": "Kontakt",
+        "allRightsReserved": "Alle Rechte vorbehalten",
+        "privacyPolicy": "Datenschutzrichtlinie",
+        "termsOfService": "Nutzungsbedingungen"
+    }
+}

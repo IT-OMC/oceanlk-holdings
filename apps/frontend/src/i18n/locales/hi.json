@@ -1,0 +1,130 @@
+{
+    "nav": {
+        "home": "होम",
+        "companies": "कंपनियां",
+        "corporate": "कॉर्पोरेट",
+        "news": "समाचार",
+        "careers": "करियर",
+        "contact": "संपर्क करें",
+        "allCompanies": "सभी कंपनियां",
+        "profile": "प्रोफ़ाइल",
+        "leadership": "नेतृत्व",
+        "blogs": "ब्लॉग",
+        "articles": "समाचार",
+        "media": "मीडिया",
+        "culture": "संस्कृति",
+        "onboard": "शामिल हों",
+        "talentPool": "प्रतिभा पूल"
+    },
+    "hero": {
+        "exploreButton": "विभाग एक्सप्लोर करें"
+    },
+    "home": {
+        "memberships": {
+            "label": "वैश्विक संबद्धताएं",
+            "title": "हमारी",
+            "titleAccent": "सदस्यताएं",
+            "description": "हम अग्रणी वैश्विक संगठनों के गौरवान्वित सदस्य हैं, परिचालन उत्कृष्टता, स्थिरता और उद्योग की सर्वोत्तम प्रथाओं के लिए प्रतिबद्ध हैं।",
+            "activeBadge": "सक्रिय",
+            "memberSince": "सदस्य बने"
+        },
+        "metrics": {
+            "title": "वैश्विक प्रभाव",
+            "subtitle": "विश्व भर में समुद्री लॉजिस्टिक्स को शक्ति प्रदान करना",
+            "activeRoutes": "सक्रिय मार्ग",
+            "weeklySailings": "साप्ताहिक नौकायन",
+            "annualCapacity": "वार्षिक TEU क्षमता",
+            "globalPorts": "वैश्विक बंदरगाह",
+            "countriesServed": "सेवा किए गए देश"
+        },
+        "gallery": {
+            "label": "गैलरी",
+            "title": "हमारी",
+            "titleAccent": "यात्रा",
+            "description": "हमारे लेंस के माध्यम से दुनिया देखें: तस्वीरों और वीडियो में रोमांच",
+            "viewMore": "और देखें",
+            "filterAll": "सभी"
+        },
+        "updates": {
+            "title": "नवीनतम",
+            "titleAccent": "अपडेट",
+            "description": "हमारी सहायक कंपनियों से नवीनतम जानकारी के साथ जुड़े रहें",
+            "followText": "हमारी सभी कंपनियों से वास्तविक समय अपडेट के लिए Instagram पर हमें फ़ॉलो करें"
+        }
+    },
+    "lifeAtOCH": {
+        "title": "OCH में जीवन",
+        "subtitle": "हमारी दैनिक लय और मूल्यों की एक झलक।",
+        "islandwideOffices": "द्वीप भर में कार्यालय",
+        "cards": {
+            "highlight": "मुख्य आकर्षण",
+            "community": "समुदाय",
+            "testimonial": "प्रशंसापत्र",
+            "coreValue": "मुख्य मूल्य",
+            "upcoming": "आगामी",
+            "stats": "आंकड़े",
+            "active": "सक्रिय"
+        }
+    },
+    "contact": {
+        "badge": "संपर्क में रहें",
+        "heroTitle1": "आइए शुरू करें",
+        "heroTitle2": "एक बातचीत",
+        "heroDescription": "हम आपसे सुनना पसंद करेंगे। चाहे आपके पास हमारी सेवाओं, साझेदारी या किसी अन्य चीज़ के बारे में कोई प्रश्न हो, हमारी टीम आपके सभी प्रश्नों का उत्तर देने के लिए तैयार है।",
+        "info": {
+            "headOffice": "मुख्य कार्यालय",
+            "phone": "फोन",
+            "email": "ईमेल"
+        },
+        "form": {
+            "title": "हमें एक संदेश भेजें",
+            "nameLabel": "पूरा नाम",
+            "namePlaceholder": "राज कुमार",
+            "emailLabel": "ईमेल",
+            "emailPlaceholder": "raj@udaharan.com",
+            "phoneLabel": "फोन",
+            "phonePlaceholder": "+94 71 234 5678",
+            "subjectLabel": "विषय",
+            "subjectPlaceholder": "एक विषय चुनें",
+            "subjectGeneral": "सामान्य पूछताछ",
+            "subjectPartnership": "साझेदारी का अवसर",
+            "subjectInvestment": "निवेश पूछताछ",
+            "subjectCareer": "करियर का अवसर",
+            "subjectOther": "अन्य",
+            "messageLabel": "संदेश",
+            "messagePlaceholder": "अपनी पूछताछ के बारे में हमें और बताएं...",
+            "submitButton": "संदेश भेजें",
+            "required": "*"
+        },
+        "map": {
+            "title": "हमें खोजें"
+        }
+    },
+    "globalConnections": {
+        "title": "श्रीलंका को जोड़ना",
+        "subtitle": "दुनिया से",
+        "description": "वैश्विक व्यापार मार्गों के चौराहे पर रणनीतिक स्थान। महाद्वीपों और महासागरों में फैले हमारे शिपिंग नेटवर्क का अन्वेषण करें।",
+        "dragHint": "खींचें",
+        "scrollHint": "स्क्रॉल करें",
+        "dragText": "घुमाने के लिए",
+        "scrollText": "ज़ूम करने के लिए",
+        "weeklySailings": "साप्ताहिक नौकायन",
+        "tonnageMoved": "स्थानांतरित टन भार",
+        "transitTime": "पारगमन समय",
+        "activeRoutes": "सक्रिय मार्ग",
+        "annualTonnage": "वार्षिक टन भार",
+        "globalPorts": "वैश्विक बंदरगाह"
+    },
+    "testimonials": {
+        "title": "ग्राहक",
+        "titleAccent": "प्रशंसापत्र",
+        "description": "दुनिया भर में हमारे मूल्यवान साझेदारों की सफलता की कहानियां"
+    },
+    "footer": {
+        "quickLinks": "त्वरित लिंक",
+        "contact": "संपर्क",
+        "allRightsReserved": "सर्वाधिकार सुरक्षित",
+        "privacyPolicy": "गोपनीयता नीति",
+        "termsOfService": "सेवा की शर्तें"
+    }
+}
