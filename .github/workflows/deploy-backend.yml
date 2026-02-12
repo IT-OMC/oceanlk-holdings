@@ -104,6 +104,7 @@ jobs:
           docker run -d \
             --name ${{ env.CONTAINER_NAME }} \
             --restart always \
+            --network oceanlk-network \
             -p ${{ env.APP_PORT }}:8080 \
             --env-file .env \
             oceanlk-backend:${{ env.DEPLOY_ENV }}
