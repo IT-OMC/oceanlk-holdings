@@ -1,4 +1,4 @@
-name: Deploy Backend to Oracle Cloud
+name: Deploy Fullstack to Oracle Cloud
 
 on:
   push:
@@ -6,72 +6,122 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/backend
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-
     - name: Build with Maven
-      run: mvn clean package -DskipTests
-
+      run: cd apps/backend && mvn clean package -DskipTests
     - name: Upload JAR
       uses: actions/upload-artifact@v4
       with:
         name: backend-jar
         path: apps/backend/target/*.jar
-
-    - name: Upload Dockerfile
+    - name: Upload Backend Dockerfile
       uses: actions/upload-artifact@v4
       with:
         name: backend-dockerfile
         path: apps/backend/Dockerfile
 
-  deploy:
-    needs: build
+  build-frontend:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Download JAR
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: apps/frontend/package-lock.json
+    - name: Set Environment Variables for Build
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+          echo "VITE_API_BASE_URL=https://api.ocean.lk" >> apps/frontend/.env
+        else
+          echo "VITE_API_BASE_URL=https://test-api.ocean.lk" >> apps/frontend/.env
+        fi
+    - name: Install dependencies
+      run: cd apps/frontend && npm install
+    - name: Build Frontend
+      run: cd apps/frontend && npm run build
+    - name: Upload Frontend Assets
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dist
+        path: apps/frontend/dist/
+    - name: Upload Frontend Dockerfile
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dockerfile
+        path: apps/frontend/Dockerfile
+    - name: Upload Frontend Nginx Config
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-nginx-config
+        path: apps/frontend/nginx.conf
+
+  deploy:
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Prepare Deploy Directory
+      run: mkdir -p deploy/backend deploy/frontend
+      
+    - name: Download Backend Artifacts
       uses: actions/download-artifact@v4
       with:
         name: backend-jar
-        path: deploy
-
-    - name: Download Dockerfile
+        path: deploy/backend
+    - name: Download Backend Dockerfile
       uses: actions/download-artifact@v4
       with:
         name: backend-dockerfile
-        path: deploy
+        path: deploy/backend
+
+    - name: Download Frontend Assets
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-dist
+        path: deploy/frontend/dist
+    - name: Download Frontend Dockerfile
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-dockerfile
+        path: deploy/frontend
+    - name: Download Frontend Nginx Config
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-nginx-config
+        path: deploy/frontend
 
     - name: Set Environment Variables
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
           echo "DEPLOY_ENV=prod" >> $GITHUB_ENV
-          echo "APP_PORT=8080" >> $GITHUB_ENV
-          echo "CONTAINER_NAME=oceanlk-backend-prod" >> $GITHUB_ENV
+          echo "BACKEND_PORT=8080" >> $GITHUB_ENV
+          echo "FRONTEND_PORT=3000" >> $GITHUB_ENV
+          echo "BACKEND_CONTAINER=oceanlk-backend-prod" >> $GITHUB_ENV
+          echo "FRONTEND_CONTAINER=oceanlk-frontend-prod" >> $GITHUB_ENV
         else
           echo "DEPLOY_ENV=dev" >> $GITHUB_ENV
-          echo "APP_PORT=8081" >> $GITHUB_ENV
-          echo "CONTAINER_NAME=oceanlk-backend-dev" >> $GITHUB_ENV
+          echo "BACKEND_PORT=8081" >> $GITHUB_ENV
+          echo "FRONTEND_PORT=3001" >> $GITHUB_ENV
+          echo "BACKEND_CONTAINER=oceanlk-backend-dev" >> $GITHUB_ENV
+          echo "FRONTEND_CONTAINER=oceanlk-frontend-dev" >> $GITHUB_ENV
         fi
 
-    - name: Create .env file
+    - name: Create Backend .env file
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
-          echo "${{ secrets.ENV_PROD }}" > deploy/.env
+          echo "${{ secrets.ENV_PROD }}" > deploy/backend/.env
         else
-          echo "${{ secrets.ENV_DEV }}" > deploy/.env
+          echo "${{ secrets.ENV_DEV }}" > deploy/backend/.env
         fi
 
     - name: Deploy to Oracle Cloud
@@ -81,7 +131,7 @@ jobs:
         username: ${{ secrets.OCI_USERNAME }}
         key: ${{ secrets.OCI_KEY }}
         source: "deploy/*"
-        target: "/home/${{ secrets.OCI_USERNAME }}/oceanlk-backend-${{ env.DEPLOY_ENV }}"
+        target: "/home/${{ secrets.OCI_USERNAME }}/oceanlk-fullstack-${{ env.DEPLOY_ENV }}"
         strip_components: 1
 
     - name: Execute Remote SSH Commands
@@ -91,23 +141,45 @@ jobs:
         username: ${{ secrets.OCI_USERNAME }}
         key: ${{ secrets.OCI_KEY }}
         script: |
-          cd /home/${{ secrets.OCI_USERNAME }}/oceanlk-backend-${{ env.DEPLOY_ENV }}
+          cd /home/${{ secrets.OCI_USERNAME }}/oceanlk-fullstack-${{ env.DEPLOY_ENV }}
           
-          # Build Docker Image
+          # Create network if not exists
+          docker network create oceanlk-network || true
+          
+          # Build Backend
+          cd backend
           docker build -t oceanlk-backend:${{ env.DEPLOY_ENV }} .
-          
-          # Stop and Remove Existing Container
-          docker stop ${{ env.CONTAINER_NAME }} || true
-          docker rm ${{ env.CONTAINER_NAME }} || true
-          
-          # Run New Container
+          docker stop ${{ env.BACKEND_CONTAINER }} || true
+          docker rm ${{ env.BACKEND_CONTAINER }} || true
           docker run -d \
-            --name ${{ env.CONTAINER_NAME }} \
+            --name ${{ env.BACKEND_CONTAINER }} \
             --restart always \
             --network oceanlk-network \
-            -p ${{ env.APP_PORT }}:8080 \
+            -p ${{ env.BACKEND_PORT }}:8080 \
             --env-file .env \
             oceanlk-backend:${{ env.DEPLOY_ENV }}
+            
+          # Build Frontend
+          cd ../frontend
+          # We need to simplify the Dockerfile for the server side (runtime only)
+          # Since GH action already built it, we just need Nginx to serve the dist folder.
+          cat > Dockerfile <<EOF
+          FROM nginx:alpine
+          COPY dist /usr/share/nginx/html
+          COPY nginx.conf /etc/nginx/conf.d/default.conf
+          EXPOSE 80
+          CMD ["nginx", "-g", "daemon off;"]
+          EOF
+          
+          docker build -t oceanlk-frontend:${{ env.DEPLOY_ENV }} .
+          docker stop ${{ env.FRONTEND_CONTAINER }} || true
+          docker rm ${{ env.FRONTEND_CONTAINER }} || true
+          docker run -d \
+            --name ${{ env.FRONTEND_CONTAINER }} \
+            --restart always \
+            --network oceanlk-network \
+            -p ${{ env.FRONTEND_PORT }}:80 \
+            oceanlk-frontend:${{ env.DEPLOY_ENV }}
             
           # Prune unused images
           docker image prune -f
