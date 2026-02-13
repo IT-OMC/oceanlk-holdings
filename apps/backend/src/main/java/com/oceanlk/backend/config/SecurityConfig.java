@@ -48,6 +48,11 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/talent-pool/submit").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/jobs").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/media/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/companies/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/partners/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/testimonials/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/leadership/**").permitAll()
                                                 .requestMatchers("/api/public/whatsapp").permitAll()
                                                 .requestMatchers("/uploads/**").permitAll() // Allow public access to
                                                                                             // uploaded files (legacy)

@@ -60,8 +60,9 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            e.printStackTrace(); // FORCE PRINT STACK TRACE
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("An error occurred during login"));
+                    .body(createErrorResponse("An error occurred during login: " + e.getMessage()));
         }
     }
 

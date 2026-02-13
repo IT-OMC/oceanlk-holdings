@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception ex, WebRequest request) {
         log.error("Unexpected error occurred: ", ex);
+        ex.printStackTrace(); // Print to stderr for debugging in docker logs
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "An unexpected error occurred");
