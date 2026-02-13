@@ -7,7 +7,6 @@ coverage/
 .vscode/
 target/
 **/target/
-.vercel
 .env*.local
 *.tar.gz
 

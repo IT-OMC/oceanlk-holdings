@@ -124,12 +124,6 @@ The optimized production files will be in the `dist/` directory.
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
-```bash
-npm install -g vercel
-vercel
-```
-
 ### Netlify
 ```bash
 npm run build
