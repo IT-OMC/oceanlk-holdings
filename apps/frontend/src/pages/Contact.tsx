@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import SectionWrapper from '../components/SectionWrapper';
 import { Phone, Mail, Send, Building2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { API_ENDPOINTS } from '../utils/api';
 
 const Contact = () => {
@@ -105,7 +105,6 @@ const Contact = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">
-            <Toaster position="top-right" />
             {/* Animated Gradient Mesh Background */}
             <div className="absolute inset-0 opacity-30">
                 <div

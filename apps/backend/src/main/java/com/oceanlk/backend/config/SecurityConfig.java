@@ -41,6 +41,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/chat/**").permitAll()
                                                 .requestMatchers("/api/search").permitAll()
                                                 .requestMatchers("/api/admin/login").permitAll()
+                                                .requestMatchers("/api/metrics").permitAll()
                                                 .requestMatchers("/api/admin/validate").permitAll()
                                                 .requestMatchers("/api/admin/otp/**").permitAll()
                                                 .requestMatchers("/api/admin/forgot-password").permitAll()

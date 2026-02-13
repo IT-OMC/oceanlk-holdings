@@ -12,7 +12,7 @@ import {
     Loader2,
     CheckCircle
 } from 'lucide-react';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import NotificationBell from '../components/admin/NotificationBell';
 import { API_ENDPOINTS } from '../utils/api';
@@ -27,9 +27,6 @@ const AdminLayout = () => {
 
     // Verification State
     const [isVerified, setIsVerified] = useState(() => {
-        // Super Admins are always verified, or rely on the flag
-        // However, for safety, we trust the flag. 
-        // Note: sessionStorage stores strings
         return sessionStorage.getItem('adminVerified') === 'true';
     });
 
@@ -138,12 +135,9 @@ const AdminLayout = () => {
         return 'Admin Panel';
     };
 
-
-    // If not verified, show blocking UI
     if (!isVerified) {
         return (
             <div className="min-h-screen bg-[#0a1628] flex items-center justify-center p-4 font-sans relative overflow-hidden">
-                {/* Background Effects */}
                 <div className="absolute inset-0 z-0">
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[100px]" />
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px]" />
@@ -234,20 +228,12 @@ const AdminLayout = () => {
                         </div>
                     </div>
                 </div>
-                <Toaster position="bottom-center" toastOptions={{
-                    style: {
-                        background: '#0f1e3a',
-                        color: '#fff',
-                        border: '1px solid rgba(255,255,255,0.1)'
-                    }
-                }} />
             </div>
         );
     }
 
     return (
         <div className="min-h-screen bg-[#0a1628] font-sans text-gray-100">
-            {/* Sidebar */}
             <motion.aside
                 initial={{ width: 280 }}
                 animate={{ width: isSidebarOpen ? 280 : 80 }}
@@ -298,14 +284,12 @@ const AdminLayout = () => {
                 </div>
             </motion.aside>
 
-            {/* Main Content Area */}
             <motion.main
                 animate={{ marginLeft: isSidebarOpen ? 280 : 80 }}
                 transition={{ duration: 0.3 }}
                 className="min-h-screen overflow-y-auto relative bg-[#0a1628]"
             >
                 <div className="max-w-7xl mx-auto p-8">
-                    {/* Top Header / Navbar */}
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h1 className="text-2xl font-bold text-white tracking-tight">{getPageTitle()}</h1>
@@ -322,17 +306,9 @@ const AdminLayout = () => {
                             </div>
                         </div>
                     </div>
-
                     <Outlet />
                 </div>
             </motion.main>
-            <Toaster position="top-right" toastOptions={{
-                style: {
-                    background: '#0f1e3a',
-                    color: '#fff',
-                    border: '1px solid rgba(255,255,255,0.1)'
-                }
-            }} />
         </div>
     );
 };

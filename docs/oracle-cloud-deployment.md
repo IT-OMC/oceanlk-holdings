@@ -21,8 +21,8 @@ Before doing anything in the terminal, we must open the Oracle datacenter walls.
 4.  Click **Add Ingress Rules**:
     *   **Source CIDR**: `0.0.0.0/0`
     *   **Protocol**: `TCP`
-    *   **Port Range**: `80, 443`
-    *   **Description**: `Allow Web Traffic`
+    *   **Port Range**: `80, 443, 8080`
+    *   **Description**: `Allow Web and API Traffic`
 5.  Click **Add Ingress Rules**.
 
 ---
@@ -36,6 +36,7 @@ Run these one by one to prepare the server:
     # Open OS ports
     sudo iptables -I INPUT 6 -p tcp --dport 80 -j ACCEPT
     sudo iptables -I INPUT 6 -p tcp --dport 443 -j ACCEPT
+    sudo iptables -I INPUT 6 -p tcp --dport 8080 -j ACCEPT
     sudo netfilter-persistent save
     ```
 

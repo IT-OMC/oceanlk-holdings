@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Target, Zap, Users, TrendingUp, Star, Quote, FileText, BrainCircuit, Bell, Rocket, CheckCircle, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { API_ENDPOINTS } from '../../utils/api';
 
 const TalentPool = () => {
@@ -20,7 +21,6 @@ const TalentPool = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [apiError, setApiError] = useState<string | null>(null);
 
     const validateStep1 = () => {
         const newErrors: Record<string, string> = {};
@@ -58,7 +58,6 @@ const TalentPool = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        setApiError(null);
 
         try {
             const data = new FormData();
@@ -86,9 +85,10 @@ const TalentPool = () => {
             const result = await response.json();
             console.log('Submission successful:', result);
             setIsSubmitted(true);
-        } catch (error) {
+            toast.success('Application submitted successfully!');
+        } catch (error: any) {
             console.error('Error submitting application:', error);
-            setApiError('Failed to submit application. Please check your connection and try again.');
+            toast.error(error.message || 'Failed to submit application. Please check your connection and try again.');
         } finally {
             setIsLoading(false);
         }
@@ -740,12 +740,6 @@ const TalentPool = () => {
                                                         )}
                                                     </motion.button>
                                                 </div>
-                                                {apiError && (
-                                                    <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-200">
-                                                        <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-                                                        <p className="text-sm">{apiError}</p>
-                                                    </div>
-                                                )}
                                             </motion.div>
                                         )}
                                     </AnimatePresence>

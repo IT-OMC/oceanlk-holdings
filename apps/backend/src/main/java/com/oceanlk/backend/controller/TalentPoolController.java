@@ -53,10 +53,10 @@ public class TalentPoolController {
 
             // Handle CV file upload if provided
             if (file != null && !file.isEmpty()) {
-                // Security: Validate file size (max 5MB)
-                if (file.getSize() > 5 * 1024 * 1024) {
+                // Security: Validate file size (max 50MB)
+                if (file.getSize() > 50 * 1024 * 1024) {
                     Map<String, String> error = new HashMap<>();
-                    error.put("error", "File too large. Maximum size is 5MB.");
+                    error.put("error", "File too large. Maximum size is 50MB.");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
                 }
 

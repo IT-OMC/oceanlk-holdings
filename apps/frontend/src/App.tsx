@@ -47,10 +47,19 @@ import AdminManagement from './pages/admin/AdminManagement';
 import PendingChanges from './pages/admin/PendingChanges';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
     return (
         <ErrorBoundary>
+            <Toaster position="top-right" toastOptions={{
+                duration: 4000,
+                style: {
+                    background: '#0f1e3a',
+                    color: '#fff',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                }
+            }} />
             <Router>
                 <Routes>
                     {/* Admin Routes */}

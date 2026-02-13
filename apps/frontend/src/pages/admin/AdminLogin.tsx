@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
 import { LoginResponse } from '../../types/api';
+import { toast } from 'react-hot-toast';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -13,7 +14,6 @@ const AdminLogin = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     // Forgot Password Flow
     const [showForgotModal, setShowForgotModal] = useState(false);
@@ -42,13 +42,11 @@ const AdminLogin = () => {
             ...formData,
             [e.target.name]: e.target.value
         });
-        if (error) setError(null);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        setError(null);
 
         try {
             const response = await fetch(API_ENDPOINTS.LOGIN, {
@@ -69,8 +67,9 @@ const AdminLogin = () => {
             sessionStorage.setItem('adminRole', data.role);
             sessionStorage.setItem('adminVerified', String(data.verified));
             navigate('/admin/dashboard');
+            toast.success('Welcome back!');
         } catch (err: any) {
-            setError(err.message || 'An error occurred during login');
+            toast.error(err.message || 'An error occurred during login');
         } finally {
             setIsLoading(false);
         }
@@ -128,7 +127,7 @@ const AdminLogin = () => {
                 body: JSON.stringify({ email: resetEmail, otp: resetOtp, newPassword })
             });
             if (res.ok) {
-                alert('Password reset successful! Please log in.');
+                toast.success('Password reset successful! Please log in.');
                 setShowForgotModal(false);
                 setResetStep(1);
                 setNewPassword('');
@@ -197,13 +196,6 @@ const AdminLogin = () => {
                                 </button>
                             </div>
                         </div>
-
-                        {error && (
-                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-200 text-sm">
-                                <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
-                                {error}
-                            </div>
-                        )}
 
                         <button
                             type="submit" disabled={isLoading}
