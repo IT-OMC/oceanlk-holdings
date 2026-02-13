@@ -129,7 +129,8 @@ public class SecurityConfig {
                         // Default for development (safe fallbacks)
                         configuration.setAllowedOrigins(
                                         Arrays.asList("http://localhost:5173", "http://localhost:4173",
-                                                        "https://oceanlk.com", "https://www.oceanlk.com"));
+                                                        "https://ocean.lk", "https://www.ocean.lk",
+                                                        "https://test.ocean.lk"));
                 }
 
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
