@@ -64,7 +64,7 @@ const AdminProfile = () => {
         const token = sessionStorage.getItem('adminToken');
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/admin/management/profile/update`, {
+            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE_UPDATE, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

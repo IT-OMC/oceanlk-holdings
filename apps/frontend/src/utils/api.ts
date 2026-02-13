@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
 export const API_ENDPOINTS = {
     // Admin & Auth
@@ -17,6 +17,8 @@ export const API_ENDPOINTS = {
     ADMIN_DELETE: (id: string) => `${BASE_URL}/api/admin/management/delete/${id}`,
     ADMIN_PROFILE: (username: string) => `${BASE_URL}/api/admin/management/profile/${username}`,
     ADMIN_CHANGE_PASSWORD: `${BASE_URL}/api/admin/management/change-password`,
+    ADMIN_PROFILE_UPDATE: `${BASE_URL}/api/admin/management/profile/update`,
+
 
     // Notifications
     NOTIFICATIONS: `${BASE_URL}/api/admin/notifications`,
@@ -90,6 +92,10 @@ export const API_ENDPOINTS = {
     // WhatsApp
     WHATSAPP_PUBLIC: `${BASE_URL}/api/public/whatsapp`,
     WHATSAPP_ADMIN: `${BASE_URL}/api/admin/whatsapp`,
+
+    // Chat
+    CHAT_MESSAGE: `${BASE_URL}/api/chat/message`,
+
 
     // Metrics
     METRICS: `${BASE_URL}/api/metrics`,

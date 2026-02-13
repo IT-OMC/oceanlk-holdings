@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, ChevronDown, Bot, Trash2, ArrowDown } from 'lucide-react';
 import { useWhatsApp } from '../hooks/useWhatsApp';
+import { API_ENDPOINTS } from '../utils/api';
 import ChatMessage from './chat/ChatMessage';
 import QuickActions from './chat/QuickActions';
 import WhatsAppBackground from './chat/WhatsAppBackground';
@@ -99,7 +100,7 @@ const ChatWidget = () => {
         setIsTyping(true);
 
         try {
-            const response = await fetch('http://localhost:8080/api/chat/message', {
+            const response = await fetch(API_ENDPOINTS.CHAT_MESSAGE, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
