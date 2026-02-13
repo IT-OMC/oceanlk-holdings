@@ -41,16 +41,17 @@ public class ChatService {
     @PostConstruct
     public void init() {
         if (apiKey == null || apiKey.trim().isEmpty()) {
-            log.error("CRITICAL: GEMINI_API_KEY environment variable is not set!");
-            log.error("Please set GEMINI_API_KEY before starting the application.");
-            log.error("Get your API key from: https://aistudio.google.com/");
-            throw new IllegalStateException(
-                    "Gemini API key is not configured. Set GEMINI_API_KEY environment variable.");
+            log.warn("****************************************************************");
+            log.warn("WARNING: GEMINI_API_KEY environment variable is not set!");
+            log.warn("Chat functionality will not work properly.");
+            log.warn("Please set GEMINI_API_KEY to enable AI chat features.");
+            log.warn("Get your API key from: https://aistudio.google.com/");
+            log.warn("****************************************************************");
+        } else {
+            log.info("Gemini API initialized successfully");
+            log.info("Using model endpoint: {}", apiUrl);
+            log.debug("API key configured: {}****", apiKey.substring(0, Math.min(8, apiKey.length())));
         }
-
-        log.info("Gemini API initialized successfully");
-        log.info("Using model endpoint: {}", apiUrl);
-        log.debug("API key configured: {}****", apiKey.substring(0, Math.min(8, apiKey.length())));
     }
 
     public String processMessage(String userMessage) {
