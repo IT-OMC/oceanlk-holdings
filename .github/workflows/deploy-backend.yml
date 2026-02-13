@@ -171,6 +171,9 @@ jobs:
           CMD ["nginx", "-g", "daemon off;"]
           EOF
           
+          # Update nginx.conf with correct backend container name before building
+          sed -i "s/proxy_pass http:\/\/backend:8080\/api\//proxy_pass http:\/\/${{ env.BACKEND_CONTAINER }}:${{ env.BACKEND_PORT }}\/api\//g" nginx.conf
+          
           docker build -t oceanlk-frontend:${{ env.DEPLOY_ENV }} .
           docker stop ${{ env.FRONTEND_CONTAINER }} || true
           docker rm ${{ env.FRONTEND_CONTAINER }} || true
