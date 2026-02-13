@@ -1,4 +1,4 @@
-# 🚀 Fresh Start: Oracle Cloud Backend Deployment (Ubuntu)
+# 🚀 Oracle Cloud Full-Stack Deployment Guide (Ubuntu)
 
 This guide is simplified to ensure we don't hit the "Timeout" issue again.
 
@@ -72,8 +72,12 @@ Go to **Settings > Secrets and variables > Actions > New repository secret**:
 | `OCI_HOST` | `80.225.206.73` |
 | `OCI_USERNAME` | `ubuntu` |
 | `OCI_KEY` | **Paste your private RSA key** |
-| `ENV_PROD` | Production .env data |
-| `ENV_DEV` | Development .env data |
+| `ENV_PROD` | Production .env data (Include `CORS_ALLOWED_ORIGINS`) |
+| `ENV_DEV` | Development .env data (Include `CORS_ALLOWED_ORIGINS`) |
+
+### Environment Tips
+**CORS Allowed Origins:** Ensure your `.env` contains:
+`CORS_ALLOWED_ORIGINS=https://ocean.lk,https://www.ocean.lk,https://test.ocean.lk`
 
 ---
 
@@ -90,8 +94,11 @@ To secure your site with HTTPS:
 
 2.  **Get Certificate:**
     ```bash
-    # Replace oceanlk.com with your actual domain
+    # For production
     sudo certbot --nginx -d oceanlk.com -d www.oceanlk.com
+    
+    # For development subdomain
+    sudo certbot --nginx -d test.ocean.lk
     ```
 
 3.  **Auto-Renewal:**
