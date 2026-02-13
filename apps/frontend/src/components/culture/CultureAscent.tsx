@@ -53,14 +53,17 @@ const AscentCard = ({
         [10, 0, 10]
     );
 
+    // Transform blur to filter string
+    const filter = useTransform(blur, (v) => `blur(${v}px)`);
+
     return (
         <motion.div
             style={{
                 y,
                 scale,
                 opacity,
-                filter: useTransform(blur, (v) => `blur(${v}px)`),
-                zIndex: index + 10 // Ensure cards are above background but below overlays if any
+                filter,
+                zIndex: index + 10
             }}
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
@@ -88,7 +91,7 @@ const AscentCard = ({
                         <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter shadow-black drop-shadow-lg">
                             {data.title}
                         </h2>
-                        <h3 className="text-xl md:text-2xl font-light text-primary-light uppercase tracking-widest">
+                        <h3 className="text-xl md:text-2xl font-light text-blue-400 uppercase tracking-widest">
                             {data.subtext}
                         </h3>
                         <p className="text-lg md:text-xl text-slate-300 leading-relaxed font-light max-w-md backdrop-blur-sm bg-black/20 p-4 rounded-xl border border-white/5 shadow-inner">
@@ -102,13 +105,57 @@ const AscentCard = ({
     );
 };
 
-// --- Custom Scroll Handle Component ---
+const StepMarker = ({
+    index,
+    numStages,
+    scrollYProgress,
+    scrollToPercentage
+}: {
+    index: number,
+    numStages: number,
+    scrollYProgress: MotionValue<number>,
+    scrollToPercentage: (percentage: number) => void
+}) => {
+    const stageStep = 1 / numStages;
+    const stageCenter = (index * stageStep) + (stageStep / 2);
+
+    const opacity = useTransform(
+        scrollYProgress,
+        [stageCenter - (stageStep / 2.5), stageCenter, stageCenter + (stageStep / 2.5)],
+        [0, 1, 0]
+    );
+
+    const scale = useTransform(
+        scrollYProgress,
+        [stageCenter - (stageStep / 2), stageCenter, stageCenter + (stageStep / 2)],
+        [0.5, 1.5, 0.5]
+    );
+
+    return (
+        <div
+            className="absolute left-1/2 -translate-x-1/2 w-3 h-3 cursor-pointer group z-20"
+            style={{ top: `${stageCenter * 100}%` }}
+            onClick={(e) => {
+                e.stopPropagation();
+                scrollToPercentage(stageCenter);
+            }}
+        >
+            <div className="w-full h-full rounded-full border border-white/20 bg-[#05050A] group-hover:border-blue-400 transition-colors duration-300 relative -translate-y-1/2 flex items-center justify-center">
+                {/* Active Indicator Dot */}
+                <motion.div
+                    style={{ opacity, scale }}
+                    className="absolute w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"
+                />
+            </div>
+        </div>
+    );
+};
+
 const ScrollHandle = ({ scrollYProgress, containerRef, numStages }: { scrollYProgress: MotionValue<number>, containerRef: React.RefObject<HTMLDivElement>, numStages: number }) => {
     const [isDragging, setIsDragging] = useState(false);
     const trackRef = useRef<HTMLDivElement>(null);
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 400, damping: 30 });
 
-    // Transform progress to % string
     const top = useTransform(smoothProgress, [0, 1], ['0%', '100%']);
 
     const scrollToPercentage = (percentage: number) => {
@@ -162,62 +209,31 @@ const ScrollHandle = ({ scrollYProgress, containerRef, numStages }: { scrollYPro
 
     return (
         <div className="absolute right-8 top-1/2 -translate-y-1/2 h-[60vh] w-16 flex items-center justify-center z-50 hidden md:flex">
-            {/* Hit Area for easier interaction */}
             <div
                 className="absolute inset-0 z-10 cursor-pointer"
                 onMouseDown={handleMouseDown}
             />
 
-            {/* Background Track - Thin minimalist line */}
             <div
                 ref={trackRef}
                 className="w-[2px] h-full bg-white/10 rounded-full relative"
             >
-                {/* Active Fill Track - Subtle gradient */}
                 <motion.div
                     style={{ height: top }}
                     className="w-full bg-gradient-to-b from-blue-400 to-teal-400 shadow-[0_0_10px_rgba(56,189,248,0.5)]"
                 />
 
-                {/* Step Markers */}
-                {Array.from({ length: numStages }).map((_, i) => {
-                    const stageStep = 1 / numStages;
-                    // Position at the start of the stage or center?
-                    // Let's position it at the center of the stage's duration for better UX
-                    const stageCenter = (i * stageStep) + (stageStep / 2);
-
-                    return (
-                        <div
-                            key={`stop-${i}`}
-                            className="absolute left-1/2 -translate-x-1/2 w-3 h-3 cursor-pointer group z-20"
-                            style={{ top: `${stageCenter * 100}%` }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                scrollToPercentage(stageCenter);
-                            }}
-                        >
-                            <div className="w-full h-full rounded-full border border-white/20 bg-[#05050A] group-hover:border-blue-400 transition-colors duration-300 relative -translate-y-1/2 flex items-center justify-center">
-                                {/* Active Indicator Dot */}
-                                <motion.div
-                                    style={{
-                                        opacity: useTransform(scrollYProgress,
-                                            [stageCenter - (stageStep / 2.5), stageCenter, stageCenter + (stageStep / 2.5)],
-                                            [0, 1, 0]
-                                        ),
-                                        scale: useTransform(scrollYProgress,
-                                            [stageCenter - (stageStep / 2), stageCenter, stageCenter + (stageStep / 2)],
-                                            [0.5, 1.5, 0.5]
-                                        )
-                                    }}
-                                    className="absolute w-2 h-2 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"
-                                />
-                            </div>
-                        </div>
-                    );
-                })}
+                {Array.from({ length: numStages }).map((_, i) => (
+                    <StepMarker
+                        key={`stop-${i}`}
+                        index={i}
+                        numStages={numStages}
+                        scrollYProgress={scrollYProgress}
+                        scrollToPercentage={scrollToPercentage}
+                    />
+                ))}
             </div>
 
-            {/* Draggable Thumb - Glowing Orb */}
             <motion.div
                 style={{ top }}
                 className="absolute w-4 h-4 -ml-[1px] pointer-events-none z-30"
@@ -229,7 +245,6 @@ const ScrollHandle = ({ scrollYProgress, containerRef, numStages }: { scrollYPro
         </div>
     );
 };
-
 
 const CultureAscent = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -268,83 +283,32 @@ const CultureAscent = () => {
     return (
         <section ref={containerRef} className="relative h-[300vh] bg-[#05050A]">
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-
-                {/* Dynamic Backgrounds */}
                 {stages.map((stage, index) => {
-                    // Create a transform for opacity based on the same index logic as cards
                     const step = 1 / stages.length;
                     const start = index * step;
                     const end = start + step;
 
-                    // We want the background to be visible during its card's prominence
-                    // Overlap slightly for smooth transition
-                    const bgOpacity = useTransform(
-                        scrollYProgress,
-                        [start - 0.1, start, end, end + 0.1], // Adjust points for crossfade
-                        [0, 1, 1, 0]
-                    );
-
                     return (
-                        <motion.div
+                        <BackgroundLayer
                             key={`bg-${index}`}
-                            style={{ opacity: bgOpacity }}
-                            className="absolute inset-0 w-full h-full"
-                        >
-                            <img src={stage.image} alt="" className="w-full h-full object-cover opacity-100 blur-sm scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-b from-[#05050A] via-[#05050A]/80 to-[#05050A]" />
-                        </motion.div>
+                            image={stage.image}
+                            start={start}
+                            end={end}
+                            scrollYProgress={scrollYProgress}
+                        />
                     );
                 })}
 
-                {/* Constant Atmosphere Overlay */}
                 <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-b from-[#05050A] via-transparent to-[#05050A]" />
                     <div className="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-slate-800 to-transparent opacity-20" />
                     <div className="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-slate-800 to-transparent opacity-20" />
                 </div>
 
-                {/* Interactive Title */}
-                <motion.div
-                    style={{
-                        opacity: useTransform(scrollYProgress, [0, 0.15], [1, 0]),
-                        scale: useTransform(scrollYProgress, [0, 0.15], [1, 1.5]),
-                        y: useTransform(scrollYProgress, [0, 0.15], [0, -100]),
-                        filter: useTransform(scrollYProgress, [0, 0.15], ["blur(0px)", "blur(10px)"]),
-                        pointerEvents: useTransform(scrollYProgress, (v) => v > 0.05 ? 'none' : 'auto')
-                    }}
-                    className="absolute inset-0 flex flex-col items-center justify-center z-40 p-4"
-                >
-                    <h1 className="text-6xl md:text-9xl font-bold text-white tracking-widest uppercase drop-shadow-2xl text-center">
-                        The Ascent
-                    </h1>
-                    <p className="text-xl md:text-3xl text-blue-300 mt-6 tracking-wide font-light max-w-4xl text-center drop-shadow-lg">
-                        A transformational journey of personal and professional growth.
-                    </p>
+                <TitleLayer scrollYProgress={scrollYProgress} />
 
-                    {/* Minimalist Scroll Indicator */}
-                    <div className="mt-12 flex flex-col items-center gap-3">
-                        <div className="w-[26px] h-[45px] rounded-full border-2 border-white/20 flex justify-center p-1.5 backdrop-blur-sm">
-                            <motion.div
-                                animate={{
-                                    y: [0, 15, 0],
-                                    opacity: [1, 0.2, 1]
-                                }}
-                                transition={{
-                                    duration: 1.5,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                }}
-                                className="w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"
-                            />
-                        </div>
-                        <span className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium">Scroll to Begin</span>
-                    </div>
-                </motion.div>
-
-                {/* Scroll Handle */}
                 <ScrollHandle scrollYProgress={scrollYProgress} containerRef={containerRef} numStages={stages.length} />
 
-                {/* Cards Container */}
                 <div className="relative w-full h-full flex items-center justify-center perspective-1000">
                     {stages.map((stage, index) => (
                         <AscentCard
@@ -357,7 +321,6 @@ const CultureAscent = () => {
                     ))}
                 </div>
 
-                {/* Final CTA Button triggers at the end */}
                 <motion.div
                     style={{
                         opacity: useTransform(scrollYProgress, [0.95, 1], [0, 1]),
@@ -366,13 +329,77 @@ const CultureAscent = () => {
                     }}
                     className="absolute top-1/2 left-0 right-0 -translate-y-1/2 z-50 flex justify-center"
                 >
-                    <button className="px-12 py-6 bg-gradient-to-r from-primary to-secondary text-white text-xl font-bold rounded-full shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] hover:scale-105 transition-all transform backdrop-blur-md border border-white/20">
+                    <button className="px-12 py-6 bg-gradient-to-r from-blue-600 to-teal-600 text-white text-xl font-bold rounded-full shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] hover:scale-105 transition-all transform backdrop-blur-md border border-white/20">
                         Start Your Journey
                     </button>
                 </motion.div>
-
             </div>
         </section>
+    );
+};
+
+const BackgroundLayer = ({ image, start, end, scrollYProgress }: { image: string, start: number, end: number, scrollYProgress: MotionValue<number> }) => {
+    const opacity = useTransform(
+        scrollYProgress,
+        [start - 0.1, start, end, end + 0.1],
+        [0, 1, 1, 0]
+    );
+
+    return (
+        <motion.div
+            style={{ opacity }}
+            className="absolute inset-0 w-full h-full"
+        >
+            <img src={image} alt="" className="w-full h-full object-cover blur-sm scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#05050A] via-[#05050A]/80 to-[#05050A]" />
+        </motion.div>
+    );
+};
+
+const TitleLayer = ({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) => {
+    const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+    const scale = useTransform(scrollYProgress, [0, 0.15], [1, 1.5]);
+    const y = useTransform(scrollYProgress, [0, 0.15], [0, -100]);
+    const blur = useTransform(scrollYProgress, [0, 0.15], [0, 10]);
+    const filter = useTransform(blur, (v) => `blur(${v}px)`);
+    const pointerEvents = useTransform(scrollYProgress, (v) => v > 0.05 ? 'none' : 'auto');
+
+    return (
+        <motion.div
+            style={{
+                opacity,
+                scale,
+                y,
+                filter,
+                pointerEvents
+            }}
+            className="absolute inset-0 flex flex-col items-center justify-center z-40 p-4"
+        >
+            <h1 className="text-6xl md:text-9xl font-bold text-white tracking-widest uppercase drop-shadow-2xl text-center">
+                The Ascent
+            </h1>
+            <p className="text-xl md:text-3xl text-blue-300 mt-6 tracking-wide font-light max-w-4xl text-center drop-shadow-lg">
+                A transformational journey of personal and professional growth.
+            </p>
+
+            <div className="mt-12 flex flex-col items-center gap-3">
+                <div className="w-[26px] h-[45px] rounded-full border-2 border-white/20 flex justify-center p-1.5 backdrop-blur-sm">
+                    <motion.div
+                        animate={{
+                            y: [0, 15, 0],
+                            opacity: [1, 0.2, 1]
+                        }}
+                        transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(56,189,248,0.8)]"
+                    />
+                </div>
+                <span className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium">Scroll to Begin</span>
+            </div>
+        </motion.div>
     );
 };
 

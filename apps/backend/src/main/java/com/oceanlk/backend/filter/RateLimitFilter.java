@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -11,7 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A simple memory-based rate limiter to protect sensitive endpoints
@@ -22,9 +22,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private final Map<String, RequestInfo> requestCounts = new ConcurrentHashMap<>();
 
-    // Limits: 5 requests per minute per IP for sensitive routes
-    private static final int MAX_REQUESTS = 10;
-    private static final long WINDOW_MS = TimeUnit.MINUTES.toMillis(1);
+    @Value("${app.rate-limit.max-requests:10}")
+    private int maxRequests;
+
+    @Value("${app.rate-limit.window-ms:60000}")
+    private long windowMs;
 
     @Override
     protected void doFilterInternal(
@@ -42,7 +44,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
             long currentTime = System.currentTimeMillis();
             RequestInfo info = requestCounts.compute(key, (k, v) -> {
-                if (v == null || (currentTime - v.startTime > WINDOW_MS)) {
+                if (v == null || (currentTime - v.startTime > windowMs)) {
                     return new RequestInfo(currentTime, 1);
                 } else {
                     v.count++;
@@ -50,7 +52,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 }
             });
 
-            if (info.count > MAX_REQUESTS) {
+            if (info.count > maxRequests) {
                 response.setStatus(429); // Too Many Requests
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\": \"Too many requests. Please try again later.\"}");

@@ -46,104 +46,107 @@ import AdminProfile from './pages/admin/Profile';
 import AdminManagement from './pages/admin/AdminManagement';
 import PendingChanges from './pages/admin/PendingChanges';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLogin />} />
-                <Route
-                    path="/admin/*"
-                    element={
-                        <ProtectedRoute>
-                            <AdminLayout />
-                        </ProtectedRoute>
-                    }
-                >
-                    <Route path="dashboard" element={<AdminDashboard />} />
-                    <Route path="profile" element={<AdminProfile />} />
-                    <Route path="management" element={<AdminManagement />} />
+        <ErrorBoundary>
+            <Router>
+                <Routes>
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={<AdminLogin />} />
+                    <Route
+                        path="/admin/*"
+                        element={
+                            <ProtectedRoute>
+                                <AdminLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route path="profile" element={<AdminProfile />} />
+                        <Route path="management" element={<AdminManagement />} />
 
-                    <Route path="companies" element={<CompanyManagement />} />
+                        <Route path="companies" element={<CompanyManagement />} />
 
-                    {/* Page Management Routes */}
-                    <Route path="pages/leadership" element={<LeadershipManagement />} />
-                    <Route path="pages/partners" element={<PartnerManagement />} />
-                    <Route path="pages/stats" element={<StatsManagement />} />
+                        {/* Page Management Routes */}
+                        <Route path="pages/leadership" element={<LeadershipManagement />} />
+                        <Route path="pages/partners" element={<PartnerManagement />} />
+                        <Route path="pages/stats" element={<StatsManagement />} />
 
-                    <Route path="media" element={<MediaManagement />} />
+                        <Route path="media" element={<MediaManagement />} />
 
-                    {/* News & Media Routes */}
-                    <Route path="news-media/news" element={<NewsManagement />} />
-                    <Route path="news-media/blog" element={<BlogManagement />} />
-                    <Route path="news-media/gallery" element={<GalleryManagement />} />
-                    <Route path="news-media/documents" element={<DocumentsManagement />} />
+                        {/* News & Media Routes */}
+                        <Route path="news-media/news" element={<NewsManagement />} />
+                        <Route path="news-media/blog" element={<BlogManagement />} />
+                        <Route path="news-media/gallery" element={<GalleryManagement />} />
+                        <Route path="news-media/documents" element={<DocumentsManagement />} />
 
-                    <Route path="contact-messages" element={<ManageContactMessages />} />
+                        <Route path="contact-messages" element={<ManageContactMessages />} />
 
-                    {/* Website Content Routes */}
-                    <Route path="content/pages" element={<PageContentManager />} />
-                    <Route path="content/leadership" element={<LeadershipManagement />} />
-                    <Route path="content/stats" element={<StatsManagement />} />
-                    <Route path="content/partners" element={<PartnerManagement />} />
+                        {/* Website Content Routes */}
+                        <Route path="content/pages" element={<PageContentManager />} />
+                        <Route path="content/leadership" element={<LeadershipManagement />} />
+                        <Route path="content/stats" element={<StatsManagement />} />
+                        <Route path="content/partners" element={<PartnerManagement />} />
 
-                    <Route path="audit-logs" element={<AuditLogViewer />} />
-                    <Route path="pending-changes" element={<PendingChanges />} />
+                        <Route path="audit-logs" element={<AuditLogViewer />} />
+                        <Route path="pending-changes" element={<PendingChanges />} />
 
-                    {/* HR Routes */}
-                    <Route path="hr/media" element={<HRMediaManagement />} />
-                    <Route path="hr/events" element={<EventsManagement />} />
-                    <Route path="hr/testimonials" element={<TestimonialsManagement />} />
-                    <Route path="hr/applications" element={<ApplicationViewer />} />
-                    <Route path="hr/jobs" element={<JobManagement />} />
-                </Route>
+                        {/* HR Routes */}
+                        <Route path="hr/media" element={<HRMediaManagement />} />
+                        <Route path="hr/events" element={<EventsManagement />} />
+                        <Route path="hr/testimonials" element={<TestimonialsManagement />} />
+                        <Route path="hr/applications" element={<ApplicationViewer />} />
+                        <Route path="hr/jobs" element={<JobManagement />} />
+                    </Route>
 
-                {/* Main Website Routes */}
-                <Route
-                    path="/*"
-                    element={
-                        <>
-                            <div className="fixed top-0 left-0 right-0 z-50">
-                                <Navbar />
-                            </div>
-                            <MainLayout>
-                                <Routes>
-                                    <Route path="/" element={<Home />} />
+                    {/* Main Website Routes */}
+                    <Route
+                        path="/*"
+                        element={
+                            <>
+                                <div className="fixed top-0 left-0 right-0 z-50">
+                                    <Navbar />
+                                </div>
+                                <MainLayout>
+                                    <Routes>
+                                        <Route path="/" element={<Home />} />
 
-                                    {/* Corporate Routes */}
-                                    <Route path="/corporate/profile" element={<Profile />} />
-                                    <Route path="/corporate/leadership" element={<Leadership />} />
+                                        {/* Corporate Routes */}
+                                        <Route path="/corporate/profile" element={<Profile />} />
+                                        <Route path="/corporate/leadership" element={<Leadership />} />
 
-                                    {/* Companies Routes */}
-                                    <Route path="/companies" element={<Companies />} />
-                                    <Route path="/companies/:id" element={<CompanySingle />} />
+                                        {/* Companies Routes */}
+                                        <Route path="/companies" element={<Companies />} />
+                                        <Route path="/companies/:id" element={<CompanySingle />} />
 
-                                    {/* Careers Routes */}
-                                    <Route path="/careers/culture" element={<Culture />} />
-                                    <Route path="/careers/events/:id" element={<EventSingle />} />
-                                    <Route path="/careers/opportunities" element={<Onboard />} />
-                                    <Route path="/careers/opportunities/:id" element={<JobApplication />} />
-                                    <Route path="/careers/talent-pool" element={<TalentPool />} />
+                                        {/* Careers Routes */}
+                                        <Route path="/careers/culture" element={<Culture />} />
+                                        <Route path="/careers/events/:id" element={<EventSingle />} />
+                                        <Route path="/careers/opportunities" element={<Onboard />} />
+                                        <Route path="/careers/opportunities/:id" element={<JobApplication />} />
+                                        <Route path="/careers/talent-pool" element={<TalentPool />} />
 
-                                    {/* News Routes */}
-                                    <Route path="/news/blogs" element={<Blogs />} />
-                                    <Route path="/news/blogs/:id" element={<BlogSingle />} />
-                                    <Route path="/news/articles" element={<News />} />
-                                    <Route path="/news/articles/:id" element={<NewsSingle />} />
-                                    <Route path="/news/media" element={<Media />} />
-                                    <Route path="/news/media/:id" element={<MediaSingle />} />
+                                        {/* News Routes */}
+                                        <Route path="/news/blogs" element={<Blogs />} />
+                                        <Route path="/news/blogs/:id" element={<BlogSingle />} />
+                                        <Route path="/news/articles" element={<News />} />
+                                        <Route path="/news/articles/:id" element={<NewsSingle />} />
+                                        <Route path="/news/media" element={<Media />} />
+                                        <Route path="/news/media/:id" element={<MediaSingle />} />
 
-                                    {/* Contact Route */}
-                                    <Route path="/contact" element={<Contact />} />
-                                </Routes>
-                            </MainLayout>
-                            <Footer />
-                        </>
-                    }
-                />
-            </Routes>
-        </Router>
+                                        {/* Contact Route */}
+                                        <Route path="/contact" element={<Contact />} />
+                                    </Routes>
+                                </MainLayout>
+                                <Footer />
+                            </>
+                        }
+                    />
+                </Routes>
+            </Router>
+        </ErrorBoundary>
     );
 }
 

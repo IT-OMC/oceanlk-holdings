@@ -1,4 +1,5 @@
 # Optimized runtime-only Dockerfile for Spring Boot
+# Using eclipse-temurin for better production support and security
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 

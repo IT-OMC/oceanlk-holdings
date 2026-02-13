@@ -98,9 +98,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/talent-pool/applications")
                                                 .hasAnyRole("ADMIN", "SUPER_ADMIN")
 
-                                                // Default deny for non-GET public access
-                                                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-
+                                                // Default deny for non-explicitly permitted routes
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

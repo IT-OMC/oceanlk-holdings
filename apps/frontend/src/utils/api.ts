@@ -123,10 +123,22 @@ export const API_ENDPOINTS = {
 
 export const getAuthHeaders = () => {
     const token = sessionStorage.getItem('adminToken');
+    if (!token) {
+        console.warn('API - No admin token found in sessionStorage');
+    }
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
     };
+};
+
+/**
+ * Handle API errors centrally
+ */
+export const handleApiError = (error: any, context: string) => {
+    console.error(`API Error [${context}]:`, error);
+    // You could integrate Sentry or another logging service here
+    throw error;
 };
 
 // Helper to get full media URL

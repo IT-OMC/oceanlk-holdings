@@ -441,7 +441,6 @@ const ThreeGlobe = () => {
 
                 // Apply to Clouds
                 if (cloudsRef.current && cloudsRef.current.material instanceof THREE.Material) {
-                    // @ts-ignore
                     cloudsRef.current.material.opacity = 0.35 * visibilityFactor + 0.05; // Keep slightly visible
                 }
 

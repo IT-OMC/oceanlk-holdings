@@ -56,8 +56,6 @@ const UpcomingEvents = () => {
             }
         } catch (error) {
             console.error('Failed to fetch upcoming events:', error);
-        } finally {
-
         }
     };
 

@@ -7,6 +7,7 @@ import { Water } from 'three-stdlib';
 extend({ Water });
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
             water: any;

@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +22,7 @@ import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -39,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (Exception e) {
-                // Token invalid or expired
+                log.debug("Invalid JWT token provided: {}", e.getMessage());
             }
         }
 
@@ -68,9 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         Collections.singletonList(
                                 new org.springframework.security.core.authority.SimpleGrantedAuthority(role)));
 
-                // DEBUG: Log the authorities
-                System.out.println("DEBUG - JWT Filter: Setting authentication for user: " + finalUsername +
-                        ", Authorities: " + userDetails.getAuthorities());
+                log.debug("JWT - Authenticated user: {}, Authorities: {}", finalUsername, userDetails.getAuthorities());
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

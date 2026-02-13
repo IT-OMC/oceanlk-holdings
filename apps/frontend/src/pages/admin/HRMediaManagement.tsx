@@ -111,7 +111,7 @@ const HRMediaManagement = () => {
         try {
             setUploadingFile(true);
             setUploadProgress(0);
-            let updatedFormData = { ...formData };
+            const updatedFormData = { ...formData };
 
             // Upload file if selected
             if (imageFile) {
