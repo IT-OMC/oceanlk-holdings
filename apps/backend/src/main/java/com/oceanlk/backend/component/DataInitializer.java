@@ -48,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
                 // seedCompanies();
                 //
                 // seedTestimonials();
-                seedAdminUser();
+                // seedAdminUser();
                 // seedJobOpportunities();
 
                 // Clear existing media items (news, blogs, videos, etc.)
