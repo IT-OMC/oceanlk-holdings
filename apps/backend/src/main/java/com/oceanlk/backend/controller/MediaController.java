@@ -33,8 +33,21 @@ public class MediaController {
 
     // Public endpoint - get all published media
     @GetMapping("/media")
-    public ResponseEntity<List<MediaItem>> getAllPublishedMedia() {
-        List<MediaItem> mediaItems = mediaRepository.findByStatusOrderByPublishedDateDesc("PUBLISHED");
+    public ResponseEntity<List<MediaItem>> getAllPublishedMedia(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String group) {
+
+        List<MediaItem> mediaItems;
+        if (category != null && !category.isEmpty() && group != null && !group.isEmpty()) {
+            mediaItems = mediaRepository.findByCategoryAndGroupAndStatusOrderByPublishedDateDesc(category, group,
+                    "PUBLISHED");
+        } else if (category != null && !category.isEmpty()) {
+            mediaItems = mediaRepository.findByCategoryAndStatusOrderByPublishedDateDesc(category, "PUBLISHED");
+        } else if (group != null && !group.isEmpty()) {
+            mediaItems = mediaRepository.findByGroupAndStatusOrderByPublishedDateDesc(group, "PUBLISHED");
+        } else {
+            mediaItems = mediaRepository.findByStatusOrderByPublishedDateDesc("PUBLISHED");
+        }
         return ResponseEntity.ok(mediaItems);
     }
 
@@ -99,9 +112,10 @@ public class MediaController {
         return ResponseEntity.ok(blogs);
     }
 
-    // Public endpoint - get media items (videos, galleries, documents)
+    // Public endpoint - get media items (videos, galleries, albums, documents)
     @GetMapping("/media/media")
     public ResponseEntity<List<MediaItem>> getMediaItems() {
+        // Return MEDIA and GALLERY category items from MEDIA_PANEL
         List<MediaItem> media = mediaRepository.findByCategoryInAndGroupAndStatusOrderByPublishedDateDesc(
                 java.util.Arrays.asList("MEDIA", "GALLERY"), "MEDIA_PANEL", "PUBLISHED");
 

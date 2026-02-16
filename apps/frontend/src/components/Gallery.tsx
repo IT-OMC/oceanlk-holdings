@@ -31,10 +31,15 @@ const Gallery = () => {
                 if (response.ok) {
                     const data = await response.json();
 
+                    // Filter out documents and articles for the home page gallery
+                    const filteredData = data.filter((item: any) =>
+                        item.type !== 'DOCUMENT' && item.type !== 'ARTICLE'
+                    );
+
                     // Group by company and get latest item per company for "Our Journey"
                     const companyMap = new Map<string, any>();
 
-                    data.forEach((item: any) => {
+                    filteredData.forEach((item: any) => {
                         const companyKey = item.companyId || item.company || 'General';
                         const existingItem = companyMap.get(companyKey);
 

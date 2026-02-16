@@ -22,8 +22,8 @@ const CultureGallery = () => {
         try {
             // Fetch both GALLERY and LIFE_AT_OCH categories
             const [galleryRes, lifeRes] = await Promise.all([
-                fetch(`${API_ENDPOINTS.MEDIA}?category=GALLERY`),
-                fetch(`${API_ENDPOINTS.MEDIA}?category=LIFE_AT_OCH`)
+                fetch(`${API_ENDPOINTS.MEDIA}?category=GALLERY&group=HR_PANEL`),
+                fetch(`${API_ENDPOINTS.MEDIA}?category=LIFE_AT_OCH&group=HR_PANEL`)
             ]);
 
             let allImages: MediaItem[] = [];

@@ -45,12 +45,6 @@ public class DataInitializer implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws Exception {
-                // seedCompanies();
-                //
-                // seedTestimonials();
-                // seedAdminUser();
-                // seedJobOpportunities();
-
                 // Clear existing media items (news, blogs, videos, etc.)
                 // mediaItemRepository.deleteAll();
                 // log.info("Cleared all media items");

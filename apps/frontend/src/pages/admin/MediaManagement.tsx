@@ -95,7 +95,7 @@ const MediaManagement = () => {
     const fetchMedia = useCallback(async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=MEDIA_PANEL`, {
+            const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -434,6 +434,9 @@ const MediaManagement = () => {
                                 )}
                                 <span className="px-2 py-1 bg-black/60 backdrop-blur-md rounded text-xs text-white">
                                     {item.category}
+                                </span>
+                                <span className={`px-2 py-1 backdrop-blur-md rounded text-xs text-white ${item.group === 'HR_PANEL' ? 'bg-blue-600/80' : 'bg-emerald-600/80'}`}>
+                                    {item.group === 'HR_PANEL' ? 'HR & Talent' : 'Media Center'}
                                 </span>
                             </div>
                         </div>

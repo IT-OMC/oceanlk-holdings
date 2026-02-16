@@ -446,7 +446,7 @@ public class EmailService {
 
         helper.setFrom(fromEmail);
         helper.setTo(toEmail);
-        helper.setSubject("[TEST] Thank You for Contacting Ocean Ceylon Holdings");
+        helper.setSubject("Thank You for Contacting Ocean Ceylon Holdings");
 
         String htmlContent = buildContactConfirmationTemplate(message);
         helper.setText(htmlContent, true);
