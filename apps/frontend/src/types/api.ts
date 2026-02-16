@@ -16,6 +16,7 @@ export interface AdminUser {
     role: UserRole;
     active: boolean;
     verified: boolean;
+    avatar?: string;
     createdDate: string;
     lastLoginDate?: string;
 }
@@ -150,6 +151,7 @@ export interface UserUpdateRequest {
     phone?: string;
     role: UserRole;
     active: boolean;
+    avatar?: string;
 }
 
 export interface NotificationRequest {

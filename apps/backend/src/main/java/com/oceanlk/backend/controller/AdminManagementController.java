@@ -226,6 +226,8 @@ public class AdminManagementController {
         String newName = request.get("name");
         String newEmail = request.get("email");
         String newPhone = request.get("phone");
+        String newAvatar = request.get("avatar");
+        String newUsername = request.get("newUsername");
 
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -246,13 +248,55 @@ public class AdminManagementController {
                     }
                     if (newPhone != null)
                         user.setPhone(newPhone);
+                    if (newAvatar != null)
+                        user.setAvatar(newAvatar);
+
+                    if (newUsername != null && !newUsername.equals(user.getUsername())) {
+                        if (adminUserService.findByUsername(newUsername).isPresent()) {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(Map.of("error", "Username already in use"));
+                        }
+                        user.setUsername(newUsername);
+                        // Note: User will need to log in again with new username if session is based on
+                        // it
+                    }
 
                     adminUserService.updateAdmin(user);
                     auditLogService.logAction(username, "UPDATE_PROFILE", "AdminUser", user.getId(),
                             "Updated profile details");
-                    return ResponseEntity.ok(Map.of("message", "Profile updated successfully"));
+                    return ResponseEntity.ok(Map.of("message", "Profile updated successfully", "user", user));
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found")));
+    }
+
+    @GetMapping("/profile/preferences")
+    public ResponseEntity<?> getPreferences(java.security.Principal principal) {
+        return adminUserService.findByUsername(principal.getName())
+                .map(user -> {
+                    var prefs = user.getEmailPreferences();
+                    if (prefs == null) {
+                        prefs = Map.of(
+                                "PENDING_CHANGES", true,
+                                "USER_MANAGEMENT", true,
+                                "SYSTEM_ALERTS", true);
+                    }
+                    return ResponseEntity.ok(prefs);
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PutMapping("/profile/preferences")
+    public ResponseEntity<?> updatePreferences(@RequestBody Map<String, Boolean> preferences,
+            java.security.Principal principal) {
+        return adminUserService.findByUsername(principal.getName())
+                .map(user -> {
+                    user.setEmailPreferences(preferences);
+                    adminUserService.updateAdmin(user);
+                    auditLogService.logAction(principal.getName(), "UPDATE_PREFERENCES", "AdminUser", user.getId(),
+                            "Updated email preferences");
+                    return ResponseEntity.ok(Map.of("message", "Preferences updated successfully"));
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping("/profile/contact-update/init")

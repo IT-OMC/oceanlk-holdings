@@ -24,6 +24,7 @@ const AdminLayout = () => {
     const adminName = sessionStorage.getItem('adminName') || 'Administrator';
     const adminUsername = sessionStorage.getItem('adminUsername') || 'admin';
     const adminRole = sessionStorage.getItem('adminRole');
+    const adminAvatar = sessionStorage.getItem('adminAvatar');
 
     // Verification State
     const [isVerified, setIsVerified] = useState(() => {
@@ -264,9 +265,13 @@ const AdminLayout = () => {
 
                 <div className="p-4 border-t border-white/10 bg-[#0f1e3a] shrink-0">
                     <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'} mb-4 px-2`}>
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">
-                            {adminName ? adminName.charAt(0).toUpperCase() : 'A'}
-                        </div>
+                        {adminAvatar ? (
+                            <img src={adminAvatar} alt={adminName} className="w-10 h-10 rounded-full object-cover shadow-lg" />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">
+                                {adminName ? adminName.charAt(0).toUpperCase() : 'A'}
+                            </div>
+                        )}
                         {isSidebarOpen && (
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-white truncate">{adminName}</p>
@@ -299,6 +304,9 @@ const AdminLayout = () => {
                             <NotificationBell />
                             <div className="h-6 w-px bg-white/10" />
                             <div className="flex items-center gap-3">
+                                {adminAvatar && (
+                                    <img src={adminAvatar} alt={adminName} className="w-8 h-8 rounded-full object-cover border border-emerald-500/20" />
+                                )}
                                 <div className="text-right hidden sm:block">
                                     <p className="text-sm font-semibold text-white">{adminName}</p>
                                     <p className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">{adminRole?.replace('ROLE_', '')}</p>

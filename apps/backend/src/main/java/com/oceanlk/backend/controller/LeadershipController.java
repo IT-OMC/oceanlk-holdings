@@ -21,6 +21,7 @@ import java.util.Map;
 public class LeadershipController {
 
         private final CorporateLeaderRepository repository;
+        private final com.oceanlk.backend.service.LeadershipService leadershipService;
         private final com.oceanlk.backend.service.AuditLogService auditLogService;
         private final com.oceanlk.backend.service.PendingChangeService pendingChangeService;
 
@@ -42,7 +43,7 @@ public class LeadershipController {
                                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
 
                 if (isSuperAdmin) {
-                        CorporateLeader savedLeader = java.util.Objects.requireNonNull(repository.save(leader));
+                        CorporateLeader savedLeader = leadershipService.createLeader(leader);
 
                         // Record in history for Super Admin
                         pendingChangeService.createApprovedChange(
@@ -79,18 +80,11 @@ public class LeadershipController {
 
                                         if (isSuperAdmin) {
                                                 // Capture original state for history tracking
-                                                CorporateLeader existingOriginal = repository.findById(id).orElse(null);
+                                                CorporateLeader existingOriginal = leadershipService.getLeaderById(id)
+                                                                .orElse(null);
 
-                                                existing.setName(leader.getName());
-                                                existing.setPosition(leader.getPosition());
-                                                existing.setDepartment(leader.getDepartment());
-                                                existing.setImage(leader.getImage());
-                                                existing.setBio(leader.getBio());
-                                                existing.setShortDescription(leader.getShortDescription());
-                                                existing.setLinkedin(leader.getLinkedin());
-                                                existing.setEmail(leader.getEmail());
-                                                existing.setDisplayOrder(leader.getDisplayOrder());
-                                                CorporateLeader savedLeader = repository.save(existing);
+                                                CorporateLeader savedLeader = leadershipService.updateLeader(id,
+                                                                leader);
 
                                                 // Record in history for Super Admin
                                                 pendingChangeService.createApprovedChange(
@@ -139,7 +133,7 @@ public class LeadershipController {
                                                                         .equals("ROLE_SUPER_ADMIN"));
 
                                         if (isSuperAdmin) {
-                                                repository.deleteById(id);
+                                                leadershipService.deleteLeader(id);
 
                                                 // Record in history for Super Admin
                                                 pendingChangeService.createApprovedChange(

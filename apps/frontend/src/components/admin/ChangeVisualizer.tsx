@@ -29,7 +29,7 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
     const oldData = parseJSON(originalData);
 
     // Media fields that should be rendered as previews
-    const mediaFields = ['imageUrl', 'videoUrl', 'galleryImages'];
+    const mediaFields = ['imageUrl', 'videoUrl', 'galleryImages', 'image', 'avatar', 'logoUrl', 'video'];
 
     // Get all unique keys from both objects
     const allKeys = Array.from(new Set([
@@ -75,8 +75,8 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
                                     Current / Old
                                 </h4>
                                 <MediaPreview
-                                    imageUrl={oldData.imageUrl}
-                                    videoUrl={oldData.videoUrl}
+                                    imageUrl={oldData.imageUrl || oldData.image || oldData.avatar || oldData.logoUrl}
+                                    videoUrl={oldData.videoUrl || oldData.video}
                                     galleryImages={oldData.galleryImages}
                                     maxWidth="100%"
                                 />
@@ -87,8 +87,8 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
                                     New / Proposed
                                 </h4>
                                 <MediaPreview
-                                    imageUrl={newData.imageUrl}
-                                    videoUrl={newData.videoUrl}
+                                    imageUrl={newData.imageUrl || newData.image || newData.avatar || newData.logoUrl}
+                                    videoUrl={newData.videoUrl || newData.video}
                                     galleryImages={newData.galleryImages}
                                     maxWidth="100%"
                                 />
@@ -97,8 +97,12 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
                     ) : (
                         // Single preview for CREATE or DELETE
                         <MediaPreview
-                            imageUrl={action === 'DELETE' ? oldData?.imageUrl : newData?.imageUrl}
-                            videoUrl={action === 'DELETE' ? oldData?.videoUrl : newData?.videoUrl}
+                            imageUrl={(action === 'DELETE' ? oldData?.imageUrl : newData?.imageUrl) ||
+                                (action === 'DELETE' ? oldData?.image : newData?.image) ||
+                                (action === 'DELETE' ? oldData?.avatar : newData?.avatar) ||
+                                (action === 'DELETE' ? oldData?.logoUrl : newData?.logoUrl)}
+                            videoUrl={(action === 'DELETE' ? oldData?.videoUrl : newData?.videoUrl) ||
+                                (action === 'DELETE' ? oldData?.video : newData?.video)}
                             galleryImages={action === 'DELETE' ? oldData?.galleryImages : newData?.galleryImages}
                             maxWidth="600px"
                         />

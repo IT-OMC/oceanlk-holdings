@@ -27,6 +27,8 @@ public class AdminUser {
     private LocalDateTime lastLoginDate;
     private boolean active;
     private boolean verified;
+    private String avatar;
+    private java.util.Map<String, Boolean> emailPreferences;
 
     // OTP fields
     private String otp;

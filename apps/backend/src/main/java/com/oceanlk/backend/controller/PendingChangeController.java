@@ -29,10 +29,8 @@ public class PendingChangeController {
     // Injected Services for cleanup logic
     private final com.oceanlk.backend.service.MediaItemService mediaItemService;
     private final com.oceanlk.backend.service.LeadershipService leadershipService;
-
-    // Repositories for entites that don't need complex cleanup yet
-    private final com.oceanlk.backend.repository.GlobalMetricRepository globalMetricRepository;
-    private final com.oceanlk.backend.repository.PageContentRepository pageContentRepository;
+    private final com.oceanlk.backend.service.GlobalMetricService globalMetricService;
+    private final com.oceanlk.backend.service.PageContentService pageContentService;
 
     /**
      * Get all pending changes (Superadmin only)
@@ -301,15 +299,15 @@ public class PendingChangeController {
         switch (action) {
             case "CREATE":
                 metric.setId(null);
-                globalMetricRepository.save(metric);
+                globalMetricService.createMetric(metric);
                 break;
             case "UPDATE":
                 if (metric != null) {
-                    globalMetricRepository.save(metric);
+                    globalMetricService.updateMetric(metric.getId(), metric);
                 }
                 break;
             case "DELETE":
-                globalMetricRepository.deleteById(metric.getId());
+                globalMetricService.deleteMetric(metric.getId());
                 break;
         }
     }
@@ -339,13 +337,13 @@ public class PendingChangeController {
         switch (action) {
             case "CREATE":
             case "UPDATE":
-                // For PageContent, it's usually upsert logic
+                // For PageContent, it's usually upsert logic handled by service
                 if (content != null) {
-                    pageContentRepository.save(content);
+                    pageContentService.createOrUpdateContent(content);
                 }
                 break;
             case "DELETE":
-                pageContentRepository.deleteById(content.getId());
+                pageContentService.deleteContent(content.getId());
                 break;
         }
     }

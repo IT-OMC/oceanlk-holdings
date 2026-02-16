@@ -43,6 +43,16 @@ public class NotificationService {
                         continue;
                     }
 
+                    // Check Email Preferences
+                    if (admin.getEmailPreferences() != null && title != null) {
+                        String category = mapTitleToCategory(title);
+                        if (Boolean.FALSE.equals(admin.getEmailPreferences().get(category))) {
+                            log.info("Skipping email notification for {}: Category {} disabled", admin.getUsername(),
+                                    category);
+                            continue;
+                        }
+                    }
+
                     try {
                         emailService.sendAdminNotification(admin.getEmail(), title != null ? title : "New System Alert",
                                 message, link);
@@ -55,6 +65,19 @@ public class NotificationService {
             // Log error but don't break the main flow
             log.error("Failed to create notification: {}", e.getMessage());
         }
+    }
+
+    /**
+     * Map notification title to a category key for preferences.
+     */
+    private String mapTitleToCategory(String title) {
+        if (title.contains("Pending Change"))
+            return "PENDING_CHANGES";
+        if (title.contains("Admin Management"))
+            return "USER_MANAGEMENT";
+        if (title.contains("Super Admin Action"))
+            return "USER_MANAGEMENT";
+        return "SYSTEM_ALERTS";
     }
 
     public void createNotificationForSpecificUser(String title, String message, String type, String recipientId,
@@ -73,6 +96,14 @@ public class NotificationService {
             adminUserRepository.findById(recipientId).ifPresent(admin -> {
                 String email = admin.getEmail();
                 if (email != null) {
+                    // Check Email Preferences for Specific User
+                    if (admin.getEmailPreferences() != null && title != null) {
+                        String category = mapTitleToCategory(title);
+                        if (Boolean.FALSE.equals(admin.getEmailPreferences().get(category))) {
+                            return;
+                        }
+                    }
+
                     try {
                         emailService.sendAdminNotification(email, "Personal System Alert", message, link);
                     } catch (Exception emailEx) {

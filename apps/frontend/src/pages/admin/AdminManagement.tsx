@@ -266,9 +266,13 @@ const AdminManagement = () => {
                                     <tr key={admin.id} className="hover:bg-white/2 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white font-bold">
-                                                    {admin.name ? admin.name.charAt(0).toUpperCase() : admin.username.charAt(0).toUpperCase()}
-                                                </div>
+                                                {admin.avatar ? (
+                                                    <img src={admin.avatar} alt={admin.name} className="w-10 h-10 rounded-lg object-cover shadow-sm border border-white/5" />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                                                        {admin.name ? admin.name.charAt(0).toUpperCase() : admin.username.charAt(0).toUpperCase()}
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <div className="font-medium text-white">{admin.name || admin.username}</div>
                                                     <div className="text-xs text-gray-500">@{admin.username}</div>

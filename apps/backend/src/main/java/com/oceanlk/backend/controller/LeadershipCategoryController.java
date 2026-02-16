@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -37,8 +39,9 @@ public class LeadershipCategoryController {
     }
 
     @PutMapping("/{code}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<LeadershipCategory> updateCategory(@PathVariable String code,
-            @RequestBody LeadershipCategory updatedCategory) {
+            @RequestBody LeadershipCategory updatedCategory, Principal principal) {
         return repository.findByCode(code.toUpperCase())
                 .map(existing -> {
                     existing.setTitle(updatedCategory.getTitle());
@@ -46,7 +49,7 @@ public class LeadershipCategoryController {
                     LeadershipCategory saved = repository.save(existing);
 
                     // Log Action
-                    auditLogService.logAction("admin", "UPDATE", "LeadershipCategory", code,
+                    auditLogService.logAction(principal.getName(), "UPDATE", "LeadershipCategory", code,
                             "Updated leadership category: " + saved.getTitle());
 
                     return ResponseEntity.ok(saved);
@@ -55,7 +58,9 @@ public class LeadershipCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<LeadershipCategory> createCategory(@RequestBody LeadershipCategory category) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+    public ResponseEntity<LeadershipCategory> createCategory(@RequestBody LeadershipCategory category,
+            Principal principal) {
         if (repository.findByCode(category.getCode().toUpperCase()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
@@ -63,20 +68,21 @@ public class LeadershipCategoryController {
         LeadershipCategory saved = repository.save(category);
 
         // Log Action
-        auditLogService.logAction("admin", "CREATE", "LeadershipCategory", saved.getCode(),
+        auditLogService.logAction(principal.getName(), "CREATE", "LeadershipCategory", saved.getCode(),
                 "Created leadership category: " + saved.getTitle());
 
         return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable String code) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+    public ResponseEntity<Void> deleteCategory(@PathVariable String code, Principal principal) {
         return repository.findByCode(code.toUpperCase())
                 .<ResponseEntity<Void>>map(category -> {
                     repository.delete(java.util.Objects.requireNonNull(category));
 
                     // Log Action
-                    auditLogService.logAction("admin", "DELETE", "LeadershipCategory", code,
+                    auditLogService.logAction(principal.getName(), "DELETE", "LeadershipCategory", code,
                             "Deleted leadership category: " + category.getTitle());
 
                     return ResponseEntity.ok().build();

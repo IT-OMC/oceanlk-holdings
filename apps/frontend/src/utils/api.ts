@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     ADMIN_PROFILE: (username: string) => `${BASE_URL}/api/admin/management/profile/${username}`,
     ADMIN_CHANGE_PASSWORD: `${BASE_URL}/api/admin/management/change-password`,
     ADMIN_PROFILE_UPDATE: `${BASE_URL}/api/admin/management/profile/update`,
+    ADMIN_PROFILE_PREFERENCES: `${BASE_URL}/api/admin/management/profile/preferences`,
 
 
     // Notifications
