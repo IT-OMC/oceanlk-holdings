@@ -42,6 +42,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/search").permitAll()
                                                 .requestMatchers("/api/admin/login").permitAll()
                                                 .requestMatchers("/api/metrics").permitAll()
+                                                .requestMatchers("/actuator/**").permitAll() // Allow health checks
                                                 .requestMatchers("/api/admin/validate").permitAll()
                                                 .requestMatchers("/api/admin/otp/**").permitAll()
                                                 .requestMatchers("/api/admin/forgot-password").permitAll()
