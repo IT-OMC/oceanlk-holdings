@@ -1,5 +1,6 @@
 package com.oceanlk.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,10 @@ public class AdminUser {
 
     private String name;
     private String username;
+
+    @JsonIgnore
     private String password;
+
     private String email;
     private String phone;
     private String role;
@@ -31,12 +35,16 @@ public class AdminUser {
     private java.util.Map<String, Boolean> emailPreferences;
 
     // OTP fields
+    @JsonIgnore
     private String otp;
+
     private LocalDateTime otpExpiry;
 
     // Temporary fields for contact update verification
     private String tempEmail;
     private String tempPhone;
+
+    @JsonIgnore
     private String tempOtp;
 
     public AdminUser(String name, String username, String password, String email, String phone, String role) {

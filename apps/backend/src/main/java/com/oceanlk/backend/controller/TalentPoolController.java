@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.lang.NonNull;
@@ -169,7 +170,7 @@ public class TalentPoolController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + application.getCvFilename() + "\"")
-                    .body(resource.getInputStream().readAllBytes());
+                    .body(new InputStreamResource(resource.getInputStream()));
 
         } catch (IOException e) {
             Map<String, String> error = new HashMap<>();

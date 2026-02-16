@@ -23,12 +23,11 @@ public class OtpController {
         String username = request.get("username");
         String method = request.getOrDefault("method", "email"); // email or phone
 
-        return adminUserService.findByUsername(username)
-                .map(user -> {
-                    otpService.sendOtp(user, method);
-                    return ResponseEntity.ok(Map.of("message", "OTP sent successfully to your " + method));
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Admin user not found")));
+        adminUserService.findByUsername(username)
+                .ifPresent(user -> otpService.sendOtp(user, method));
+
+        // Always return success to prevent user enumeration
+        return ResponseEntity.ok(Map.of("message", "If an account exists, an OTP has been sent to your " + method));
     }
 
     @PostMapping("/send-by-email")
@@ -36,13 +35,11 @@ public class OtpController {
         String email = request.get("email");
         String method = request.getOrDefault("method", "email");
 
-        return adminUserService.findByEmail(email)
-                .map(user -> {
-                    otpService.sendOtp(user, method);
-                    return ResponseEntity.ok(Map.of("message", "OTP sent successfully to your email"));
-                })
-                .orElse(ResponseEntity
-                        .ok(Map.of("message", "If an account exists with this email, you will receive an OTP.")));
+        adminUserService.findByEmail(email)
+                .ifPresent(user -> otpService.sendOtp(user, method));
+
+        // Always return success to prevent user enumeration
+        return ResponseEntity.ok(Map.of("message", "If an account exists with this email, you will receive an OTP."));
     }
 
     @PostMapping("/verify")
