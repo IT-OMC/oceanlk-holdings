@@ -55,6 +55,9 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.GET, "/api/partners/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/testimonials/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/leadership/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/leadership-categories/**")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/content/**").permitAll()
                                                 .requestMatchers("/api/public/whatsapp").permitAll()
                                                 .requestMatchers("/uploads/**").permitAll() // Allow public access to
                                                                                             // uploaded files (legacy)
