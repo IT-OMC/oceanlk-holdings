@@ -57,6 +57,13 @@ public class EmailService {
                     + application.getFullName());
             return;
         }
+
+        if (hrEmail == null || hrEmail.isEmpty() || "none".equalsIgnoreCase(hrEmail)
+                || "disabled".equalsIgnoreCase(hrEmail)) {
+            System.out.println("HR Notification is disabled or email not set. Skipping.");
+            return;
+        }
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
