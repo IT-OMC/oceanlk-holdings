@@ -32,7 +32,8 @@ public class OtpService {
             try {
                 emailService.sendOtpEmail(user.getEmail(), otp, user.getUsername());
             } catch (Exception e) {
-                throw new RuntimeException("Failed to send OTP email", e);
+                e.printStackTrace(); // Force print stack trace for debugging
+                throw new RuntimeException("Failed to send OTP email: " + e.getMessage(), e);
             }
         } else if ("phone".equalsIgnoreCase(method)) {
             // TODO: Integrate SMS service for production
