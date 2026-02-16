@@ -203,7 +203,7 @@ jobs:
             -p ${{ env.BACKEND_PORT }}:8080 \
             --env-file .env \
             -e SERVER_PORT=8080 \
-            --health-cmd="curl -f http://localhost:8080/actuator/health || exit 1" \
+            --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" \
             --health-interval=30s \
             --health-timeout=10s \
             --health-retries=3 \
