@@ -45,12 +45,39 @@ public class DataInitializer implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws Exception {
-                // Clear existing media items (news, blogs, videos, etc.)
-                // mediaItemRepository.deleteAll();
-                // log.info("Cleared all media items");
-
+                // seedAdminUser();
+                // seedCompanies();
+                // seedTestimonials();
+                // seedJobOpportunities();
                 // seedMediaItems();
                 // seedPartners();
+                seedPageContent();
+        }
+
+        @Autowired
+        private PageContentRepository pageContentRepository;
+
+        private void seedPageContent() {
+                if (pageContentRepository.count() == 0) {
+                        List<PageContent> contents = new ArrayList<>();
+
+                        // Culture Page Hero
+                        contents.add(new PageContent(null, "CULTURE", "HERO",
+                                        "Not just a job. A Journey.",
+                                        "From your first cup of coffee to leading global initiatives...",
+                                        "Discover how you'll grow, thrive, and make a difference at Ocean Ceylon Holdings.",
+                                        "/culture/hero-bg.jpg", "Start Your Journey", "/careers/talent-pool"));
+
+                        // Culture Page Section 2 (Hidden in Frontend, but data available if ever
+                        // re-enabled)
+                        contents.add(new PageContent(null, "CULTURE", "ASCENT",
+                                        "The Ascent",
+                                        "A transformational journey of personal and professional growth.",
+                                        "HIDDEN", null, null, null));
+
+                        pageContentRepository.saveAll(contents);
+                        log.info("Seeded PageContent for Culture");
+                }
         }
 
         private void seedPartners() {
