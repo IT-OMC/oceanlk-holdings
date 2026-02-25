@@ -5,6 +5,7 @@ import com.oceanlk.backend.model.PendingChange;
 import com.oceanlk.backend.repository.AdminUserRepository;
 import com.oceanlk.backend.repository.PendingChangeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/debug")
 @RequiredArgsConstructor
+@Profile("!prod") // Never instantiated in production — excluded from Spring context
 public class DebugController {
 
     private final AdminUserRepository adminUserRepository;

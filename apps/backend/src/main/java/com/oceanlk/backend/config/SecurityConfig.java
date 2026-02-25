@@ -42,7 +42,13 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/search").permitAll()
                                                 .requestMatchers("/api/admin/login").permitAll()
                                                 .requestMatchers("/api/metrics").permitAll()
-                                                .requestMatchers("/actuator/**").permitAll() // Allow health checks
+                                                // Actuator — health+info public (Docker probe), rest requires
+                                                // SUPER_ADMIN
+                                                // NOTE: In prod, actuator is bound to 127.0.0.1:8081 via
+                                                // management.server.*
+                                                // This rule is defence-in-depth if port is ever accidentally exposed.
+                                                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                                                .requestMatchers("/actuator/**").hasRole("SUPER_ADMIN")
                                                 .requestMatchers("/api/admin/validate").permitAll()
                                                 .requestMatchers("/api/admin/otp/**").permitAll()
                                                 .requestMatchers("/api/admin/forgot-password").permitAll()
@@ -73,6 +79,10 @@ public class SecurityConfig {
                                                 .hasAnyRole("ADMIN", "SUPER_ADMIN") // Protect
                                                 // CV
                                                 // download
+
+                                                // Debug controller — belt-and-suspenders (also @Profile("!prod") in the
+                                                // class)
+                                                .requestMatchers("/api/debug/**").hasRole("SUPER_ADMIN")
 
                                                 // Admin endpoints
                                                 .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
@@ -114,13 +124,39 @@ public class SecurityConfig {
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 // Security Headers
                                 .headers(headers -> headers
-                                                .contentSecurityPolicy(csp -> csp
-                                                                .policyDirectives(
-                                                                                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"))
+                                                // Report-Only CSP (promote to enforcing after staging soak)
+                                                // To enforce: rename to contentSecurityPolicy() and remove the custom
+                                                // header writer
+                                                .addHeaderWriter((request, response) -> {
+                                                        String csp = "default-src 'self'; " +
+                                                                        "script-src 'self'; " +
+                                                                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+                                                                        +
+                                                                        "font-src 'self' https://fonts.gstatic.com; " +
+                                                                        "img-src 'self' data: blob: https:; " +
+                                                                        "connect-src 'self' " +
+                                                                        "https://ocean.lk https://www.ocean.lk " +
+                                                                        "https://generativelanguage.googleapis.com " +
+                                                                        "https://maps.googleapis.com " +
+                                                                        "https://www.googleapis.com; " +
+                                                                        "media-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com; "
+                                                                        +
+                                                                        "frame-src https://www.youtube-nocookie.com https://www.google.com; "
+                                                                        +
+                                                                        "worker-src 'self' blob:; " +
+                                                                        "base-uri 'self'; " +
+                                                                        "form-action 'self'; " +
+                                                                        "frame-ancestors 'none'; " +
+                                                                        "upgrade-insecure-requests;";
+                                                        // STAGING: Report-Only — change to Content-Security-Policy once
+                                                        // violations are clear
+                                                        response.setHeader("Content-Security-Policy-Report-Only", csp);
+                                                })
                                                 .frameOptions(frame -> frame.deny())
                                                 .httpStrictTransportSecurity(hsts -> hsts
                                                                 .maxAgeInSeconds(31536000)
-                                                                .includeSubDomains(true)))
+                                                                .includeSubDomains(true)
+                                                                .preload(true)))
                                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
