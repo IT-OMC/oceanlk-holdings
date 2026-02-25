@@ -9,7 +9,6 @@ import { MediaItem, MediaCategory, MediaGroup } from '../../types/api';
 const HRMediaManagement = () => {
     const [galleryItems, setGalleryItems] = useState<MediaItem[]>([]);
     const [lifeAtOchItems, setLifeAtOchItems] = useState<MediaItem[]>([]);
-    const [eventsItems, setEventsItems] = useState<MediaItem[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<MediaItem | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -44,7 +43,6 @@ const HRMediaManagement = () => {
                 // Separate items by category
                 setGalleryItems(data.filter((item: MediaItem) => item.category === 'GALLERY'));
                 setLifeAtOchItems(data.filter((item: MediaItem) => item.category === 'LIFE_AT_OCH'));
-                setEventsItems(data.filter((item: MediaItem) => item.category === 'EVENTS'));
             }
         } catch (error) {
             toast.error('Failed to fetch media items');
@@ -362,65 +360,7 @@ const HRMediaManagement = () => {
                 )}
             </div>
 
-            {/* Events Section */}
-            <div className="mb-8">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-white">Events</h2>
-                    <span className="text-sm text-gray-400">{eventsItems.length} items</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {eventsItems.map((item) => (
-                        <motion.div
-                            key={item.id}
-                            whileHover={{ y: -5 }}
-                            className="bg-white/5 rounded-xl overflow-hidden border border-white/10"
-                        >
-                            <div className="h-48 bg-white/5 relative">
-                                {item.imageUrl ? (
-                                    <img
-                                        src={item.imageUrl}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <ImageIcon size={48} className="text-gray-600" />
-                                    </div>
-                                )}
-                                <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
-                                    {item.category}
-                                </div>
-                            </div>
-                            <div className="p-4">
-                                <h3 className="text-lg font-bold text-white mb-1">{item.title}</h3>
-                                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => openEditModal(item)}
-                                        className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors"
-                                    >
-                                        <Edit2 size={16} />
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => openDeleteModal(item.id)}
-                                        className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors"
-                                    >
-                                        <Trash2 size={16} />
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-                {eventsItems.length === 0 && (
-                    <div className="text-center py-12 text-gray-400 bg-white/5 rounded-xl">
-                        <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
-                        <p>No events items found</p>
-                    </div>
-                )}
-            </div>
+
 
             {/* Create/Edit Modal */}
             <AnimatePresence>
@@ -515,7 +455,6 @@ const HRMediaManagement = () => {
                                     >
                                         <option value="GALLERY" className="bg-[#0f1e3a] text-white">Gallery</option>
                                         <option value="LIFE_AT_OCH" className="bg-[#0f1e3a] text-white">Life at OCH</option>
-                                        <option value="EVENTS" className="bg-[#0f1e3a] text-white">Events</option>
                                     </select>
                                 </div>
 

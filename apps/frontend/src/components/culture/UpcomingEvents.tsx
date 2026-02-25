@@ -34,23 +34,21 @@ const UpcomingEvents = () => {
 
     const fetchUpcomingEvents = async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.MEDIA);
+            const response = await fetch(API_ENDPOINTS.EVENTS);
             if (response.ok) {
                 const data = await response.json();
-                // Filter for EVENTS category and map to Event interface
-                const eventsData = data
-                    .filter((item: any) => item.category === 'EVENTS')
-                    .map((item: any) => ({
-                        id: item.id,
-                        title: item.title,
-                        description: item.description,
-                        date: item.publishedDate || new Date().toISOString(),
-                        time: '09:00', // Default time as backend doesn't have time field yet
-                        location: 'OceanLK Premises', // Default location
-                        imageUrl: item.imageUrl,
-                        category: 'SOCIAL', // Default category mapping for UI colors
-                        status: 'Upcoming'
-                    }));
+                // Map directly from the Event model fields
+                const eventsData = data.map((item: any) => ({
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    date: item.date,
+                    time: item.time || null,
+                    location: item.location || 'OceanLK Premises',
+                    imageUrl: item.imageUrl,
+                    category: item.category || 'SOCIAL',
+                    status: item.status || 'UPCOMING',
+                }));
 
                 setEvents(eventsData.slice(0, 3));
             }

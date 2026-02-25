@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Calendar, momentLocalizer, View } from 'react-big-calendar';
 import moment from 'moment';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock, Upload, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -43,6 +43,11 @@ const EventsManagement = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [view, setView] = useState<View>('month');
     const [date, setDate] = useState(new Date());
+    // Image upload state
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
+    const [uploadingFile, setUploadingFile] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -87,12 +92,51 @@ const EventsManagement = () => {
         }
     };
 
+    const uploadFile = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const token = sessionStorage.getItem('adminToken');
+            const fd = new FormData();
+            fd.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `${API_ENDPOINTS.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    setUploadProgress(Math.round((event.loaded / event.total) * 100));
+                }
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const data = JSON.parse(xhr.responseText);
+                    resolve(data.url);
+                } else {
+                    reject(new Error('File upload failed'));
+                }
+            };
+            xhr.onerror = () => reject(new Error('File upload failed'));
+            xhr.send(fd);
+        });
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
+            setUploadingFile(true);
+            setUploadProgress(0);
             const token = sessionStorage.getItem('adminToken');
+            const updatedFormData = { ...formData };
+
+            // Upload image if a file was selected
+            if (imageFile) {
+                const fileUrl = await uploadFile(imageFile);
+                updatedFormData.imageUrl = fileUrl;
+            }
+
             const url = editingItem
                 ? API_ENDPOINTS.EVENT_BY_ID(editingItem.id)
                 : API_ENDPOINTS.EVENTS;
@@ -103,7 +147,7 @@ const EventsManagement = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(updatedFormData),
             });
 
             if (response.ok) {
@@ -115,6 +159,8 @@ const EventsManagement = () => {
                 }
                 setIsModalOpen(false);
                 setEditingItem(null);
+                setImageFile(null);
+                setImagePreview('');
                 setFormData({
                     title: '',
                     description: '',
@@ -132,6 +178,7 @@ const EventsManagement = () => {
             toast.error('An error occurred');
         } finally {
             setIsLoading(false);
+            setUploadingFile(false);
         }
     };
 
@@ -186,6 +233,8 @@ const EventsManagement = () => {
             imageUrl: item.imageUrl || '',
             category: item.category,
         });
+        setImageFile(null);
+        setImagePreview(item.imageUrl || '');
         setIsModalOpen(true);
     };
 
@@ -200,6 +249,8 @@ const EventsManagement = () => {
 
     const handleSelectSlot = useCallback(({ start }: { start: Date }) => {
         setEditingItem(null);
+        setImageFile(null);
+        setImagePreview('');
         setFormData({
             title: '',
             description: '',
@@ -236,6 +287,8 @@ const EventsManagement = () => {
                 <button
                     onClick={() => {
                         setEditingItem(null);
+                        setImageFile(null);
+                        setImagePreview('');
                         setFormData({
                             title: '',
                             description: '',
@@ -399,13 +452,52 @@ const EventsManagement = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
-                                <input
-                                    type="url"
-                                    value={formData.imageUrl}
-                                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
-                                />
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Event Image</label>
+                                <div
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const file = e.dataTransfer.files?.[0];
+                                        if (file && file.type.startsWith('image/')) {
+                                            setImageFile(file);
+                                            setImagePreview(URL.createObjectURL(file));
+                                        } else {
+                                            toast.error('Please drop a valid image file');
+                                        }
+                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    className="border-2 border-dashed border-white/20 rounded-lg p-4 text-center hover:border-emerald-500/50 transition-colors cursor-pointer relative"
+                                >
+                                    {imagePreview ? (
+                                        <div className="relative">
+                                            <img src={imagePreview} alt="Preview" className="max-h-40 mx-auto rounded-lg object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => { setImageFile(null); setImagePreview(''); setFormData({ ...formData, imageUrl: '' }); }}
+                                                className="absolute top-1 right-1 p-1.5 bg-red-500 rounded-full hover:bg-red-600 transition-colors"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <Upload className="mx-auto mb-2 text-gray-500" size={28} />
+                                            <p className="text-gray-400 text-sm mb-1">Drag & drop or click to upload</p>
+                                            <p className="text-xs text-gray-600">JPG, PNG, WebP supported</p>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        setImageFile(file);
+                                                        setImagePreview(URL.createObjectURL(file));
+                                                    }
+                                                }}
+                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                            />
+                                        </>
+                                    )}
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
@@ -427,6 +519,8 @@ const EventsManagement = () => {
                                     onClick={() => {
                                         setIsModalOpen(false);
                                         setEditingItem(null);
+                                        setImageFile(null);
+                                        setImagePreview('');
                                     }}
                                     className="flex-1 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors"
                                 >
@@ -434,10 +528,12 @@ const EventsManagement = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
-                                    className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                                    disabled={isLoading || uploadingFile}
+                                    className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
-                                    {isLoading ? 'Saving...' : editingItem ? 'Update' : 'Create'}
+                                    {uploadingFile ? (
+                                        <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /><span>{uploadProgress}% Uploading...</span></>
+                                    ) : isLoading ? 'Saving...' : editingItem ? 'Update' : 'Create'}
                                 </button>
                             </div>
                         </form>

@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, CalendarPlus } from 'lucide-react';
 import moment from 'moment';
 import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface Event {
@@ -29,24 +28,24 @@ const EventSingle = () => {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                // Try fetching single event
-                const response = await fetch(API_ENDPOINTS.MEDIA_SINGLE(id!));
+                // Fetch from the dedicated events endpoint
+                const response = await fetch(API_ENDPOINTS.EVENT_BY_ID(id!));
                 if (response.ok) {
                     const data = await response.json();
                     setEvent({
                         id: data.id,
                         title: data.title,
                         description: data.description,
-                        date: data.publishedDate || new Date().toISOString(),
-                        time: data.duration || '09:00', // Using duration as time placeholder or default
-                        location: 'OceanLK Premises', // Default location
+                        date: data.date,
+                        time: data.time || null,
+                        location: data.location || 'OceanLK Premises',
                         imageUrl: data.imageUrl,
                         category: data.category || 'SOCIAL',
-                        status: data.status || 'Upcoming'
+                        status: data.status || 'UPCOMING',
                     });
                 } else {
-                    // Fallback: Fetch all and find
-                    const allResponse = await fetch(API_ENDPOINTS.MEDIA);
+                    // Fallback: search all events
+                    const allResponse = await fetch(API_ENDPOINTS.EVENTS);
                     if (allResponse.ok) {
                         const allData = await allResponse.json();
                         const foundEvent = allData.find((item: any) => item.id === id);
@@ -55,12 +54,12 @@ const EventSingle = () => {
                                 id: foundEvent.id,
                                 title: foundEvent.title,
                                 description: foundEvent.description,
-                                date: foundEvent.publishedDate || new Date().toISOString(),
-                                time: foundEvent.duration || '09:00',
-                                location: 'OceanLK Premises',
+                                date: foundEvent.date,
+                                time: foundEvent.time || null,
+                                location: foundEvent.location || 'OceanLK Premises',
                                 imageUrl: foundEvent.imageUrl,
                                 category: foundEvent.category || 'SOCIAL',
-                                status: foundEvent.status || 'Upcoming'
+                                status: foundEvent.status || 'UPCOMING',
                             });
                         } else {
                             setError('Event not found');
@@ -254,7 +253,6 @@ const EventSingle = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

@@ -124,6 +124,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         { path: '/admin/hr/jobs', icon: Briefcase, label: 'Job Postings' },
         { path: '/admin/hr/applications', icon: Users, label: 'Applications' },
         { path: '/admin/hr/media', icon: ImageIcon, label: 'Media' },
+        { path: '/admin/hr/events', icon: FileText, label: 'Events' },
     ];
 
     return (
