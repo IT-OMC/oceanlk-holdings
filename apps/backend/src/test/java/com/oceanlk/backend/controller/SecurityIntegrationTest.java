@@ -17,7 +17,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "GEMINI_API_KEY=test-key",
         "GEMINI_API_URL=http://test-url",
-        "GEMINI_API_SYSTEM_PROMPT=test-prompt"
+        "GEMINI_API_SYSTEM_PROMPT=test-prompt",
+        "MONGODB_URI=mongodb+srv://dm_db_user:PHrM7yAtlXCx4i52@cluster0.xe161cj.mongodb.net/oceanlk",
+        "JWT_SECRET=dGVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLW9ubHktZG8tbm90LXVzZS1pbi1wcm9kdWN0aW9u"
 })
 public class SecurityIntegrationTest {
 

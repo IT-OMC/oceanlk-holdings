@@ -10,12 +10,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ChatServiceTest {
 
     @Mock
     private WebClient.Builder webClientBuilder;
+
+    @Mock
+    private WebClient webClient;
 
     @InjectMocks
     private ChatService chatService;
@@ -25,6 +29,8 @@ public class ChatServiceTest {
         ReflectionTestUtils.setField(chatService, "apiKey", "test-key");
         ReflectionTestUtils.setField(chatService, "apiUrl", "http://test-url");
         ReflectionTestUtils.setField(chatService, "systemPrompt", "test-prompt");
+        // Prevent NPE: webClientBuilder.build() returns null by default in Mockito
+        when(webClientBuilder.build()).thenReturn(webClient);
     }
 
     @Test

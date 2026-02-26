@@ -1,6 +1,7 @@
 package com.oceanlk.backend.filter;
 
 import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.distributed.proxy.ProxyManager;
 import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
@@ -20,14 +21,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
  * Distributed rate limiter backed by Redis using the Bucket4j token-bucket
  * algorithm.
  * Works correctly across multiple Docker replicas because state is stored in
- * Redis,
- * not in the JVM heap (unlike the previous ConcurrentHashMap implementation).
+ * Redis, not in the JVM heap.
+ *
+ * <p>
+ * Falls back to a local in-memory rate limiter when Redis is unavailable
+ * (e.g. local development without a Redis instance).
+ * </p>
  *
  * Applied only to sensitive auth endpoints (login, OTP, password reset).
  */
@@ -35,7 +41,11 @@ import java.util.function.Supplier;
 @Slf4j
 public class RateLimitFilter extends OncePerRequestFilter {
 
+    /** Non-null only when Redis is available. */
     private final ProxyManager<byte[]> proxyManager;
+
+    /** Fallback in-memory buckets used when Redis is unavailable. */
+    private final ConcurrentHashMap<String, Bucket> localBuckets = new ConcurrentHashMap<>();
 
     @Value("${app.rate-limit.max-requests:20}")
     private int maxRequests;
@@ -48,20 +58,27 @@ public class RateLimitFilter extends OncePerRequestFilter {
             @Value("${spring.data.redis.port:6379}") int redisPort,
             @Value("${spring.data.redis.password:}") String redisPassword) {
 
-        RedisURI.Builder uriBuilder = RedisURI.builder()
-                .withHost(redisHost)
-                .withPort(redisPort);
+        ProxyManager<byte[]> pm = null;
+        try {
+            RedisURI.Builder uriBuilder = RedisURI.builder()
+                    .withHost(redisHost)
+                    .withPort(redisPort)
+                    .withTimeout(Duration.ofSeconds(2));
 
-        if (redisPassword != null && !redisPassword.isBlank()) {
-            uriBuilder.withPassword(redisPassword.toCharArray());
+            if (redisPassword != null && !redisPassword.isBlank()) {
+                uriBuilder.withPassword(redisPassword.toCharArray());
+            }
+
+            RedisClient redisClient = RedisClient.create(uriBuilder.build());
+            StatefulRedisConnection<byte[], byte[]> connection = redisClient.connect(ByteArrayCodec.INSTANCE);
+            pm = LettuceBasedProxyManager.builderFor(connection).build();
+            log.info("RateLimitFilter: using Redis backend at {}:{}", redisHost, redisPort);
+        } catch (Exception e) {
+            log.warn("RateLimitFilter: Redis unavailable ({}). Falling back to in-memory rate limiting. " +
+                    "This is fine for local development but should not happen in production.", e.getMessage());
         }
 
-        RedisClient redisClient = RedisClient.create(uriBuilder.build());
-        StatefulRedisConnection<byte[], byte[]> connection = redisClient.connect(ByteArrayCodec.INSTANCE);
-
-        this.proxyManager = LettuceBasedProxyManager.builderFor(connection).build();
-
-        log.info("RateLimitFilter initialized with Redis backend at {}:{}", redisHost, redisPort);
+        this.proxyManager = pm;
     }
 
     @Override
@@ -81,17 +98,31 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String clientIp = getClientIp(request);
         String bucketKey = "rl:" + clientIp + ":" + path;
 
-        long windowSeconds = windowMs / 1000;
-        Supplier<BucketConfiguration> configSupplier = () -> BucketConfiguration.builder()
-                .addLimit(Bandwidth.builder()
-                        .capacity(maxRequests)
-                        .refillGreedy(maxRequests, Duration.ofSeconds(windowSeconds))
-                        .build())
-                .build();
+        boolean allowed;
+        if (proxyManager != null) {
+            // Distributed Redis-backed rate limiting
+            long windowSeconds = windowMs / 1000;
+            Supplier<BucketConfiguration> configSupplier = () -> BucketConfiguration.builder()
+                    .addLimit(Bandwidth.builder()
+                            .capacity(maxRequests)
+                            .refillGreedy(maxRequests, Duration.ofSeconds(windowSeconds))
+                            .build())
+                    .build();
+            var bucket = proxyManager.builder().build(bucketKey.getBytes(), configSupplier);
+            allowed = bucket.tryConsume(1);
+        } else {
+            // Local in-memory fallback
+            long windowSeconds = windowMs / 1000;
+            Bucket bucket = localBuckets.computeIfAbsent(bucketKey, k -> Bucket.builder()
+                    .addLimit(Bandwidth.builder()
+                            .capacity(maxRequests)
+                            .refillGreedy(maxRequests, Duration.ofSeconds(windowSeconds))
+                            .build())
+                    .build());
+            allowed = bucket.tryConsume(1);
+        }
 
-        var bucket = proxyManager.builder().build(bucketKey.getBytes(), configSupplier);
-
-        if (bucket.tryConsume(1)) {
+        if (allowed) {
             filterChain.doFilter(request, response);
         } else {
             log.warn("Rate limit exceeded for IP: {} on path: {}", clientIp, path);
