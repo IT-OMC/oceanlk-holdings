@@ -5,12 +5,14 @@ import com.oceanlk.backend.dto.LoginResponse;
 import com.oceanlk.backend.model.AdminUser;
 import com.oceanlk.backend.repository.AdminUserRepository;
 import com.oceanlk.backend.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,31 +26,41 @@ public class AuthController {
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.AdminUserService adminUserService;
     private final com.oceanlk.backend.service.OtpService otpService;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             AdminUser admin = adminUserRepository.findByUsername(loginRequest.getUsername())
                     .orElse(null);
 
             if (admin == null) {
+                auditLogService.logAction(loginRequest.getUsername(), "LOGIN_FAILED", "AdminUser", null,
+                        "Login attempt with unknown username");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(createErrorResponse("Invalid username or password"));
             }
 
             if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
+                auditLogService.logAction(admin.getUsername(), "LOGIN_FAILED", "AdminUser", admin.getId(),
+                        "Login attempt with wrong password");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(createErrorResponse("Invalid username or password"));
             }
 
             if (!admin.isActive()) {
+                auditLogService.logAction(admin.getUsername(), "LOGIN_FAILED", "AdminUser", admin.getId(),
+                        "Login attempt on inactive account");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(createErrorResponse("Account is inactive"));
             }
 
             // Generate JWT token
             String token = jwtUtil.generateToken(admin.getUsername());
+
+            // Update last login date
+            admin.setLastLoginDate(LocalDateTime.now());
+            adminUserRepository.save(admin);
 
             // Log Action
             auditLogService.logAction(admin.getUsername(), "LOGIN", "AdminUser", admin.getId(),
@@ -100,17 +112,10 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        return adminUserRepository.findByEmail(email)
-                .map(user -> {
-                    // In a real app, you might want to send a specific reset token or OTP
-                    // For now, we'll use the existing OtpService logic
-                    // This is handled by OtpController /api/admin/otp/send usually,
-                    // but we can add logic here if preferred.
-                    return ResponseEntity
-                            .ok(Map.of("message", "If an account exists with this email, you will receive an OTP."));
-                })
-                .orElse(ResponseEntity
-                        .ok(Map.of("message", "If an account exists with this email, you will receive an OTP.")));
+        adminUserRepository.findByEmail(email)
+                .ifPresent(user -> otpService.sendOtp(user, "email"));
+        // Always return the same message to prevent user enumeration
+        return ResponseEntity.ok(Map.of("message", "If an account exists with this email, you will receive an OTP."));
     }
 
     @PostMapping("/reset-password")
