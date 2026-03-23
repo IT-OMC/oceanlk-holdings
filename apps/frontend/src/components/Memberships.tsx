@@ -67,8 +67,8 @@ const Memberships = () => {
                 {/* Badges Carousel - Full Width */}
                 <div className="w-full relative overflow-hidden py-10 group/carousel">
                     {/* Gradient Masks */}
-                    <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-[#000000] via-[#000000]/80 to-transparent z-20 pointer-events-none" />
-                    <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-[#000000] via-[#000000]/80 to-transparent z-20 pointer-events-none" />
+                    <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-navy via-navy/80 to-transparent z-20 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-navy via-navy/80 to-transparent z-20 pointer-events-none" />
 
                     <motion.div
                         className="flex gap-6 md:gap-10 items-center"
@@ -86,10 +86,10 @@ const Memberships = () => {
                                 <div className="relative w-56 h-64 md:w-64 md:h-72 perspective-1000">
 
                                     {/* Card Container */}
-                                    <div className="relative w-full h-full bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-between transition-all duration-500 group-hover:border-primary/30 group-hover:bg-gray-50 shadow-xl overflow-hidden">
+                                    <div className="relative w-full h-full glass rounded-2xl p-6 flex flex-col items-center justify-between transition-all duration-500 group-hover:border-accent/40 group-hover:bg-white/10 shadow-xl overflow-hidden">
 
                                         {/* Hover Gradient Background */}
-                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                                         {/* Status Badge - Removed */}
                                         {/* <div className="absolute top-4 right-4 z-20">
@@ -99,9 +99,9 @@ const Memberships = () => {
                                         </div> */}
 
                                         {/* Logo Container */}
-                                        <div className="relative z-10 w-32 h-32 flex items-center justify-center mt-2 bg-white border border-gray-100 shadow-sm p-4 rounded-2xl group-hover:scale-105 transition-transform duration-500">
+                                        <div className="relative z-10 w-32 h-32 flex items-center justify-center mt-2 bg-white/10 backdrop-blur-md border border-white/10 shadow-sm p-4 rounded-2xl group-hover:scale-105 transition-transform duration-500">
                                             {/* Logo Glow */}
-                                            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
+                                            <div className="absolute inset-0 bg-accent/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
 
                                             <img
                                                 src={member.logo}
@@ -112,10 +112,10 @@ const Memberships = () => {
 
                                         {/* Text Info */}
                                         <div className="relative z-10 w-full text-center space-y-2 mt-4">
-                                            <p className="text-gray-900 font-medium text-sm md:text-base leading-tight group-hover:text-primary transition-colors duration-300">
+                                            <p className="text-white font-medium text-sm md:text-base leading-tight group-hover:text-accent transition-colors duration-300">
                                                 {member.name}
                                             </p>
-                                            <div className="h-px w-12 mx-auto bg-gradient-to-r from-transparent via-gray-300 to-transparent group-hover:via-primary/50 transition-all" />
+                                            <div className="h-px w-12 mx-auto bg-gradient-to-r from-transparent via-gray-600 to-transparent group-hover:via-accent/50 transition-all" />
                                             {/* Since year is missing from backend, just hiding it for now */}
                                             {/* <p className="text-xs text-gray-500 font-mono">
                                                 {t('home.memberships.memberSince')} {member.year}
@@ -123,7 +123,7 @@ const Memberships = () => {
                                         </div>
 
                                         {/* Bottom Accent */}
-                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                     </div>
                                 </div>
                             </div>
