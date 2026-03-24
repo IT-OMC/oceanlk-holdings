@@ -22,15 +22,8 @@ services:
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
-      # Redis — for distributed rate limiting
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
     networks:
       - oceanlk-network
-    depends_on:
-      redis:
-        condition: service_healthy
     # Security hardening
     security_opt:
       - no-new-privileges:true        # Prevent privilege escalation via setuid binaries
@@ -77,34 +70,6 @@ services:
       timeout: 3s
       retries: 3
 
-  redis:
-    image: redis:7-alpine
-    container_name: oceanlk-redis
-    restart: unless-stopped
-    command: >
-      redis-server
-      --requirepass ${REDIS_PASSWORD}
-      --appendonly yes
-      --maxmemory 128mb
-      --maxmemory-policy allkeys-lru
-    volumes:
-      - redis-data:/data
-    networks:
-      - oceanlk-network
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-
 networks:
   oceanlk-network:
     driver: bridge
-
-volumes:
-  redis-data:
-    driver: local
