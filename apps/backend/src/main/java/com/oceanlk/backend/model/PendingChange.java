@@ -3,18 +3,18 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "pending_changes")
+@Entity
+@Table(name = "pending_changes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PendingChange {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String entityType; // "Event", "PageContent", "Company", etc.
@@ -27,9 +27,14 @@ public class PendingChange {
 
     private String reviewedBy; // Superadmin username (null if pending)
     private LocalDateTime reviewedAt;
+
+    @Column(columnDefinition = "TEXT")
     private String reviewComments; // Optional feedback from superadmin
 
+    @Column(columnDefinition = "TEXT")
     private String changeData; // JSON string of the new/updated entity
+
+    @Column(columnDefinition = "TEXT")
     private String originalData; // JSON string of original entity (for updates)
 
     public PendingChange(String entityType, String entityId, String action,

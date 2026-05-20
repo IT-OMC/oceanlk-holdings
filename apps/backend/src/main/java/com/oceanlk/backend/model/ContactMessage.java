@@ -3,24 +3,26 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "contact_messages")
+@Entity
+@Table(name = "contact_messages")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContactMessage {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
     private String email;
     private String phone;
     private String subject;
+
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     private LocalDateTime submittedDate;

@@ -3,22 +3,23 @@ package com.oceanlk.backend.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
-@Document(collection = "events")
+@Entity
+@Table(name = "events")
 public class Event {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @NotBlank(message = "Title is required")
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @NotNull(message = "Date is required")

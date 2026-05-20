@@ -1,12 +1,8 @@
 package com.oceanlk.backend.service;
 
-import com.mongodb.client.gridfs.model.GridFSFile;
-import org.bson.types.ObjectId;
+import com.oceanlk.backend.model.StoredFile;
+import com.oceanlk.backend.repository.StoredFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +14,7 @@ import java.util.List;
 public class FileStorageService {
 
     @Autowired
-    private GridFsTemplate gridFsTemplate;
+    private StoredFileRepository storedFileRepository;
 
     // Allowed file types
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
@@ -30,7 +26,7 @@ public class FileStorageService {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
     /**
-     * Save uploaded file to MongoDB GridFS
+     * Save uploaded file to PostgreSQL stored_files table
      * 
      * @param file  MultipartFile to save
      * @param group Group name (stored as metadata)
@@ -39,19 +35,37 @@ public class FileStorageService {
     public String saveFile(MultipartFile file, String group) throws IOException {
         validateFile(file);
 
-        // Store file with metadata
-        ObjectId fileId = gridFsTemplate.store(
-                file.getInputStream(),
+        StoredFile storedFile = new StoredFile(
                 file.getOriginalFilename(),
                 file.getContentType(),
-                new com.mongodb.BasicDBObject("group", group));
+                group,
+                file.getBytes()
+        );
+
+        StoredFile savedFile = storedFileRepository.save(storedFile);
 
         // Return URL to access the file
-        return "/api/files/" + fileId.toString();
+        return "/api/files/" + savedFile.getId();
     }
 
     /**
-     * Delete file from GridFS
+     * Save uploaded file and return the raw saved StoredFile entity
+     */
+    public StoredFile saveFileRaw(MultipartFile file, String group) throws IOException {
+        validateFile(file);
+
+        StoredFile storedFile = new StoredFile(
+                file.getOriginalFilename(),
+                file.getContentType(),
+                group,
+                file.getBytes()
+        );
+
+        return storedFileRepository.save(storedFile);
+    }
+
+    /**
+     * Delete file from PostgreSQL
      * 
      * @param fileUrl URL path to the file (e.g., /api/files/{id})
      */
@@ -62,7 +76,7 @@ public class FileStorageService {
 
         try {
             String fileId = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-            gridFsTemplate.delete(new Query(Criteria.where("_id").is(fileId)));
+            storedFileRepository.deleteById(fileId);
         } catch (Exception e) {
             // Log error but don't throw exception to avoid breaking flow
             System.err.println("Error deleting file: " + e.getMessage());
@@ -70,17 +84,27 @@ public class FileStorageService {
     }
 
     /**
-     * Retrieve file resource from GridFS
-     * 
-     * @param id File ObjectId string
-     * @return GridFsResource
+     * Delete file from PostgreSQL by raw ID
      */
-    public GridFsResource getFile(String id) {
-        GridFSFile gridFSFile = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
-        if (gridFSFile == null) {
-            return null;
+    public void deleteFileRaw(String id) {
+        if (id == null) {
+            return;
         }
-        return gridFsTemplate.getResource(gridFSFile);
+        try {
+            storedFileRepository.deleteById(id);
+        } catch (Exception e) {
+            System.err.println("Error deleting file by raw ID: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieve file resource from PostgreSQL
+     * 
+     * @param id File UUID string
+     * @return StoredFile
+     */
+    public StoredFile getFile(String id) {
+        return storedFileRepository.findById(id).orElse(null);
     }
 
     /**

@@ -3,18 +3,18 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "talent_pool_applications")
+@Entity
+@Table(name = "talent_pool_applications")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TalentPoolApplication {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String fullName;
@@ -22,6 +22,8 @@ public class TalentPoolApplication {
     private String phone;
     private String position;
     private String experience;
+
+    @Column(columnDefinition = "TEXT")
     private String message;
 
     // CV file storage (GridFS)

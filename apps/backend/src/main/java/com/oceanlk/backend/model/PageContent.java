@@ -3,15 +3,16 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "page_content")
+@Entity
+@Table(name = "page_content")
 public class PageContent {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String pageIdentifier; // e.g., "HOME", "ABOUT", "CONTACT"
@@ -19,6 +20,8 @@ public class PageContent {
 
     private String title;
     private String subtitle;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private String imageUrl;

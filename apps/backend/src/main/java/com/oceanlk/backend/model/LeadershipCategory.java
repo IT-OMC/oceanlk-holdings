@@ -3,15 +3,16 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "leadership_categories")
+@Entity
+@Table(name = "leadership_categories")
 public class LeadershipCategory {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String code; // BOARD, EXECUTIVE, SENIOR (immutable identifier)

@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "admin_users")
+@Entity
+@Table(name = "admin_users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminUser {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
@@ -31,7 +31,14 @@ public class AdminUser {
     private LocalDateTime lastLoginDate;
     private boolean active;
     private boolean verified;
+
+    @Column(columnDefinition = "TEXT")
     private String avatar;
+
+    @ElementCollection
+    @CollectionTable(name = "admin_user_email_preferences", joinColumns = @JoinColumn(name = "admin_user_id"))
+    @MapKeyColumn(name = "preference_key")
+    @Column(name = "preference_value")
     private java.util.Map<String, Boolean> emailPreferences;
 
     // OTP fields

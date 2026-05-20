@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.Embeddable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class SeoMetadata {
     private String metaTitle;
     private String metaDescription;

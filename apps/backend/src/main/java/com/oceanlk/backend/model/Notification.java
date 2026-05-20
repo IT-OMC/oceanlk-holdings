@@ -3,19 +3,21 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "notifications")
+@Entity
+@Table(name = "notifications")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String message;
     private String type; // "INFO", "WARNING", "ERROR", "SUCCESS"
     private boolean isRead;

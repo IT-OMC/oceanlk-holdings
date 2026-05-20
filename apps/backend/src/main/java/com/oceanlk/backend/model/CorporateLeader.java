@@ -3,23 +3,29 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "corporate_leaders")
+@Entity
+@Table(name = "corporate_leaders")
 public class CorporateLeader {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
     private String position;
     private String department; // "BOARD", "EXECUTIVE", "SENIOR"
 
+    @Column(columnDefinition = "TEXT")
     private String image;
+
+    @Column(columnDefinition = "TEXT")
     private String bio; // For the "Read More" section
+
+    @Column(columnDefinition = "TEXT")
     private String shortDescription; // For the card view
 
     private String linkedin;

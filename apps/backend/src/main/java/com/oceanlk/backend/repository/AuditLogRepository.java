@@ -1,10 +1,10 @@
 package com.oceanlk.backend.repository;
 
 import com.oceanlk.backend.model.AuditLog;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface AuditLogRepository extends MongoRepository<AuditLog, String> {
+public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     List<AuditLog> findAllByOrderByTimestampDesc();
 
     List<AuditLog> findTop10ByOrderByTimestampDesc();

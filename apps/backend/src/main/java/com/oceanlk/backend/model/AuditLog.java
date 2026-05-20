@@ -3,23 +3,25 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "audit_logs")
+@Entity
+@Table(name = "audit_logs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String username; // The admin who performed the action
     private String action; // CREATE, UPDATE, DELETE, LOGIN
     private String entityType; // JobOpportunity, MediaItem, etc.
     private String entityId; // ID of the affected entity
+
+    @Column(columnDefinition = "TEXT")
     private String details; // Optional description or change diff
 
     private LocalDateTime timestamp;

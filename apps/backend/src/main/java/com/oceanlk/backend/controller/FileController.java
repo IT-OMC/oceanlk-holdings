@@ -1,9 +1,10 @@
 package com.oceanlk.backend.controller;
 
+import com.oceanlk.backend.model.StoredFile;
 import com.oceanlk.backend.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,17 @@ public class FileController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Resource> getFile(@PathVariable String id) throws IOException {
-        GridFsResource resource = fileStorageService.getFile(id);
+        StoredFile storedFile = fileStorageService.getFile(id);
 
-        if (resource == null) {
+        if (storedFile == null) {
             return ResponseEntity.notFound().build();
         }
 
+        ByteArrayResource resource = new ByteArrayResource(storedFile.getData());
+
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(resource.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .contentType(MediaType.parseMediaType(storedFile.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + storedFile.getFilename() + "\"")
                 .body(resource);
     }
 }

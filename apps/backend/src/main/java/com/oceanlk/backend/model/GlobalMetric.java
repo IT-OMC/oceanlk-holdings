@@ -3,15 +3,16 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "global_metrics")
+@Entity
+@Table(name = "global_metrics")
 public class GlobalMetric {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id; // MongoDB uses String ID by default usually
 
     private String label;

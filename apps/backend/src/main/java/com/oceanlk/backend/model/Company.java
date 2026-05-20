@@ -2,31 +2,45 @@ package com.oceanlk.backend.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Data
-@Document(collection = "companies")
+@Entity
+@Table(name = "companies")
 public class Company {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @NotBlank(message = "Title is required")
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description; // Renamed from desc
+
+    @Column(columnDefinition = "TEXT")
     private String longDescription;
+
     private String logoUrl; // Renamed from logo
     private String website; // New
     private String industry; // New
     private String established; // Renamed from founded
+
+    @Column(columnDefinition = "TEXT")
     private String image;
+
     private String video;
     private String employees;
     private String revenue;
     private String category;
+
+    @ElementCollection
+    @CollectionTable(name = "company_stats", joinColumns = @JoinColumn(name = "company_id"))
     private List<Stat> stats;
 
     @Data
+    @Embeddable
     public static class Stat {
         private String label;
         private String value;

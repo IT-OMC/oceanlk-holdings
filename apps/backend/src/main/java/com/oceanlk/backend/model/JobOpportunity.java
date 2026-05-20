@@ -3,18 +3,18 @@ package com.oceanlk.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "job_opportunities")
+@Entity
+@Table(name = "job_opportunities")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobOpportunity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String title;
@@ -22,6 +22,8 @@ public class JobOpportunity {
     private String location;
     private String type; // Full-time, Part-time, Contract, etc.
     private String category; // Engineering, Hospitality, Technology, etc.
+
+    @Column(columnDefinition = "TEXT")
     private String description;
     private boolean featured;
     private String level; // Junior, Mid-Senior, Senior, Manager, etc.

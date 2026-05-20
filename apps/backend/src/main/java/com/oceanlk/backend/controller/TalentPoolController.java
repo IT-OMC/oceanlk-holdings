@@ -1,20 +1,18 @@
 package com.oceanlk.backend.controller;
 
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import com.oceanlk.backend.model.TalentPoolApplication;
 import com.oceanlk.backend.repository.TalentPoolApplicationRepository;
 import com.oceanlk.backend.service.EmailService;
+import com.oceanlk.backend.service.FileStorageService;
+import com.oceanlk.backend.model.StoredFile;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +32,7 @@ public class TalentPoolController {
 
     private final TalentPoolApplicationRepository applicationRepository;
     private final EmailService emailService;
-    private final GridFsTemplate gridFsTemplate;
+    private final FileStorageService fileStorageService;
     private final com.oceanlk.backend.service.AuditLogService auditLogService;
     private final com.oceanlk.backend.service.NotificationService notificationService;
 
@@ -73,10 +71,8 @@ public class TalentPoolController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
                 }
 
-                String fileId = gridFsTemplate.store(
-                        file.getInputStream(),
-                        file.getOriginalFilename(),
-                        file.getContentType()).toString();
+                StoredFile savedFile = fileStorageService.saveFileRaw(file, "CV");
+                String fileId = savedFile.getId();
 
                 application.setCvFileId(fileId);
                 application.setCvFilename(file.getOriginalFilename());
@@ -154,25 +150,23 @@ public class TalentPoolController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
 
-            // Find the file in GridFS by ObjectId
-            com.mongodb.client.gridfs.model.GridFSFile gridFSFile = gridFsTemplate.findOne(
-                    Query.query(Criteria.where("_id").is(new org.bson.types.ObjectId(application.getCvFileId()))));
+            StoredFile storedFile = fileStorageService.getFile(application.getCvFileId());
 
-            if (gridFSFile == null) {
+            if (storedFile == null) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "CV file not found in storage");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
 
-            GridFsResource resource = gridFsTemplate.getResource(gridFSFile);
+            ByteArrayResource resource = new ByteArrayResource(storedFile.getData());
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + application.getCvFilename() + "\"")
-                    .body(new InputStreamResource(resource.getInputStream()));
+                    .body(resource);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Failed to download CV");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
@@ -230,12 +224,12 @@ public class TalentPoolController {
 
             TalentPoolApplication application = applicationOpt.get();
 
-            // Delete CV file from GridFS if it exists
+            // Delete CV file from PostgreSQL if it exists
             if (application.getCvFileId() != null) {
                 try {
-                    gridFsTemplate.delete(Query.query(Criteria.where("_id").is(application.getCvFileId())));
+                    fileStorageService.deleteFileRaw(application.getCvFileId());
                 } catch (Exception e) {
-                    log.error("Failed to delete CV file from GridFS: {}", e.getMessage());
+                    log.error("Failed to delete CV file: {}", e.getMessage());
                 }
             }
 
