@@ -7,3 +7,20 @@ coverage/
 .vscode/
 target/
 **/target/
+.env*.local
+*.tar.gz
+
+# Deployment artifacts
+*.zip
+
+# Test reports
+api-test-report.json
+
+# Local environment files
+.env.local
+.env.production
+
+# Keys and sensitive files
+*.key
+*.pem
+oceanlk_key
