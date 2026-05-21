@@ -2,9 +2,9 @@ name: Verify and Deploy Frontend to Vercel
 
 on:
   push:
-    branches: [ "production", "development" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "production", "development" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:

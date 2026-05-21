@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import { motion, animate, useInView } from 'framer-motion';
 import { Globe, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { oceanData } from '../data/mockData';
+
 
 // Counter Component for Animated Metrics
 const Counter = ({ from, to, duration = 2, suffix = "" }: { from: number; to: number; duration?: number; suffix?: string }) => {
@@ -28,6 +28,17 @@ const Counter = ({ from, to, duration = 2, suffix = "" }: { from: number; to: nu
 };
 
 const HoldingDescription = () => {
+
+    const partners = [
+        { name: "MSC" },
+        { name: "Maersk" },
+        { name: "CMA CGM" },
+        { name: "Evergreen" },
+        { name: "COSCO" },
+        { name: "Hapag-Lloyd" },
+        { name: "ONE" },
+        { name: "Yang Ming" },
+    ];
 
     // Stats kept for the bottom section
     const stats = [
@@ -88,7 +99,7 @@ const HoldingDescription = () => {
                             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
                             className="flex gap-16 md:gap-24 items-center w-max"
                         >
-                            {[...oceanData.partners, ...oceanData.partners].map((partner, i) => ( // Duplicate for loop
+                            {[...partners, ...partners].map((partner, i) => ( // Duplicate for loop
                                 <div key={i} className="flex flex-col items-center gap-4 group">
                                     <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 flex items-center justify-center p-6 hover:bg-white/10 transition-all duration-500 transform group-hover:scale-110 group-hover:border-cyan-400/30">
                                         {/* Placeholder for actual logo usage - using generic div if image fails or just name styling */}
