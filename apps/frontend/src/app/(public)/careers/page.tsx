@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Briefcase, MapPin, Clock, ArrowRight, UploadCloud, CheckCircle, Sparkles } from 'lucide-react'
 import CareersClientComponent from './CareersClient'
@@ -81,6 +82,12 @@ export default async function CareersPage() {
         <p className="mt-4 text-gray-600 text-base leading-relaxed">
           Join a multidisciplinary team driving the future of global maritime, logistics, clean energy, and high-growth technologies.
         </p>
+        <Link
+          href="/careers/culture"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#0056b3] hover:text-[#004494] group"
+        >
+          Discover Life at OceanLK <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </Link>
       </div>
 
       {/* Interactive Job Board & Modal */}

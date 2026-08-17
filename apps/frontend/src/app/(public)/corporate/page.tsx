@@ -1,6 +1,8 @@
 import React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { ShieldCheck, Target, Compass, Award, Linkedin, Mail, CheckCircle2 } from 'lucide-react'
+import BentoGrid from '@/components/corporate/BentoGrid'
+import Timeline from '@/components/corporate/Timeline'
 
 export const metadata = {
   title: 'Corporate Leadership & Governance',
@@ -59,9 +61,9 @@ export default async function CorporatePage() {
   const displayLeaders = leaders.length > 0 ? leaders : fallbackLeaders
 
   return (
-    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
+      <div className="pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center max-w-3xl mb-4">
         <span className="text-xs font-bold text-[#0056b3] uppercase tracking-widest">About the Enterprise</span>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mt-2">
           Corporate Governance & Leadership
@@ -71,6 +73,13 @@ export default async function CorporatePage() {
         </p>
       </div>
 
+      {/* Who We Are / Our Journey - dark storytelling band */}
+      <div className="bg-navy">
+        <BentoGrid />
+        <Timeline />
+      </div>
+
+      <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Mission & Vision Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
         <div className="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm">
@@ -174,6 +183,7 @@ export default async function CorporatePage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

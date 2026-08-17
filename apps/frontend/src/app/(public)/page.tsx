@@ -1,34 +1,51 @@
 import React from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { ArrowRight, ShieldCheck, Globe2, Anchor, Award, TrendingUp, Sparkles, Building2 } from 'lucide-react'
+import { ArrowRight, ShieldCheck, Globe2, Building2 } from 'lucide-react'
+import Hero from '@/components/Hero'
+import Partners, { PartnerItem } from '@/components/Partners'
+import GlobalMetrics, { MetricItem } from '@/components/GlobalMetrics'
+import BusinessVideo from '@/components/BusinessVideo'
+import EcosystemAccordion from '@/components/EcosystemAccordion'
 
 export const revalidate = 60 // Revalidate home page at most once per minute (ISR)
 
 async function getHomeData() {
   const supabase = await createClient()
 
-  const [metricsRes, companiesRes] = await Promise.all([
+  const [metricsRes, companiesRes, partnersRes] = await Promise.all([
     supabase.from('global_metrics').select('*').order('display_order', { ascending: true }),
     supabase.from('companies').select('*').eq('is_active', true).order('display_order', { ascending: true }).limit(6),
+    supabase
+      .from('partners')
+      .select('*')
+      .eq('is_active', true)
+      .eq('category', 'PARTNER')
+      .order('display_order', { ascending: true }),
   ])
 
   return {
     metrics: metricsRes.data || [],
     companies: companiesRes.data || [],
+    partners: partnersRes.data || [],
   }
 }
 
 export default async function HomePage() {
-  const { metrics, companies } = await getHomeData()
+  const { metrics, companies, partners } = await getHomeData()
 
-  // Default fallback stats if DB is fresh
-  const displayMetrics = metrics.length > 0 ? metrics : [
-    { label: 'Global Ports Served', value: '45+', suffix: 'Locations', icon: 'Anchor' },
-    { label: 'Group Workforce', value: '2,500+', suffix: 'Professionals', icon: 'Globe2' },
-    { label: 'Annual Tonnage Handled', value: '1.2M', suffix: 'TEUs', icon: 'TrendingUp' },
-    { label: 'Years of Excellence', value: '25+', suffix: 'Track Record', icon: 'Award' },
-  ]
+  const displayMetrics: MetricItem[] = metrics.map((m: any) => ({
+    id: m.id,
+    label: m.label,
+    value: `${m.value}${m.suffix ?? ''}`,
+    icon: m.icon || 'Globe',
+  }))
+
+  const displayPartners: PartnerItem[] = partners.map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    logo: p.logo_url,
+  }))
 
   // Default fallback companies if DB is fresh
   const displayCompanies = companies.length > 0 ? companies : [
@@ -60,59 +77,11 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#001529] via-[#002845] to-[#001529] text-white py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        {/* Ambient Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-[#2ecc71] mb-6">
-            <Sparkles className="w-3.5 h-3.5" /> Next-Generation Global Enterprise
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl mx-auto leading-tight sm:leading-none">
-            Empowering Global Trade, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0066d4] via-[#58d68d] to-[#2ecc71]">
-              Shaping The Future
-            </span>
-          </h1>
-
-          <p className="mt-6 text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
-            OceanLK Holdings drives international commerce through specialized maritime operations, integrated supply chains, sustainable energy, and visionary investments.
-          </p>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/companies"
-              className="px-8 py-4 rounded-full bg-[#2ecc71] hover:bg-[#27ae60] text-[#001529] font-bold text-base shadow-lg hover:shadow-emerald-500/25 transition-all flex items-center gap-2 active:scale-95"
-            >
-              Explore Subsidiaries <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/corporate"
-              className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-base border border-white/20 backdrop-blur-md transition-all active:scale-95"
-            >
-              Our Vision & Board
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* GLOBAL METRICS STRIP */}
-      <section className="bg-white border-b border-gray-200 py-12 relative -mt-6 rounded-t-3xl max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 shadow-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {displayMetrics.map((item, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center p-4 rounded-2xl hover:bg-gray-50 transition-colors">
-              <span className="text-3xl sm:text-5xl font-black text-[#0056b3] tracking-tight mb-1">
-                {item.value}
-              </span>
-              <span className="text-sm font-bold text-gray-900">{item.label}</span>
-              <span className="text-xs text-gray-500 mt-0.5">{item.suffix}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Hero />
+      <Partners partners={displayPartners} />
+      <GlobalMetrics metrics={displayMetrics} />
+      <BusinessVideo />
+      <EcosystemAccordion />
 
       {/* CORE SUBSIDIARIES SHOWCASE */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">

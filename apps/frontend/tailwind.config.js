@@ -36,6 +36,24 @@ module.exports = {
       fontFamily: {
         sans: ['"Saira Semi Condensed"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
+      animation: {
+        buoyancy: 'buoyancy 6s ease-in-out infinite',
+        'buoyancy-slow': 'buoyancy 8s ease-in-out infinite',
+        'slide-down': 'slideDown 0.8s ease-out',
+      },
+      keyframes: {
+        buoyancy: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
     },
   },
   plugins: [],
