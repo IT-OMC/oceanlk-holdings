@@ -43,30 +43,38 @@ A premium, interactive corporate website for Ocean Ceylon Holdings showcasing th
 ## 📁 Project Structure
 
 ```
-OCEANLK/
+apps/frontend/
 ├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── Hero.tsx        # Dynamic carousel hero section
-│   │   ├── Navbar.tsx      # Navigation with dropdowns
-│   │   ├── TopBar.tsx      # Corporate top bar
-│   │   ├── Portfolio.tsx   # 3D solar system visualization
-│   │   ├── Stats.tsx       # Animated statistics
-│   │   └── Footer.tsx      # Footer section
-│   ├── pages/              # Page components
-│   │   ├── Home.tsx        # Landing page
-│   │   ├── Corporate.tsx   # Corporate information
-│   │   ├── Companies.tsx   # Subsidiaries overview
-│   │   └── Contact.tsx     # Contact page
-│   ├── data/               # Mock data & content
-│   │   └── mockData.ts     # Centralized data structure
-│   ├── App.tsx             # Main app component
-│   ├── index.css           # Global styles
-│   └── main.tsx            # Entry point
-├── public/                 # Static assets
-├── index.html             # HTML template
-├── vite.config.ts         # Vite configuration
-├── tailwind.config.js     # Tailwind configuration
-└── tsconfig.json          # TypeScript configuration
+│   ├── components/          # Modular & reusable UI components
+│   │   ├── admin/          # Admin-specific components (Sidebar, Visualizer, etc.)
+│   │   ├── chat/           # Chatbot & WhatsApp assistance components
+│   │   ├── corporate/      # Corporate section components (BentoGrid, Timeline)
+│   │   ├── culture/        # Culture & workplace components
+│   │   ├── news/           # News & media components
+│   │   └── index.ts        # Barrel exports for clean component imports
+│   ├── pages/              # Route views
+│   │   ├── admin/          # Admin dashboard & management pages
+│   │   ├── careers/        # Careers, jobs, events, culture
+│   │   ├── companies/      # Subsidiaries and single company profiles
+│   │   ├── corporate/      # Profile, leadership, governance
+│   │   ├── news/           # Blogs, news, media, press releases
+│   │   ├── Contact.tsx     # Interactive contact & inquiry form
+│   │   └── Home.tsx        # Dynamic landing page
+│   ├── layouts/            # Layout wrappers (MainLayout, AdminLayout)
+│   ├── hooks/              # Custom React hooks (useAuth, useWhatsApp, etc.)
+│   ├── services/           # Service layer & API communications
+│   ├── types/              # TypeScript interfaces and domain type models
+│   ├── utils/              # API helpers, Axios/fetch clients, and constants
+│   ├── data/               # Static and mock dataset definitions
+│   ├── i18n/               # Localization and translation configs
+│   ├── App.tsx             # Main router and route definitions
+│   ├── index.css           # Global Tailwind and custom styles
+│   └── main.tsx            # Application bootstrap entry point
+├── public/                 # Static public assets, icons, and textures
+├── index.html              # HTML shell
+├── vite.config.ts          # Vite build, proxy, and manual chunking configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+└── tsconfig.json           # TypeScript configuration and path aliases
 ```
 
 ## 🛠️ Installation

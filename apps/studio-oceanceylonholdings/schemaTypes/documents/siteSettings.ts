@@ -1,0 +1,126 @@
+import {defineType, defineField} from 'sanity'
+import {CogIcon} from '@sanity/icons/Cog'
+
+export const siteSettings = defineType({
+  name: 'siteSettings',
+  title: 'Site Settings',
+  type: 'document',
+  icon: CogIcon,
+  groups: [
+    {name: 'general', title: '🏢 General', default: true},
+    {name: 'contact', title: '📞 Contact & Address'},
+    {name: 'announcement', title: '📢 Announcement Banner'},
+    {name: 'social', title: '🌐 Social Links & SEO'},
+  ],
+  fields: [
+    defineField({
+      name: 'siteTitle',
+      title: 'Company / Website Name',
+      type: 'string',
+      group: 'general',
+      initialValue: 'Ocean Ceylon Holdings',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'tagline',
+      title: 'Tagline / Slogan',
+      type: 'string',
+      group: 'general',
+      placeholder: 'Empowering maritime, energy, and global trade solutions',
+    }),
+    defineField({
+      name: 'siteLogo',
+      title: 'Primary Logo',
+      type: 'image',
+      group: 'general',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alt Text',
+          initialValue: 'Ocean Ceylon Holdings Logo',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'email',
+      title: 'Primary Email Address',
+      type: 'string',
+      group: 'contact',
+      placeholder: 'info@oceanceylon.com',
+      validation: (rule) => rule.email(),
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Contact Phone Number',
+      type: 'string',
+      group: 'contact',
+      placeholder: '+94 11 234 5678',
+    }),
+    defineField({
+      name: 'address',
+      title: 'Headquarters Address',
+      type: 'text',
+      rows: 2,
+      group: 'contact',
+      placeholder: 'Level 18, World Trade Center, Colombo 01, Sri Lanka',
+    }),
+    defineField({
+      name: 'announcementActive',
+      title: 'Enable Top Announcement Banner',
+      type: 'boolean',
+      group: 'announcement',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'announcementText',
+      title: 'Banner Message',
+      type: 'string',
+      group: 'announcement',
+      hidden: ({document}) => !document?.announcementActive,
+      placeholder: 'Exciting news: Our 2026 Sustainability Report is now available.',
+    }),
+    defineField({
+      name: 'announcementLink',
+      title: 'Banner Destination Link',
+      type: 'url',
+      group: 'announcement',
+      hidden: ({document}) => !document?.announcementActive,
+      placeholder: 'https://oceanceylon.com/news/sustainability-2026',
+    }),
+    defineField({
+      name: 'socialLinkedIn',
+      title: 'LinkedIn URL',
+      type: 'url',
+      group: 'social',
+      placeholder: 'https://linkedin.com/company/ocean-ceylon-holdings',
+    }),
+    defineField({
+      name: 'socialTwitter',
+      title: 'X (Twitter) URL',
+      type: 'url',
+      group: 'social',
+    }),
+    defineField({
+      name: 'socialFacebook',
+      title: 'Facebook URL',
+      type: 'url',
+      group: 'social',
+    }),
+    defineField({
+      name: 'defaultOgImage',
+      title: 'Default Social Share Image (OG)',
+      type: 'image',
+      group: 'social',
+      description: 'Used when sharing pages that do not have their own feature image.',
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'siteTitle',
+      subtitle: 'tagline',
+      media: 'siteLogo',
+    },
+  },
+})

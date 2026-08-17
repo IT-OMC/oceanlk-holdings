@@ -1,0 +1,113 @@
+Date,Description,Author,Category (Web / Admin Panel)
+2026-01-13,feat: Add corporate profile and blog features,MiniduJ,Web
+2026-01-13,Update project with latest changes,MiniduJ,Web
+2026-01-13,Fix TypeScript build errors for Vercel deployment,MiniduJ,Web
+2026-01-13,Merge pull request #1 from IT-OMC/main,Minidu,Web
+2026-01-13,Add GitHub Actions workflow for Vercel deployment,MiniduJ,Web
+2026-01-14,feat: redesign portfolio logos and add under development popup,MiniduJ,Web
+2026-01-14,Build and push new changes to production,MiniduJ,Web
+2026-01-14,"feat: Redesign Holding, Culture, and Restrict Access",MiniduJ,Web
+2026-01-16,"feat: Fix Onboard design, adjust Culture layout, add Gallery, and update components",MiniduJ,Web
+2026-01-16,feat: redesign home partnerships and update under construction msg,MiniduJ,Web
+2026-01-16,feat: redesign onboarding page with liquid glass aesthetics and bento grid layout,MiniduJ,Web
+2026-01-16,"feat: introduce comprehensive content sections including news, corporate, careers, and contact pages with supporting components, data, and assets.",MiniduJ,Web
+2026-01-19,Update popup text: change 'under control' to 'under construction',MiniduJ,Web
+2026-01-19,"Enhance globe: Updated harbor coordinates, added OCH logo, and stopped auto-rotation",MiniduJ,Web & Admin Panel
+2026-01-19,"Fix admin panel: Job posting,Media status, Global error handling, Security roles",MiniduJ,Web & Admin Panel
+2026-01-20,Enhance company card design with white theme and improved typography,MiniduJ,Web & Admin Panel
+2026-01-20,"feat: Initialize full-stack application with core backend APIs, services, and models for content, user interaction, and media management, alongside initial frontend project setup.",MiniduJ,Web & Admin Panel
+2026-01-21,"Update Media Center: Add Documents tab, Single View, and backend API integration",MiniduJ,Web & Admin Panel
+2026-01-23,"feat: Update leadership, jobs, culture, and admin modules",MiniduJ,Web & Admin Panel
+2026-01-26,Update admin panel and culture page,MiniduJ,Web & Admin Panel
+2026-01-28,chore: update development branch with latest changes and .gitignore,MiniduJ,Web & Admin Panel
+2026-01-29,chore: update gitignore and remove build artifacts,MiniduJ,Web & Admin Panel
+2026-01-29,feat: sync development branch changes,MiniduJ,Web & Admin Panel
+2026-01-29,feat: implement super admin change tracking and visualization,MiniduJ,Admin Panel
+2026-01-29,"feat: implement notification system, security updates, and add oceanlk-next project",MiniduJ,Web & Admin Panel
+2026-01-29,oceanlk-next,MiniduJ,Web
+2026-01-29,cleanup: remove redundant oceanlk-next project,MiniduJ,Web & Admin Panel
+2026-01-29,restore: restore oceanlk-next project files,MiniduJ,Web & Admin Panel
+2026-01-29,feat: sync backend models with optimized schema,MiniduJ,Admin Panel
+2026-01-29,cleanup: complete migration and dismantle oceanlk-next folder,MiniduJ,Web & Admin Panel
+2026-01-29,"Refactor frontend API, remove axios, fix build errors, and add WhatsApp feature",MiniduJ,Web & Admin Panel
+2026-01-30,prepare deployment for test.ocean.lk,MiniduJ,Web & Admin Panel
+2026-01-30,Merge branch 'development' into main,MiniduJ,Web
+2026-01-30,update gitignore for vercel,MiniduJ,Web
+2026-01-30,Update under development popup message,MiniduJ,Web & Admin Panel
+2026-01-30,Add Vercel configuration for frontend subdirectory deployment,MiniduJ,Web
+2026-01-30,comit,MiniduJ,Web
+2026-01-30,changed the default branch to main,MiniduJ,Web
+2026-01-30,Merge production into main - set main as production branch,MiniduJ,Web
+2026-01-30,Trigger Vercel deployment for development branch,MiniduJ,Web
+2026-01-30,Fix Vercel build: add rootDirectory to vercel.json,MiniduJ,Web
+2026-01-30,Fix Vercel build: remove invalid properties from vercel.json,MiniduJ,Web
+2026-01-30,feat: Mobile-first responsive refactor across all components,MiniduJ,Web & Admin Panel
+2026-02-02,Update backend controllers and frontend admin components,MiniduJ,Web & Admin Panel
+2026-02-03,feat: add unit tests for OtpService,google-labs-jules[bot],Admin Panel
+2026-02-05,"feat: Add production configuration, Docker setup, and service layer improvements",MiniduJ,Web & Admin Panel
+2026-02-05,"Audit, refactor and optimize backend APIs",google-labs-jules[bot],Admin Panel
+2026-02-05,"Audit, refactor and optimize backend APIs",google-labs-jules[bot],Admin Panel
+2026-02-05,Fix API endpoint mismatches and standardize media URL handling,MiniduJ,Web & Admin Panel
+2026-02-06,"Implement Documents page, Events enhancements, and UI fixes",MiniduJ,Web & Admin Panel
+2026-02-09,"Add and ignore oceanlk-deploy.tar.gz, update codebase",MiniduJ,Web & Admin Panel
+2026-02-11,"feat: Implement comprehensive security configurations, integrate chat functionality, and establish initial frontend structure.",MiniduJ,Web & Admin Panel
+2026-02-11,chore: restructure project to monorepo,MiniduJ,Web & Admin Panel
+2026-02-11,"Update chatbot service, frontend components and configurations",MiniduJ,Web & Admin Panel
+2026-02-11,Fix TypeScript build errors in MarkdownRenderer,MiniduJ,Web
+2026-02-11,feat: configure Railway deployment with GitHub Actions CI/CD,MiniduJ,Web & Admin Panel
+2026-02-11,feat: Add GitHub Actions workflow for automated backend deployment to Railway.,MiniduJ,Web
+2026-02-11,chore: push changes to qa branch including tests and gitignore updates,MiniduJ,Web & Admin Panel
+2026-02-11,"feat: Add initial `application.properties` for backend configuration including MongoDB, email, JWT, and Gemini API settings.",MiniduJ,Admin Panel
+2026-02-11,"chore: remove test reports, test files, and test scripts from qa branch",MiniduJ,Web & Admin Panel
+2026-02-12,Merge pull request #5 from IT-OMC/add-otp-service-unit-test-4444525031585981889,Minidu,Web
+2026-02-12,chore: setup oracle cloud deployment,MiniduJ,Web & Admin Panel
+2026-02-12,fix(deploy): use pre-built jar in dockerfile,MiniduJ,Admin Panel
+2026-02-12,fix(deploy): use shared docker network for backend,MiniduJ,Admin Panel
+2026-02-12,feat(deploy): consolidate frontend and backend deployment to Oracle Cloud,MiniduJ,Admin Panel
+2026-02-12,feat(deploy): update frontend api url to relative path,MiniduJ,Admin Panel
+2026-02-12,chore: Delete file.,MiniduJ,Web & Admin Panel
+2026-02-12,fix(deploy): match docker internal port to backend port,MiniduJ,Admin Panel
+2026-02-12,chore(deploy): add full-stack deployment workflow to production,MiniduJ,Admin Panel
+2026-02-12,chore(config): add deployment configs to production,MiniduJ,Web & Admin Panel
+2026-02-12,chore(config): add build configs to production,MiniduJ,Web
+2026-02-12,chore(sync): update production codebase with maintenance mode enabled,MiniduJ,Web & Admin Panel
+2026-02-13,chore: remove vercel configurations and references,MiniduJ,Web
+2026-02-13,feat: configure nginx api proxy and update deployment workflow,MiniduJ,Web & Admin Panel
+2026-02-13,feat: Introduce Gemini AI chat functionality with Gemini API integration and backend configuration.,MiniduJ,Admin Panel
+2026-02-13,"feat: Implement fullstack CI/CD deployment, centralize API endpoints, and add global search functionality with new UI components.",MiniduJ,Web & Admin Panel
+2026-02-13,fix: resolve frontend api prefixes and remove hardcoded urls,MiniduJ,Web
+2026-02-13,"chore: production readiness hardening - security improvements, frontend lint fixes, and optimized configurations",MiniduJ,Web & Admin Panel
+2026-02-13,fix: allow test.ocean.lk in CORS and finalize api paths,MiniduJ,Web
+2026-02-13,fix: add test.ocean.lk to CORS allowed origins,MiniduJ,Admin Panel
+2026-02-13,"feat: Implement core security configuration, authentication endpoints, and global exception handling.",MiniduJ,Admin Panel
+2026-02-13,"feat: Add talent pool application, contact page, admin login, and foundational backend/frontend structure with Oracle Cloud deployment documentation.",MiniduJ,Web & Admin Panel
+2026-02-16,"refactor: overhaul deploy workflow with separate build steps, health checks, and verification",MiniduJ,Admin Panel
+2026-02-16,update: EmailService and application properties,MiniduJ,Admin Panel
+2026-02-16,fix(security): allow actuator endpoints for health checks,MiniduJ,Admin Panel
+2026-02-16,fix(deploy): force SERVER_PORT=8080 to match docker internal mapping,MiniduJ,Admin Panel
+2026-02-16,fix(deploy): use wget for health check (alpine image compatibility),MiniduJ,Admin Panel
+2026-02-16,"fix(email): enable email default, fix smtp ssl trust, add debug logs",MiniduJ,Admin Panel
+2026-02-16,"Audit and Enhance Leadership & Approval workflows, and implement Admin Profile preferences",MiniduJ,Web & Admin Panel
+2026-02-16,"Security Hardening: Prevent sensitive data exposure, protect keys, and mitigate user enumeration",MiniduJ,Web & Admin Panel
+2026-02-16,feat(security): allow public access to leadership and content endpoints for audit fix,MiniduJ,Admin Panel
+2026-02-16,security: remove seeded admin and superadmin credentials,MiniduJ,Web & Admin Panel
+2026-02-16,Fix media gallery connectivity and consolidate media management view,MiniduJ,Web & Admin Panel
+2026-02-17,Hide second section of culture page and update server data seeding,MiniduJ,Web & Admin Panel
+2026-02-23,feat: add Bcrypt utilities and server user creation script,MiniduJ,Web & Admin Panel
+2026-02-25,"feat: Introduce event listing with idea submission, single event views, and initial admin management for events and HR media.",Minidu,Web & Admin Panel
+2026-02-25,"feat: Implement initial backend and frontend services with Spring Boot, security, rate limiting, and Docker Compose orchestration.",Minidu,Web & Admin Panel
+2026-02-26,"chore: clean up debug/dev files, update tests and rate limit filter",Minidu,Admin Panel
+2026-02-26,fix(backend): enhance AuthController security logging and remove OtpController hardcoded CORS,Minidu,Admin Panel
+2026-03-16,Update ContactControllerTest.java,Minidu,Admin Panel
+2026-03-23,"feat: implement Memberships component with API data fetching, internationalization, and an animated carousel display.",Minidu,Web
+2026-03-24,"refactor: enable admin user seeding, remove unused Redis service from Docker Compose",Minidu,Web & Admin Panel
+2026-05-20,feat: scaffold backend domain models and repositories and add Supabase Postgres best practices documentation skills,Minidu,Web & Admin Panel
+2026-05-20,chore: migrate CI/CD to Vercel and simplify backend workflow,Minidu,Web & Admin Panel
+2026-05-20,Merge development branch into main (resolve structure conflicts in favor of monorepo),Minidu,Web
+2026-05-21,feat: add HoldingDescription component with animated metrics and partner carousel,Minidu,Web & Admin Panel
+2026-05-21,feat: add vercel.json configuration for frontend deployment settings,Minidu,Web
+2026-05-21,fix: add root vercel.json with rootDirectory and devDependency install,Minidu,Web
+2026-05-21,"chore: fix Vercel deployment, align configs, and remove dead files",Minidu,Web & Admin Panel
+2026-05-21,Merge branch 'main' into development,SD-OMC,Web
+2026-05-21,Merge pull request #8 from IT-OMC/development,SD-OMC,Web
+2026-05-21,chore: separate frontend (Vercel) and backend (Railway) deployments,Minidu,Web & Admin Panel

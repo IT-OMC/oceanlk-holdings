@@ -26,3 +26,4 @@ export interface SectionWrapperProps {
     className?: string;
     id?: string;
 }
+
