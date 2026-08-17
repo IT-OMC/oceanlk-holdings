@@ -16,17 +16,130 @@ async function getCompany(slug: string) {
     .or(`slug.eq.${slug},id.eq.${slug}`)
     .single()
 
-  if (!company) return { company: null, related: [] }
+  const fallbackCompanies = [
+    {
+      id: 'omc',
+      slug: 'omc',
+      title: 'Ocean Maritime Ceylon',
+      category: 'Maritime Operations',
+      description: 'Takes orders and delivers supplies for ships in operation side.',
+      long_description: 'Ocean Maritime Ceylon is a premier maritime service provider spanning the major ports of Sri Lanka. We specialize in the operational aspect of ship supply, taking orders and ensuring the seamless delivery of essential provisions, spare parts, and technical supplies to vessels in operation. Our 24/7 service ensures that ships face zero downtime due to supply chain delays.',
+      image: '/company images for hero section/ocean maritime ceylon.jpg',
+      video: 'https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4',
+      established: '1998',
+      employees: '150+',
+      revenue: '$45M',
+      logo_url: '/company logos/Ocean Maritime Ceylon logo.png',
+      stats: [
+        { label: 'Vessels Served', value: '500+', icon: 'Ship' },
+        { label: 'Ports', value: '4', icon: 'Anchor' },
+        { label: 'Deliveries', value: '10k+', icon: 'Package' }
+      ]
+    },
+    {
+      id: 'oec',
+      slug: 'oec',
+      title: 'Ocean Engineering Ceylon',
+      category: 'Marine Engineering',
+      description: 'The engineering company which completes the engineering requests of the company.',
+      long_description: 'Ocean Engineering Ceylon serves as the technical backbone of our marine operations. We handle all engineering requests, from routine maintenance to complex structural repairs and modifications. Our team of expert marine engineers ensures that every vessel operates at peak performance and meets all safety and compliance rigor.',
+      image: '/company images for hero section/ocean engineering ceylon.jpg',
+      video: 'https://videos.pexels.com/video-files/2043509/2043509-uhd_2560_1440_25fps.mp4',
+      established: '2005',
+      employees: '200+',
+      revenue: '$60M',
+      logo_url: '/company logos/Ocean engineering ceylon.png',
+      stats: [
+        { label: 'Projects Completed', value: '1k+', icon: 'Wrench' },
+        { label: 'Engineers', value: '80+', icon: 'Users' },
+        { label: 'Success Rate', value: '99.9%', icon: 'CheckCircle' }
+      ]
+    },
+    {
+      id: 'omch',
+      slug: 'omch',
+      title: 'Ocean Maritime Channel',
+      category: 'Maritime Operations',
+      description: 'Focuses on the logistics and supply chain of the maritime industry.',
+      long_description: 'Ocean Maritime Channel focuses on the logistics and supply chain of the maritime industry.',
+      image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=1200',
+      established: '2010',
+      employees: '100+',
+      logo_url: '/company logos/ocean maritime channel.png',
+    },
+    {
+      id: 'connecting-cubes',
+      slug: 'connecting-cubes',
+      title: 'Connecting Cubes',
+      category: 'Technology',
+      description: 'A technology company focused on building digital solutions.',
+      long_description: 'Connecting Cubes is a technology company focused on building digital solutions.',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
+      established: '2015',
+      employees: '50+',
+      logo_url: '/company logos/connecting cubes logo..png',
+    },
+    {
+      id: 'digital-books',
+      slug: 'digital-books',
+      title: 'Digital Books',
+      category: 'Publishing',
+      description: 'Digital publishing and media company.',
+      long_description: 'Digital Books is a modern digital publishing and media company.',
+      image: 'https://images.unsplash.com/photo-1456953180671-730de08edaa7?auto=format&fit=crop&q=80&w=1200',
+      established: '2018',
+      employees: '30+',
+      logo_url: '/company logos/digital books.png',
+    },
+    {
+      id: '1',
+      slug: 'ocean-marine',
+      title: 'Ocean Marine Services Ltd',
+      category: 'Marine Engineering & Agency',
+      description: 'Full-service ship agency, offshore bunkering, vessel repairs, and marine salvage with 24/7 port support.',
+      image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800',
+      established: '1998',
+      employees: '450+',
+      website: 'https://marine.ocean.lk',
+    },
+    {
+      id: '2',
+      slug: 'ceylon-logistics',
+      title: 'Ceylon Global Logistics',
+      category: 'Supply Chain & Freight',
+      description: 'Multi-modal sea and air freight forwarding, customs clearance, bonded warehousing, and cold chain distribution.',
+      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
+      established: '2004',
+      employees: '600+',
+      website: 'https://logistics.ocean.lk',
+    },
+    {
+      id: '3',
+      slug: 'ocean-energy',
+      title: 'Ocean Green Energy Systems',
+      category: 'Renewables & Infrastructure',
+      description: 'Offshore solar installations, port electrification, and eco-friendly marine fuel distribution.',
+      image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=800',
+      established: '2015',
+      employees: '250+',
+      website: 'https://energy.ocean.lk',
+    }
+  ]
+
+  const finalCompany = company || fallbackCompanies.find((c) => c.slug === slug || c.id === slug)
+  if (!finalCompany) return { company: null, related: [] }
 
   const { data: related } = await supabase
     .from('companies')
     .select('*')
     .eq('is_active', true)
-    .neq('id', (company as any).id)
+    .neq('id', finalCompany.id)
     .order('display_order', { ascending: true })
     .limit(3)
 
-  return { company, related: related || [] }
+  const finalRelated = related?.length ? related : fallbackCompanies.filter(c => c.id !== finalCompany.id).slice(0, 3)
+
+  return { company: finalCompany, related: finalRelated }
 }
 
 export default async function CompanyDetailPage({ params }: { params: { slug: string } }) {

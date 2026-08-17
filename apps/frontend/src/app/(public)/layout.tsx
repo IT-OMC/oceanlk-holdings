@@ -34,10 +34,10 @@ function TopBar() {
   )
 }
 
-// Navbar component
 function PublicNavbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const pathname = usePathname()
   const isHome = pathname === '/'
 
@@ -51,11 +51,44 @@ function PublicNavbar() {
 
   const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'Our Companies', href: '/companies' },
-    { label: 'Corporate', href: '/corporate' },
-    { label: 'Careers', href: '/careers' },
-    { label: 'News & Media', href: '/news' },
-    { label: 'Contact', href: '/contact' },
+    {
+      label: 'Corporate',
+      href: '/corporate',
+      subItems: [
+        { label: 'Profile', href: '/corporate' },
+        { label: 'Leadership', href: '/corporate#leadership' },
+      ],
+    },
+    {
+      label: 'Companies',
+      href: '/companies',
+      subItems: [
+        { label: 'All Companies', href: '/companies' },
+        { label: 'Ocean Maritime Ceylon', href: '/companies/omc', logo: '/company logos/Ocean Maritime Ceylon logo.png' },
+        { label: 'Ocean Engineering Ceylon', href: '/companies/oec', logo: '/company logos/Ocean engineering ceylon.png' },
+        { label: 'Ocean Maritime Channel', href: '/companies/omch', logo: '/company logos/ocean maritime channel.png' },
+        { label: 'Connecting Cubes', href: '/companies/connecting-cubes', logo: '/company logos/connecting cubes logo..png' },
+        { label: 'Digital Books', href: '/companies/digital-books', logo: '/company logos/digital books.png' },
+      ],
+    },
+    {
+      label: 'News & Media',
+      href: '/news',
+      subItems: [
+        { label: 'News', href: '/news' },
+        { label: 'Media', href: '/news#media' },
+      ],
+    },
+    {
+      label: 'Careers',
+      href: '/careers',
+      subItems: [
+        { label: 'Culture', href: '/careers#culture' },
+        { label: 'Opportunities', href: '/careers#opportunities' },
+        { label: 'Talent Pool', href: '/careers#talent-pool' },
+      ],
+    },
+    { label: 'Contact Us', href: '/contact' },
   ]
 
   return (
@@ -83,21 +116,47 @@ function PublicNavbar() {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center space-x-1">
+        <div className="hidden lg:flex items-center space-x-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+            const hasDropdown = link.subItems && link.subItems.length > 0
+
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  isActive
-                    ? 'text-[#0056b3] bg-blue-50/80 font-bold'
-                    : 'text-gray-700 hover:text-[#0056b3] hover:bg-gray-50'
-                }`}
-              >
-                {link.label}
-              </Link>
+              <div key={link.label} className="relative group">
+                <Link
+                  href={link.href}
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'text-[#0056b3] bg-blue-50/80 font-bold'
+                      : 'text-gray-700 hover:text-[#0056b3] hover:bg-gray-50'
+                  }`}
+                >
+                  {link.label}
+                  {hasDropdown && <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />}
+                </Link>
+
+                {/* Dropdown Menu */}
+                {hasDropdown && (
+                  <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-56 transform translate-y-2 group-hover:translate-y-0 z-50">
+                    <div className="bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden py-2">
+                      {link.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.label}
+                          href={subItem.href}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-[#0056b3] transition-colors"
+                        >
+                          {subItem.logo && (
+                            <div className="w-6 h-6 flex-shrink-0 bg-gray-50 rounded overflow-hidden">
+                              <img src={subItem.logo} alt={subItem.label} className="w-full h-full object-contain mix-blend-multiply" />
+                            </div>
+                          )}
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )
           })}
         </div>
@@ -131,26 +190,74 @@ function PublicNavbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-6 space-y-2 shadow-xl"
+            className="lg:hidden bg-white border-b border-gray-200 shadow-xl overflow-hidden"
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-lg text-base font-medium text-gray-800 hover:bg-blue-50 hover:text-[#0056b3]"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-3">
-              <Link
-                href="/contact"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block w-full text-center px-4 py-3 rounded-xl bg-[#0056b3] text-white font-semibold shadow"
-              >
-                Get in Touch
-              </Link>
+            <div className="px-4 py-6 space-y-2 max-h-[80vh] overflow-y-auto">
+              {navLinks.map((link) => {
+                const hasDropdown = link.subItems && link.subItems.length > 0
+                return (
+                  <div key={link.label} className="space-y-1">
+                    {hasDropdown ? (
+                      <>
+                        <button
+                          onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
+                          className="w-full flex items-center justify-between px-4 py-3 text-base font-semibold text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
+                          {link.label}
+                          <ChevronDown
+                            className={`w-5 h-5 transition-transform duration-300 ${activeDropdown === link.label ? 'rotate-180 text-[#0056b3]' : 'text-gray-400'}`}
+                          />
+                        </button>
+                        <AnimatePresence>
+                          {activeDropdown === link.label && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="pl-4 py-2 space-y-1 bg-gray-50/50 rounded-lg mt-1 mx-2">
+                                {link.subItems.map((subItem) => (
+                                  <Link
+                                    key={subItem.label}
+                                    href={subItem.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 rounded-lg hover:text-[#0056b3] hover:bg-white transition-colors"
+                                  >
+                                    {subItem.logo && (
+                                      <div className="w-6 h-6 flex-shrink-0 bg-white shadow-sm rounded overflow-hidden">
+                                        <img src={subItem.logo} alt={subItem.label} className="w-full h-full object-contain p-0.5 mix-blend-multiply" />
+                                      </div>
+                                    )}
+                                    {subItem.label}
+                                  </Link>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block px-4 py-3 rounded-lg text-base font-semibold text-gray-800 hover:bg-gray-50 hover:text-[#0056b3] transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
+                  </div>
+                )
+              })}
+              <div className="pt-6 mt-4 border-t border-gray-100">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full text-center px-4 py-3.5 rounded-xl bg-[#0056b3] hover:bg-[#004494] transition-colors text-white font-bold shadow-md"
+                >
+                  Get in Touch
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
