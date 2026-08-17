@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { ArrowRight, Building2, Globe, Users } from 'lucide-react'
+import { ArrowRight, Building2, Globe, Users, Calendar } from 'lucide-react'
 
 export const metadata = {
   title: 'Our Companies',
@@ -34,7 +34,8 @@ export default async function CompaniesPage() {
       image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800',
       established: '1998',
       employees: '450+',
-      website: 'https://marine.ocean.lk'
+      website: 'https://marine.ocean.lk',
+      logo_url: undefined as string | undefined
     },
     {
       id: '2',
@@ -45,7 +46,8 @@ export default async function CompaniesPage() {
       image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
       established: '2004',
       employees: '600+',
-      website: 'https://logistics.ocean.lk'
+      website: 'https://logistics.ocean.lk',
+      logo_url: undefined as string | undefined
     },
     {
       id: '3',
@@ -56,7 +58,8 @@ export default async function CompaniesPage() {
       image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=800',
       established: '2015',
       employees: '250+',
-      website: 'https://energy.ocean.lk'
+      website: 'https://energy.ocean.lk',
+      logo_url: undefined as string | undefined
     }
   ]
 
@@ -88,7 +91,12 @@ export default async function CompaniesPage() {
                 alt={comp.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <span className="absolute top-4 left-4 px-3 py-1 bg-[#001529]/80 backdrop-blur-md text-white text-xs font-semibold rounded-full">
+              {comp.logo_url && (
+                <div className="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-sm p-2.5 rounded-xl shadow-lg">
+                  <img src={comp.logo_url} alt={`${comp.title} logo`} className="w-10 h-10 object-contain" />
+                </div>
+              )}
+              <span className="absolute top-4 right-4 px-3 py-1 bg-[#001529]/80 backdrop-blur-md text-white text-xs font-semibold rounded-full uppercase tracking-wider">
                 {comp.category || 'Holding'}
               </span>
             </div>
@@ -102,14 +110,26 @@ export default async function CompaniesPage() {
                   {comp.description}
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 py-4 border-t border-gray-100 text-xs text-gray-500 mb-4">
-                  <div>
-                    <span className="block font-medium text-gray-400">Est.</span>
-                    <span className="font-semibold text-gray-800">{comp.established || '1998'}</span>
+                <div className="h-px w-full bg-gray-100 mb-4" />
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Est.</p>
+                      <p className="text-sm font-semibold text-gray-900">{comp.established || '1998'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <span className="block font-medium text-gray-400">Workforce</span>
-                    <span className="font-semibold text-gray-800">{comp.employees || '300+'}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Team</p>
+                      <p className="text-sm font-semibold text-gray-900">{comp.employees || '300+'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
