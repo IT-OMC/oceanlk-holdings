@@ -1,74 +1,34 @@
 import React from 'react'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { Briefcase, MapPin, Clock, ArrowRight, UploadCloud, CheckCircle, Sparkles } from 'lucide-react'
-import CareersClientComponent from './CareersClient'
+import { ArrowRight, Sparkles, Briefcase, Heart, Users } from 'lucide-react'
 
 export const metadata = {
   title: 'Careers & Talent Network',
   description: 'Explore exciting career opportunities across maritime, logistics, and technology at OceanLK Holdings.',
 }
 
-export const revalidate = 60
+const hubLinks = [
+  {
+    href: '/careers/opportunities',
+    icon: Briefcase,
+    title: 'Open Opportunities',
+    description: 'Browse and apply to active roles across OceanLK Holdings and its subsidiaries.',
+  },
+  {
+    href: '/careers/culture',
+    icon: Heart,
+    title: 'Life at OceanLK',
+    description: 'Discover our culture, values, and what it feels like to grow your career here.',
+  },
+  {
+    href: '/careers/talent-pool',
+    icon: Users,
+    title: 'Join Our Talent Pool',
+    description: "Don't see the right role yet? Submit your CV and we'll reach out when a match arises.",
+  },
+]
 
-async function getJobOpportunities() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('job_opportunities')
-    .select('*')
-    .eq('status', 'ACTIVE')
-    .order('posted_date', { ascending: false })
-
-  return data || []
-}
-
-export default async function CareersPage() {
-  const jobs = await getJobOpportunities()
-
-  const fallbackJobs = [
-    {
-      id: '1',
-      title: 'Senior Marine Engineer',
-      company_name: 'Ocean Marine Services',
-      location: 'Colombo Port, Sri Lanka',
-      type: 'Full-time',
-      category: 'Marine Engineering',
-      level: 'Senior',
-      description: 'Lead ship repair operations, overhaul propulsion systems, and supervise technical dockyard activities.',
-      requirements: ['Class 1 Marine Engineer Certificate', '5+ years offshore experience', 'Strong diagnostic skills'],
-      posted_date: new Date().toISOString(),
-      featured: true,
-    },
-    {
-      id: '2',
-      title: 'Global Supply Chain Analyst',
-      company_name: 'Ceylon Global Logistics',
-      location: 'Colombo / Hybrid',
-      type: 'Full-time',
-      category: 'Logistics',
-      level: 'Mid-Senior',
-      description: 'Optimize multi-modal freight routes, evaluate carrier performance, and design automated logistics dashboards.',
-      requirements: ['BSc in Supply Chain / Logistics', 'Proficiency in ERP & PowerBI', '3+ years experience'],
-      posted_date: new Date().toISOString(),
-      featured: false,
-    },
-    {
-      id: '3',
-      title: 'Fullstack Software Engineer',
-      company_name: 'OceanLK Digital',
-      location: 'Colombo / Remote',
-      type: 'Full-time',
-      category: 'Technology',
-      level: 'Mid-Senior',
-      description: 'Build mission-critical maritime tracking, IoT sensors integration, and next-gen enterprise web platforms.',
-      requirements: ['TypeScript / Next.js / PostgreSQL', 'REST/GraphQL API design', 'Cloud deployment knowledge'],
-      posted_date: new Date().toISOString(),
-      featured: true,
-    },
-  ]
-
-  const displayJobs = jobs.length > 0 ? jobs : fallbackJobs
-
+export default function CareersPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header Banner */}
@@ -82,16 +42,26 @@ export default async function CareersPage() {
         <p className="mt-4 text-gray-600 text-base leading-relaxed">
           Join a multidisciplinary team driving the future of global maritime, logistics, clean energy, and high-growth technologies.
         </p>
-        <Link
-          href="/careers/culture"
-          className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#0056b3] hover:text-[#004494] group"
-        >
-          Discover Life at OceanLK <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </Link>
       </div>
 
-      {/* Interactive Job Board & Modal */}
-      <CareersClientComponent jobs={displayJobs} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {hubLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="group bg-white rounded-3xl p-8 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0056b3] flex items-center justify-center mb-6 group-hover:bg-[#0056b3] group-hover:text-white transition-colors">
+              <link.icon className="w-7 h-7" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{link.title}</h2>
+            <p className="text-sm text-gray-600 leading-relaxed flex-grow">{link.description}</p>
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#0056b3] group-hover:text-[#004494]">
+              Explore <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }
