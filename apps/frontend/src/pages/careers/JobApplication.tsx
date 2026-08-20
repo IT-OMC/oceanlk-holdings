@@ -204,7 +204,7 @@ const JobApplication = () => {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* Job Details Sidebar */}
                     <div className="lg:col-span-1">
                         <motion.div
@@ -245,7 +245,7 @@ const JobApplication = () => {
                     </div>
 
                     {/* Application Form */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-1">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}

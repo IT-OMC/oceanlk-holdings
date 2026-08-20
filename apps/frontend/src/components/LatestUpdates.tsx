@@ -96,7 +96,7 @@ const LatestUpdates = () => {
                                 <div className="relative h-full p-6 flex flex-col justify-between">
                                     {/* Company Logo & Name */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md p-1.5 ring-2 ring-white/20 group-hover:ring-accent/50 transition-all duration-300">
+                                        <div className="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md p-1.5 ring-2 ring-white/20 group-hover:ring-accent/50 transition-all duration-300">
                                             <img
                                                 src={post.companyLogo}
                                                 alt={post.companyName}

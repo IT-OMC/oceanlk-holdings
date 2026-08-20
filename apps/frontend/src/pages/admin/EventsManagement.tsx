@@ -282,7 +282,7 @@ const EventsManagement = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <p className="text-gray-400">Manage events for the culture page</p>
+                    <p className="text-base text-gray-400">Manage events for the culture page</p>
                 </div>
                 <button
                     onClick={() => {

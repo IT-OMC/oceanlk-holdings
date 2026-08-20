@@ -7,6 +7,7 @@ import {
     User, Calendar, Search
 } from 'lucide-react';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
+import AdminAlertDialog from '../../components/admin/AdminAlertDialog';
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface PendingChange {
@@ -33,6 +34,7 @@ const PendingChanges: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'pending-approvals' | 'my-changes'>('pending-approvals');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
+    const [alertDialog, setAlertDialog] = useState<{isOpen: boolean, title: string, message: string, type: 'success'|'error'|'warning'}>({ isOpen: false, title: '', message: '', type: 'success' });
     const navigate = useNavigate();
 
     const adminRole = sessionStorage.getItem('adminRole');
@@ -113,22 +115,22 @@ const PendingChanges: React.FC = () => {
             });
 
             if (response.ok) {
-                alert('Change approved and published successfully!');
+                setAlertDialog({ isOpen: true, title: 'Success', message: 'Change approved and published successfully!', type: 'success' });
                 setSelectedChange(null);
                 setReviewComments('');
                 fetchData();
             } else {
-                alert('Failed to approve change');
+                setAlertDialog({ isOpen: true, title: 'Error', message: 'Failed to approve change', type: 'error' });
             }
         } catch (error) {
             console.error('Error approving change:', error);
-            alert('Failed to approve change');
+            setAlertDialog({ isOpen: true, title: 'Error', message: 'Failed to approve change', type: 'error' });
         }
     };
 
     const handleReject = async (changeId: string) => {
         if (!reviewComments.trim()) {
-            alert('Please provide review comments for rejection');
+            setAlertDialog({ isOpen: true, title: 'Warning', message: 'Please provide review comments for rejection', type: 'warning' });
             return;
         }
 
@@ -144,16 +146,16 @@ const PendingChanges: React.FC = () => {
             });
 
             if (response.ok) {
-                alert('Change rejected successfully!');
+                setAlertDialog({ isOpen: true, title: 'Success', message: 'Change rejected successfully!', type: 'success' });
                 setSelectedChange(null);
                 setReviewComments('');
                 fetchData();
             } else {
-                alert('Failed to reject change');
+                setAlertDialog({ isOpen: true, title: 'Error', message: 'Failed to reject change', type: 'error' });
             }
         } catch (error) {
             console.error('Error rejecting change:', error);
-            alert('Failed to reject change');
+            setAlertDialog({ isOpen: true, title: 'Error', message: 'Failed to reject change', type: 'error' });
         }
     };
 
@@ -553,6 +555,15 @@ const PendingChanges: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Custom Alert Dialog */}
+            <AdminAlertDialog
+                isOpen={alertDialog.isOpen}
+                onClose={() => setAlertDialog(prev => ({ ...prev, isOpen: false }))}
+                title={alertDialog.title}
+                message={alertDialog.message}
+                type={alertDialog.type}
+            />
         </div>
     );
 };

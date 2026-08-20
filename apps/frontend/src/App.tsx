@@ -49,6 +49,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';
 
+import ScrollToTop from './components/ScrollToTop';
+
 function App() {
     return (
         <ErrorBoundary>
@@ -61,6 +63,7 @@ function App() {
                 }
             }} />
             <Router>
+                <ScrollToTop />
                 <Routes>
                     {/* Admin Routes */}
                     <Route path="/admin" element={<AdminLogin />} />

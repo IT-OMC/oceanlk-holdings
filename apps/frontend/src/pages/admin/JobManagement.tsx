@@ -155,8 +155,7 @@ const JobManagement = () => {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Job Postings</h1>
-                    <p className="text-gray-400 text-sm mt-1">Manage open positions and job descriptions</p>
+                    <p className="text-base text-gray-400">Manage open positions and job descriptions</p>
                 </div>
                 <button
                     onClick={() => openModal()}
