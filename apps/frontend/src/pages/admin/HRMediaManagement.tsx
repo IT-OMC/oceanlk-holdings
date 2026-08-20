@@ -223,7 +223,7 @@ const HRMediaManagement = () => {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <p className="text-gray-400">Manage media for the culture page gallery</p>
+                    <p className="text-base text-gray-400">Manage media for the culture page gallery</p>
                 </div>
                 <button
                     onClick={() => {

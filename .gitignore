@@ -28,3 +28,4 @@ api-test-report.json
 *.key
 *.pem
 oceanlk_key
+apps/backend/.env

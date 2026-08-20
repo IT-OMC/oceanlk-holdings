@@ -1,6 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Coffee, TrendingUp, Award, Users, ArrowRight } from 'lucide-react';
+
+// How long each stage stays active before auto-advancing to the next one.
+const AUTO_ADVANCE_MS = 5000;
 
 const RefreshedCultureHero = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -41,10 +44,23 @@ const RefreshedCultureHero = () => {
         }
     ];
 
+    // Auto-advance through the stages. Restarts whenever activeStage changes
+    // (including when a stage is selected some other way in the future), so
+    // every stage always gets the full AUTO_ADVANCE_MS on screen.
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveStage((prev) => (prev + 1) % stages.length);
+        }, AUTO_ADVANCE_MS);
+
+        return () => clearInterval(timer);
+    }, [activeStage, stages.length]);
+
+    const currentStage = stages[activeStage];
+
     return (
         <section
             ref={containerRef}
-            className="relative min-h-screen w-full bg-[#05050A] flex flex-col justify-center overflow-hidden pt-20 md:pt-24"
+            className="relative min-h-screen w-full bg-[#05050A] flex flex-col overflow-hidden pt-20 md:pt-24"
         >
             {/* Video Background - Full View */}
             <div className="absolute inset-0 z-0">
@@ -65,105 +81,123 @@ const RefreshedCultureHero = () => {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 md:px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center h-full mt-8 md:mt-0">
+            <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col flex-1 mt-8 md:mt-0 pb-8 md:pb-10">
 
-                {/* Left Side: Headline & Intro */}
-                <div className="flex flex-col space-y-8 max-w-2xl">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white tracking-tight mb-6">
-                            Not just a job. <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-secondary">
-                                A Journey.
-                            </span>
-                        </h1>
-                        <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-lg">
-                            From your first cup of coffee to leading global initiatives, discover how you'll grow, thrive, and make a difference at Ocean Ceylon Holdings.
-                        </p>
-                    </motion.div>
+                {/* Top: Headline (left) + Dynamic Stage Story (right) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center flex-1">
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="flex flex-wrap gap-4"
-                    >
-                        <button
-                            onClick={() => {
-                                const element = document.getElementById('life-at-och');
-                                element?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                            className="px-8 py-4 bg-white text-black hover:bg-slate-200 rounded-full font-semibold transition-all flex items-center gap-2 group">
-                            Start Your Journey
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
-                        <button className="px-8 py-4 border border-slate-700 text-white hover:bg-slate-800/50 hover:border-slate-600 rounded-full font-medium transition-all backdrop-blur-sm flex items-center gap-2">
-                            <Play size={16} fill="currentColor" /> Watch Video
-                        </button>
-                    </motion.div>
-                </div>
+                    {/* Left: Headline & Intro */}
+                    <div className="flex flex-col justify-center items-center space-y-8 max-w-2xl">
+                        <motion.div
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white tracking-tight mb-6">
+                                Not just a job. <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-secondary">
+                                    A Journey.
+                                </span>
+                            </h1>
+                            <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-lg">
+                                From your first cup of coffee to leading global initiatives, discover how you'll grow, thrive, and make a difference at Ocean Ceylon Holdings.
+                            </p>
+                        </motion.div>
 
-                {/* Right Side: Interactive Growth Steps */}
-                <div className="relative">
-                    {/* Connection Line */}
-                    <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-slate-800 hidden md:block" />
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="flex flex-wrap gap-4"
+                        >
+                            <button
+                                onClick={() => {
+                                    const element = document.getElementById('life-at-och');
+                                    element?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className="px-8 py-4 bg-white text-black hover:bg-slate-200 rounded-full font-semibold transition-all flex items-center gap-2 group">
+                                Start Your Journey
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <button className="px-8 py-4 border border-slate-700 text-white hover:bg-slate-800/50 hover:border-slate-600 rounded-full font-medium transition-all backdrop-blur-sm flex items-center gap-2">
+                                <Play size={16} fill="currentColor" /> Watch Video
+                            </button>
+                        </motion.div>
+                    </div>
 
-                    <div className="flex flex-col space-y-6 relative">
-                        {stages.map((stage, index) => {
-                            const isActive = activeStage === index;
+                    {/* Right: Dynamic Stage Story - swaps automatically as the timer advances */}
+                    <div className="flex flex-col items-center justify-center text-center px-4 py-12 min-h-[320px]">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentStage.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5, ease: 'easeOut' }}
+                                className="max-w-md"
+                            >
+                                {/* <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
+                                    <currentStage.icon size={28} />
+                                </div> */}
 
-                            return (
-                                <motion.div
-                                    key={stage.id}
-                                    initial={{ opacity: 0, x: 50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.4 + (index * 0.1) }}
-                                    onClick={() => setActiveStage(index)}
-                                    className={`relative z-10 pl-0 md:pl-20 cursor-pointer group transition-all duration-300 ${isActive ? 'scale-105 md:scale-100' : 'opacity-70 hover:opacity-100'}`}
-                                >
-                                    {/* Timeline Node (Desktop) */}
-                                    <div className={`hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full items-center justify-center border-2 transition-colors duration-300 ${isActive ? 'bg-primary border-primary' : 'bg-[#05050A] border-slate-700 group-hover:border-primary/50'}`}>
-                                        <div className={`w-2 h-2 rounded-full bg-white transition-opacity ${isActive ? 'opacity-100' : 'opacity-0'}`} />
-                                    </div>
+                                <p className="text-primary text-sm font-semibold uppercase tracking-[0.2em] mb-3">
+                                    {currentStage.subtitle}
+                                </p>
 
-                                    {/* Content Card */}
-                                    <div className={`p-6 rounded-2xl border transition-all duration-300 ${isActive ? 'bg-slate-900/80 border-primary/50 shadow-xl backdrop-blur-md' : 'bg-slate-900/40 border-slate-800 hover:bg-slate-800/60'}`}>
-                                        <div className="flex items-start gap-4">
-                                            <div className={`p-3 rounded-lg ${isActive ? 'bg-primary/20 text-primary' : 'bg-slate-800 text-slate-400'}`}>
-                                                <stage.icon size={24} />
+                                <h2 className="text-3xl md:text-5xl font-bold text-white mb-5 tracking-tight">
+                                    {currentStage.title}
+                                </h2>
+
+                                <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+                                    {currentStage.description}
+                                </p>
+
+                                <div className="inline-block px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+                                    <span className="text-xs md:text-sm font-semibold text-primary">{currentStage.stat}</span>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Bottom: Stage Titles as an auto-advancing timeline */}
+                        <div className="border-t border-slate-800 pt-6 bottom-0 absolute mb-8">
+                            <div className="flex flex-wrap justify-center md:justify-between gap-x-8 gap-y-4">
+                                {stages.map((stage, index) => {
+                                    const isActive = activeStage === index;
+
+                                    return (
+                                        <div
+                                            key={stage.id}
+                                            className={`flex-1 min-w-[120px] flex flex-col items-center md:items-start gap-2 transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-50'}`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${isActive ? 'bg-primary border-primary text-white' : 'bg-transparent border-slate-700 text-slate-500'}`}>
+                                                    <stage.icon size={14} />
+                                                </div>
+                                                <span className={`text-sm md:text-base font-semibold transition-colors duration-300 ${isActive ? 'text-white' : 'text-slate-500'}`}>
+                                                    {stage.title}
+                                                </span>
                                             </div>
-                                            <div className="flex-1">
-                                                <h3 className={`text-xl font-bold mb-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                                                    {stage.title} <span className="text-sm font-normal text-slate-500 mx-2 hidden sm:inline">|</span> <span className="text-sm font-normal text-slate-500 block sm:inline">{stage.subtitle}</span>
-                                                </h3>
 
-                                                <AnimatePresence>
-                                                    {isActive && (
-                                                        <motion.div
-                                                            initial={{ opacity: 0, height: 0 }}
-                                                            animate={{ opacity: 1, height: 'auto' }}
-                                                            exit={{ opacity: 0, height: 0 }}
-                                                            className="overflow-hidden"
-                                                        >
-                                                            <p className="text-slate-400 text-sm leading-relaxed mt-2 mb-3">
-                                                                {stage.description}
-                                                            </p>
-                                                            <div className="inline-block px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
-                                                                <span className="text-xs font-semibold text-primary">{stage.stat}</span>
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
+                                            {/* Progress track: fills over AUTO_ADVANCE_MS, remounted (via key)
+                                        every time this stage becomes active so it always restarts at 0. */}
+                                            <div className="w-full h-0.5 bg-slate-800 rounded-full overflow-hidden">
+                                                {isActive && (
+                                                    <motion.div
+                                                        key={`${stage.id}-${activeStage}`}
+                                                        className="h-full bg-primary origin-left"
+                                                        initial={{ scaleX: 0 }}
+                                                        animate={{ scaleX: 1 }}
+                                                        transition={{ duration: AUTO_ADVANCE_MS / 1000, ease: 'linear' }}
+                                                    />
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -172,4 +206,3 @@ const RefreshedCultureHero = () => {
 };
 
 export default RefreshedCultureHero;
-

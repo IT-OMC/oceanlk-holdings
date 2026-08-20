@@ -86,10 +86,17 @@ public class AdminManagementController {
         AdminUser created = adminUserService.createAdmin(admin);
 
         // Send welcome email
+        // NOTE: catch Exception, not just MessagingException -- see the same fix
+        // in TalentPoolController#submitApplication. JavaMailSender#send(...)
+        // throws unchecked org.springframework.mail.MailException on a bad app
+        // password or SMTP failure, which MessagingException alone doesn't catch.
+        // This method has no outer try/catch, so an uncaught mail failure here
+        // would propagate to GlobalExceptionHandler and return a 500 to the UI
+        // even though the admin account above was already created successfully.
         try {
             emailService.sendAdminWelcomeEmail(created, plainPassword);
-        } catch (MessagingException e) {
-            log.error("Failed to send welcome email to new admin: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Failed to send welcome email to new admin {}: {}", created.getUsername(), e.getMessage(), e);
         }
 
         auditLogService.logAction("SUPER_ADMIN", "CREATE_ADMIN", "AdminUser", created.getId(),

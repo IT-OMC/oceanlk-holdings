@@ -20,7 +20,11 @@ public class StoredFile {
     private String contentType;
     private String groupName;
 
-    @Lob
+    // NOTE: no @Lob here. On PostgreSQL, @Lob on a byte[] makes Hibernate 6
+    // store the bytes as a large object and bind its OID (a bigint), which
+    // clashes with the BYTEA column below:
+    //   ERROR: column "data" is of type bytea but expression is of type bigint
+    // Plain byte[] + BYTEA stores the bytes inline, which is what we want.
     @Column(name = "data", columnDefinition = "BYTEA")
     private byte[] data;
 

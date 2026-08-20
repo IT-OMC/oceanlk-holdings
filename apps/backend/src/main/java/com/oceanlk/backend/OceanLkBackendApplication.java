@@ -9,10 +9,16 @@ public class OceanLkBackendApplication {
 
 	public static void main(String[] args) {
 		try {
-			Dotenv dotenv = Dotenv.configure()
-					.ignoreIfMissing()
-					.load();
-			dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+			String envPath = new java.io.File(".env").exists() ? "./" : 
+					(new java.io.File("apps/backend/.env").exists() ? "./apps/backend/" : null);
+			
+			if (envPath != null) {
+				Dotenv dotenv = Dotenv.configure()
+						.directory(envPath)
+						.ignoreIfMissing()
+						.load();
+				dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+			}
 		} catch (Exception e) {
 			System.err.println(
 					"Warning: .env file could not be loaded. Falling back to environment variables and defaults. "

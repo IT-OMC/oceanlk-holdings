@@ -83,12 +83,26 @@ public class TalentPoolController {
             TalentPoolApplication savedApplication = applicationRepository.save(application);
 
             // Send emails asynchronously (in a real app, use @Async)
+            // NOTE: catch Exception here, not just MessagingException. Spring's
+            // JavaMailSender#send(...) throws org.springframework.mail.MailException
+            // (e.g. MailAuthenticationException on a bad/revoked app password,
+            // MailSendException on an SMTP/network failure) -- both are UNCHECKED
+            // RuntimeExceptions, not MessagingException. With the narrower catch,
+            // a broken mail account would let this exception escape to the outer
+            // catch (Exception e) below, and the whole request would come back as
+            // a 500 "Submission failed" to the applicant -- even though the
+            // stored_files/talent_pool_applications inserts above already
+            // committed successfully. The applicant sees a hard failure and often
+            // resubmits, while the record was fine the first time.
             try {
                 emailService.sendApplicantConfirmation(savedApplication);
                 emailService.sendHRNotification(savedApplication);
-            } catch (MessagingException e) {
-                // Log error but don't fail the request
-                log.error("Failed to send email: {}", e.getMessage());
+            } catch (Exception e) {
+                // Log error but don't fail the request -- the application is
+                // already saved; a notification email failing is a secondary
+                // concern, not a reason to tell the applicant the submission failed.
+                log.error("Failed to send email for talent pool application {}: {}",
+                        savedApplication.getId(), e.getMessage(), e);
             }
 
             // Create Notification for Admin

@@ -71,4 +71,32 @@ public class MediaItem {
         this.status = "PUBLISHED";
         this.group = "MEDIA_PANEL";
     }
+
+    /**
+     * Defensive defaulting so items never end up with a NULL status/group.
+     * Several creation paths (admin CREATE via pending-change approval,
+     * direct SUPER_ADMIN create, the "add" forms in the admin UI) build a
+     * MediaItem without ever setting "group" explicitly. The public
+     * endpoints (/api/media/news, /api/media/blogs, ...) filter with an
+     * exact match on group, so a NULL group silently makes the item
+     * invisible on the public site even though status=PUBLISHED and it's
+     * sitting right there in the media_items table.
+     *
+     * Runs on both INSERT and UPDATE: MediaController#updateMediaItem does
+     * mediaItem.setGroup(updatedItem.getGroup()) unconditionally, so an
+     * edit made through an admin form that also doesn't send "group"
+     * (e.g. NewsManagement's edit dialog) would otherwise null out a
+     * previously-correct group and make an already-visible article
+     * disappear again after being edited.
+     */
+    @PrePersist
+    @PreUpdate
+    public void applyDefaultsBeforeSave() {
+        if (this.status == null || this.status.isEmpty()) {
+            this.status = "PUBLISHED";
+        }
+        if (this.group == null || this.group.isEmpty()) {
+            this.group = "LIFE_AT_OCH".equalsIgnoreCase(this.category) ? "HR_PANEL" : "MEDIA_PANEL";
+        }
+    }
 }

@@ -169,7 +169,6 @@ const PartnerManagement = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-bold text-white">Partners & Memberships</h2>
                     <p className="text-gray-400">Manage partner logos and membership affiliations</p>
                 </div>
                 <button

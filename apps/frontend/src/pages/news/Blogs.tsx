@@ -130,42 +130,79 @@ const Blogs = () => {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-                                    <div className="absolute top-6 left-6 flex items-center gap-2">
-                                        <span className="bg-cyan-500/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                            {post.category}
-                                        </span>
-                                        <span className="bg-black/40 backdrop-blur-sm text-gray-200 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                                            <BookOpen className="w-3 h-3" /> {post.readTime}
-                                        </span>
-                                    </div>
-
-                                    <div className="absolute bottom-0 left-0 p-8 text-white w-full">
-                                        <div className="flex items-center gap-3 text-sm text-gray-300 mb-3 font-medium">
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="w-3 h-3" />
-                                                {post.publishedDate}
+                                    {post.span?.includes('row-span-2') ? (
+                                        // Large / tall cards: full meta row (date, read time, author).
+                                        // flex-wrap + shrink-0 on the separators means a long author
+                                        // name wraps onto a second line instead of being clipped by
+                                        // the card's overflow-hidden.
+                                        <>
+                                            <div className="absolute top-6 left-6">
+                                                <span className="bg-cyan-500/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                                    {post.category}
+                                                </span>
                                             </div>
-                                            <div className="w-1 h-1 bg-gray-500 rounded-full" />
-                                            <div className="flex items-center gap-1">
-                                                <User className="w-3 h-3" />
-                                                {post.author}
+
+                                            <div className="absolute bottom-0 left-0 p-8 text-white w-full">
+                                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-300 mb-3 font-medium">
+                                                    <div className="flex items-center gap-1 min-w-0">
+                                                        <Calendar className="w-3.5 h-3.5 shrink-0" />
+                                                        <span className="truncate">{post.publishedDate}</span>
+                                                    </div>
+                                                    <div className="w-1 h-1 bg-gray-500 rounded-full shrink-0" />
+                                                    <div className="flex items-center gap-1 min-w-0">
+                                                        <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                                                        <span className="truncate">{post.readTime}</span>
+                                                    </div>
+                                                    <div className="w-1 h-1 bg-gray-500 rounded-full shrink-0" />
+                                                    <div className="flex items-center gap-1 min-w-0">
+                                                        <User className="w-3.5 h-3.5 shrink-0" />
+                                                        <span className="truncate">{post.author}</span>
+                                                    </div>
+                                                </div>
+
+                                                <h3 className={`font-bold mb-3 leading-tight ${post.span.includes('col-span-2') ? 'text-3xl' : 'text-xl'}`}>
+                                                    {post.title}
+                                                </h3>
+
+                                                <p className="text-gray-200 text-sm line-clamp-2 mb-4 opacity-90">
+                                                    {post.excerpt}
+                                                </p>
+
+                                                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 text-white">
+                                                    <ArrowUpRight className="w-5 h-5" />
+                                                </div>
                                             </div>
-                                        </div>
+                                        </>
+                                    ) : (
+                                        // Small cards (row-span-1): same layout News.tsx already uses
+                                        // for its compact cards. There isn't room for a 3-item meta
+                                        // row here even with wrapping, so we show date + read time
+                                        // only and drop the author -- full detail (including author)
+                                        // is still one click away on the article page.
+                                        <>
+                                            <div className="absolute top-4 left-4">
+                                                <span className="bg-cyan-500/90 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                                    {post.category}
+                                                </span>
+                                            </div>
 
-                                        <h3 className={`font-bold mb-3 leading-tight ${post.span?.includes('col-span-2') ? 'text-3xl' : 'text-xl'}`}>
-                                            {post.title}
-                                        </h3>
-
-                                        {post.span?.includes('row-span-2') && (
-                                            <p className="text-gray-200 text-sm line-clamp-2 mb-4 opacity-90">
-                                                {post.excerpt}
-                                            </p>
-                                        )}
-
-                                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 text-white">
-                                            <ArrowUpRight className="w-5 h-5" />
-                                        </div>
-                                    </div>
+                                            <div className="absolute bottom-0 left-0 p-5 text-white w-full">
+                                                <div className="flex items-center gap-2 text-[10px] text-gray-300 mb-1 min-w-0">
+                                                    <Calendar className="w-3 h-3 shrink-0" />
+                                                    <span className="truncate">{post.publishedDate}</span>
+                                                    <span className="w-0.5 h-0.5 bg-gray-500 rounded-full shrink-0" />
+                                                    <BookOpen className="w-3 h-3 shrink-0" />
+                                                    <span className="truncate">{post.readTime}</span>
+                                                </div>
+                                                <h3 className="text-lg font-bold mb-1 leading-snug line-clamp-2">
+                                                    {post.title}
+                                                </h3>
+                                                <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur flex items-center justify-center absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                                    <ArrowUpRight className="w-4 h-4" />
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </Link>
                             </motion.div>
                         ))}

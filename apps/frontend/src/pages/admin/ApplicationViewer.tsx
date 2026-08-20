@@ -181,8 +181,7 @@ const ApplicationViewer = () => {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-white">Job Applications</h1>
-                <p className="text-gray-400 text-sm mt-1">View and manage candidate applications</p>
+                <p className="text-base text-gray-400">View and manage candidate applications</p>
             </div>
 
             {/* Header / Controls */}
