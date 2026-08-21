@@ -37,7 +37,7 @@ public class TestimonialController {
         }
 
         @GetMapping("/{id}")
-        public ResponseEntity<Testimonial> getTestimonialById(@PathVariable Integer id) {
+        public ResponseEntity<Testimonial> getTestimonialById(@PathVariable String id) {
                 return testimonialService.getTestimonialById(id)
                                 .map(ResponseEntity::ok)
                                 .orElse(ResponseEntity.notFound().build());
@@ -78,7 +78,7 @@ public class TestimonialController {
 
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
-        public ResponseEntity<?> updateTestimonial(@PathVariable Integer id,
+        public ResponseEntity<?> updateTestimonial(@PathVariable String id,
                         @Valid @RequestBody Testimonial testimonial, Principal principal,
                         Authentication authentication) {
                 try {
@@ -128,7 +128,7 @@ public class TestimonialController {
 
         @DeleteMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
-        public ResponseEntity<?> deleteTestimonial(@PathVariable Integer id, Principal principal,
+        public ResponseEntity<?> deleteTestimonial(@PathVariable String id, Principal principal,
                         Authentication authentication) {
                 return testimonialService.getTestimonialById(id)
                                 .map(testimonial -> {

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
     <!-- Console Appender for Development -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-DD HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
@@ -44,8 +46,10 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="com.oceanlk.backend" level="DEBUG"/>
-        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <!-- Set to INFO to hide verbose DEBUG logs (like JWT filters). Set back to DEBUG if you need detailed app traces -->
+        <logger name="com.oceanlk.backend" level="INFO"/>
+        <!-- Set to ERROR so SQL queries are only printed when an error occurs -->
+        <logger name="org.hibernate.SQL" level="ERROR"/>
     </springProfile>
 
     <!-- Production Profile -->

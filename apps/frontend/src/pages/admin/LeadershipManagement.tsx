@@ -559,7 +559,7 @@ const LeadershipManagement = () => {
                                         <select
                                             value={formData.department}
                                             onChange={(e) => setFormData({ ...formData, department: e.target.value as any })}
-                                            className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                                            className="w-full px-4 py-2 bg-slate-700 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
                                         >
                                             {categories.map((cat) => (
                                                 <option key={cat.code} value={cat.code}>{cat.title}</option>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -20,6 +20,10 @@ const StatsManagement = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    // Distinct from isLoading (which covers form submits): true only until
+    // the first fetch settles, so the empty state below never flashes
+    // "nothing here" before the data has actually arrived.
+    const [initialLoading, setInitialLoading] = useState(true);
     const [formData, setFormData] = useState<Omit<GlobalMetric, 'id'>>({
         label: '',
         value: '',
@@ -40,6 +44,8 @@ const StatsManagement = () => {
             }
         } catch (error) {
             toast.error('Failed to fetch stats');
+        } finally {
+            setInitialLoading(false);
         }
     };
 
@@ -180,6 +186,14 @@ const StatsManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {!initialLoading && stats.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <BarChart3 size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No statistics found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
 
             {/* Create/Edit Modal */}
             {isModalOpen && (

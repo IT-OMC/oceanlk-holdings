@@ -18,7 +18,7 @@ public class TestimonialService {
         return testimonialRepository.findAll();
     }
 
-    public Optional<Testimonial> getTestimonialById(Integer id) {
+    public Optional<Testimonial> getTestimonialById(String id) {
         return testimonialRepository.findById(id);
     }
 
@@ -26,7 +26,7 @@ public class TestimonialService {
         return testimonialRepository.save(testimonial);
     }
 
-    public Testimonial updateTestimonial(Integer id, Testimonial testimonialDetails) {
+    public Testimonial updateTestimonial(String id, Testimonial testimonialDetails) {
         return testimonialRepository.findById(id)
                 .map(testimonial -> {
                     testimonial.setName(testimonialDetails.getName());
@@ -40,7 +40,7 @@ public class TestimonialService {
                 .orElseThrow(() -> new RuntimeException("Testimonial not found with id " + id));
     }
 
-    public void deleteTestimonial(Integer id) {
+    public void deleteTestimonial(String id) {
         testimonialRepository.deleteById(id);
     }
 }

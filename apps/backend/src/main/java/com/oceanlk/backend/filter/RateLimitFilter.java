@@ -9,6 +9,7 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.codec.ByteArrayCodec;
+import jakarta.annotation.PreDestroy;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**
@@ -44,6 +46,29 @@ public class RateLimitFilter extends OncePerRequestFilter {
     /** Non-null only when Redis is available. */
     private final ProxyManager<byte[]> proxyManager;
 
+    /**
+     * The Lettuce client and connection are kept as fields purely so they can be
+     * released again in {@link #shutdownRedisResources()}.
+     *
+     * <p>
+     * They used to be constructor-local variables, which leaked in BOTH paths:
+     * </p>
+     * <ul>
+     * <li><b>Redis down:</b> {@code RedisClient.create(...)} already allocates a
+     * {@code DefaultClientResources} (Netty event loop groups + thread pools)
+     * before {@code connect()} is ever attempted. When {@code connect()} then
+     * threw, the catch block swallowed the exception and dropped the client on
+     * the floor without calling {@code shutdown()}. A few seconds later the GC
+     * ran and Lettuce logged
+     * "DefaultClientResources was not shut down properly".</li>
+     * <li><b>Redis up:</b> nothing held a reference to the client or the
+     * connection, so they were never closed on application shutdown either --
+     * the same leak, just deferred until redeploy.</li>
+     * </ul>
+     */
+    private final RedisClient redisClient;
+    private final StatefulRedisConnection<byte[], byte[]> redisConnection;
+
     /** Fallback in-memory buckets used when Redis is unavailable. */
     private final ConcurrentHashMap<String, Bucket> localBuckets = new ConcurrentHashMap<>();
 
@@ -59,6 +84,9 @@ public class RateLimitFilter extends OncePerRequestFilter {
             @Value("${spring.data.redis.password:}") String redisPassword) {
 
         ProxyManager<byte[]> pm = null;
+        RedisClient client = null;
+        StatefulRedisConnection<byte[], byte[]> connection = null;
+
         try {
             RedisURI.Builder uriBuilder = RedisURI.builder()
                     .withHost(redisHost)
@@ -69,16 +97,55 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 uriBuilder.withPassword(redisPassword.toCharArray());
             }
 
-            RedisClient redisClient = RedisClient.create(uriBuilder.build());
-            StatefulRedisConnection<byte[], byte[]> connection = redisClient.connect(ByteArrayCodec.INSTANCE);
+            client = RedisClient.create(uriBuilder.build());
+            connection = client.connect(ByteArrayCodec.INSTANCE);
             pm = LettuceBasedProxyManager.builderFor(connection).build();
             log.info("RateLimitFilter: using Redis backend at {}:{}", redisHost, redisPort);
         } catch (Exception e) {
             log.warn("RateLimitFilter: Redis unavailable ({}). Falling back to in-memory rate limiting. " +
                     "This is fine for local development but should not happen in production.", e.getMessage());
+            // Release the Netty event loops / thread pools the failed client already
+            // allocated, instead of leaving them for the GC to complain about.
+            releaseRedisResources(connection, client);
+            connection = null;
+            client = null;
+            pm = null;
         }
 
+        this.redisClient = client;
+        this.redisConnection = connection;
         this.proxyManager = pm;
+    }
+
+    /**
+     * Closes the Lettuce connection and shuts the client down when the Spring
+     * context is destroyed, so repeated restarts/redeploys don't accumulate
+     * event-loop threads and file descriptors.
+     */
+    @PreDestroy
+    void shutdownRedisResources() {
+        if (redisClient != null) {
+            log.info("RateLimitFilter: shutting down Lettuce Redis client");
+        }
+        releaseRedisResources(redisConnection, redisClient);
+    }
+
+    private static void releaseRedisResources(StatefulRedisConnection<byte[], byte[]> connection, RedisClient client) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (Exception ex) {
+                log.debug("RateLimitFilter: error closing Redis connection", ex);
+            }
+        }
+        if (client != null) {
+            try {
+                // Quiet period 0 so startup/shutdown isn't delayed by the default 2s.
+                client.shutdown(0, 2, TimeUnit.SECONDS);
+            } catch (Exception ex) {
+                log.debug("RateLimitFilter: error shutting down Lettuce client", ex);
+            }
+        }
     }
 
     @Override

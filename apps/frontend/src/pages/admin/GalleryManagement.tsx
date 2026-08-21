@@ -506,6 +506,14 @@ const GalleryManagement = () => {
         return <div className="flex justify-center p-10"><Loader className="animate-spin text-emerald-500" /></div>;
     }
 
+    // Items visible under the current tab, extracted from the JSX below so
+    // the grid and its empty state always agree on what "empty" means.
+    const visibleGalleryItems = mediaItems.filter(item => {
+        if (activeTab === 'albums') return item.type === 'ALBUM';
+        if (activeTab === 'videos') return item.type === 'VIDEO' || !!item.videoUrl;
+        return item.type !== 'ALBUM' && item.type !== 'VIDEO' && !item.videoUrl;
+    });
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-end">
@@ -581,13 +589,7 @@ const GalleryManagement = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mediaItems
-                    .filter(item => {
-                        if (activeTab === 'albums') return item.type === 'ALBUM';
-                        if (activeTab === 'videos') return item.type === 'VIDEO' || !!item.videoUrl;
-                        return item.type !== 'ALBUM' && item.type !== 'VIDEO' && !item.videoUrl;
-                    })
-                    .map((item) => (
+                {visibleGalleryItems.map((item) => (
                         <motion.div
                             key={item.id}
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -674,6 +676,14 @@ const GalleryManagement = () => {
                         </motion.div>
                     ))}
             </div>
+
+            {visibleGalleryItems.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No {activeTab} found</p>
+                    <p className="text-sm mt-1">Upload one using the button above.</p>
+                </div>
+            )}
 
             {/* Edit/Create Modal */}
             <AnimatePresence>

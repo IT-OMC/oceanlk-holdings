@@ -1,28 +1,26 @@
 package com.oceanlk.backend.repository;
 
 import com.oceanlk.backend.model.PendingChange;
+import com.oceanlk.backend.model.PendingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface PendingChangeRepository extends JpaRepository<PendingChange, String> {
+public interface PendingChangeRepository extends JpaRepository<PendingChange, UUID> {
 
-    List<PendingChange> findByStatus(String status);
+    List<PendingChange> findByStatus(PendingStatus status);
 
-    List<PendingChange> findByEntityTypeAndStatus(String entityType, String status);
+    List<PendingChange> findByEntityTypeAndStatus(String entityType, PendingStatus status);
 
-    List<PendingChange> findBySubmittedByOrderBySubmittedAtDesc(String username);
+    List<PendingChange> findBySubmittedByOrderBySubmittedAtDesc(UUID submittedBy);
 
-    List<PendingChange> findBySubmittedByIgnoreCaseOrderBySubmittedAtDesc(String username);
+    List<PendingChange> findBySubmittedByAndStatusOrderBySubmittedAtDesc(UUID submittedBy, PendingStatus status);
 
-    List<PendingChange> findBySubmittedByAndStatusOrderBySubmittedAtDesc(String username, String status);
+    Optional<PendingChange> findByEntityIdAndStatus(UUID entityId, PendingStatus status);
 
-    List<PendingChange> findBySubmittedByIgnoreCaseAndStatusOrderBySubmittedAtDesc(String username, String status);
-
-    Optional<PendingChange> findByEntityIdAndStatus(String entityId, String status);
-
-    List<PendingChange> findByStatusOrderBySubmittedAtDesc(String status);
+    List<PendingChange> findByStatusOrderBySubmittedAtDesc(PendingStatus status);
 }

@@ -6,7 +6,7 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface Testimonial {
-    id: number;
+    id: string;
     name: string;
     position: string;
     company: string;
@@ -20,7 +20,7 @@ const TestimonialsManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     // File upload state
@@ -226,7 +226,7 @@ const TestimonialsManagement = () => {
         setIsModalOpen(true);
     };
 
-    const openDeleteModal = (id: number) => {
+    const openDeleteModal = (id: string) => {
         setItemToDelete(id);
         setDeleteModalOpen(true);
     };

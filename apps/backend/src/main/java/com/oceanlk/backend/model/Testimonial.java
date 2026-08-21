@@ -11,8 +11,8 @@ import jakarta.persistence.*;
 @Table(name = "testimonials")
 public class Testimonial {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     @NotBlank(message = "Name is required")
     private String name;
     private String position;

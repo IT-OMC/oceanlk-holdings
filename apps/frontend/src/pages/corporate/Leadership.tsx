@@ -267,6 +267,17 @@ const Leadership = () => {
 
             {/* Dynamic Categories */}
             {categories.map((category) => {
+                // Guard against malformed category rows (code is null/empty).
+                // Without this, a category with a null "code" would still be
+                // considered, and any leader whose "department" is ALSO null
+                // would match it via `null === null` -- the section would then
+                // try to render and crash on category.code.toLowerCase(). Bad
+                // rows like this can slip in from direct database edits (e.g.
+                // via the Supabase table editor) that bypass the app's own
+                // validation. Skipping here means one bad row just doesn't show
+                // up, instead of taking down the whole page.
+                if (!category.code) return null;
+
                 const categoryLeaders = leaders.filter(l => l.department === category.code);
                 if (categoryLeaders.length === 0) return null;
 

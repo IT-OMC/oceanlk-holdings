@@ -364,6 +364,14 @@ const DocumentsManagement = () => {
                 ))}
             </div>
 
+            {mediaItems.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No documents found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
+
             {/* Edit/Create Modal */}
             <AnimatePresence>
                 {isModalOpen && (

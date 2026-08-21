@@ -41,6 +41,10 @@ const EventsManagement = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    // Distinct from isLoading (which covers form submits): true only until
+    // the first fetch settles, so the empty state below never flashes
+    // "nothing here" before the data has actually arrived.
+    const [initialLoading, setInitialLoading] = useState(true);
     const [view, setView] = useState<View>('month');
     const [date, setDate] = useState(new Date());
     // Image upload state
@@ -89,6 +93,8 @@ const EventsManagement = () => {
             }
         } catch (error) {
             toast.error('Failed to fetch events');
+        } finally {
+            setInitialLoading(false);
         }
     };
 
@@ -277,6 +283,12 @@ const EventsManagement = () => {
         };
     };
 
+    // Extracted from the JSX below so the list and its empty state always
+    // filter by the same rule.
+    const upcomingEvents = events
+        .filter((event) => new Date(event.date) >= new Date())
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -330,10 +342,7 @@ const EventsManagement = () => {
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white">Upcoming Events</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {events
-                        .filter((event) => new Date(event.date) >= new Date())
-                        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                        .map((event) => {
+                    {upcomingEvents.map((event) => {
                             const category = categories.find((cat) => cat.value === event.category);
                             return (
                                 <motion.div
@@ -387,6 +396,14 @@ const EventsManagement = () => {
                             );
                         })}
                 </div>
+
+                {!initialLoading && upcomingEvents.length === 0 && (
+                    <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                        <CalendarIcon size={48} className="mx-auto mb-4 opacity-50" />
+                        <p className="text-gray-300 font-medium">No upcoming events</p>
+                        <p className="text-sm mt-1">Past events still appear on the calendar above.</p>
+                    </div>
+                )}
             </div>
 
             {/* Create/Edit Modal */}

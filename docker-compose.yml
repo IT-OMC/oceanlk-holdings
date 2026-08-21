@@ -1,6 +1,31 @@
-version: '3.8'
-
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: oceanlk-redis
+    restart: unless-stopped
+    user: "999"
+    # No persistence: the only thing stored here is rate-limit token buckets,
+    # which are worthless after a restart. Disabling RDB + AOF also means the
+    # read_only root filesystem below doesn't need a writable data dir.
+    command: [ "redis-server", "--save", "", "--appendonly", "no" ]
+    # Deliberately NOT published to the host. The backend reaches it over the
+    # oceanlk-network bridge as "redis:6379". If you need to poke at it from
+    # your machine, use: docker exec -it oceanlk-redis redis-cli
+    networks:
+      - oceanlk-network
+    # Security hardening (matches the other services)
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   backend:
     build:
       context: ./apps/backend
@@ -9,6 +34,9 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
     environment:
       DATABASE_URL: ${DATABASE_URL}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
@@ -23,6 +51,16 @@ services:
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      # Distributed rate limiting (RateLimitFilter). Without these the filter
+      # silently degrades to per-instance in-memory buckets, which means the
+      # login rate limit is trivially bypassed by hitting a different replica.
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      # Schema is managed by SQL migrations against Supabase, not by Hibernate.
+      # "validate" is already set by application-prod.properties; this makes the
+      # intent explicit and overridable for a throwaway local database.
+      DDL_AUTO: ${DDL_AUTO:-validate}
     networks:
       - oceanlk-network
     # Security hardening
