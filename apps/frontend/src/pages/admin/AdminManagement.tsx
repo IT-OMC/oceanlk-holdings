@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2, ChevronDown, CheckCircle2, XCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import { AdminUser, UserCreateRequest, UserUpdateRequest, UserRole } from '../../types/api';
 
 const AdminManagement = () => {
@@ -11,6 +12,8 @@ const AdminManagement = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [adminToDelete, setAdminToDelete] = useState<AdminUser | null>(null);
+    const [deletingAdmin, setDeletingAdmin] = useState(false);
 
     // New Admin State
     const [newAdmin, setNewAdmin] = useState<UserCreateRequest>({
@@ -114,18 +117,22 @@ const AdminManagement = () => {
         }
     };
 
-    const handleDeleteAdmin = async (id: string) => {
-        if (!window.confirm('Are you sure you want to delete this admin?')) return;
+    // Confirmation is handled by <ConfirmationModal> at the bottom of this
+    // component; the row button just sets adminToDelete.
+    const handleDeleteAdmin = async () => {
+        if (!adminToDelete) return;
+        setDeletingAdmin(true);
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_DELETE(id), {
+            const res = await fetch(API_ENDPOINTS.ADMIN_DELETE(adminToDelete.id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (res.ok) {
                 setSuccess('Admin deleted');
+                setAdminToDelete(null);
                 fetchAdmins();
             } else {
                 setError('Failed to delete admin');
@@ -133,6 +140,8 @@ const AdminManagement = () => {
         } catch (err: any) {
             console.error('✗ Delete admin error:', err);
             setError(`Failed to delete: ${err?.message || 'Unknown error'}`);
+        } finally {
+            setDeletingAdmin(false);
         }
     };
 
@@ -322,7 +331,7 @@ const AdminManagement = () => {
                                                 </button>
                                                 {admin.role !== 'SUPER_ADMIN' && (
                                                     <button
-                                                        onClick={() => handleDeleteAdmin(admin.id)}
+                                                        onClick={() => setAdminToDelete(admin)}
                                                         className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                                                         title="Delete Admin"
                                                     >
@@ -633,6 +642,17 @@ const AdminManagement = () => {
                     </div>
                 )}
             </AnimatePresence>
+
+            <ConfirmationModal
+                isOpen={adminToDelete !== null}
+                onClose={() => setAdminToDelete(null)}
+                onConfirm={handleDeleteAdmin}
+                title="Delete Administrator"
+                message={`Delete ${adminToDelete?.name || 'this administrator'}? They will lose access to the admin panel immediately. This action cannot be undone.`}
+                confirmText="Delete"
+                type="danger"
+                isLoading={deletingAdmin}
+            />
         </div>
     );
 };

@@ -6,8 +6,6 @@ import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock, Upload, X } from 
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './EventsManagement.css';
 
 const localizer = momentLocalizer(moment);
 

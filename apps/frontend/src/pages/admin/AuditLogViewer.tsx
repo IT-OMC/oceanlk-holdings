@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter, Trash2, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { API_ENDPOINTS } from '../../utils/api';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 interface AuditLog {
     id: string;
@@ -20,6 +22,8 @@ const AuditLogViewer = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [actionFilter, setActionFilter] = useState('ALL');
     const [userRole, setUserRole] = useState('');
+    const [logToDelete, setLogToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetchLogs();
@@ -87,35 +91,40 @@ const AuditLogViewer = () => {
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
             } else {
-                alert('Failed to export audit logs.');
+                toast.error('Failed to export audit logs.');
             }
         } catch (error) {
             console.error('Error exporting logs:', error);
-            alert('An error occurred while exporting logs.');
+            toast.error('An error occurred while exporting logs.');
         }
     };
 
-    const handleDeleteLog = async (id: string) => {
-        if (!window.confirm('Are you sure you want to delete this audit log? This action cannot be undone.')) {
-            return;
-        }
+    // Confirmation is handled by <ConfirmationModal> at the bottom of this
+    // component; the row button just sets logToDelete.
+    const handleDeleteLog = async () => {
+        if (!logToDelete) return;
+        setIsDeleting(true);
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.AUDIT_LOG_DELETE(id), {
+            const response = await fetch(API_ENDPOINTS.AUDIT_LOG_DELETE(logToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
                 // Remove the deleted log from state
-                setLogs(logs.filter(log => log.id !== id));
+                setLogs(logs.filter(log => log.id !== logToDelete));
+                toast.success('Audit log deleted');
+                setLogToDelete(null);
             } else {
-                alert('Failed to delete audit log. You may not have permission.');
+                toast.error('Failed to delete audit log. You may not have permission.');
             }
         } catch (error) {
             console.error('Error deleting audit log:', error);
-            alert('An error occurred while deleting the audit log.');
+            toast.error('An error occurred while deleting the audit log.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -224,7 +233,7 @@ const AuditLogViewer = () => {
                                         {userRole === 'SUPER_ADMIN' && (
                                             <td className="p-4 text-right">
                                                 <button
-                                                    onClick={() => handleDeleteLog(log.id)}
+                                                    onClick={() => setLogToDelete(log.id)}
                                                     className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                                                     title="Delete Log"
                                                 >
@@ -239,6 +248,17 @@ const AuditLogViewer = () => {
                     </table>
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={logToDelete !== null}
+                onClose={() => setLogToDelete(null)}
+                onConfirm={handleDeleteLog}
+                title="Delete Audit Log"
+                message="Are you sure you want to delete this audit log? This action cannot be undone."
+                confirmText="Delete"
+                type="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

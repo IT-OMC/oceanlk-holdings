@@ -16,6 +16,7 @@ import { toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import NotificationBell from '../components/admin/NotificationBell';
 import { API_ENDPOINTS } from '../utils/api';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -56,14 +57,34 @@ const AdminLayout = () => {
         checkVerification();
     }, []);
 
-    const handleLogout = () => {
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+    // Both logout buttons (the sidebar one and the one on the verification
+    // screen) go through handleLogout, so both get the confirmation.
+    const handleLogout = () => setShowLogoutConfirm(true);
+
+    const performLogout = () => {
         sessionStorage.removeItem('adminToken');
         sessionStorage.removeItem('adminName');
         sessionStorage.removeItem('adminUsername');
         sessionStorage.removeItem('adminRole');
         sessionStorage.removeItem('adminVerified');
+        setShowLogoutConfirm(false);
         navigate('/admin');
     };
+
+    const logoutConfirmation = (
+        <ConfirmationModal
+            isOpen={showLogoutConfirm}
+            onClose={() => setShowLogoutConfirm(false)}
+            onConfirm={performLogout}
+            title="Log out"
+            message="Are you sure you want to log out? Any unsaved changes on this page will be lost."
+            confirmText="Log out"
+            cancelText="Stay signed in"
+            type="warning"
+        />
+    );
 
     const sendOtp = async () => {
         setLoading(true);
@@ -233,6 +254,8 @@ const AdminLayout = () => {
                         </div>
                     </div>
                 </div>
+
+                {logoutConfirmation}
             </div>
         );
     }
@@ -321,6 +344,8 @@ const AdminLayout = () => {
                     <Outlet />
                 </div>
             </motion.main>
+
+            {logoutConfirmation}
         </div>
     );
 };
