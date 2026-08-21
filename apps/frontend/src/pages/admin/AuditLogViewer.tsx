@@ -226,7 +226,7 @@ const AuditLogViewer = () => {
                                             {log.entityType}
                                             <span className="text-xs text-gray-500 block font-mono mt-1">{log.entityId}</span>
                                         </td>
-                                        <td className="p-4 text-gray-300 text-sm max-w-md truncate" title={log.details}>
+                                        <td className="p-4 text-gray-300 text-sm max-w-sm truncate" title={log.details}>
                                             {log.details}
                                         </td>
                                         {userRole === 'SUPER_ADMIN' && (
