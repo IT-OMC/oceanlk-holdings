@@ -286,8 +286,6 @@ const ManageContactMessages = () => {
 
             {/* Messages List */}
             <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Contact Messages</h2>
-
                 <div className="space-y-4">
                     {filteredMessages.length === 0 ? (
                         <div className="text-center py-12">

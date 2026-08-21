@@ -92,7 +92,7 @@ const MyPendingChanges: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h1>My Pending Changes</h1>
                 <button
-                    onClick={() => navigate('/admin')}
+                    onClick={() => navigate('/admin/dashboard')}
                     style={{
                         padding: '0.5rem 1rem',
                         backgroundColor: '#6b7280',

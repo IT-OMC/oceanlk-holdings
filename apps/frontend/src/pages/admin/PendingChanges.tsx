@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Check, X, ChevronRight, Clock,
-    Eye, Filter, ArrowLeft,
+    Eye, Filter,
     User, Calendar, Search
 } from 'lucide-react';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
@@ -35,7 +34,6 @@ const PendingChanges: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
     const [alertDialog, setAlertDialog] = useState<{isOpen: boolean, title: string, message: string, type: 'success'|'error'|'warning'}>({ isOpen: false, title: '', message: '', type: 'success' });
-    const navigate = useNavigate();
 
     const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
@@ -227,17 +225,6 @@ const PendingChanges: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#0B1120] text-gray-100 p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
-                {/* Header */}
-                <div className="flex justify-end mb-4">
-                    <button
-                        onClick={() => navigate('/admin')}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors border border-gray-700"
-                    >
-                        <ArrowLeft size={18} />
-                        Back to Dashboard
-                    </button>
-                </div>
-
                 {/* Main Content Card */}
                 <div className="bg-[#151C2C] rounded-xl border border-gray-800 shadow-xl overflow-hidden">
                     {/* Tabs */}

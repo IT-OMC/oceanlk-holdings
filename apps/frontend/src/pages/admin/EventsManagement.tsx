@@ -63,12 +63,14 @@ const EventsManagement = () => {
     });
 
     const categories = [
-        { value: 'SOCIAL', label: 'Social', color: 'bg-blue-500' },
-        { value: 'LEARNING', label: 'Learning', color: 'bg-cyan-500' },
-        { value: 'CELEBRATION', label: 'Celebration', color: 'bg-purple-500' },
-        { value: 'MEETING', label: 'Meeting', color: 'bg-yellow-500' },
-        { value: 'OTHER', label: 'Other', color: 'bg-gray-500' },
+        { value: 'SOCIAL', label: 'Social', color: 'bg-blue-500', hex: '#3b82f6' },
+        { value: 'LEARNING', label: 'Learning', color: 'bg-cyan-500', hex: '#06b6d4' },
+        { value: 'CELEBRATION', label: 'Celebration', color: 'bg-purple-500', hex: '#a855f7' },
+        { value: 'MEETING', label: 'Meeting', color: 'bg-yellow-500', hex: '#eab308' },
+        { value: 'OTHER', label: 'Other', color: 'bg-gray-500', hex: '#6b7280' },
     ];
+
+    const CATEGORY_FALLBACK = '#6b7280';
 
     useEffect(() => {
         fetchEvents();
@@ -273,12 +275,8 @@ const EventsManagement = () => {
         const category = categories.find((cat) => cat.value === event.resource.category);
         return {
             style: {
-                backgroundColor: category ? category.color.replace('bg-', '#').replace('-500', '') : '#6B7280',
-                borderRadius: '6px',
-                opacity: 0.9,
-                color: 'white',
-                border: '0px',
-                display: 'block',
+                backgroundColor: category?.hex ?? CATEGORY_FALLBACK,
+                color: '#fff',
             },
         };
     };
@@ -320,22 +318,38 @@ const EventsManagement = () => {
             </div>
 
             {/* Calendar */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4">
                 <Calendar
                     localizer={localizer}
                     events={calendarEvents}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ height: 600 }}
+                    style={{ height: 520 }}
                     onSelectEvent={handleSelectEvent}
                     onSelectSlot={handleSelectSlot}
                     selectable
+                    popup
+                    views={['month', 'week', 'day', 'agenda']}
                     view={view}
                     onView={setView}
                     date={date}
                     onNavigate={setDate}
                     eventPropGetter={eventStyleGetter}
                 />
+
+                {/* Category legend -- the calendar is colour-coded but nothing
+                    said what the colours meant. */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 pt-3 border-t border-white/10">
+                    {categories.map((cat) => (
+                        <span key={cat.value} className="flex items-center gap-1.5 text-xs text-gray-400">
+                            <span
+                                className="w-2.5 h-2.5 rounded-full"
+                                style={{ backgroundColor: cat.hex }}
+                            />
+                            {cat.label}
+                        </span>
+                    ))}
+                </div>
             </div>
 
             {/* Events List */}
@@ -351,7 +365,10 @@ const EventsManagement = () => {
                                     className="bg-white/5 rounded-xl p-4 border border-white/10"
                                 >
                                     <div className="flex items-start justify-between mb-3">
-                                        <div className={`px-2 py-1 rounded text-xs font-bold ${category?.color} text-white`}>
+                                        <div
+                                            className="px-2 py-1 rounded text-xs font-bold text-white"
+                                            style={{ backgroundColor: category?.hex ?? CATEGORY_FALLBACK }}
+                                        >
                                             {category?.label || event.category}
                                         </div>
                                         <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, ShieldAlert, ArrowLeft, Trash2, Download } from 'lucide-react';
+import { Search, Filter, Trash2, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../utils/api';
 
 interface AuditLog {
@@ -130,14 +129,10 @@ const AuditLogViewer = () => {
     };
 
     return (
-        <div className="p-8">
+        <div>
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                        <ShieldAlert className="w-8 h-8 text-emerald-400" />
-                        Audit Logs
-                    </h1>
-                    <p className="text-gray-400 mt-1">Track system activities and administrative actions</p>
+                    <p className="text-gray-400">Track system activities and administrative actions</p>
                 </div>
                 <div className="flex gap-4">
                     <button
@@ -146,9 +141,6 @@ const AuditLogViewer = () => {
                     >
                         <Download size={18} /> Export Report
                     </button>
-                    <Link to="/admin/dashboard" className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors flex items-center gap-2">
-                        <ArrowLeft size={18} /> Back to Dashboard
-                    </Link>
                 </div>
             </div>
 

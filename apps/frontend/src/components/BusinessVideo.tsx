@@ -12,8 +12,8 @@ const BusinessVideo = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
     // Video URLs
-    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
-    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
+    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
+    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
 
     // State for transition management
     const [mountSecondVideo, setMountSecondVideo] = useState(false);
@@ -49,7 +49,7 @@ const BusinessVideo = () => {
             {/* Background Video Wrapper */}
             <motion.div
                 style={{ y }}
-                className="absolute inset-0 z-0 h-[120%]"
+                className="absolute inset-0 z-0 h-[80vh]"
             >
                 {/* First Background Video */}
                 <motion.div
