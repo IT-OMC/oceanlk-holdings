@@ -79,36 +79,6 @@ services:
       retries: 3
       start_period: 60s
 
-  frontend:
-    build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
-    container_name: oceanlk-frontend
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    networks:
-      - oceanlk-network
-    # Security hardening
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /tmp:noexec,nosuid,size=50m
-      - /var/cache/nginx:noexec,nosuid,size=100m  # Nginx needs writable cache
-      - /var/run:noexec,nosuid,size=10m            # Nginx needs to write nginx.pid
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE               # Needed to bind to port 80 (< 1024) as non-root
-    healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://localhost/health" ]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-
 networks:
   oceanlk-network:
     driver: bridge

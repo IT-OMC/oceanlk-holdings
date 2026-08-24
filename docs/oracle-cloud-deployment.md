@@ -1,4 +1,14 @@
-# 🚀 Oracle Cloud Full-Stack Deployment Guide (Ubuntu)
+# 🚀 Oracle Cloud Deployment Guide (Ubuntu) — Backend Only
+
+> **Frontend moved to Vercel.** As of the Vite → Next.js migration
+> (`docs/migration/`), `apps/frontend` no longer has a Dockerfile or nginx
+> config and is not part of `docker-compose.yml` — it deploys to Vercel via
+> `vercel.json`. Everything below now provisions the **backend + Redis**
+> only. The host nginx installed in Phase 2 and the certificates in Phase 5
+> are still needed for the backend's own domain/TLS termination, but no
+> longer need to proxy or serve the frontend — point the public site domain
+> (`ocean.lk`) at Vercel via DNS instead, and reserve this server's domain
+> for the API only.
 
 This guide is simplified to ensure we don't hit the "Timeout" issue again.
 

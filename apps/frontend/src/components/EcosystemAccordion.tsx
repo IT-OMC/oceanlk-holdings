@@ -78,7 +78,7 @@ const EcosystemAccordion = () => {
                 <div className="absolute inset-0 bg-blue-900/20 mix-blend-overlay" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-6 h-[600px] flex flex-col lg:flex-row gap-4">
+            <div className="relative z-10 container mx-auto px-6 h-[500px] flex flex-col lg:flex-row gap-4">
 
                 {/* Header for Mobile / Intro Area */}
                 <div className="lg:w-1/4 mb-10 lg:mb-0 flex flex-col justify-center pr-8 space-y-6">
