@@ -1,11 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { ArrowLeft, Loader, Download } from 'lucide-react';
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
+import { ArrowLeft, Download } from 'lucide-react';
+import { getMediaUrl } from '../../utils/api';
 
-interface MediaItem {
+export interface MediaItem {
     id: string;
     title: string;
     description: string;
@@ -22,57 +22,7 @@ interface MediaItem {
     author?: string;
 }
 
-const MediaSingle = () => {
-    const { id } = useParams<{ id: string }>();
-    const [media, setMedia] = useState<MediaItem | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchMediaItem = useCallback(async (mediaId: string) => {
-        try {
-            setIsLoading(true);
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(mediaId));
-            if (response.ok) {
-                const data = await response.json();
-                setMedia(data);
-            } else {
-                setError('Media item not found');
-            }
-        } catch (error) {
-            console.error('Error fetching media item:', error);
-            setError('Failed to load media item');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (id) {
-            fetchMediaItem(id);
-        }
-    }, [id, fetchMediaItem]);
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <Loader className="animate-spin text-blue-500" size={48} />
-            </div>
-        );
-    }
-
-    if (error || !media) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold mb-4">Media Not Found</h1>
-                    <Link href="/news/media" className="text-blue-500 hover:underline">
-                        Back to Media Center
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
+const MediaSingle = ({ media }: { media: MediaItem }) => {
     // Determine type for correct rendering
     const isDocument = media.type === 'DOCUMENT';
     const isVideo = !isDocument && (media.type === 'VIDEO' || !!media.videoUrl);

@@ -1,12 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
+import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight } from 'lucide-react';
 
+import { getMediaUrl } from '../../utils/api';
 
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
-
-interface MediaItem {
+export interface MediaItem {
     id: string;
     title: string;
     description: string;
@@ -22,10 +23,7 @@ interface MediaItem {
     galleryImages?: string[];
 }
 
-const Media = () => {
-    const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+const Media = ({ mediaItems }: { mediaItems: MediaItem[] }) => {
     const [activeTab, setActiveTab] = useState('all');
 
     const filteredItems = mediaItems.filter(item => {
@@ -38,28 +36,6 @@ const Media = () => {
         if (activeTab === 'documents') return item.type === 'DOCUMENT';
         return true;
     });
-
-    const fetchMediaItems = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA);
-            if (response.ok) {
-                const data = await response.json();
-                setMediaItems(data);
-            } else {
-                setError('Failed to load media items');
-            }
-        } catch (error) {
-            console.error('Error fetching media:', error);
-            setError('Failed to load media items');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchMediaItems();
-    }, [fetchMediaItems]);
 
     const getMediaIcon = (type?: string) => {
         switch (type?.toUpperCase()) {
@@ -93,30 +69,6 @@ const Media = () => {
         if (index === 1) return 'md:col-span-1 md:row-span-2';
         return 'md:col-span-1 md:row-span-1';
     };
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <Loader className="animate-spin text-blue-500" size={48} />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-red-500 text-xl mb-4">{error}</p>
-                    <button
-                        onClick={fetchMediaItems}
-                        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
@@ -166,7 +118,6 @@ const Media = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[minmax(200px,auto)]">
                         {filteredItems.map((item, index) => {
-                            console.log('Media Item:', item.title, 'Type:', item.type, 'ImageURL:', item.imageUrl, 'VideoURL:', item.videoUrl);
                             const span = getGridSpan(index);
                             const isLarge = span.includes('row-span-2');
 

@@ -1,12 +1,12 @@
+'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
+import { Calendar, User, ArrowUpRight, BookOpen } from 'lucide-react';
 
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
+import { getMediaUrl } from '../../utils/api';
 
-interface BlogPost {
+export interface BlogPost {
     id: string;
     title: string;
     description: string;
@@ -19,82 +19,7 @@ interface BlogPost {
     span?: string;
 }
 
-const Blogs = () => {
-    const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchBlogs = useCallback(async () => {
-        try {
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS);
-            if (response.ok) {
-                const data = await response.json();
-                // Map and assign spans for layout variety
-                const mappedData = data.map((item: any, index: number) => ({
-                    id: item.id,
-                    title: item.title,
-                    description: item.description,
-                    excerpt: item.excerpt || item.description, // Use excerpt or fallback to description
-                    imageUrl: item.imageUrl,
-                    author: item.author || 'OceanLK Team',
-                    publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }),
-                    category: item.category,
-                    readTime: item.readTime || '5 min read',
-                    span: getGridSpan(index)
-                }));
-                setBlogPosts(mappedData);
-            } else {
-                setError('Failed to fetch blog posts');
-            }
-        } catch (error) {
-            console.error('Error fetching blogs:', error);
-            setError('Failed to load blog posts');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchBlogs();
-    }, [fetchBlogs]);
-
-    const getGridSpan = (index: number) => {
-        // Pattern: Big, Small, Small, Small...
-        if (index === 0) return 'md:col-span-2 md:row-span-2';
-        if (index === 1) return 'md:col-span-1 md:row-span-2';
-        return 'md:col-span-1 md:row-span-1';
-    };
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <div className="flex items-center justify-center h-screen">
-                    <Loader className="animate-spin text-cyan-500" size={48} />
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <div className="flex flex-col items-center justify-center h-screen">
-                    <p className="text-red-500 text-xl mb-4">{error}</p>
-                    <button
-                        onClick={fetchBlogs}
-                        className="px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
+const Blogs = ({ blogPosts }: { blogPosts: BlogPost[] }) => {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
 

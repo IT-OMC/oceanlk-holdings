@@ -7,6 +7,7 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
     default: 'OCH - Ocean Ceylon Holdings',
     template: '%s | Ocean Ceylon Holdings',

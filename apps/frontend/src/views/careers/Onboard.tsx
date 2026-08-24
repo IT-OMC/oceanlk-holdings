@@ -1,13 +1,14 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
-import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 const categories = ['All', 'Engineering', 'Hospitality', 'Technology', 'Finance', 'Marketing'];
 
-interface JobOpportunity {
+export interface JobOpportunity {
     id: string;
     title: string;
     company: string;
@@ -19,16 +20,18 @@ interface JobOpportunity {
     level: string;
 }
 
-const Onboard = () => {
+const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
     const router = useRouter();
-    const [jobOpenings, setJobOpenings] = useState<JobOpportunity[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    // Floating particles read window.innerWidth/innerHeight, which doesn't
+    // exist during the server render -- defer them to after mount rather
+    // than crash (P-01: browser APIs at render time run on the server too).
+    const [particlesReady, setParticlesReady] = useState(false);
 
     useEffect(() => {
-        fetchJobs();
+        setParticlesReady(true);
 
         const handleMouseMove = (e: MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
@@ -36,22 +39,6 @@ const Onboard = () => {
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
-
-    const fetchJobs = async () => {
-        try {
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.JOBS);
-            if (response.ok) {
-                const data = await response.json();
-                setJobOpenings(data);
-            } else {
-                console.error("Failed to fetch jobs");
-            }
-        } catch (error) {
-            console.error("Error fetching jobs:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const filteredJobs = jobOpenings.filter(job => {
         const matchesCategory = selectedCategory === 'All' || job.category === selectedCategory;
@@ -62,14 +49,6 @@ const Onboard = () => {
 
     const featuredJobs = filteredJobs.filter(job => job.featured);
     const regularJobs = filteredJobs.filter(job => !job.featured);
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">
@@ -100,7 +79,7 @@ const Onboard = () => {
             </div>
 
             {/* Floating Particles */}
-            {[...Array(20)].map((_, i) => (
+            {particlesReady && [...Array(20)].map((_, i) => (
                 <motion.div
                     key={i}
                     className="absolute w-1 h-1 bg-white/20 rounded-full"

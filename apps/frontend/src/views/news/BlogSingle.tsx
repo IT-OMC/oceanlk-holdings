@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
-import { ArrowLeft, Calendar, User, Share2, Loader } from 'lucide-react';
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
+import { ArrowLeft, Calendar, User, Share2 } from 'lucide-react';
+import { getMediaUrl } from '../../utils/api';
 
-interface BlogPost {
+export interface BlogPost {
     id: string;
     title: string;
     description: string;
@@ -15,74 +15,9 @@ interface BlogPost {
     publishedDate: string;
     category: string;
     readTime: string;
-    // Map description to content for now, or use a separate content field if available later
 }
 
-const BlogSingle = () => {
-    const { id } = useParams<{ id: string }>();
-    const [blog, setBlog] = useState<BlogPost | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchBlog = useCallback(async () => {
-        try {
-            if (!id) return;
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(id));
-            if (response.ok) {
-                const data = await response.json();
-                setBlog({
-                    id: data.id,
-                    title: data.title,
-                    description: data.description, // Main rich text content usually stored here
-                    imageUrl: data.imageUrl,
-                    author: data.author || 'OceanLK Team',
-                    publishedDate: new Date(data.publishedDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }),
-                    category: data.category,
-                    readTime: data.readTime || '5 min read'
-                });
-            } else {
-                setError('Blog post not found');
-            }
-        } catch (error) {
-            console.error('Error fetching blog:', error);
-            setError('Failed to load blog post');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (id) {
-            fetchBlog();
-        }
-    }, [id, fetchBlog]);
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader className="animate-spin text-cyan-500" size={48} />
-            </div>
-        );
-    }
-
-    if (error || !blog) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold mb-4">Blog Post Not Found</h1>
-                    <p className="text-gray-500 mb-6">{error || "The requested blog post could not be found."}</p>
-                    <Link href="/news/blogs" className="text-accent hover:underline">
-                        Back to Blogs
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
+const BlogSingle = ({ blog }: { blog: BlogPost }) => {
     return (
         <div className="min-h-screen">
             <div className="relative h-[60vh] overflow-hidden">

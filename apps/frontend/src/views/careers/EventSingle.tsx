@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+'use client';
+
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, CalendarPlus } from 'lucide-react';
 import moment from 'moment';
 import Navbar from '../../components/Navbar';
-import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
-interface Event {
+export interface Event {
     id: string;
     title: string;
     description: string;
@@ -19,96 +18,11 @@ interface Event {
     status: string;
 }
 
-const EventSingle = () => {
-    const { id } = useParams<{ id: string }>();
-    const router = useRouter();
-    const [event, setEvent] = useState<Event | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchEvent = async () => {
-            try {
-                // Fetch from the dedicated events endpoint
-                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENT_BY_ID(id!));
-                if (response.ok) {
-                    const data = await response.json();
-                    setEvent({
-                        id: data.id,
-                        title: data.title,
-                        description: data.description,
-                        date: data.date,
-                        time: data.time || null,
-                        location: data.location || 'OceanLK Premises',
-                        imageUrl: data.imageUrl,
-                        category: data.category || 'SOCIAL',
-                        status: data.status || 'UPCOMING',
-                    });
-                } else {
-                    // Fallback: search all events
-                    const allResponse = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENTS);
-                    if (allResponse.ok) {
-                        const allData = await allResponse.json();
-                        const foundEvent = allData.find((item: any) => item.id === id);
-                        if (foundEvent) {
-                            setEvent({
-                                id: foundEvent.id,
-                                title: foundEvent.title,
-                                description: foundEvent.description,
-                                date: foundEvent.date,
-                                time: foundEvent.time || null,
-                                location: foundEvent.location || 'OceanLK Premises',
-                                imageUrl: foundEvent.imageUrl,
-                                category: foundEvent.category || 'SOCIAL',
-                                status: foundEvent.status || 'UPCOMING',
-                            });
-                        } else {
-                            setError('Event not found');
-                        }
-                    } else {
-                        setError('Failed to load event details');
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                setError('An error occurred while fetching event details');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (id) {
-            fetchEvent();
-        }
-    }, [id]);
-
+const EventSingle = ({ event }: { event: Event }) => {
     const addToCalendar = () => {
         // Implement add to calendar functionality
         console.log('Add to calendar');
     };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
-
-    if (error || !event) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{error || 'Event not found'}</h2>
-                <button
-                    onClick={() => router.push('/careers/culture')}
-                    className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
-                >
-                    <ArrowLeft size={20} className="mr-2" />
-                    Back to Events
-                </button>
-            </div>
-        );
-    }
 
     return (
         <div className="bg-gray-50 min-h-screen">

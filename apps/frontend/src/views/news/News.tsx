@@ -1,12 +1,12 @@
+'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
+import { Calendar, ArrowRight, ArrowUpRight } from 'lucide-react';
 
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
+import { getMediaUrl } from '../../utils/api';
 
-interface NewsArticle {
+export interface NewsArticle {
     id: string;
     title: string;
     excerpt?: string;
@@ -17,78 +17,7 @@ interface NewsArticle {
     span?: string;
 }
 
-const News = () => {
-    const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchNews = useCallback(async () => {
-        try {
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS);
-            if (response.ok) {
-                const data = await response.json();
-                const mappedData = data.map((item: any, index: number) => ({
-                    id: item.id,
-                    title: item.title,
-                    excerpt: item.excerpt || item.description,
-                    description: item.description,
-                    imageUrl: item.imageUrl,
-                    publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }),
-                    category: item.category,
-                    span: getGridSpan(index)
-                }));
-                setNewsArticles(mappedData);
-            } else {
-                setError('Failed to fetch news articles');
-            }
-        } catch (error) {
-            console.error('Error fetching news:', error);
-            setError('Failed to load news articles');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchNews();
-    }, [fetchNews]);
-
-    const getGridSpan = (index: number) => {
-        if (index === 0) return 'md:col-span-2 md:row-span-2';
-        if (index === 1) return 'md:col-span-1 md:row-span-2';
-        return 'md:col-span-1 md:row-span-1';
-    };
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <div className="flex items-center justify-center h-screen">
-                    <Loader className="animate-spin text-blue-500" size={48} />
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen bg-white text-gray-900 font-sans">
-                <div className="flex flex-col items-center justify-center h-screen">
-                    <p className="text-red-500 text-xl mb-4">{error}</p>
-                    <button
-                        onClick={fetchNews}
-                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
+const News = ({ newsArticles }: { newsArticles: NewsArticle[] }) => {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
 

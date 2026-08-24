@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Mail, ArrowRight, X } from 'lucide-react';
 import { Linkedin } from '../../components/icons/BrandIcons';
-import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { CorporateLeader, LeadershipCategory } from '../../types/api';
 
 interface LeadershipCardProps {
@@ -173,44 +174,13 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
     );
 };
 
-const Leadership = () => {
+interface LeadershipProps {
+    leaders: CorporateLeader[];
+    categories: LeadershipCategory[];
+}
+
+const Leadership = ({ leaders, categories }: LeadershipProps) => {
     const router = useRouter();
-    const [leaders, setLeaders] = useState<CorporateLeader[]>([]);
-
-    const [categories, setCategories] = useState<LeadershipCategory[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [leadersResponse, categoriesResponse] = await Promise.all([
-                    fetch(NEXT_PUBLIC_API_BASE_URL.LEADERSHIP),
-                    fetch(NEXT_PUBLIC_API_BASE_URL.LEADERSHIP_CATEGORIES)
-                ]);
-
-                if (leadersResponse.ok && categoriesResponse.ok) {
-                    const leadersData = await leadersResponse.json();
-                    const categoriesData = await categoriesResponse.json();
-                    setLeaders(leadersData);
-                    setCategories(categoriesData);
-                }
-            } catch (error) {
-                console.error('Failed to fetch data', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadData();
-    }, []);
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#0f0f2a] to-[#0a0a1a]">

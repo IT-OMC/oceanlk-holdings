@@ -1,3 +1,4 @@
+'use client';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import Link from 'next/link';

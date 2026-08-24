@@ -1,22 +1,19 @@
+'use client';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Star, CheckCircle, AlertCircle, FileText, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { JobOpportunity } from '../../types/api';
 
-const JobApplication = () => {
-    const { id } = useParams<{ id: string }>();
-    const [job, setJob] = useState<JobOpportunity | null>(null);
-    const [isLoadingJob, setIsLoadingJob] = useState(true);
-
+const JobApplication = ({ job }: { job: JobOpportunity }) => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: '',
-        position: '',
+        position: job.title,
         experience: '',
         message: '',
         file: null as File | null
@@ -30,36 +27,12 @@ const JobApplication = () => {
     const [apiError, setApiError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchJob = async () => {
-            try {
-                // Since we don't have a single job endpoint verified, we fetch all and filter
-                // Or try single endpoint if available. Let's try fetching all for now as a fallback.
-                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.JOBS);
-                if (response.ok) {
-                    const jobs = await response.json();
-                    const foundJob = jobs.find((j: JobOpportunity) => j.id === id);
-                    if (foundJob) {
-                        setJob(foundJob);
-                        setFormData(prev => ({ ...prev, position: foundJob.title }));
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching job:", error);
-            } finally {
-                setIsLoadingJob(false);
-            }
-        };
-
-        if (id) {
-            fetchJob();
-        }
-
         const handleMouseMove = (e: MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
         };
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [id]);
+    }, []);
 
     const validateStep1 = () => {
         const newErrors: Record<string, string> = {};
@@ -153,25 +126,6 @@ const JobApplication = () => {
     const prevStep = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
     };
-
-    if (isLoadingJob) {
-        return (
-            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
-            </div>
-        );
-    }
-
-    if (!job) {
-        return (
-            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center flex-col">
-                <h2 className="text-2xl text-white font-bold mb-4">Job Not Found</h2>
-                <Link href="/careers/opportunities" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-2">
-                    <ArrowLeft className="w-4 h-4" /> Back to Opportunities
-                </Link>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">

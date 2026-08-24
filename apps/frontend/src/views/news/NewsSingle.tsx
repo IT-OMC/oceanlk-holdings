@@ -1,83 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
-import { ArrowLeft, Calendar, Share2, Loader } from 'lucide-react';
-import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
+import { ArrowLeft, Calendar, Share2 } from 'lucide-react';
+import { getMediaUrl } from '../../utils/api';
 
-interface NewsArticle {
+export interface NewsArticle {
     id: string;
     title: string;
-    content: string; // The rich text description
+    content: string;
     imageUrl: string;
     publishedDate: string;
     category: string;
 }
 
-const NewsSingle = () => {
-    const { id } = useParams<{ id: string }>();
-    const [article, setArticle] = useState<NewsArticle | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchArticle = useCallback(async () => {
-        try {
-            if (!id) return;
-            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(id));
-            if (response.ok) {
-                const data = await response.json();
-                setArticle({
-                    id: data.id,
-                    title: data.title,
-                    content: data.description, // Backend stores content in description
-                    imageUrl: data.imageUrl,
-                    publishedDate: new Date(data.publishedDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }),
-                    category: data.category
-                });
-            } else {
-                setError('Article not found');
-            }
-        } catch (error) {
-            console.error('Error fetching article:', error);
-            setError('Failed to load article');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (id) {
-            fetchArticle();
-        }
-    }, [id, fetchArticle]);
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader className="animate-spin text-cyan-500" size={48} />
-            </div>
-        );
-    }
-
-    if (error || !article) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
-                    <p className="text-gray-500 mb-6">{error || "The requested article could not be found."}</p>
-                    <Link href="/news/articles" className="text-accent hover:underline">
-                        Back to News
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
+const NewsSingle = ({ article }: { article: NewsArticle }) => {
     return (
         <div className="min-h-screen">
             <div className="relative h-[60vh] overflow-hidden">
