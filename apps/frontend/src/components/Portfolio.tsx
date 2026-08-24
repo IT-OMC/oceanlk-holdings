@@ -239,7 +239,7 @@ const Portfolio = () => {
                                 A Constellation of <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Excellence</span>
                             </h3>
-                            <p className="text-lg text-slate-400 leading-relaxed mb-8 max-w-lg">
+                            <p className="text-xl text-slate-400 leading-relaxed mb-8 max-w-lg">
                                 Ocean Ceylon Holdings anchors a diverse portfolio of market-leading subsidiaries, each driving innovation in their respective sectors.
                             </p>
 

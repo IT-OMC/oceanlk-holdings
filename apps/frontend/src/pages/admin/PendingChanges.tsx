@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Check, X, ChevronRight, Clock,
-    Eye, Filter, ArrowLeft,
+    Eye, Filter,
     User, Calendar, Search
 } from 'lucide-react';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
@@ -34,8 +33,7 @@ const PendingChanges: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'pending-approvals' | 'my-changes'>('pending-approvals');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
-    const [alertDialog, setAlertDialog] = useState<{isOpen: boolean, title: string, message: string, type: 'success'|'error'|'warning'}>({ isOpen: false, title: '', message: '', type: 'success' });
-    const navigate = useNavigate();
+    const [alertDialog, setAlertDialog] = useState<{ isOpen: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' }>({ isOpen: false, title: '', message: '', type: 'success' });
 
     const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
@@ -227,17 +225,6 @@ const PendingChanges: React.FC = () => {
     return (
         <div className="min-h-screen bg-[#0B1120] text-gray-100 p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
-                {/* Header */}
-                <div className="flex justify-end mb-4">
-                    <button
-                        onClick={() => navigate('/admin')}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors border border-gray-700"
-                    >
-                        <ArrowLeft size={18} />
-                        Back to Dashboard
-                    </button>
-                </div>
-
                 {/* Main Content Card */}
                 <div className="bg-[#151C2C] rounded-xl border border-gray-800 shadow-xl overflow-hidden">
                     {/* Tabs */}
@@ -335,7 +322,7 @@ const PendingChanges: React.FC = () => {
                                 <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mb-4 text-gray-600">
                                     <Search size={32} />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-300">No changes found</h3>
+                                <h3 className="text-xl font-medium text-gray-300">No changes found</h3>
                                 <p className="text-gray-500 mt-2 max-w-sm">
                                     {activeTab === 'pending-approvals'
                                         ? "There are no pending changes requiring your approval at this moment."

@@ -249,7 +249,7 @@ const CompanyManagement = () => {
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col">
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{company.title}</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{company.title}</h3>
                             <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{company.description}</p>
 
                             {company.industry && (
@@ -281,6 +281,14 @@ const CompanyManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {companies.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <Building2 size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No companies found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
 
             {/* Edit/Create Modal */}
             <AnimatePresence>

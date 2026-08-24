@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { API_ENDPOINTS } from '../../utils/api';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 interface ContactMessage {
     id: string;
@@ -34,6 +35,8 @@ const ManageContactMessages = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
     const [stats, setStats] = useState({ total: 0, unread: 0, read: 0 });
+    const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchMessages = async () => {
         setIsLoading(true);
@@ -125,27 +128,33 @@ const ManageContactMessages = () => {
         }
     };
 
-    const deleteMessage = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this message?')) return;
+    // Confirmation is handled by <ConfirmationModal> at the bottom of this
+    // component; the row button just sets messageToDelete.
+    const deleteMessage = async () => {
+        if (!messageToDelete) return;
+        setIsDeleting(true);
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.CONTACT_DELETE(id), {
+            const response = await fetch(API_ENDPOINTS.CONTACT_DELETE(messageToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
-                setMessages(messages.filter(m => m.id !== id));
+                setMessages(messages.filter(m => m.id !== messageToDelete));
                 setSelectedMessage(null);
                 fetchStats();
                 toast.success('Message deleted successfully');
+                setMessageToDelete(null);
             } else {
                 toast.error('Failed to delete message');
             }
         } catch (error) {
             console.error('Failed to delete message:', error);
             toast.error('An error occurred while deleting the message');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -286,8 +295,6 @@ const ManageContactMessages = () => {
 
             {/* Messages List */}
             <div className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-6">Contact Messages</h2>
-
                 <div className="space-y-4">
                     {filteredMessages.length === 0 ? (
                         <div className="text-center py-12">
@@ -346,7 +353,7 @@ const ManageContactMessages = () => {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                deleteMessage(message.id);
+                                                setMessageToDelete(message.id);
                                             }}
                                             className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
                                             title="Delete message"
@@ -468,6 +475,17 @@ const ManageContactMessages = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <ConfirmationModal
+                isOpen={messageToDelete !== null}
+                onClose={() => setMessageToDelete(null)}
+                onConfirm={deleteMessage}
+                title="Delete Message"
+                message="Are you sure you want to delete this message? This action cannot be undone."
+                confirmText="Delete"
+                type="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

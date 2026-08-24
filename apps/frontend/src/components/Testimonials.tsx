@@ -24,7 +24,7 @@ const Testimonials = () => {
                     <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
                         Client <span className="text-accent">Testimonials</span>
                     </h2>
-                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+                    <p className="text-slate-300 text-xl max-w-2xl mx-auto">
                         Success stories from our valued partners around the globe
                     </p>
                 </motion.div>
@@ -68,7 +68,7 @@ const Testimonials = () => {
                                     className="w-14 h-14 rounded-full object-cover ring-2 ring-accent/30 group-hover:ring-accent transition-all duration-300"
                                 />
                                 <div>
-                                    <h4 className="text-white font-semibold text-lg">
+                                    <h4 className="text-white font-semibold text-xl">
                                         {testimonial.name}
                                     </h4>
                                     <p className="text-slate-400 text-sm">

@@ -65,7 +65,7 @@ const StatCard = ({ label, value }: { label: string; value: string }) => {
                 {value}
             </h3>
 
-            <h4 className="text-lg font-semibold text-accent mb-2">
+            <h4 className="text-xl font-semibold text-accent mb-2">
                 {label}
             </h4>
         </motion.div>
@@ -85,7 +85,7 @@ const Stats = () => {
                 <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-4">
                     OceanLK <span className="text-accent">at a Glance</span>
                 </h2>
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-600 text-xl max-w-2xl mx-auto">
                     Pioneering excellence across industries with strategic vision and unwavering commitment
                 </p>
             </motion.div>

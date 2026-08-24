@@ -43,7 +43,7 @@ const MediaHero = () => {
                         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                             {/* Primary Button */}
                             <button
-                                className="group relative px-8 py-4 bg-white text-purple-950 rounded-full font-bold text-lg overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]"
+                                className="group relative px-8 py-4 bg-white text-purple-950 rounded-full font-bold text-xl overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-[0_0_40px_rgba(255,255,255,0.5)]"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <span className="relative flex items-center gap-3">
@@ -54,7 +54,7 @@ const MediaHero = () => {
 
                             {/* Secondary Button */}
                             <button
-                                className="group flex items-center gap-3 px-8 py-4 bg-white/10 text-white rounded-full font-bold text-lg backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95"
+                                className="group flex items-center gap-3 px-8 py-4 bg-white/10 text-white rounded-full font-bold text-xl backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95"
                             >
                                 <span className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-500 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                     <Play size={16} fill="currentColor" className="ml-0.5" />

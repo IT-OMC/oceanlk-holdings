@@ -81,7 +81,7 @@ const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
                 },
                 h2({ node, children, ...props }) {
                     return (
-                        <h2 className="text-lg font-bold mt-3 mb-2" {...props}>
+                        <h2 className="text-xl font-bold mt-3 mb-2" {...props}>
                             {children}
                         </h2>
                     );

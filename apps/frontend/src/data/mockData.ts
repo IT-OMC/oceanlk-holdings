@@ -24,11 +24,11 @@ export const oceanData = {
             hasDropdown: true,
             subItems: [
                 { name: "All Companies", path: "/companies" },
-                { name: "Ocean Maritime Ceylon", path: "/companies/omc", logo: "/company logos/Ocean Maritime Ceylon logo.png" },
-                { name: "Ocean Engineering Ceylon", path: "/companies/oec", logo: "/company logos/Ocean engineering ceylon.png" },
-                { name: "Ocean Maritime Channel", path: "/companies/omch", logo: "/company logos/ocean maritime channel.png" },
-                { name: "Connecting Cubes", path: "/companies/connecting-cubes", logo: "/company logos/connecting cubes logo..png" },
-                { name: "Digital Books", path: "/companies/digital-books", logo: "/company logos/digital books.png" }
+                { name: "Ocean Maritime Ceylon", path: "/companies/omc", logo: "/company logos/Ocean Maritime Ceylon logo.png", url: "https://omc.lk" },
+                { name: "Ocean Engineering Ceylon", path: "/companies/oec", logo: "/company logos/Ocean engineering ceylon.png", url: "https://oec.lk" },
+                { name: "Ocean Maritime Channel", path: "/companies/omch", logo: "/company logos/ocean maritime channel.png", url: "https://example.com" },
+                { name: "Connecting Cubes", path: "/companies/connecting-cubes", logo: "/company logos/connecting cubes logo..png", url: "https://ccubes.lk" },
+                { name: "Digital Books", path: "/companies/digital-books", logo: "/company logos/digital books.png", url: "https://example.com" }
             ]
         },
         {
@@ -66,8 +66,10 @@ export const oceanData = {
             desc: "Takes orders and delivers supplies for ships in operation side.",
             longDescription: "Ocean Maritime Ceylon is a premier maritime service provider spanning the major ports of Sri Lanka. We specialize in the operational aspect of ship supply, taking orders and ensuring the seamless delivery of essential provisions, spare parts, and technical supplies to vessels in operation. Our 24/7 service ensures that ships face zero downtime due to supply chain delays.",
             logo: "/company logos/Ocean Maritime Ceylon logo.png",
+            url: "https://omc.lk",
             image: "/company images for hero section/ocean maritime ceylon.jpg",
-            video: "https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4",
+            // Todo: add the video of the company
+            video: "https://www.pexels.com/download/video/26893777/",
             founded: "1998",
             employees: "150+",
             revenue: "$45M",
@@ -84,6 +86,7 @@ export const oceanData = {
             desc: "The engineering company which completes the engineering requests of the company.",
             longDescription: "Ocean Engineering Ceylon serves as the technical backbone of our marine operations. We handle all engineering requests, from routine maintenance to complex structural repairs and modifications. Our team of expert marine engineers ensures that every vessel operates at peak performance and meets all safety and compliance rigor.",
             logo: "/company logos/Ocean engineering ceylon.png",
+            url: "https://oec.lk",
             image: "/company images for hero section/ocean engineering ceylon.jpg",
             video: "https://videos.pexels.com/video-files/2043509/2043509-uhd_2560_1440_25fps.mp4",
             founded: "2005",
@@ -102,6 +105,7 @@ export const oceanData = {
             desc: "Does the supply side, handling logistics and channel management.",
             longDescription: "Ocean Maritime Channel focuses on the broader supply side of the maritime industry. We manage the complex logistics channels that keep the maritime world moving. From sourcing global products to managing port-to-port logistics chains, we ensure the steady flow of goods required for maritime operations.",
             logo: "/company logos/ocean maritime channel.png",
+            url: "https://example.com",
             image: "/company images for hero section/ocean maritime channels.jpg",
             video: null,
             founded: "2012",
@@ -120,6 +124,7 @@ export const oceanData = {
             desc: "A traveling agency creating personalized travel experiences.",
             longDescription: "Connecting Cubes is your gateway to the world. As a premier travel agency, we specialize in curating personalized travel experiences that go beyond the ordinary. Whether it's corporate travel management, luxury vacations, or adventure tours, we connect the 'cubes' of your journey to create a seamless picture.",
             logo: "/company logos/connecting cubes logo..png",
+            url: "https://ccubes.lk",
             image: "/company images for hero section/connecting cubes.jpg",
             video: "https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_24fps.mp4",
             founded: "2015",
@@ -138,6 +143,7 @@ export const oceanData = {
             desc: "A digital marketing company driving brand visibility.",
             longDescription: "Digital Books is a forward-thinking digital marketing agency. We help brands tell their stories in the digital age. From social media management and SEO to comprehensive digital campaigns and content creation, we provide the tools and strategies needed to stand out in a crowded digital marketplace.",
             logo: "/company logos/digital books.png",
+            url: "https://example.com",
             image: "/company images for hero section/digital books.jpg",
             founded: "2018",
             employees: "35+",

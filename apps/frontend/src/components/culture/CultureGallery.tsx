@@ -86,7 +86,7 @@ const CultureGallery = () => {
                     className="text-center mb-16"
                 >
                     <h2 className="text-4xl font-bold mb-4 text-gray-900">Captured Moments</h2>
-                    <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+                    <p className="text-xl text-gray-500 max-w-2xl mx-auto">
                         A glimpse into the daily life, celebrations, and collaborative spirit that defines our culture.
                     </p>
                 </motion.div>
@@ -109,7 +109,7 @@ const CultureGallery = () => {
                 className="text-center mb-16"
             >
                 <h2 className="text-4xl font-bold mb-4 text-gray-900">Captured Moments</h2>
-                <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+                <p className="text-xl text-gray-500 max-w-2xl mx-auto">
                     A glimpse into the daily life, celebrations, and collaborative spirit that defines our culture.
                 </p>
             </motion.div>
@@ -131,7 +131,7 @@ const CultureGallery = () => {
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                            <span className="text-white font-medium text-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <span className="text-white font-medium text-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                 {item.title}
                             </span>
                         </div>

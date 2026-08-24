@@ -56,7 +56,7 @@ const Sectors = () => {
                 <h2 className="text-4xl lg:text-5xl font-bold mb-4">
                     Our <span className="text-accent">Portfolio</span>
                 </h2>
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-600 text-xl max-w-2xl mx-auto">
                     Diversified investments across high-growth industries shaping the future
                 </p>
             </motion.div>

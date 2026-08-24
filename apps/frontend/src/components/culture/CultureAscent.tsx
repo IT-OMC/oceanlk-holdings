@@ -94,7 +94,7 @@ const AscentCard = ({
                         <h3 className="text-xl md:text-2xl font-light text-blue-400 uppercase tracking-widest">
                             {data.subtext}
                         </h3>
-                        <p className="text-lg md:text-xl text-slate-300 leading-relaxed font-light max-w-md backdrop-blur-sm bg-black/20 p-4 rounded-xl border border-white/5 shadow-inner">
+                        <p className="text-xl md:text-xl text-slate-300 leading-relaxed font-light max-w-md backdrop-blur-sm bg-black/20 p-4 rounded-xl border border-white/5 shadow-inner">
                             {data.description}
                         </p>
                     </motion.div>

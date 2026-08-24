@@ -364,25 +364,25 @@ public class DataInitializer implements CommandLineRunner {
                 if (testimonialRepository.count() == 0) {
                         List<Testimonial> items = new ArrayList<>();
 
-                        items.add(createTestimonial(1, "John Anderson", "CEO, Global Shipping Inc.",
+                        items.add(createTestimonial("1", "John Anderson", "CEO, Global Shipping Inc.",
                                         "Global Shipping Inc.",
                                         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
                                         "Ocean Ceylon Holdings has been instrumental in transforming our maritime operations. Their innovative approach and commitment to excellence sets them apart in the industry.",
                                         5));
 
-                        items.add(createTestimonial(2, "Sarah Mitchell", "Director of Operations, TechVentures",
+                        items.add(createTestimonial("2", "Sarah Mitchell", "Director of Operations, TechVentures",
                                         "TechVentures",
                                         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
                                         "Working with OceanLK Tech has accelerated our digital transformation journey. Their expertise and dedication to our success is truly remarkable.",
                                         5));
 
-                        items.add(createTestimonial(3, "Michael Chen", "Managing Partner, Strategic Investments",
+                        items.add(createTestimonial("3", "Michael Chen", "Managing Partner, Strategic Investments",
                                         "Strategic Investments",
                                         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
                                         "OceanLK Capital's strategic insights and investment acumen have delivered exceptional returns. They are true partners in growth and innovation.",
                                         5));
 
-                        items.add(createTestimonial(4, "Emily Roberts", "VP Sustainability, EcoGlobal", "EcoGlobal",
+                        items.add(createTestimonial("4", "Emily Roberts", "VP Sustainability, EcoGlobal", "EcoGlobal",
                                         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop",
                                         "The renewable energy solutions from OceanLK Energy have not only reduced our carbon footprint but also created long-term value for our organization.",
                                         5));
@@ -392,7 +392,7 @@ public class DataInitializer implements CommandLineRunner {
                 }
         }
 
-        private Testimonial createTestimonial(Integer id, String name, String position, String company, String image,
+        private Testimonial createTestimonial(String id, String name, String position, String company, String image,
                         String quote, int rating) {
                 Testimonial t = new Testimonial();
                 t.setId(id);

@@ -6,8 +6,6 @@ import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock, Upload, X } from 
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './EventsManagement.css';
 
 const localizer = momentLocalizer(moment);
 
@@ -41,6 +39,10 @@ const EventsManagement = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    // Distinct from isLoading (which covers form submits): true only until
+    // the first fetch settles, so the empty state below never flashes
+    // "nothing here" before the data has actually arrived.
+    const [initialLoading, setInitialLoading] = useState(true);
     const [view, setView] = useState<View>('month');
     const [date, setDate] = useState(new Date());
     // Image upload state
@@ -59,12 +61,14 @@ const EventsManagement = () => {
     });
 
     const categories = [
-        { value: 'SOCIAL', label: 'Social', color: 'bg-blue-500' },
-        { value: 'LEARNING', label: 'Learning', color: 'bg-cyan-500' },
-        { value: 'CELEBRATION', label: 'Celebration', color: 'bg-purple-500' },
-        { value: 'MEETING', label: 'Meeting', color: 'bg-yellow-500' },
-        { value: 'OTHER', label: 'Other', color: 'bg-gray-500' },
+        { value: 'SOCIAL', label: 'Social', color: 'bg-blue-500', hex: '#3b82f6' },
+        { value: 'LEARNING', label: 'Learning', color: 'bg-cyan-500', hex: '#06b6d4' },
+        { value: 'CELEBRATION', label: 'Celebration', color: 'bg-purple-500', hex: '#a855f7' },
+        { value: 'MEETING', label: 'Meeting', color: 'bg-yellow-500', hex: '#eab308' },
+        { value: 'OTHER', label: 'Other', color: 'bg-gray-500', hex: '#6b7280' },
     ];
+
+    const CATEGORY_FALLBACK = '#6b7280';
 
     useEffect(() => {
         fetchEvents();
@@ -89,6 +93,8 @@ const EventsManagement = () => {
             }
         } catch (error) {
             toast.error('Failed to fetch events');
+        } finally {
+            setInitialLoading(false);
         }
     };
 
@@ -267,15 +273,17 @@ const EventsManagement = () => {
         const category = categories.find((cat) => cat.value === event.resource.category);
         return {
             style: {
-                backgroundColor: category ? category.color.replace('bg-', '#').replace('-500', '') : '#6B7280',
-                borderRadius: '6px',
-                opacity: 0.9,
-                color: 'white',
-                border: '0px',
-                display: 'block',
+                backgroundColor: category?.hex ?? CATEGORY_FALLBACK,
+                color: '#fff',
             },
         };
     };
+
+    // Extracted from the JSX below so the list and its empty state always
+    // filter by the same rule.
+    const upcomingEvents = events
+        .filter((event) => new Date(event.date) >= new Date())
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     return (
         <div className="space-y-6">
@@ -308,85 +316,109 @@ const EventsManagement = () => {
             </div>
 
             {/* Calendar */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4">
                 <Calendar
                     localizer={localizer}
                     events={calendarEvents}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ height: 600 }}
+                    style={{ height: 520 }}
                     onSelectEvent={handleSelectEvent}
                     onSelectSlot={handleSelectSlot}
                     selectable
+                    popup
+                    views={['month', 'week', 'day', 'agenda']}
                     view={view}
                     onView={setView}
                     date={date}
                     onNavigate={setDate}
                     eventPropGetter={eventStyleGetter}
                 />
+
+                {/* Category legend -- the calendar is colour-coded but nothing
+                    said what the colours meant. */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 pt-3 border-t border-white/10">
+                    {categories.map((cat) => (
+                        <span key={cat.value} className="flex items-center gap-1.5 text-xs text-gray-400">
+                            <span
+                                className="w-2.5 h-2.5 rounded-full"
+                                style={{ backgroundColor: cat.hex }}
+                            />
+                            {cat.label}
+                        </span>
+                    ))}
+                </div>
             </div>
 
             {/* Events List */}
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white">Upcoming Events</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {events
-                        .filter((event) => new Date(event.date) >= new Date())
-                        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                        .map((event) => {
-                            const category = categories.find((cat) => cat.value === event.category);
-                            return (
-                                <motion.div
-                                    key={event.id}
-                                    whileHover={{ y: -5 }}
-                                    className="bg-white/5 rounded-xl p-4 border border-white/10"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div className={`px-2 py-1 rounded text-xs font-bold ${category?.color} text-white`}>
-                                            {category?.label || event.category}
-                                        </div>
-                                        <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :
-                                            event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
-                                                'bg-gray-500/20 text-gray-400'
-                                            }`}>
-                                            {event.status}
-                                        </span>
+                    {upcomingEvents.map((event) => {
+                        const category = categories.find((cat) => cat.value === event.category);
+                        return (
+                            <motion.div
+                                key={event.id}
+                                whileHover={{ y: -5 }}
+                                className="bg-white/5 rounded-xl p-4 border border-white/10"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div
+                                        className="px-2 py-1 rounded text-xs font-bold text-white"
+                                        style={{ backgroundColor: category?.hex ?? CATEGORY_FALLBACK }}
+                                    >
+                                        {category?.label || event.category}
                                     </div>
-                                    <h4 className="text-lg font-bold text-white mb-2">{event.title}</h4>
-                                    <div className="space-y-1 mb-3">
+                                    <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :
+                                        event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
+                                            'bg-gray-500/20 text-gray-400'
+                                        }`}>
+                                        {event.status}
+                                    </span>
+                                </div>
+                                <h4 className="text-xl font-bold text-white mb-2">{event.title}</h4>
+                                <div className="space-y-1 mb-3">
+                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                        <CalendarIcon size={14} />
+                                        {moment(event.date).format('MMM DD, YYYY')}
+                                    </div>
+                                    {event.time && (
                                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                                            <CalendarIcon size={14} />
-                                            {moment(event.date).format('MMM DD, YYYY')}
+                                            <Clock size={14} />
+                                            {event.time}
                                         </div>
-                                        {event.time && (
-                                            <div className="flex items-center gap-2 text-sm text-gray-400">
-                                                <Clock size={14} />
-                                                {event.time}
-                                            </div>
-                                        )}
-                                        <p className="text-sm text-gray-500">{event.location}</p>
-                                    </div>
-                                    <p className="text-sm text-gray-400 mb-4 line-clamp-2">{event.description}</p>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => openEditModal(event)}
-                                            className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
-                                        >
-                                            <Edit2 size={14} />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(event.id)}
-                                            className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
-                                        >
-                                            <Trash2 size={14} />
-                                            Delete
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                                    )}
+                                    <p className="text-sm text-gray-500">{event.location}</p>
+                                </div>
+                                <p className="text-sm text-gray-400 mb-4 line-clamp-2">{event.description}</p>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => openEditModal(event)}
+                                        className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                                    >
+                                        <Edit2 size={14} />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => openDeleteModal(event.id)}
+                                        className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                                    >
+                                        <Trash2 size={14} />
+                                        Delete
+                                    </button>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
+
+                {!initialLoading && upcomingEvents.length === 0 && (
+                    <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                        <CalendarIcon size={48} className="mx-auto mb-4 opacity-50" />
+                        <p className="text-gray-300 font-medium">No upcoming events</p>
+                        <p className="text-sm mt-1">Past events still appear on the calendar above.</p>
+                    </div>
+                )}
             </div>
 
             {/* Create/Edit Modal */}

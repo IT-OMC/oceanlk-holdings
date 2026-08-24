@@ -57,7 +57,7 @@ const LatestUpdates = () => {
                             {t('home.updates.title')} <span className="text-accent">{t('home.updates.titleAccent')}</span>
                         </h2>
                     </div>
-                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+                    <p className="text-slate-300 text-xl max-w-2xl mx-auto">
                         {t('home.updates.description')}
                     </p>
                 </motion.div>
@@ -103,7 +103,7 @@ const LatestUpdates = () => {
                                                 className="w-full h-full object-contain"
                                             />
                                         </div>
-                                        <span className="text-white font-semibold text-sm truncate">
+                                        <span className="text-white font-semibold text-base truncate">
                                             {post.companyName}
                                         </span>
                                     </div>
@@ -111,12 +111,12 @@ const LatestUpdates = () => {
                                     {/* Post Info */}
                                     <div className="space-y-3">
                                         {/* Caption */}
-                                        <p className="text-slate-200 text-sm leading-relaxed line-clamp-2 group-hover:line-clamp-3 transition-all duration-300">
+                                        <p className="text-slate-200 text-base leading-relaxed line-clamp-2 group-hover:line-clamp-3 transition-all duration-300">
                                             {post.caption}
                                         </p>
 
                                         {/* Metadata */}
-                                        <div className="flex items-center justify-between text-xs">
+                                        <div className="flex items-center justify-between text-sm">
                                             <div className="flex items-center gap-4">
                                                 {/* Likes */}
                                                 <div className="flex items-center gap-1.5 text-slate-300 group-hover:text-red-500 transition-colors">
@@ -154,7 +154,7 @@ const LatestUpdates = () => {
                     viewport={{ once: true }}
                     className="text-center mt-12"
                 >
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-slate-400 text-base">
                         {t('home.updates.followText')}
                     </p>
                 </motion.div>

@@ -361,7 +361,7 @@ const MediaManagement = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Media & Content</h1>
+                <p className="text-gray-400">Manage videos, galleries, documents and other media assets</p>
                 <button
                     onClick={() => openModal()}
                     className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg flex items-center gap-2 font-medium transition-colors"
@@ -442,7 +442,7 @@ const MediaManagement = () => {
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col">
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
                             <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{item.description}</p>
                             {item.companyName && (
                                 <p className="text-emerald-400 text-xs mb-2 flex items-center gap-1">
@@ -473,6 +473,14 @@ const MediaManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {filteredMedia.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <FolderOpen size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No media items found</p>
+                    <p className="text-sm mt-1">Try a different tab, or add one using the button above.</p>
+                </div>
+            )}
 
             {/* Edit/Create Modal */}
             <AnimatePresence>

@@ -12,8 +12,8 @@ const BusinessVideo = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
     // Video URLs
-    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
-    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1";
+    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
+    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
 
     // State for transition management
     const [mountSecondVideo, setMountSecondVideo] = useState(false);
@@ -49,7 +49,7 @@ const BusinessVideo = () => {
             {/* Background Video Wrapper */}
             <motion.div
                 style={{ y }}
-                className="absolute inset-0 z-0 h-[120%]"
+                className="absolute inset-0 z-0 h-[80vh]"
             >
                 {/* First Background Video */}
                 <motion.div
@@ -116,7 +116,7 @@ const BusinessVideo = () => {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="text-lg text-slate-300 leading-relaxed"
+                        className="text-xl text-slate-300 leading-relaxed"
                     >
                         At OceanLK, we bridge continents through seamless supply chain solutions.
                         Watch how we are redefining maritime and aviation logistics with innovation
@@ -129,7 +129,7 @@ const BusinessVideo = () => {
                         transition={{ delay: 0.5 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-white text-slate-900 font-bold rounded-lg shadow-lg hover:shadow-cyan-500/20 transition-all"
+                        className="px-8 py-4 bg-white text-xl text-slate-900 font-bold rounded-lg shadow-lg hover:shadow-cyan-500/20 transition-all"
                     >
                         Explore Our Services
                     </motion.button>

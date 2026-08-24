@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader, Upload, Briefcase } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, X, Loader, Upload, Briefcase, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -326,7 +326,7 @@ const BlogManagement = () => {
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col">
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
                             {item.author && (
                                 <p className="text-blue-400 text-xs mb-2">By {item.author}</p>
                             )}
@@ -360,6 +360,14 @@ const BlogManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {mediaItems.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No blog posts found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
 
             {/* Edit/Create Modal */}
             <AnimatePresence>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock, Trash2 } from 'lucide-react';
+import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock, Trash2, Inbox, SearchX } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { API_ENDPOINTS } from '../../utils/api';
 
@@ -219,8 +219,35 @@ const ApplicationViewer = () => {
             {/* List */}
             <div className="grid grid-cols-1 gap-4">
                 {filteredApps.length === 0 ? (
-                    <div className="text-center py-20 text-gray-500">
-                        No applications found matching your criteria.
+                    <div className="text-center py-16 px-6 bg-white/5 rounded-2xl border border-white/10 text-gray-400">
+                        {applications.length === 0 ? (
+                            // Nothing has ever been submitted -- say so plainly rather than
+                            // blaming the filters the admin hasn't touched.
+                            <>
+                                <Inbox size={48} className="mx-auto mb-4 opacity-50" />
+                                <p className="text-gray-300 font-medium">No applications found</p>
+                                <p className="text-sm mt-1">
+                                    Applications submitted through the careers page will appear here.
+                                </p>
+                            </>
+                        ) : (
+                            // There ARE applications, they're just filtered out -- so offer a
+                            // way back instead of a dead end.
+                            <>
+                                <SearchX size={48} className="mx-auto mb-4 opacity-50" />
+                                <p className="text-gray-300 font-medium">No matching applications</p>
+                                <p className="text-sm mt-1">
+                                    None of the {applications.length} application{applications.length === 1 ? '' : 's'} match your current search or status filter.
+                                </p>
+                                <button
+                                    onClick={() => { setSearchQuery(''); setStatusFilter('ALL'); }}
+                                    className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-500/30 rounded-lg text-sm text-gray-300 hover:text-white transition-colors"
+                                >
+                                    <X size={16} />
+                                    Clear filters
+                                </button>
+                            </>
+                        )}
                     </div>
                 ) : (
                     filteredApps.map((app) => (
@@ -320,7 +347,7 @@ const ApplicationViewer = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <h3 className="text-3xl font-bold text-white mb-2">{selectedApp.fullName}</h3>
-                                        <p className="text-emerald-400 text-lg font-medium">{selectedApp.position}</p>
+                                        <p className="text-emerald-400 text-xl font-medium">{selectedApp.position}</p>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
                                         <label className="text-xs text-gray-500 font-bold uppercase tracking-wider">Status</label>

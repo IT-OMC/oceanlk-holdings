@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import com.oceanlk.backend.model.AdminUser;
+import com.oceanlk.backend.model.PendingStatus;
+import com.oceanlk.backend.repository.AdminUserRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,7 @@ public class PendingChangeService {
 
     private final PendingChangeRepository pendingChangeRepository;
     private final NotificationService notificationService;
+    private final AdminUserRepository adminUserRepository;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     /**
@@ -26,11 +32,17 @@ public class PendingChangeService {
     public PendingChange createPendingChange(String entityType, String entityId, String action,
             String submittedBy, Object changeData, Object originalData) {
         try {
+            AdminUser admin = adminUserRepository.findByUsername(submittedBy)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found: " + submittedBy));
+
             String changeDataJson = objectMapper.writeValueAsString(changeData);
             String originalDataJson = originalData != null ? objectMapper.writeValueAsString(originalData) : null;
+            
+            UUID entityUuid = entityId != null ? UUID.fromString(entityId) : null;
+            UUID submittedUuid = UUID.fromString(admin.getId());
 
             PendingChange pendingChange = new PendingChange(
-                    entityType, entityId, action, submittedBy, changeDataJson, originalDataJson);
+                    entityType, entityUuid, action, submittedUuid, changeDataJson, originalDataJson);
 
             PendingChange saved = pendingChangeRepository.save(pendingChange);
 
@@ -54,14 +66,20 @@ public class PendingChangeService {
     public PendingChange createApprovedChange(String entityType, String entityId, String action,
             String submittedBy, Object changeData, Object originalData) {
         try {
+            AdminUser admin = adminUserRepository.findByUsername(submittedBy)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found: " + submittedBy));
+
             String changeDataJson = objectMapper.writeValueAsString(changeData);
             String originalDataJson = originalData != null ? objectMapper.writeValueAsString(originalData) : null;
 
-            PendingChange pendingChange = new PendingChange(
-                    entityType, entityId, action, submittedBy, changeDataJson, originalDataJson);
+            UUID entityUuid = entityId != null ? UUID.fromString(entityId) : null;
+            UUID submittedUuid = UUID.fromString(admin.getId());
 
-            pendingChange.setStatus("APPROVED");
-            pendingChange.setReviewedBy(submittedBy);
+            PendingChange pendingChange = new PendingChange(
+                    entityType, entityUuid, action, submittedUuid, changeDataJson, originalDataJson);
+
+            pendingChange.setStatus(PendingStatus.APPROVED);
+            pendingChange.setReviewedBy(submittedUuid);
             pendingChange.setReviewedAt(LocalDateTime.now());
             pendingChange.setReviewComments("Automatically approved for Super Admin");
 
@@ -87,49 +105,53 @@ public class PendingChangeService {
      * Get all pending changes with PENDING status
      */
     public List<PendingChange> getAllPendingChanges() {
-        return pendingChangeRepository.findByStatusOrderBySubmittedAtDesc("PENDING");
+        return pendingChangeRepository.findByStatusOrderBySubmittedAtDesc(PendingStatus.PENDING);
     }
 
     /**
      * Get pending changes by entity type
      */
     public List<PendingChange> getPendingChangesByEntityType(String entityType) {
-        return pendingChangeRepository.findByEntityTypeAndStatus(entityType, "PENDING");
+        return pendingChangeRepository.findByEntityTypeAndStatus(entityType, PendingStatus.PENDING);
     }
 
     /**
      * Get all pending changes submitted by a specific admin
      */
     public List<PendingChange> getPendingChangesForAdmin(String username) {
-        return pendingChangeRepository.findBySubmittedByIgnoreCaseOrderBySubmittedAtDesc(username);
+        AdminUser admin = adminUserRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found: " + username));
+        return pendingChangeRepository.findBySubmittedByOrderBySubmittedAtDesc(UUID.fromString(admin.getId()));
     }
 
     /**
      * Get pending changes for a specific admin with specific status
      */
     public List<PendingChange> getPendingChangesForAdminByStatus(String username, String status) {
-        return pendingChangeRepository.findBySubmittedByIgnoreCaseAndStatusOrderBySubmittedAtDesc(username, status);
+        AdminUser admin = adminUserRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found: " + username));
+        return pendingChangeRepository.findBySubmittedByAndStatusOrderBySubmittedAtDesc(UUID.fromString(admin.getId()), PendingStatus.valueOf(status.toUpperCase()));
     }
 
     /**
      * Get a specific pending change by ID
      */
     public Optional<PendingChange> getPendingChangeById(String id) {
-        return pendingChangeRepository.findById(id);
+        return pendingChangeRepository.findById(UUID.fromString(id));
     }
 
     /**
      * Check if there's already a pending change for an entity
      */
     public boolean hasPendingChange(String entityId) {
-        return pendingChangeRepository.findByEntityIdAndStatus(entityId, "PENDING").isPresent();
+        return pendingChangeRepository.findByEntityIdAndStatus(UUID.fromString(entityId), PendingStatus.PENDING).isPresent();
     }
 
     /**
      * Approve a pending change
      */
     public PendingChange approvePendingChange(String id, String reviewedBy, String comments) {
-        Optional<PendingChange> optionalChange = pendingChangeRepository.findById(id);
+        Optional<PendingChange> optionalChange = pendingChangeRepository.findById(UUID.fromString(id));
 
         if (optionalChange.isEmpty()) {
             throw new RuntimeException("Pending change not found");
@@ -137,12 +159,15 @@ public class PendingChangeService {
 
         PendingChange pendingChange = optionalChange.get();
 
-        if (!"PENDING".equals(pendingChange.getStatus())) {
+        if (pendingChange.getStatus() != PendingStatus.PENDING) {
             throw new RuntimeException("Change has already been reviewed");
         }
 
-        pendingChange.setStatus("APPROVED");
-        pendingChange.setReviewedBy(reviewedBy);
+        AdminUser reviewer = adminUserRepository.findByUsername(reviewedBy)
+                .orElseThrow(() -> new EntityNotFoundException("Reviewer not found: " + reviewedBy));
+
+        pendingChange.setStatus(PendingStatus.APPROVED);
+        pendingChange.setReviewedBy(UUID.fromString(reviewer.getId()));
         pendingChange.setReviewedAt(LocalDateTime.now());
         pendingChange.setReviewComments(comments);
 
@@ -153,7 +178,7 @@ public class PendingChangeService {
      * Reject a pending change
      */
     public PendingChange rejectPendingChange(String id, String reviewedBy, String comments) {
-        Optional<PendingChange> optionalChange = pendingChangeRepository.findById(id);
+        Optional<PendingChange> optionalChange = pendingChangeRepository.findById(UUID.fromString(id));
 
         if (optionalChange.isEmpty()) {
             throw new RuntimeException("Pending change not found");
@@ -161,12 +186,15 @@ public class PendingChangeService {
 
         PendingChange pendingChange = optionalChange.get();
 
-        if (!"PENDING".equals(pendingChange.getStatus())) {
+        if (pendingChange.getStatus() != PendingStatus.PENDING) {
             throw new RuntimeException("Change has already been reviewed");
         }
 
-        pendingChange.setStatus("REJECTED");
-        pendingChange.setReviewedBy(reviewedBy);
+        AdminUser reviewer = adminUserRepository.findByUsername(reviewedBy)
+                .orElseThrow(() -> new EntityNotFoundException("Reviewer not found: " + reviewedBy));
+
+        pendingChange.setStatus(PendingStatus.REJECTED);
+        pendingChange.setReviewedBy(UUID.fromString(reviewer.getId()));
         pendingChange.setReviewedAt(LocalDateTime.now());
         pendingChange.setReviewComments(comments);
 
@@ -188,6 +216,6 @@ public class PendingChangeService {
      * Delete a pending change
      */
     public void deletePendingChange(String id) {
-        pendingChangeRepository.deleteById(id);
+        pendingChangeRepository.deleteById(UUID.fromString(id));
     }
 }

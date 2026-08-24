@@ -164,7 +164,7 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
                 {title}
             </h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 {subtitle}
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto mt-6" />
@@ -267,6 +267,17 @@ const Leadership = () => {
 
             {/* Dynamic Categories */}
             {categories.map((category) => {
+                // Guard against malformed category rows (code is null/empty).
+                // Without this, a category with a null "code" would still be
+                // considered, and any leader whose "department" is ALSO null
+                // would match it via `null === null` -- the section would then
+                // try to render and crash on category.code.toLowerCase(). Bad
+                // rows like this can slip in from direct database edits (e.g.
+                // via the Supabase table editor) that bypass the app's own
+                // validation. Skipping here means one bad row just doesn't show
+                // up, instead of taking down the whole page.
+                if (!category.code) return null;
+
                 const categoryLeaders = leaders.filter(l => l.department === category.code);
                 if (categoryLeaders.length === 0) return null;
 

@@ -165,7 +165,7 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search companies, jobs, media, events..."
-                            className="flex-1 text-lg outline-none bg-transparent text-gray-900 placeholder-gray-400"
+                            className="flex-1 text-xl outline-none bg-transparent text-gray-900 placeholder-gray-400"
                         />
                         {isLoading && <Loader2 className="w-5 h-5 text-blue-500 animate-spin flex-shrink-0" />}
                         <button

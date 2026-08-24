@@ -332,7 +332,7 @@ const DocumentsManagement = () => {
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col">
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
                             <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{item.description}</p>
                             {item.companyName && (
                                 <p className="text-emerald-400 text-xs mb-2 flex items-center gap-1">
@@ -363,6 +363,14 @@ const DocumentsManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {mediaItems.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No documents found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
 
             {/* Edit/Create Modal */}
             <AnimatePresence>

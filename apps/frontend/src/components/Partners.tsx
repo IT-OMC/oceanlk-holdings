@@ -74,7 +74,7 @@ const Partners = () => {
                         <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-6">
                             Our <span className="text-white">Partners</span>
                         </h2>
-                        <p className="max-w-2xl mx-auto text-lg text-blue-100 leading-relaxed font-light">
+                        <p className="max-w-2xl mx-auto text-xl text-blue-100 leading-relaxed font-light">
                             Collaborating with industry leaders and global innovators to deliver excellence across every boundary.
                         </p>
                     </motion.div>

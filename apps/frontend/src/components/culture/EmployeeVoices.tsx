@@ -47,7 +47,7 @@ const EmployeeVoices = () => {
                                     className="w-16 h-16 rounded-full object-cover border-2 border-accent"
                                 />
                                 <div>
-                                    <h3 className="font-bold text-lg">{voice.name}</h3>
+                                    <h3 className="font-bold text-xl">{voice.name}</h3>
                                     <p className="text-accent text-sm">{voice.role}</p>
                                 </div>
                             </div>

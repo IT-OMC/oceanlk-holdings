@@ -181,7 +181,7 @@ const PageContentManager = () => {
                                             <div className="p-3 bg-white/5 rounded-lg text-emerald-400 mb-4 group-hover:bg-emerald-500/10 transition-colors">
                                                 <section.icon size={24} />
                                             </div>
-                                            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
                                                 {section.title}
                                             </h3>
                                             <p className="text-sm text-gray-400 line-clamp-2 group-hover:text-gray-300">

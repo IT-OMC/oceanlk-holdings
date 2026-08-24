@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Upload } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Upload, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -21,6 +21,10 @@ const PartnerManagement = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    // Distinct from isLoading (which covers form submits): true only until
+    // the first fetch settles, so the empty state below never flashes
+    // "nothing here" before the data has actually arrived.
+    const [initialLoading, setInitialLoading] = useState(true);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [formData, setFormData] = useState<Omit<Partner, 'id'>>({
         name: '',
@@ -43,6 +47,8 @@ const PartnerManagement = () => {
             }
         } catch (error) {
             toast.error('Failed to fetch partners');
+        } finally {
+            setInitialLoading(false);
         }
     };
 
@@ -233,6 +239,14 @@ const PartnerManagement = () => {
                     </motion.div>
                 ))}
             </div>
+
+            {!initialLoading && partners.length === 0 && (
+                <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
+                    <Building2 size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-gray-300 font-medium">No partners found</p>
+                    <p className="text-sm mt-1">Create one using the button above.</p>
+                </div>
+            )}
 
             {/* Create/Edit Modal */}
             {isModalOpen && (

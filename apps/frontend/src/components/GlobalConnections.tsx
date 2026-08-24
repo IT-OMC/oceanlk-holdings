@@ -31,7 +31,7 @@ const GlobalConnections = () => {
                             To The World
                         </span>
                     </h2>
-                    <p className="text-slate-200 text-lg max-w-3xl mx-auto drop-shadow-md font-medium">
+                    <p className="text-slate-200 text-xl max-w-3xl mx-auto drop-shadow-md font-medium">
                         Strategic location at the crossroads of global trade routes. Explore our shipping network
                         spanning across continents and oceans.
                     </p>

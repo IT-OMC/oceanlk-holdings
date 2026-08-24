@@ -85,7 +85,7 @@ const NewsSingle = () => {
                     alt={article.title}
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-primary/40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/40 to-primary/20" />
             </div>
 
             <SectionWrapper className="py-20">
@@ -114,7 +114,7 @@ const NewsSingle = () => {
                         </div>
 
                         <div className="flex gap-3 mb-8">
-                            <button className="flex items-center gap-2 px-4 py-2 bg-primary-light rounded-md hover:bg-accent transition-colors">
+                            <button className="flex items-center gap-2 px-4 py-2 text-white bg-primary-light rounded-md hover:bg-accent transition-colors">
                                 <Share2 className="w-4 h-4" />
                                 Share
                             </button>

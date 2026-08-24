@@ -253,22 +253,24 @@ const CompanySingle = () => {
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">{item.label}</p>
-                                                    <p className="text-gray-900 font-semibold text-lg">{item.value}</p>
+                                                    <p className="text-gray-900 font-semibold text-xl">{item.value}</p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <a
-                                    href="#"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 group"
-                                >
-                                    Visit Official Website
-                                    <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                                </a>
+                                {company.url && (
+                                    <a
+                                        href={company.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 group"
+                                    >
+                                        Visit Official Website
+                                        <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                    </a>
+                                )}
                             </motion.div>
                         </div>
 
@@ -285,7 +287,7 @@ const CompanySingle = () => {
                                     Who We Are
                                 </h2>
                                 <div className="w-12 h-1 bg-accent rounded-full mb-8" />
-                                <p className="text-lg text-gray-600 leading-relaxed mb-12">
+                                <p className="text-xl text-gray-600 leading-relaxed mb-12">
                                     {company.longDescription}
                                 </p>
 
@@ -535,7 +537,7 @@ const CompanySingle = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{rc.title}</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{rc.title}</h3>
                                     <p className="text-sm text-gray-500 line-clamp-2">{rc.desc}</p>
                                 </Link>
                             </motion.div>

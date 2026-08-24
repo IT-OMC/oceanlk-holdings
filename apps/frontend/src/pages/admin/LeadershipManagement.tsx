@@ -426,7 +426,7 @@ const LeadershipManagement = () => {
 
             {/* Category Management Section */}
             <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-bold text-white mb-4">Category Titles</h3>
+                <h3 className="text-xl font-bold text-white mb-4">Category Titles</h3>
                 <p className="text-sm text-gray-400 mb-4">Customize the titles for each leadership category</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {categories.map((category) => (
@@ -559,7 +559,7 @@ const LeadershipManagement = () => {
                                         <select
                                             value={formData.department}
                                             onChange={(e) => setFormData({ ...formData, department: e.target.value as any })}
-                                            className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                                            className="w-full px-4 py-2 bg-slate-700 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 outline-none"
                                         >
                                             {categories.map((cat) => (
                                                 <option key={cat.code} value={cat.code}>{cat.title}</option>
