@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
-import { Mail, Phone, MapPin, Linkedin, Facebook, ArrowRight, Instagram, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
 
 const XIcon = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>

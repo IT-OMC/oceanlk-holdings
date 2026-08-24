@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
-import { Instagram, Heart, Calendar } from 'lucide-react';
+import { Heart, Calendar } from 'lucide-react';
+import { Instagram } from './icons/BrandIcons';
 import { useTranslation } from 'react-i18next';
 
 const LatestUpdates = () => {

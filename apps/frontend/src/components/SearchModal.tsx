@@ -7,7 +7,7 @@ import { debouncedSearch, SearchResponse, SearchResultItem } from '../services/s
 interface SearchModalProps {
     isOpen: boolean;
     onClose: () => void;
-    triggerRef?: React.RefObject<HTMLElement>;
+    triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
 const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {

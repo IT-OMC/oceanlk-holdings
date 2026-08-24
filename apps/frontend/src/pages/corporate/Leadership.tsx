@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
-import { Linkedin, Mail, ArrowRight, X } from 'lucide-react';
+import { Mail, ArrowRight, X } from 'lucide-react';
+import { Linkedin } from '../../components/icons/BrandIcons';
 import { API_ENDPOINTS } from '../../utils/api';
 import { CorporateLeader, LeadershipCategory } from '../../types/api';
 

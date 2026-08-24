@@ -24,7 +24,6 @@ export default defineConfig({
                     'router': ['react-router-dom'],
                     'ui': ['lucide-react', 'framer-motion'],
                     '3d': ['three', '@react-three/fiber', '@react-three/drei'],
-                    'maps': ['@react-google-maps/api', '@vis.gl/react-google-maps'],
                 },
             },
         },

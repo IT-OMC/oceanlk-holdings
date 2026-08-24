@@ -7,8 +7,9 @@ import {
     Ship, Anchor, Package, Briefcase, PieChart, Wrench,
     CheckCircle, Globe, Map, Activity, MapPin, Smile,
     Compass, Layout, BarChart, ChevronDown, Calendar,
-    DollarSign, Building2, Heart, Play, X, Instagram
+    DollarSign, Building2, Heart, Play, X
 } from 'lucide-react';
+import { Instagram } from '../../components/icons/BrandIcons';
 import { oceanData } from '../../data/mockData';
 
 // Map string icon names to Lucide components

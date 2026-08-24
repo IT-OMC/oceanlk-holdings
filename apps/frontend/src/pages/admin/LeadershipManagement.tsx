@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Linkedin, Mail, Upload } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Mail, Upload } from 'lucide-react';
+import { Linkedin } from '../../components/icons/BrandIcons';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { API_ENDPOINTS } from '../../utils/api';
