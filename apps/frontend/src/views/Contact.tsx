@@ -37,8 +37,10 @@ const Contact = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [particlesReady, setParticlesReady] = useState(false);
 
     useEffect(() => {
+        setParticlesReady(true);
         const handleMouseMove = (e: MouseEvent) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
         };
@@ -133,7 +135,7 @@ const Contact = () => {
             </div>
 
             {/* Floating Particles */}
-            {[...Array(20)].map((_, i) => (
+            {particlesReady && [...Array(20)].map((_, i) => (
                 <motion.div
                     key={i}
                     className="absolute w-1 h-1 bg-white/20 rounded-full"

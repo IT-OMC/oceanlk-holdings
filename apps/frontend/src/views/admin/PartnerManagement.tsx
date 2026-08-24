@@ -4,6 +4,7 @@ import { Plus, Trash2, Edit2, X, Upload, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
+import Image from 'next/image';
 
 interface Partner {
     id: string;
@@ -199,10 +200,12 @@ const PartnerManagement = () => {
                         className="bg-white/5 rounded-xl p-4 border border-white/10 hover:border-emerald-500/30 transition-colors flex flex-col items-center"
                     >
                         <div className="w-full h-32 bg-white/5 rounded-lg mb-4 flex items-center justify-center p-4">
-                            <img
-                                src={partner.logoUrl}
+                            <Image
+                                width={100}
+                                height={100}
+                                src={partner.logoUrl?.replace('company logos', 'company-logos') || ''}
                                 alt={partner.name}
-                                className="max-w-full max-h-full object-contain"
+                                className="max-w-full max-h-full w-auto h-auto object-contain"
                             />
                         </div>
                         <h3 className="font-bold text-white mb-1">{partner.name}</h3>
@@ -277,10 +280,12 @@ const PartnerManagement = () => {
                                 <div className="space-y-3">
                                     {(formData.logoUrl || selectedFile) && (
                                         <div className="w-full h-32 bg-white/5 rounded-lg border border-dashed border-white/20 flex items-center justify-center p-4 relative group">
-                                            <img
-                                                src={selectedFile ? URL.createObjectURL(selectedFile) : formData.logoUrl}
+                                            <Image
+                                                width={100}
+                                                height={100}
+                                                src={selectedFile ? URL.createObjectURL(selectedFile) : formData.logoUrl?.replace('company logos', 'company-logos') || ''}
                                                 alt="Preview"
-                                                className="max-w-full max-h-full object-contain"
+                                                className="max-w-full max-h-full w-auto h-auto object-contain"
                                             />
                                             <button
                                                 type="button"

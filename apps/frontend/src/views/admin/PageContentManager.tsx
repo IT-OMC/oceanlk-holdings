@@ -125,7 +125,7 @@ const PageContentManager = () => {
                             exit={{ width: 0, opacity: 0 }}
                             className="w-64 bg-[#0f1e3a] rounded-xl p-4 border border-white/10 h-full overflow-y-auto"
                         >
-                            <h3 className="font-bold text-white mb-4 px-2 uppercase text-xs tracking-wider text-gray-500">Pages</h3>
+                            <h3 className="font-bold mb-4 px-2 uppercase text-xs tracking-wider text-gray-500">Pages</h3>
                             <div className="space-y-1">
                                 {pages.map(page => (
                                     <button

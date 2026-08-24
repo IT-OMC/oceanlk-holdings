@@ -4,6 +4,7 @@ import { Plus, Edit2, Trash2, X, Loader, Upload, Building2 } from 'lucide-react'
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
+import Image from 'next/image';
 
 interface Company {
     id?: string;
@@ -236,10 +237,12 @@ const CompanyManagement = () => {
                     >
                         <div className="relative h-48 overflow-hidden bg-black/40 flex items-center justify-center">
                             {company.logoUrl ? (
-                                <img
-                                    src={company.logoUrl}
+                                <Image
+                                    width={100}
+                                    height={100}
+                                    src={company.logoUrl.replace('company logos', 'company-logos')}
                                     alt={company.title}
-                                    className="max-w-full max-h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                                    className="max-w-full max-h-full w-auto h-auto object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                                 />
                             ) : (
                                 <div className="flex items-center justify-center h-full text-gray-600">
@@ -329,7 +332,7 @@ const CompanyManagement = () => {
                                     >
                                         {logoPreview ? (
                                             <div className="relative">
-                                                <img src={logoPreview} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                                                <Image width={100} height={100} src={logoPreview.replace('company logos', 'company-logos')} alt="Preview" className="max-h-48 w-auto h-auto object-contain p-4 group-hover:scale-105 transition-transform duration-500 mx-auto rounded-lg" />
                                                 <button
                                                     type="button"
                                                     onClick={() => {

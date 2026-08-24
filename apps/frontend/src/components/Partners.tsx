@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
+import Image from 'next/image';
 
 const Partners = () => {
     const [partners, setPartners] = useState<any[]>([]);
@@ -18,7 +19,8 @@ const Partners = () => {
 
                     const mapped = partnerData.map((p: any) => ({
                         ...p,
-                        logo: p.logoUrl,
+                        logoUrl: p.logoUrl?.replace('company logos', 'company-logos'),
+                        logo: p.logoUrl?.replace('company logos', 'company-logos'),
                     }));
                     setPartners(mapped);
                 }
@@ -102,10 +104,12 @@ const Partners = () => {
                                     <div className="relative w-full h-full bg-white rounded-xl p-4 flex items-center justify-center transition-all duration-500 hover:-translate-y-1 shadow-md hover:shadow-xl overflow-hidden">
 
                                         <div className="relative z-10 w-full h-full p-2 flex items-center justify-center transition-all duration-500">
-                                            <img
-                                                src={partner.logo}
+                                            <Image
+                                                width={200}
+                                                height={200}
+                                                src={partner.logoUrl}
                                                 alt={partner.name}
-                                                className="max-w-full max-h-full object-contain"
+                                                className="max-w-full max-h-full w-auto h-auto object-contain"
                                             />
                                         </div>
                                     </div>

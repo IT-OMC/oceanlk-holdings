@@ -246,8 +246,9 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-4 md:gap-6 auto-rows-[240px] sm:auto-rows-[260px] md:auto-rows-[280px]">
                             <AnimatePresence mode='popLayout'>
                                 {featuredJobs.map((job, index) => {
+                                    const isLargeCard = index === 0;
                                     // Varied bento sizes with improved responsive breakpoints
-                                    const gridClass = index === 0
+                                    const gridClass = isLargeCard
                                         ? 'sm:col-span-2 md:col-span-6 lg:col-span-7 sm:row-span-2 md:row-span-2'
                                         : index === 1
                                             ? 'sm:col-span-1 md:col-span-3 lg:col-span-5 sm:row-span-1 md:row-span-1'
@@ -272,7 +273,7 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
 
                                             {/* Liquid Glass Card */}
                                             <div
-                                                className="h-full p-4 sm:p-5 rounded-2xl sm:rounded-3xl relative overflow-hidden transition-all duration-500"
+                                                className={`h-full ${isLargeCard ? 'p-6 sm:p-8' : 'p-4 sm:p-5'} rounded-2xl sm:rounded-3xl relative overflow-hidden transition-all duration-500`}
                                                 style={{
                                                     background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)',
                                                     backdropFilter: 'blur(24px)',
@@ -285,7 +286,7 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
 
                                                 <div className="relative z-10 h-full flex flex-col">
                                                     {/* Header */}
-                                                    <div className="flex items-start justify-between mb-4">
+                                                    <div className={`flex items-start justify-between ${isLargeCard ? 'mb-6' : 'mb-4'}`}>
                                                         <motion.div
                                                             className="p-2.5 rounded-xl"
                                                             style={{
@@ -296,11 +297,11 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                                                             whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                                                             transition={{ duration: 0.5 }}
                                                         >
-                                                            <Briefcase className="w-5 h-5 text-emerald-400" />
+                                                            <Briefcase className={`${isLargeCard ? 'w-6 h-6' : 'w-5 h-5'} text-emerald-400`} />
                                                         </motion.div>
                                                         <div className="flex flex-col gap-1.5 items-end">
                                                             <span
-                                                                className="px-3 py-1 rounded-full text-xs font-semibold text-emerald-300"
+                                                                className={`px-3 py-1 rounded-full ${isLargeCard ? 'text-sm' : 'text-xs'} font-semibold text-emerald-300`}
                                                                 style={{
                                                                     background: 'rgba(16,185,129,0.2)',
                                                                     border: '1px solid rgba(16,185,129,0.3)',
@@ -310,7 +311,7 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                                                                 {job.type}
                                                             </span>
                                                             <span
-                                                                className="px-2.5 py-0.5 rounded-full text-xs font-medium text-yellow-300 flex items-center gap-1"
+                                                                className={`px-2.5 py-0.5 rounded-full ${isLargeCard ? 'text-sm' : 'text-xs'} font-medium text-yellow-300 flex items-center gap-1`}
                                                                 style={{
                                                                     background: 'rgba(234,179,8,0.2)',
                                                                     border: '1px solid rgba(234,179,8,0.3)'
@@ -323,40 +324,40 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                                                     </div>
 
                                                     {/* Content */}
-                                                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3 text-white group-hover:text-emerald-300 transition-colors duration-300">
+                                                    <h3 className={`${isLargeCard ? 'text-2xl sm:text-xl md:text-2xl' : 'text-lg sm:text-xl md:text-2xl'} font-bold mb-2 sm:mb-3 text-white group-hover:text-emerald-300 transition-colors duration-300`}>
                                                         {job.title}
                                                     </h3>
-                                                    <p className="text-emerald-400 font-semibold mb-3 text-sm uppercase tracking-wider">
+                                                    <p className={`text-emerald-400 font-semibold mb-3 ${isLargeCard ? 'text-base' : 'text-sm'} uppercase tracking-wider`}>
                                                         {job.company}
                                                     </p>
 
-                                                    <p className="text-gray-300 text-sm mb-6 line-clamp-2 leading-relaxed">
+                                                    <p className={`text-gray-300 ${isLargeCard ? 'text-base line-clamp-3 mb-8' : 'text-sm line-clamp-2 mb-6'} leading-relaxed`}>
                                                         {job.description}
                                                     </p>
 
                                                     {/* Footer */}
-                                                    <div className="mt-auto pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                                    <div className={`mt-auto ${isLargeCard ? 'pt-8' : 'pt-6'}`} style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                                                         <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-2 text-sm text-gray-300">
-                                                                <MapPin className="w-4 h-4 text-blue-400" />
+                                                            <div className={`flex items-center gap-2 ${isLargeCard ? 'text-base' : 'text-sm'} text-gray-300`}>
+                                                                <MapPin className={`${isLargeCard ? 'w-5 h-5' : 'w-4 h-4'} text-blue-400`} />
                                                                 <span>{job.location}</span>
                                                             </div>
                                                             <motion.button
                                                                 onClick={() => router.push(`/careers/opportunities/${job.id}`)}
-                                                                className="px-5 py-2.5 rounded-full text-white flex items-center gap-2"
+                                                                className={`rounded-full text-white flex items-center gap-2 ${isLargeCard ? 'px-6 py-3' : 'px-5 py-2.5'}`}
                                                                 style={{
                                                                     background: 'linear-gradient(135deg, rgba(16,185,129,0.6) 0%, rgba(5,150,105,0.6) 100%)',
                                                                     border: '1px solid rgba(255,255,255,0.2)'
                                                                 }}
                                                                 whileHover={{
                                                                     scale: 1.05,
-                                                                    paddingRight: 24,
+                                                                    paddingRight: isLargeCard ? 32 : 24,
                                                                     background: 'linear-gradient(135deg, rgba(16,185,129,0.8) 0%, rgba(5,150,105,0.8) 100%)'
                                                                 }}
                                                                 whileTap={{ scale: 0.95 }}
                                                             >
-                                                                <span className="font-semibold text-sm">Apply</span>
-                                                                <ArrowRight className="w-4 h-4" />
+                                                                <span className={`font-semibold ${isLargeCard ? 'text-base' : 'text-sm'}`}>Apply</span>
+                                                                <ArrowRight className={`${isLargeCard ? 'w-5 h-5' : 'w-4 h-4'}`} />
                                                             </motion.button>
                                                         </div>
                                                     </div>

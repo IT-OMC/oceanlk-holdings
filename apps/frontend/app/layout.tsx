@@ -6,6 +6,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
 
+import { I18nProvider } from '@/components/I18nProvider'
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
@@ -29,18 +31,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#0f1e3a',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.1)',
-            },
-          }}
-        />
-        {children}
+        <I18nProvider>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#0f1e3a',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.1)',
+              },
+            }}
+          />
+          {children}
+        </I18nProvider>
       </body>
     </html>
   )

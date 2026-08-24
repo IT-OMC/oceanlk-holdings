@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { oceanData } from '../data/mockData';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
@@ -180,12 +181,12 @@ const Footer = () => {
                         © {currentYear} {oceanData.company.name}. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-sm">
-                        <a href="#" className="text-slate-500 hover:text-accent transition-colors">
+                        <Link href="/privacy-policy" className="text-slate-500 hover:text-accent transition-colors">
                             Privacy Policy
-                        </a>
-                        <a href="#" className="text-slate-500 hover:text-accent transition-colors">
+                        </Link>
+                        <Link href="/terms-of-service" className="text-slate-500 hover:text-accent transition-colors">
                             Terms of Service
-                        </a>
+                        </Link>
                     </div>
                 </motion.div>
             </div>
