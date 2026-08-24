@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { ChevronRight, Quote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -219,11 +220,13 @@ const LifeAtHolding = () => {
                             transition={{ duration: 0.5 }}
                             className="flex items-center gap-8 w-full"
                         >
-                            <div className="flex-shrink-0">
-                                <img
+                            <div className="relative flex-shrink-0 w-24 h-24">
+                                <Image
                                     src={testimonial.image}
                                     alt="Employee"
-                                    className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                                    fill
+                                    sizes="96px"
+                                    className="rounded-full object-cover border-4 border-white shadow-lg"
                                 />
                             </div>
                             <div className="relative">

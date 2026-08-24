@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Saira_Semi_Condensed } from 'next/font/google'
 // react-big-calendar's own stylesheet must load BEFORE globals.css, which
 // carries the dark-theme overrides for it (moved out of
 // pages/admin/EventsManagement.css).
@@ -7,6 +8,13 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 
 import { I18nProvider } from '@/components/I18nProvider'
+
+const saira = Saira_Semi_Condensed({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-saira',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -20,16 +28,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <head>
-        {/* Google Fonts - Saira Semi Condensed. Replaced by next/font/google in Phase 4. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" data-scroll-behavior="smooth" className={saira.variable}>
       <body>
         <I18nProvider>
           <Toaster

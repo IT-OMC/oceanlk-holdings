@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
 import moment from 'moment';
@@ -104,10 +105,12 @@ const UpcomingEvents = () => {
                     >
                         <div className="h-48 overflow-hidden relative">
                             {event.imageUrl ? (
-                                <img
+                                <Image
                                     src={event.imageUrl}
                                     alt={event.title}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    fill
+                                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                             ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-blue-100 flex items-center justify-center">
@@ -148,10 +151,12 @@ const UpcomingEvents = () => {
                     onClick={() => setIsModalOpen(true)}
                     className="relative bg-gray-900 rounded-3xl p-8 flex flex-col justify-center items-center text-center overflow-hidden group cursor-pointer"
                 >
-                    <img
+                    <Image
                         src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
                         alt="Background"
-                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-70 transition-opacity duration-500"
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        className="object-cover opacity-60 group-hover:opacity-70 transition-opacity duration-500"
                     />
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-500" />
 

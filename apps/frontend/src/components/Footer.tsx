@@ -60,7 +60,7 @@ const Footer = () => {
                             {oceanData.navigation.map((link) => (
                                 <li key={link.name}>
                                     <a
-                                        href={link.path}
+                                        href={link.footerPath}
                                         className="text-slate-400 hover:text-accent transition-colors text-sm flex items-center gap-2 group"
                                     >
                                         <span className="w-1.5 h-1.5 rounded-full bg-accent/50 group-hover:bg-accent transition-colors"></span>
@@ -90,7 +90,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Email</span>
-                                    info@oceanlk.com
+                                    <a href='mailto:info@oceanlk.com'>info@oceanlk.com</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">
@@ -99,7 +99,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Phone</span>
-                                    +94 11 234 5678
+                                    <a href='tel:+94112345678'>+94 11 234 5678</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">

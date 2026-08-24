@@ -9,7 +9,8 @@ export const oceanData = {
     navigation: [
         {
             name: "Home",
-            path: "/"
+            path: "/",
+            footerPath: "/"
         },
         {
             name: "Corporate",
@@ -17,7 +18,8 @@ export const oceanData = {
             subItems: [
                 { name: "Profile", path: "/corporate/profile" },
                 { name: "Leadership", path: "/corporate/leadership" }
-            ]
+            ],
+            footerPath: "/corporate/profile"
         },
         {
             name: "Companies",
@@ -29,7 +31,8 @@ export const oceanData = {
                 { name: "Ocean Maritime Channel", path: "/companies/omch", logo: "/company-logos/ocean maritime channel.png", url: "https://example.com" },
                 { name: "Connecting Cubes", path: "/companies/connecting-cubes", logo: "/company-logos/connecting cubes logo..png", url: "https://ccubes.lk" },
                 { name: "Digital Books", path: "/companies/digital-books", logo: "/company-logos/digital books.png", url: "https://example.com" }
-            ]
+            ],
+            footerPath: "/companies"
         },
         {
             name: "News",
@@ -38,7 +41,8 @@ export const oceanData = {
                 { name: "Blogs", path: "/news/blogs" },
                 { name: "News", path: "/news/articles" },
                 { name: "Media", path: "/news/media" }
-            ]
+            ],
+            footerPath: "/news/articles"
         },
         {
             name: "Life at OCH",
@@ -47,11 +51,13 @@ export const oceanData = {
                 { name: "Culture", path: "/careers/culture" },
                 { name: "Onboard", path: "/careers/opportunities" },
                 { name: "Talent Pool", path: "/careers/talent-pool" }
-            ]
+            ],
+            footerPath: "/careers/opportunities"
         },
         {
             name: "Contact Us",
-            path: "/contact"
+            path: "/contact",
+            footerPath: "/contact"
         }
     ],
     stats: [

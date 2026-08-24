@@ -22,7 +22,7 @@ html {
 }
 
 body {
-  font-family: 'Saira Semi Condensed', sans-serif;
+  font-family: var(--font-saira), sans-serif;
   background-color: var(--background);
   color: #1a202c;
   -webkit-font-smoothing: antialiased;

@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { oceanData } from '../data/mockData';
 import { Heart, Calendar } from 'lucide-react';
 import { Instagram } from './icons/BrandIcons';
@@ -85,10 +86,12 @@ const LatestUpdates = () => {
                             >
                                 {/* Background Image */}
                                 <div className="absolute inset-0">
-                                    <img
+                                    <Image
                                         src={post.image}
                                         alt={post.companyName}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        fill
+                                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                     {/* Gradient Overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 to-transparent opacity-90" />
@@ -98,11 +101,13 @@ const LatestUpdates = () => {
                                 <div className="relative h-full p-6 flex flex-col justify-between">
                                     {/* Company Logo & Name */}
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md p-1.5 ring-2 ring-white/20 group-hover:ring-accent/50 transition-all duration-300">
-                                            <img
+                                        <div className="relative w-10 h-10 rounded-full bg-white/85 backdrop-blur-md p-1.5 ring-2 ring-white/20 group-hover:ring-accent/50 transition-all duration-300">
+                                            <Image
                                                 src={post.companyLogo}
                                                 alt={post.companyName}
-                                                className="w-full h-full object-contain"
+                                                fill
+                                                sizes="40px"
+                                                className="object-contain"
                                             />
                                         </div>
                                         <span className="text-white font-semibold text-base truncate">

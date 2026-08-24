@@ -207,8 +207,8 @@ const ChatWidget = () => {
                             >
                                 <X size={14} />
                             </button>
-                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-sm mb-1">We're Online!</h4>
-                            <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-base mb-1">We're Online!</h4>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Ask us anything about OceanLK Holdings!
                             </p>
                             <div className="absolute -bottom-6 right-6 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45 border-r border-b border-gray-100 dark:border-gray-700" />

@@ -1,5 +1,6 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -205,12 +206,16 @@ const Gallery = () => {
                                                     loop
                                                     playsInline
                                                 />
-                                            ) : (
-                                                <img
+                                            ) : item.imageUrl ? (
+                                                <Image
                                                     src={getMediaUrl(item.imageUrl)}
                                                     alt={item.title}
-                                                    className="w-full h-full object-cover"
+                                                    fill
+                                                    sizes="(min-width: 1024px) 600px, (min-width: 768px) 400px, 280px"
+                                                    className="object-cover"
                                                 />
+                                            ) : (
+                                                <div className="w-full h-full bg-slate-800" />
                                             )}
 
                                             {/* Overlay (always visible on inactive, hover/active styled) */}

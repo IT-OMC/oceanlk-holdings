@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
@@ -43,11 +44,13 @@ const LeadershipCard = ({ member, index }: LeadershipCardProps) => {
                         </div>
 
                         {/* Portrait Image */}
-                        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10">
-                            <img
+                        <div className="relative h-72 overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+                            <Image
                                 src={member.image}
                                 alt={member.name}
-                                className="w-full h-72 object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                fill
+                                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                                className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         </div>

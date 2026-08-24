@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { oceanData } from '../data/mockData';
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -37,14 +38,21 @@ const Hero = () => {
                     transition={{ duration: 0.6 }}
                     className="absolute inset-0"
                 >
-                    <motion.img
-                        src={sectors[currentSlide].image}
-                        alt={sectors[currentSlide].title}
-                        className="w-full h-full object-cover"
+                    <motion.div
                         initial={{ scale: 1.1 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 8, ease: "easeOut" }}
-                    />
+                        className="relative w-full h-full"
+                    >
+                        <Image
+                            src={sectors[currentSlide].image}
+                            alt={sectors[currentSlide].title}
+                            fill
+                            priority={currentSlide === 0}
+                            sizes="100vw"
+                            className="object-cover"
+                        />
+                    </motion.div>
                 </motion.div>
 
                 {/* Dark Overlay for better contrast */}
@@ -61,11 +69,15 @@ const Hero = () => {
                         transition={{ duration: 0.6 }}
                         className="mb-4 md:mb-5 lg:mb-6 p-4 md:p-5 lg:p-6 bg-white rounded-full shadow-lg"
                     >
-                        <img
-                            src={sectors[currentSlide].logo}
-                            alt={`${sectors[currentSlide].title} logo`}
-                            className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 object-contain"
-                        />
+                        <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
+                            <Image
+                                src={sectors[currentSlide].logo}
+                                alt={`${sectors[currentSlide].title} logo`}
+                                fill
+                                sizes="96px"
+                                className="object-contain"
+                            />
+                        </div>
                     </motion.div>
 
                     {/* Main Heading - Dynamic based on sector */}
@@ -202,10 +214,12 @@ const Hero = () => {
                                         transition={{ duration: 0.4, ease: "easeOut" }}
                                         className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'} bg-white flex items-center justify-center p-2`}
                                     >
-                                        <img
+                                        <Image
                                             src={sector.logo}
                                             alt={sector.title}
-                                            className="w-full h-full object-contain"
+                                            fill
+                                            sizes="64px"
+                                            className="object-contain"
                                         />
                                     </motion.div>
                                 </div>

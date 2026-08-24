@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowRight, Users, Calendar } from 'lucide-react';
@@ -35,18 +36,24 @@ const Companies = () => {
                                         {/* Image Header */}
                                         <div className="relative h-56 overflow-hidden">
                                             <div className="absolute inset-0 bg-gray-900/10 group-hover:bg-gray-900/0 transition-colors z-10" />
-                                            <img
+                                            <Image
                                                 src={company.image}
                                                 alt={company.title}
-                                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                                fill
+                                                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                                className="object-cover transform group-hover:scale-110 transition-transform duration-700"
                                             />
                                             {/* Logo Overlay */}
                                             <div className="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg">
-                                                <img
-                                                    src={company.logo}
-                                                    alt={`${company.title} logo`}
-                                                    className="w-12 h-12 object-contain"
-                                                />
+                                                <div className="relative w-12 h-12">
+                                                    <Image
+                                                        src={company.logo}
+                                                        alt={`${company.title} logo`}
+                                                        fill
+                                                        sizes="48px"
+                                                        className="object-contain"
+                                                    />
+                                                </div>
                                             </div>
                                             {/* Category Tag */}
                                             <div className="absolute top-4 right-4 z-20">
