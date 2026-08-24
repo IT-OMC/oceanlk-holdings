@@ -2,7 +2,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import {
     ArrowLeft, ExternalLink, Users, TrendingUp, Award,
@@ -13,6 +12,30 @@ import {
 } from 'lucide-react';
 import { Instagram } from '../../components/icons/BrandIcons';
 import { oceanData } from '../../data/mockData';
+import Image from 'next/image';
+
+export interface CompanyStat {
+    icon: string;
+    value: string;
+    label: string;
+}
+
+export interface Company {
+    id: string;
+    title: string;
+    description: string;
+    longDescription: string;
+    logoUrl: string;
+    website?: string;
+    industry?: string;
+    established: string;
+    image: string;
+    video?: string;
+    employees: string;
+    revenue: string;
+    category: string;
+    stats: CompanyStat[];
+}
 
 // Map string icon names to Lucide components
 const IconMap: Record<string, any> = {
@@ -76,9 +99,12 @@ const VideoModal = ({ src, poster, onClose }: { src: string; poster: string; onC
 );
 
 // ── Main Component ────────────────────────────────────────────────────────────
-const CompanySingle = () => {
-    const { id } = useParams<{ id: string }>();
-    const company = oceanData.sectors.find((c: any) => c.id === id);
+interface CompanySingleProps {
+    company: Company;
+    relatedCompanies: Company[];
+}
+
+const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
     const [videoOpen, setVideoOpen] = useState(false);
 
     const heroRef = useRef<HTMLDivElement>(null);
@@ -95,25 +121,13 @@ const CompanySingle = () => {
     const servicesInView = useInView(servicesRef, { once: true, margin: '-100px' });
     const igInView = useInView(igRef, { once: true, margin: '-100px' });
 
-    // Filtered Instagram posts
-    const igPosts = oceanData.instagramUpdates.filter((p: any) => p.companyId === id);
-    // Related companies (other companies excluding current)
-    const relatedCompanies = oceanData.sectors.filter((c: any) => c.id !== id).slice(0, 3);
+    // Filtered Instagram posts (match by title since API IDs differ from mock IDs)
+    const igPosts = oceanData.instagramUpdates.filter((p: any) => p.companyName === company.title);
 
-    if (!company) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="text-8xl mb-6">🌊</div>
-                    <h1 className="text-4xl font-bold mb-4 text-gray-900">Company Not Found</h1>
-                    <Link href="/companies" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold transition-colors">
-                        <ArrowLeft className="w-5 h-5" />
-                        Back to Companies
-                    </Link>
-                </div>
-            </div>
-        );
-    }
+    // Fallback to mock stats if API stats are empty
+    const displayStats = company.stats && company.stats.length > 0
+        ? company.stats
+        : oceanData.sectors.find((c: any) => c.title === company.title)?.stats || [];
 
     return (
         <div className="min-h-screen bg-white">
@@ -129,7 +143,7 @@ const CompanySingle = () => {
                         />
                     ) : (
                         <img
-                            src={company.image}
+                            src={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
                             alt={company.title}
                             className="w-full h-full object-cover scale-110"
                         />
@@ -189,7 +203,7 @@ const CompanySingle = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.7 }}
                         >
-                            {company.desc}
+                            {company.description}
                         </motion.p>
 
                         {/* Quick stats pills */}
@@ -200,7 +214,7 @@ const CompanySingle = () => {
                             transition={{ duration: 0.6, delay: 0.9 }}
                         >
                             {[
-                                { icon: Calendar, label: 'Founded', value: company.founded },
+                                { icon: Calendar, label: 'Founded', value: company.established },
                                 { icon: Users, label: 'Team', value: company.employees },
                                 { icon: DollarSign, label: 'Revenue', value: company.revenue },
                             ].map((item) => (
@@ -239,13 +253,13 @@ const CompanySingle = () => {
                             >
                                 <div className="bg-gray-50 border border-gray-100 rounded-3xl p-10 shadow-sm mb-8">
                                     <img
-                                        src={company.logo}
+                                        src={company.logoUrl?.replace('company logos', 'company-logos') || ''}
                                         alt={`${company.title} logo`}
                                         className="w-28 h-28 object-contain mx-auto mb-8"
                                     />
                                     <div className="space-y-5">
                                         {[
-                                            { icon: Calendar, label: 'Founded', value: company.founded },
+                                            { icon: Calendar, label: 'Founded', value: company.established },
                                             { icon: Users, label: 'Employees', value: company.employees },
                                             { icon: DollarSign, label: 'Annual Revenue', value: company.revenue },
                                             { icon: Building2, label: 'Industry', value: company.category },
@@ -263,9 +277,9 @@ const CompanySingle = () => {
                                     </div>
                                 </div>
 
-                                {company.url && (
+                                {company.website && (
                                     <a
-                                        href={company.url}
+                                        href={company.website}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 group"
@@ -296,7 +310,7 @@ const CompanySingle = () => {
 
                                 {/* Animated Stat Cards */}
                                 <div ref={statsRef} className="grid sm:grid-cols-3 gap-5">
-                                    {company.stats && company.stats.map((stat: any, index: number) => {
+                                    {displayStats.map((stat: any, index: number) => {
                                         const Icon = IconMap[stat.icon] || Award;
                                         return (
                                             <motion.div
@@ -325,7 +339,8 @@ const CompanySingle = () => {
             </section>
 
             {/* ── 3. KEY SERVICES / HIGHLIGHTS ─────────────────────────────── */}
-            <section className="py-24 bg-gray-50" ref={servicesRef}>
+            {displayStats.length > 0 && (
+                <section className="py-24 bg-gray-50" ref={servicesRef}>
                 <SectionWrapper>
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -339,7 +354,7 @@ const CompanySingle = () => {
                     </motion.div>
 
                     <div className="grid md:grid-cols-3 gap-8">
-                        {company.stats && company.stats.map((stat: any, index: number) => {
+                        {displayStats.map((stat: any, index: number) => {
                             const Icon = IconMap[stat.icon] || Award;
                             const descriptions: string[] = [
                                 `Industry-leading performance with ${stat.value} ${stat.label.toLowerCase()} and growing.`,
@@ -371,6 +386,7 @@ const CompanySingle = () => {
                     </div>
                 </SectionWrapper>
             </section>
+            )}
 
             {/* ── 4. MEDIA SPOTLIGHT ────────────────────────────────────────── */}
             {company.video && (
@@ -397,7 +413,7 @@ const CompanySingle = () => {
                             onClick={() => setVideoOpen(true)}
                         >
                             <img
-                                src={company.image}
+                                src={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
                                 alt={company.title}
                                 className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700"
                             />
@@ -429,7 +445,7 @@ const CompanySingle = () => {
                     {videoOpen && (
                         <VideoModal
                             src={company.video}
-                            poster={company.image}
+                            poster={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
                             onClose={() => setVideoOpen(false)}
                         />
                     )}
@@ -523,15 +539,17 @@ const CompanySingle = () => {
                             >
                                 <Link href={`/companies/${rc.id}`} className="group block">
                                     <div className="relative h-48 rounded-2xl overflow-hidden mb-4">
-                                        <img
-                                            src={rc.image}
+                                        <Image
+                                            width={200}
+                                            height={150}
+                                            src={rc.image?.replace('company images for hero section', 'hero-company-images') || ''}
                                             alt={rc.title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
                                         {/* Logo badge */}
                                         <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur rounded-xl p-2 shadow">
-                                            <img src={rc.logo} alt={rc.title} className="w-8 h-8 object-contain" />
+                                            <Image width={50} height={50} src={rc.logoUrl?.replace('company logos', 'company-logos') || ''} alt={rc.title} className="w-8 h-8 object-contain" />
                                         </div>
                                         {/* Category */}
                                         <div className="absolute top-3 right-3">
@@ -541,7 +559,7 @@ const CompanySingle = () => {
                                         </div>
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{rc.title}</h3>
-                                    <p className="text-sm text-gray-500 line-clamp-2">{rc.desc}</p>
+                                    <p className="text-sm text-gray-500 line-clamp-2">{rc.description}</p>
                                 </Link>
                             </motion.div>
                         ))}
@@ -563,8 +581,10 @@ const CompanySingle = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.7 }}
                         >
-                            <img
-                                src={company.logo}
+                            <Image
+                                width={50}
+                                height={50}
+                                src={company.logoUrl?.replace('company logos', 'company-logos') || ''}
                                 alt={company.title}
                                 className="w-20 h-20 object-contain mx-auto mb-6 brightness-0 invert opacity-80"
                             />

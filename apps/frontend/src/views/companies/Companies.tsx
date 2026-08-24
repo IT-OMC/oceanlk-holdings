@@ -2,11 +2,21 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowRight, Users, Calendar } from 'lucide-react';
-import { oceanData } from '../../data/mockData';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 const Companies = () => {
+    const [companies, setCompanies] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES)
+            .then(res => res.json())
+            .then(data => setCompanies(data))
+            .catch(err => console.error('Failed to fetch companies:', err));
+    }, []);
+
     return (
         <div className="min-h-screen bg-gray-50/50">
             <SectionWrapper id="companies" className="pt-32 pb-20">
@@ -24,7 +34,7 @@ const Companies = () => {
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {oceanData.sectors.map((company: any, index: number) => (
+                        {companies.map((company: any, index: number) => (
                             <motion.div
                                 key={company.id}
                                 initial={{ opacity: 0, y: 30 }}
@@ -37,7 +47,7 @@ const Companies = () => {
                                         <div className="relative h-56 overflow-hidden">
                                             <div className="absolute inset-0 bg-gray-900/10 group-hover:bg-gray-900/0 transition-colors z-10" />
                                             <Image
-                                                src={company.image}
+                                                src={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
                                                 alt={company.title}
                                                 fill
                                                 sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
@@ -47,7 +57,7 @@ const Companies = () => {
                                             <div className="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg">
                                                 <div className="relative w-12 h-12">
                                                     <Image
-                                                        src={company.logo}
+                                                        src={company.logoUrl?.replace('company logos', 'company-logos') || ''}
                                                         alt={`${company.title} logo`}
                                                         fill
                                                         sizes="48px"
@@ -70,7 +80,7 @@ const Companies = () => {
                                                     {company.title}
                                                 </h3>
                                                 <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
-                                                    {company.desc}
+                                                    {company.description}
                                                 </p>
                                             </div>
 
@@ -85,7 +95,7 @@ const Companies = () => {
                                                     </div>
                                                     <div>
                                                         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Est.</p>
-                                                        <p className="text-sm font-semibold text-gray-900">{company.founded}</p>
+                                                        <p className="text-sm font-semibold text-gray-900">{company.established}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
