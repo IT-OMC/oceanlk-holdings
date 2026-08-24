@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
 
-import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
 
 interface BlogPost {
     id: string;
@@ -26,7 +26,7 @@ const Blogs = () => {
 
     const fetchBlogs = useCallback(async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.MEDIA_BLOGS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS);
             if (response.ok) {
                 const data = await response.json();
                 // Map and assign spans for layout variety

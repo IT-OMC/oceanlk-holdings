@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
 
-import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
 
 interface NewsArticle {
     id: string;
@@ -24,7 +24,7 @@ const News = () => {
 
     const fetchNews = useCallback(async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.MEDIA_NEWS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS);
             if (response.ok) {
                 const data = await response.json();
                 const mappedData = data.map((item: any, index: number) => ({

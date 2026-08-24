@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Target, Zap, Users, TrendingUp, Star, Quote, FileText, BrainCircuit, Bell, Rocket, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 const TalentPool = () => {
     const [formData, setFormData] = useState({
@@ -72,7 +72,7 @@ const TalentPool = () => {
                 data.append('file', formData.file);
             }
 
-            const response = await fetch(API_ENDPOINTS.TALENT_POOL_SUBMIT, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_SUBMIT, {
                 method: 'POST',
                 body: data,
             });

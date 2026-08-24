@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, Share2, Loader } from 'lucide-react';
-import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
 
 interface NewsArticle {
     id: string;
@@ -24,7 +24,7 @@ const NewsSingle = () => {
     const fetchArticle = useCallback(async () => {
         try {
             if (!id) return;
-            const response = await fetch(API_ENDPOINTS.MEDIA_SINGLE(id));
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(id));
             if (response.ok) {
                 const data = await response.json();
                 setArticle({

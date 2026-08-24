@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Calendar as CalendarIcon, Clock, Upload, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 const localizer = momentLocalizer(moment);
 
@@ -76,7 +76,7 @@ const EventsManagement = () => {
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.EVENTS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENTS);
             if (response.ok) {
                 const data = await response.json();
                 setEvents(data);
@@ -105,7 +105,7 @@ const EventsManagement = () => {
             fd.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', `${API_ENDPOINTS.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
+            xhr.open('POST', `${NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -144,8 +144,8 @@ const EventsManagement = () => {
             }
 
             const url = editingItem
-                ? API_ENDPOINTS.EVENT_BY_ID(editingItem.id)
-                : API_ENDPOINTS.EVENTS;
+                ? NEXT_PUBLIC_API_BASE_URL.EVENT_BY_ID(editingItem.id)
+                : NEXT_PUBLIC_API_BASE_URL.EVENTS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -194,7 +194,7 @@ const EventsManagement = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.EVENT_BY_ID(itemToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENT_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

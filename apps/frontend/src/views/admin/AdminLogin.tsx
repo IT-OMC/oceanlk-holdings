@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { LoginResponse } from '../../types/api';
 import { toast } from 'react-hot-toast';
 
@@ -49,7 +49,7 @@ const AdminLogin = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch(API_ENDPOINTS.LOGIN, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.LOGIN, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -81,7 +81,7 @@ const AdminLogin = () => {
         setResetError('');
         try {
             // Send OTP directly by email
-            const res = await fetch(API_ENDPOINTS.OTP_SEND_EMAIL, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.OTP_SEND_EMAIL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail, method: 'email' })
@@ -121,7 +121,7 @@ const AdminLogin = () => {
 
         setResetLoading(true);
         try {
-            const res = await fetch(API_ENDPOINTS.RESET_PASSWORD, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.RESET_PASSWORD, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail, otp: resetOtp, newPassword })

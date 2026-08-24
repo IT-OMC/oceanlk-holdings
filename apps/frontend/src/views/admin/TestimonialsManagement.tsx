@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, MessageSquare, Star, Upload, X, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface Testimonial {
     id: string;
@@ -44,7 +44,7 @@ const TestimonialsManagement = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.TESTIMONIALS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TESTIMONIALS);
             if (response.ok) {
                 const data = await response.json();
                 setTestimonials(data);
@@ -80,7 +80,7 @@ const TestimonialsManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_ENDPOINTS.ADMIN_MEDIA_UPLOAD);
+            xhr.open('POST', NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_UPLOAD);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -127,8 +127,8 @@ const TestimonialsManagement = () => {
 
             const token = sessionStorage.getItem('adminToken');
             const url = editingItem
-                ? API_ENDPOINTS.TESTIMONIAL_BY_ID(editingItem.id)
-                : API_ENDPOINTS.TESTIMONIALS;
+                ? NEXT_PUBLIC_API_BASE_URL.TESTIMONIAL_BY_ID(editingItem.id)
+                : NEXT_PUBLIC_API_BASE_URL.TESTIMONIALS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -177,7 +177,7 @@ const TestimonialsManagement = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.TESTIMONIAL_BY_ID(itemToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TESTIMONIAL_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -12,7 +12,7 @@ import {
     CheckCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
 interface ContactMessage {
@@ -42,7 +42,7 @@ const ManageContactMessages = () => {
         setIsLoading(true);
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.CONTACT_MESSAGES, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_MESSAGES, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -60,7 +60,7 @@ const ManageContactMessages = () => {
     const fetchStats = async () => {
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.CONTACT_STATS, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_STATS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -105,7 +105,7 @@ const ManageContactMessages = () => {
 
     const toggleReadStatus = async (message: ContactMessage) => {
         const token = sessionStorage.getItem('adminToken');
-        const endpoint = message.isRead ? API_ENDPOINTS.CONTACT_MARK_UNREAD(message.id) : API_ENDPOINTS.CONTACT_MARK_READ(message.id);
+        const endpoint = message.isRead ? NEXT_PUBLIC_API_BASE_URL.CONTACT_MARK_UNREAD(message.id) : NEXT_PUBLIC_API_BASE_URL.CONTACT_MARK_READ(message.id);
 
         try {
             const response = await fetch(endpoint, {
@@ -136,7 +136,7 @@ const ManageContactMessages = () => {
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.CONTACT_DELETE(messageToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_DELETE(messageToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

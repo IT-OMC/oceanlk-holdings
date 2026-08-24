@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Star, CheckCircle, AlertCircle, FileText, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { JobOpportunity } from '../../types/api';
 
 const JobApplication = () => {
@@ -34,7 +34,7 @@ const JobApplication = () => {
             try {
                 // Since we don't have a single job endpoint verified, we fetch all and filter
                 // Or try single endpoint if available. Let's try fetching all for now as a fallback.
-                const response = await fetch(API_ENDPOINTS.JOBS);
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.JOBS);
                 if (response.ok) {
                     const jobs = await response.json();
                     const foundJob = jobs.find((j: JobOpportunity) => j.id === id);
@@ -104,7 +104,7 @@ const JobApplication = () => {
                 data.append('file', formData.file);
             }
 
-            const response = await fetch(API_ENDPOINTS.TALENT_POOL_SUBMIT, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_SUBMIT, {
                 method: 'POST',
                 body: data,
             });

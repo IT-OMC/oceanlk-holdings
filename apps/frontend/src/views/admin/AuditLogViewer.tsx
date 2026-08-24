@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Filter, Trash2, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
 interface AuditLog {
@@ -39,7 +39,7 @@ const AuditLogViewer = () => {
     const fetchLogs = async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.AUDIT_LOGS, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.AUDIT_LOGS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -76,7 +76,7 @@ const AuditLogViewer = () => {
     const handleExport = async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(`${API_ENDPOINTS.AUDIT_LOGS}/export`, {
+            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL.AUDIT_LOGS}/export`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -107,7 +107,7 @@ const AuditLogViewer = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.AUDIT_LOG_DELETE(logToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.AUDIT_LOG_DELETE(logToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserPlus, Trash2, Mail, Phone, Search, AlertCircle, Loader2, X, Check, Eye, EyeOff, Edit2, ChevronDown, CheckCircle2, XCircle } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { AdminUser, UserCreateRequest, UserUpdateRequest, UserRole } from '../../types/api';
 
@@ -56,7 +56,7 @@ const AdminManagement = () => {
         setLoading(true);
         const token = sessionStorage.getItem('adminToken');
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_LIST, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_LIST, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -90,7 +90,7 @@ const AdminManagement = () => {
         setError('');
         const token = sessionStorage.getItem('adminToken');
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_ADD, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_ADD, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const AdminManagement = () => {
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_DELETE(adminToDelete.id), {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_DELETE(adminToDelete.id), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -161,7 +161,7 @@ const AdminManagement = () => {
         };
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_EDIT(editingAdmin.id), {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_EDIT(editingAdmin.id), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

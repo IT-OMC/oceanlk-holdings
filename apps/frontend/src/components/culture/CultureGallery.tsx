@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -23,8 +23,8 @@ const CultureGallery = () => {
         try {
             // Fetch both GALLERY and LIFE_AT_OCH categories
             const [galleryRes, lifeRes] = await Promise.all([
-                fetch(`${API_ENDPOINTS.MEDIA}?category=GALLERY&group=HR_PANEL`),
-                fetch(`${API_ENDPOINTS.MEDIA}?category=LIFE_AT_OCH&group=HR_PANEL`)
+                fetch(`${NEXT_PUBLIC_API_BASE_URL.MEDIA}?category=GALLERY&group=HR_PANEL`),
+                fetch(`${NEXT_PUBLIC_API_BASE_URL.MEDIA}?category=LIFE_AT_OCH&group=HR_PANEL`)
             ]);
 
             let allImages: MediaItem[] = [];

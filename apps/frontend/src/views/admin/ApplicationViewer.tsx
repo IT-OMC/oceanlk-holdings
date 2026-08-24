@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Download, Calendar, Mail, Phone, Briefcase, Filter, X, Clock, Trash2, Inbox, SearchX } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface Application {
     id: string;
@@ -54,7 +54,7 @@ const ApplicationViewer = () => {
     const fetchApplications = async () => {
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_APPLICATIONS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -73,7 +73,7 @@ const ApplicationViewer = () => {
         const token = sessionStorage.getItem('adminToken');
         setIsLoadingDownloading(true);
         try {
-            const response = await fetch(API_ENDPOINTS.TALENT_POOL_CV(appId), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_CV(appId), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -102,7 +102,7 @@ const ApplicationViewer = () => {
     const handleStatusUpdate = async (appId: string, newStatus: string) => {
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(`${API_ENDPOINTS.TALENT_POOL_STATUS(appId)}?status=${newStatus}`, {
+            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_STATUS(appId)}?status=${newStatus}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -133,7 +133,7 @@ const ApplicationViewer = () => {
         const token = sessionStorage.getItem('adminToken');
 
         try {
-            const response = await fetch(API_ENDPOINTS.TALENT_POOL_DELETE(appId), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_DELETE(appId), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { API_ENDPOINTS } from '../utils/api'
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api'
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -15,7 +15,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       router.replace('/admin')
       return
     }
-    fetch(API_ENDPOINTS.VALIDATE_TOKEN, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(NEXT_PUBLIC_API_BASE_URL.VALIDATE_TOKEN, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         if (res.ok) return setStatus('ok')
         sessionStorage.removeItem('adminToken')

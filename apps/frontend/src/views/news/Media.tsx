@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
 
 
-import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -42,7 +42,7 @@ const Media = () => {
     const fetchMediaItems = useCallback(async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(API_ENDPOINTS.MEDIA_MEDIA);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA);
             if (response.ok) {
                 const data = await response.json();
                 setMediaItems(data);

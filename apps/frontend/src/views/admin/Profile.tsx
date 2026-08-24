@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Phone, Shield, Lock, Save, Loader2, CheckCircle2, Bell, Camera } from 'lucide-react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const AdminProfile = () => {
@@ -46,7 +46,7 @@ const AdminProfile = () => {
         }
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE(username), {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_PROFILE(username), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -74,7 +74,7 @@ const AdminProfile = () => {
         if (!token) return;
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE_PREFERENCES, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_PROFILE_PREFERENCES, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -93,7 +93,7 @@ const AdminProfile = () => {
         const token = sessionStorage.getItem('adminToken');
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE_UPDATE, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_PROFILE_UPDATE, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ const AdminProfile = () => {
         setSaving(true);
         const token = sessionStorage.getItem('adminToken');
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_PROFILE_PREFERENCES, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_PROFILE_PREFERENCES, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ const AdminProfile = () => {
         formData.append('file', file);
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_MEDIA_UPLOAD, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_UPLOAD, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData
@@ -194,7 +194,7 @@ const AdminProfile = () => {
         const token = sessionStorage.getItem('adminToken');
 
         try {
-            const res = await fetch(API_ENDPOINTS.ADMIN_CHANGE_PASSWORD, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_CHANGE_PASSWORD, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

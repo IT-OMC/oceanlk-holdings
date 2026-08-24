@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Upload, Trash2, Edit2, Image as ImageIcon, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { MediaItem, MediaCategory, MediaGroup } from '../../types/api';
 
 const HRMediaManagement = () => {
@@ -33,7 +33,7 @@ const HRMediaManagement = () => {
 
     const fetchMediaItems = useCallback(async () => {
         try {
-            const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=HR_PANEL`, {
+            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA}?group=HR_PANEL`, {
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
                 }
@@ -79,7 +79,7 @@ const HRMediaManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', `${API_ENDPOINTS.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
+            xhr.open('POST', `${NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_UPLOAD}?group=HR_PANEL`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -119,8 +119,8 @@ const HRMediaManagement = () => {
 
             const token = sessionStorage.getItem('adminToken');
             const url = editingItem
-                ? API_ENDPOINTS.ADMIN_MEDIA_BY_ID(editingItem.id)
-                : API_ENDPOINTS.ADMIN_MEDIA;
+                ? NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_BY_ID(editingItem.id)
+                : NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -164,7 +164,7 @@ const HRMediaManagement = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

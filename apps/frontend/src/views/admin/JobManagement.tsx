@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, X, Check, Briefcase } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { JobOpportunity, JobStatus } from '../../types/api';
 
 const JobManagement = () => {
@@ -33,7 +33,7 @@ const JobManagement = () => {
     const fetchJobs = async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.ADMIN_JOBS, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_JOBS, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -58,8 +58,8 @@ const JobManagement = () => {
         const token = sessionStorage.getItem('adminToken');
         const isEdit = !!currentJob?.id;
         const url = isEdit
-            ? API_ENDPOINTS.ADMIN_JOB_BY_ID(currentJob!.id!)
-            : API_ENDPOINTS.ADMIN_JOBS;
+            ? NEXT_PUBLIC_API_BASE_URL.ADMIN_JOB_BY_ID(currentJob!.id!)
+            : NEXT_PUBLIC_API_BASE_URL.ADMIN_JOBS;
         const method = isEdit ? 'PUT' : 'POST';
 
         try {
@@ -100,7 +100,7 @@ const JobManagement = () => {
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.ADMIN_JOB_BY_ID(jobToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_JOB_BY_ID(jobToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

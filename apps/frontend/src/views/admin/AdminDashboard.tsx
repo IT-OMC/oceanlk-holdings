@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FileText, Briefcase, Image, ArrowUpRight, Mail, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import TimePeriodDropdown, { TimePeriod } from '../../components/admin/TimePeriodDropdown';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { TalentPoolApplication, JobOpportunity, MediaItem, ContactMessage } from '../../types/api';
 
 const AdminDashboard = () => {
@@ -39,16 +39,16 @@ const AdminDashboard = () => {
             const token = sessionStorage.getItem('adminToken');
             try {
                 const [appsRes, jobsRes, mediaRes, contactRes] = await Promise.all([
-                    fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
+                    fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_APPLICATIONS, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch(API_ENDPOINTS.ADMIN_JOBS, {
+                    fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_JOBS, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch(API_ENDPOINTS.ADMIN_MEDIA, {
+                    fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch(API_ENDPOINTS.CONTACT_MESSAGES, {
+                    fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_MESSAGES, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     })
                 ]);

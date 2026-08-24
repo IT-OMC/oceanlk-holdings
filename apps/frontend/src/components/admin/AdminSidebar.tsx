@@ -19,7 +19,7 @@ import {
     FileText
 } from 'lucide-react';
 import { useState } from 'react';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface AdminSidebarProps {
     isSidebarOpen: boolean;
@@ -43,8 +43,8 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                 const token = sessionStorage.getItem('adminToken');
                 // Fetch based on role
                 const endpoint = isSuperAdmin
-                    ? API_ENDPOINTS.PENDING_CHANGES
-                    : API_ENDPOINTS.PENDING_CHANGES_MY;
+                    ? NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGES
+                    : NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGES_MY;
 
                 const response = await fetch(endpoint, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -64,7 +64,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         const fetchContactUnreadCount = async () => {
             try {
                 const token = sessionStorage.getItem('adminToken');
-                const response = await fetch(API_ENDPOINTS.CONTACT_STATS, {
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_STATS, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -80,7 +80,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         const fetchApplicationsCount = async () => {
             try {
                 const token = sessionStorage.getItem('adminToken');
-                const response = await fetch(API_ENDPOINTS.TALENT_POOL_APPLICATIONS, {
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.TALENT_POOL_APPLICATIONS, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

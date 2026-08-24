@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 
 const Memberships = () => {
     const { t } = useTranslation();
@@ -11,7 +11,7 @@ const Memberships = () => {
     useEffect(() => {
         const fetchPartners = async () => {
             try {
-                const response = await fetch(API_ENDPOINTS.PARTNERS);
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.PARTNERS);
                 if (response.ok) {
                     const data = await response.json();
 

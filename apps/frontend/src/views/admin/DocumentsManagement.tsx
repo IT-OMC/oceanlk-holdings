@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, X, Loader, Upload, Briefcase, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface MediaItem {
     id?: string;
@@ -66,7 +66,7 @@ const DocumentsManagement = () => {
 
     const fetchCompanies = useCallback(async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.COMPANIES);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
             if (response.ok) {
                 const data = await response.json();
                 setCompanies(data);
@@ -79,7 +79,7 @@ const DocumentsManagement = () => {
     const fetchMedia = useCallback(async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(`${API_ENDPOINTS.ADMIN_MEDIA}?group=MEDIA_PANEL`, {
+            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA}?group=MEDIA_PANEL`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -93,7 +93,7 @@ const DocumentsManagement = () => {
                 const enrichedData = await Promise.all(
                     documents.map(async (item: MediaItem) => {
                         if (item.companyId) {
-                            const companyRes = await fetch(API_ENDPOINTS.COMPANY_BY_ID(item.companyId));
+                            const companyRes = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANY_BY_ID(item.companyId));
                             if (companyRes.ok) {
                                 const company = await companyRes.json();
                                 item.companyName = company.title;
@@ -130,7 +130,7 @@ const DocumentsManagement = () => {
             formData.append('file', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', `${API_ENDPOINTS.ADMIN_MEDIA_UPLOAD}?group=MEDIA_PANEL`);
+            xhr.open('POST', `${NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_UPLOAD}?group=MEDIA_PANEL`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
             xhr.upload.onprogress = (event) => {
@@ -182,8 +182,8 @@ const DocumentsManagement = () => {
             }
 
             const url = isEdit
-                ? API_ENDPOINTS.ADMIN_MEDIA_BY_ID(currentMedia.id!)
-                : API_ENDPOINTS.ADMIN_MEDIA;
+                ? NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_BY_ID(currentMedia.id!)
+                : NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA;
             const method = isEdit ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -221,7 +221,7 @@ const DocumentsManagement = () => {
 
         const token = sessionStorage.getItem('adminToken');
         try {
-            const response = await fetch(API_ENDPOINTS.ADMIN_MEDIA_BY_ID(itemToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.ADMIN_MEDIA_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface GlobalMetric {
     id: string;
@@ -37,7 +37,7 @@ const StatsManagement = () => {
 
     const fetchStats = async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.METRICS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.METRICS);
             if (response.ok) {
                 const data = await response.json();
                 setStats(data);
@@ -56,8 +56,8 @@ const StatsManagement = () => {
         try {
             const token = sessionStorage.getItem('adminToken');
             const url = editingItem
-                ? API_ENDPOINTS.METRIC_BY_ID(editingItem.id)
-                : API_ENDPOINTS.METRICS;
+                ? NEXT_PUBLIC_API_BASE_URL.METRIC_BY_ID(editingItem.id)
+                : NEXT_PUBLIC_API_BASE_URL.METRICS;
 
             const response = await fetch(url, {
                 method: editingItem ? 'PUT' : 'POST',
@@ -95,7 +95,7 @@ const StatsManagement = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.METRIC_BY_ID(itemToDelete), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.METRIC_BY_ID(itemToDelete), {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

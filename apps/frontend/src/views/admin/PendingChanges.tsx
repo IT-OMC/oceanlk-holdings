@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import ChangeVisualizer from '../../components/admin/ChangeVisualizer';
 import AdminAlertDialog from '../../components/admin/AdminAlertDialog';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface PendingChange {
     id: string;
@@ -47,7 +47,7 @@ const PendingChanges: React.FC = () => {
             // Fetch data based on role
             if (isSuperAdmin) {
                 // SuperAdmin: Fetch all pending changes for approval
-                const allResponse = await fetch(API_ENDPOINTS.PENDING_CHANGES, {
+                const allResponse = await fetch(NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGES, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (allResponse.ok) {
@@ -57,7 +57,7 @@ const PendingChanges: React.FC = () => {
             }
 
             // Fetch user's own submissions
-            const myResponse = await fetch(API_ENDPOINTS.PENDING_CHANGES_MY, {
+            const myResponse = await fetch(NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGES_MY, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (myResponse.ok) {
@@ -103,7 +103,7 @@ const PendingChanges: React.FC = () => {
     const handleApprove = async (changeId: string) => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_APPROVE(changeId), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGE_APPROVE(changeId), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ const PendingChanges: React.FC = () => {
 
         try {
             const token = sessionStorage.getItem('adminToken');
-            const response = await fetch(API_ENDPOINTS.PENDING_CHANGE_REJECT(changeId), {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.PENDING_CHANGE_REJECT(changeId), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

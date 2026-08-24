@@ -291,7 +291,7 @@ API_BASE_URL=http://localhost:8080
 
 # ─── Site ───────────────────────────────────────────────────────
 # Absolute origin, used by sitemap.ts, robots.ts and Open Graph URLs.
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:5173
 
 # ─── Removed in the Next.js migration ───────────────────────────
 # VITE_API_BASE_URL          → NEXT_PUBLIC_API_BASE_URL
@@ -304,7 +304,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```bash
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 API_BASE_URL=http://localhost:8080
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:5173
 ```
 
 > `apps/frontend/.env.local` already exists with a `VERCEL_OIDC_TOKEN` written by the Vercel CLI. Leave that line alone and append these below it.

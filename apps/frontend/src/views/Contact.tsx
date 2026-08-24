@@ -4,7 +4,7 @@ import SectionWrapper from '../components/SectionWrapper';
 import { Phone, Mail, Send, Building2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 
 const Contact = () => {
     const { t } = useTranslation();
@@ -50,7 +50,7 @@ const Contact = () => {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(API_ENDPOINTS.CONTACT_SUBMIT, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CONTACT_SUBMIT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

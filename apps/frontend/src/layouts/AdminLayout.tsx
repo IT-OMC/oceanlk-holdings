@@ -16,7 +16,7 @@ import {
 import { toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import NotificationBell from '../components/admin/NotificationBell';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 import ConfirmationModal from '../components/ConfirmationModal';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
@@ -43,7 +43,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 const token = sessionStorage.getItem('adminToken');
                 if (!token) return;
 
-                const res = await fetch(API_ENDPOINTS.VALIDATE_TOKEN, {
+                const res = await fetch(NEXT_PUBLIC_API_BASE_URL.VALIDATE_TOKEN, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -90,7 +90,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     const sendOtp = async () => {
         setLoading(true);
         try {
-            const res = await fetch(API_ENDPOINTS.OTP_SEND, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.OTP_SEND, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, method: 'email' })
@@ -112,7 +112,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch(API_ENDPOINTS.OTP_VERIFY, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.OTP_VERIFY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, otp })

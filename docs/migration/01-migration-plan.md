@@ -54,7 +54,7 @@ This follows the official Vite migration path deliberately: get Next.js *booting
 
 Full instructions in `02-implementation-guide.md` §1.
 
-**Exit criteria:** `npm run dev` serves the app at `localhost:3000`, every route reachable, `npm run build` succeeds.
+**Exit criteria:** `npm run dev` serves the app at `localhost:5173`, every route reachable, `npm run build` succeeds.
 
 > **Note on `output: 'export'`:** the official guide sets `output: 'export'` at this step. **Skip it.** You're going to SSR in Phase 3, and `export` mode silently disables rewrites, headers, and server rendering — you'd only have to remove it later, and in the meantime it would mask configuration mistakes.
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Mail, ArrowRight, X } from 'lucide-react';
 import { Linkedin } from '../../components/icons/BrandIcons';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { CorporateLeader, LeadershipCategory } from '../../types/api';
 
 interface LeadershipCardProps {
@@ -184,8 +184,8 @@ const Leadership = () => {
         const loadData = async () => {
             try {
                 const [leadersResponse, categoriesResponse] = await Promise.all([
-                    fetch(API_ENDPOINTS.LEADERSHIP),
-                    fetch(API_ENDPOINTS.LEADERSHIP_CATEGORIES)
+                    fetch(NEXT_PUBLIC_API_BASE_URL.LEADERSHIP),
+                    fetch(NEXT_PUBLIC_API_BASE_URL.LEADERSHIP_CATEGORIES)
                 ]);
 
                 if (leadersResponse.ok && categoriesResponse.ok) {

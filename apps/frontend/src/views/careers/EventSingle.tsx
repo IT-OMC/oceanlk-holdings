@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, CalendarPlus } from 'lucide-react';
 import moment from 'moment';
 import Navbar from '../../components/Navbar';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface Event {
     id: string;
@@ -30,7 +30,7 @@ const EventSingle = () => {
         const fetchEvent = async () => {
             try {
                 // Fetch from the dedicated events endpoint
-                const response = await fetch(API_ENDPOINTS.EVENT_BY_ID(id!));
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENT_BY_ID(id!));
                 if (response.ok) {
                     const data = await response.json();
                     setEvent({
@@ -46,7 +46,7 @@ const EventSingle = () => {
                     });
                 } else {
                     // Fallback: search all events
-                    const allResponse = await fetch(API_ENDPOINTS.EVENTS);
+                    const allResponse = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENTS);
                     if (allResponse.ok) {
                         const allData = await allResponse.json();
                         const foundEvent = allData.find((item: any) => item.id === id);

@@ -398,7 +398,7 @@ Same logic as `ProtectedRoute.tsx`, with the navigation call swapped:
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { API_ENDPOINTS } from '@/utils/api'
+import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api'
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -411,7 +411,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       router.replace('/admin')
       return
     }
-    fetch(API_ENDPOINTS.VALIDATE_TOKEN, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(NEXT_PUBLIC_API_BASE_URL.VALIDATE_TOKEN, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         if (res.ok) return setStatus('ok')
         sessionStorage.removeItem('adminToken')
@@ -490,7 +490,7 @@ The pattern, using `/companies` as the worked example. Today it's a client compo
 // app/(site)/companies/page.tsx        — Server Component
 import type { Metadata } from 'next'
 import CompaniesView from './companies-view'
-import { API_ENDPOINTS } from '@/utils/api'
+import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api'
 
 export const revalidate = 3600  // ISR: regenerate at most once an hour
 
@@ -500,7 +500,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const res = await fetch(API_ENDPOINTS.COMPANIES, { next: { revalidate: 3600 } })
+  const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES, { next: { revalidate: 3600 } })
   if (!res.ok) throw new Error(`Companies fetch failed: ${res.status}`)
   const companies = await res.json()
 
@@ -536,19 +536,19 @@ The data arrives in the HTML. The animation still runs on the client. This is th
 // app/(site)/news/blogs/[id]/page.tsx
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { API_ENDPOINTS } from '@/utils/api'
+import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api'
 
 export const revalidate = 3600
 
 export async function generateStaticParams() {
-  const res = await fetch(API_ENDPOINTS.MEDIA_BLOGS)
+  const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS)
   const blogs = await res.json()
   return blogs.map((b: { id: string | number }) => ({ id: String(b.id) }))
 }
 
 export async function generateMetadata(props: PageProps<'/news/blogs/[id]'>): Promise<Metadata> {
   const { id } = await props.params
-  const res = await fetch(API_ENDPOINTS.MEDIA_SINGLE(id), { next: { revalidate: 3600 } })
+  const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(id), { next: { revalidate: 3600 } })
   if (!res.ok) return { title: 'Blog' }
   const blog = await res.json()
   return {
@@ -560,7 +560,7 @@ export async function generateMetadata(props: PageProps<'/news/blogs/[id]'>): Pr
 
 export default async function Page(props: PageProps<'/news/blogs/[id]'>) {
   const { id } = await props.params
-  const res = await fetch(API_ENDPOINTS.MEDIA_SINGLE(id), { next: { revalidate: 3600 } })
+  const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_SINGLE(id), { next: { revalidate: 3600 } })
   if (res.status === 404) notFound()
   if (!res.ok) throw new Error(`Blog ${id} fetch failed: ${res.status}`)
   return <BlogView blog={await res.json()} />
@@ -674,7 +674,7 @@ Keeping the API same-origin means no CORS preflights and no CORS config to maint
 
 Three narrow cases, all optional:
 
-1. **Hiding a third-party key.** If the chat feature (`src/components/ChatWidget.tsx`, `API_ENDPOINTS.CHAT_MESSAGE`) ever needs to call a model provider directly, a handler at `app/api/chat/route.ts` keeps the key server-side. Today it goes through Spring, so this doesn't apply.
+1. **Hiding a third-party key.** If the chat feature (`src/components/ChatWidget.tsx`, `NEXT_PUBLIC_API_BASE_URL.CHAT_MESSAGE`) ever needs to call a model provider directly, a handler at `app/api/chat/route.ts` keeps the key server-side. Today it goes through Spring, so this doesn't apply.
 2. **A health endpoint.** `nginx.conf` serves `/health`; if any monitor depends on it, replace it with `app/api/health/route.ts` returning `200`.
 3. **Login setting an httpOnly cookie** — part of the Risk R-07 follow-up, not this migration.
 
@@ -701,7 +701,7 @@ npm run build         # must succeed
 ```
 
 ### Phase 1 gate
-- [ ] `next dev` serves at `localhost:3000`
+- [ ] `next dev` serves at `localhost:5173`
 - [ ] All 42 routes reachable through in-app navigation
 - [ ] A hard refresh on a deep link (`/news/blogs/1`) renders correctly
 - [ ] No `import.meta` remains: `grep -rn "import.meta" src/ app/` returns nothing

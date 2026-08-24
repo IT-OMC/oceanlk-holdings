@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
 import moment from 'moment';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface Event {
     id: string;
@@ -35,7 +35,7 @@ const UpcomingEvents = () => {
 
     const fetchUpcomingEvents = async () => {
         try {
-            const response = await fetch(API_ENDPOINTS.EVENTS);
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENTS);
             if (response.ok) {
                 const data = await response.json();
                 // Map directly from the Event model fields
