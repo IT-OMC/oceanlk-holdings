@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, Share2, Loader } from 'lucide-react';
 import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
@@ -69,7 +70,7 @@ const NewsSingle = () => {
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
                     <p className="text-gray-500 mb-6">{error || "The requested article could not be found."}</p>
-                    <Link to="/news/articles" className="text-accent hover:underline">
+                    <Link href="/news/articles" className="text-accent hover:underline">
                         Back to News
                     </Link>
                 </div>
@@ -90,7 +91,7 @@ const NewsSingle = () => {
 
             <SectionWrapper className="py-20">
                 <div className="max-w-4xl mx-auto">
-                    <Link to="/news/articles" className="inline-flex items-center gap-2 text-accent mb-6 hover:gap-3 transition-all">
+                    <Link href="/news/articles" className="inline-flex items-center gap-2 text-accent mb-6 hover:gap-3 transition-all">
                         <ArrowLeft className="w-5 h-5" />
                         Back to News
                     </Link>

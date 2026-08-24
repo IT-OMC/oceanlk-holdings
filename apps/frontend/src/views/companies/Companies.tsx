@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowRight, Users, Calendar } from 'lucide-react';
 import { oceanData } from '../../data/mockData';
@@ -29,7 +29,7 @@ const Companies = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: index * 0.1 }}
                             >
-                                <Link to={`/companies/${company.id}`} className="block h-full">
+                                <Link href={`/companies/${company.id}`} className="block h-full">
                                     <div className="group h-full bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                                         {/* Image Header */}
                                         <div className="relative h-56 overflow-hidden">

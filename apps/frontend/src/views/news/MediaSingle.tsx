@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { ArrowLeft, Loader, Download } from 'lucide-react';
 import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
 
@@ -64,7 +65,7 @@ const MediaSingle = () => {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-4">Media Not Found</h1>
-                    <Link to="/news/media" className="text-blue-500 hover:underline">
+                    <Link href="/news/media" className="text-blue-500 hover:underline">
                         Back to Media Center
                     </Link>
                 </div>
@@ -80,7 +81,7 @@ const MediaSingle = () => {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
             <div className="pt-24 pb-8 px-4 md:px-6 w-full max-w-[95%] mx-auto">
-                <Link to="/news/media" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-all mb-8">
+                <Link href="/news/media" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-all mb-8">
                     <ArrowLeft className="w-5 h-5" />
                     Back to Media Center
                 </Link>

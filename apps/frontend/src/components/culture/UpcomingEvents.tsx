@@ -1,5 +1,6 @@
+'use client';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CalendarPlus, X, Send } from 'lucide-react';
 import moment from 'moment';
@@ -129,7 +130,7 @@ const UpcomingEvents = () => {
                         </div>
                         <div className="px-6 pb-6 mt-auto">
                             <Link
-                                to={`/careers/events/${event.id}`}
+                                href={`/careers/events/${event.id}`}
                                 className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
                             >
                                 See More

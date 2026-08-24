@@ -1,3 +1,4 @@
+'use client';
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
 import { Heart, Calendar } from 'lucide-react';

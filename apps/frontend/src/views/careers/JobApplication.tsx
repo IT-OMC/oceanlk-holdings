@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Star, CheckCircle, AlertCircle, FileText, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -165,7 +166,7 @@ const JobApplication = () => {
         return (
             <div className="min-h-screen bg-[#0a1628] flex items-center justify-center flex-col">
                 <h2 className="text-2xl text-white font-bold mb-4">Job Not Found</h2>
-                <Link to="/careers/opportunities" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-2">
+                <Link href="/careers/opportunities" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-2">
                     <ArrowLeft className="w-4 h-4" /> Back to Opportunities
                 </Link>
             </div>
@@ -196,7 +197,7 @@ const JobApplication = () => {
             <SectionWrapper id="job-application" className="pt-32 pb-20 relative z-10">
                 {/* Back Button */}
                 <div className="mb-8">
-                    <Link to="/careers/opportunities" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
+                    <Link href="/careers/opportunities" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
                         <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
                             <ArrowLeft className="w-5 h-5" />
                         </div>
@@ -556,7 +557,7 @@ const JobApplication = () => {
                                             Thank you for applying to <strong>{job.company}</strong>. We've received your application and will review it shortly.
                                         </p>
                                         <Link
-                                            to="/careers/opportunities"
+                                            href="/careers/opportunities"
                                             className="inline-block px-8 py-3 rounded-xl font-semibold bg-white/10 text-white hover:bg-white/20 transition-all border border-white/5"
                                         >
                                             View More Opportunities

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../utils/api';
 import { LoginResponse } from '../../types/api';
 import { toast } from 'react-hot-toast';
 
 const AdminLogin = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -66,7 +66,7 @@ const AdminLogin = () => {
             sessionStorage.setItem('adminUsername', data.username);
             sessionStorage.setItem('adminRole', data.role);
             sessionStorage.setItem('adminVerified', String(data.verified));
-            navigate('/admin/dashboard');
+            router.push('/admin/dashboard');
             toast.success('Welcome back!');
         } catch (err: any) {
             toast.error(err.message || 'An error occurred during login');

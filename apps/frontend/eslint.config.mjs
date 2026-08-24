@@ -20,6 +20,15 @@ export default tseslint.config(
       ...next.configs.recommended.rules,
       ...next.configs['core-web-vitals'].rules,
 
+      // eslint-plugin-react-hooks@7's recommended set added these as errors
+      // for React Compiler readiness. They surface pre-existing patterns
+      // across the app unrelated to the Vite -> Next.js migration (this repo
+      // ran hooks@4, which didn't have them). Downgraded to warnings rather
+      // than mass-refactoring unrelated business logic in this migration.
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/purity': 'warn',
+
       // Carried over from .eslintrc.cjs
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',

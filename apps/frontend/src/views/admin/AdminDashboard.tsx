@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Briefcase, Image, ArrowUpRight, Mail, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import TimePeriodDropdown, { TimePeriod } from '../../components/admin/TimePeriodDropdown';
 import { API_ENDPOINTS } from '../../utils/api';
 import { TalentPoolApplication, JobOpportunity, MediaItem, ContactMessage } from '../../types/api';
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
                             <p className="text-gray-400 text-sm mb-4">{stat.title}</p>
 
                             <Link
-                                to={stat.link}
+                                href={stat.link}
                                 className="inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
                             >
                                 View Details <ArrowUpRight size={16} />
@@ -213,7 +213,7 @@ const AdminDashboard = () => {
                     <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
                     <div className="space-y-4">
                         <Link
-                            to="/admin/hr/jobs"
+                            href="/admin/hr/jobs"
                             className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group"
                         >
                             <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
@@ -227,7 +227,7 @@ const AdminDashboard = () => {
                         </Link>
 
                         <Link
-                            to="/admin/media"
+                            href="/admin/media"
                             className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group"
                         >
                             <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">

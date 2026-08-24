@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Calendar, User, ArrowUpRight, BookOpen, Loader } from 'lucide-react';
 
 import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
@@ -123,7 +123,7 @@ const Blogs = () => {
                                 whileHover={{ y: -5 }}
                                 className={`${post.span} group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white border border-gray-100/50`}
                             >
-                                <Link to={`/news/blogs/${post.id}`} className="block h-full w-full">
+                                <Link href={`/news/blogs/${post.id}`} className="block h-full w-full">
                                     <div
                                         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                                         style={{ backgroundImage: `url('${getMediaUrl(post.imageUrl)}')` }}

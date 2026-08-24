@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, RotateCw, ThumbsUp, ThumbsDown, Check, User, Bot } from 'lucide-react';

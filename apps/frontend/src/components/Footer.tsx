@@ -1,3 +1,4 @@
+'use client';
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';

@@ -1,3 +1,4 @@
+'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';

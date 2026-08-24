@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowLeft, Calendar, User, Share2, Loader } from 'lucide-react';
 import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
@@ -74,7 +75,7 @@ const BlogSingle = () => {
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-4">Blog Post Not Found</h1>
                     <p className="text-gray-500 mb-6">{error || "The requested blog post could not be found."}</p>
-                    <Link to="/news/blogs" className="text-accent hover:underline">
+                    <Link href="/news/blogs" className="text-accent hover:underline">
                         Back to Blogs
                     </Link>
                 </div>
@@ -95,7 +96,7 @@ const BlogSingle = () => {
 
             <SectionWrapper className="py-20">
                 <div className="max-w-4xl mx-auto">
-                    <Link to="/news/blogs" className="inline-flex items-center gap-2 text-accent mb-6 hover:gap-3 transition-all">
+                    <Link href="/news/blogs" className="inline-flex items-center gap-2 text-accent mb-6 hover:gap-3 transition-all">
                         <ArrowLeft className="w-5 h-5" />
                         Back to Blogs
                     </Link>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, CalendarPlus } from 'lucide-react';
 import moment from 'moment';
@@ -20,7 +21,7 @@ interface Event {
 
 const EventSingle = () => {
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
+    const router = useRouter();
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -99,7 +100,7 @@ const EventSingle = () => {
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">{error || 'Event not found'}</h2>
                 <button
-                    onClick={() => navigate('/careers/culture')}
+                    onClick={() => router.push('/careers/culture')}
                     className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
                 >
                     <ArrowLeft size={20} className="mr-2" />
@@ -131,7 +132,7 @@ const EventSingle = () => {
                 <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 lg:p-20">
                     <div className="max-w-7xl mx-auto">
                         <Link
-                            to="/careers/culture"
+                            href="/careers/culture"
                             className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors"
                         >
                             <ArrowLeft size={20} className="mr-2" />

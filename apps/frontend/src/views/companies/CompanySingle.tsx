@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import SectionWrapper from '../../components/SectionWrapper';
 import {
     ArrowLeft, ExternalLink, Users, TrendingUp, Award,
@@ -104,7 +105,7 @@ const CompanySingle = () => {
                 <div className="text-center">
                     <div className="text-8xl mb-6">🌊</div>
                     <h1 className="text-4xl font-bold mb-4 text-gray-900">Company Not Found</h1>
-                    <Link to="/companies" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold transition-colors">
+                    <Link href="/companies" className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold transition-colors">
                         <ArrowLeft className="w-5 h-5" />
                         Back to Companies
                     </Link>
@@ -150,7 +151,7 @@ const CompanySingle = () => {
                             transition={{ duration: 0.5, delay: 0.2 }}
                         >
                             <Link
-                                to="/companies"
+                                href="/companies"
                                 className="inline-flex items-center gap-2 text-white/70 hover:text-accent transition-colors mb-8 group"
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -519,7 +520,7 @@ const CompanySingle = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                             >
-                                <Link to={`/companies/${rc.id}`} className="group block">
+                                <Link href={`/companies/${rc.id}`} className="group block">
                                     <div className="relative h-48 rounded-2xl overflow-hidden mb-4">
                                         <img
                                             src={rc.image}
@@ -575,14 +576,14 @@ const CompanySingle = () => {
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <Link
-                                    to="/contact"
+                                    href="/contact"
                                     className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5"
                                 >
                                     Get In Touch
                                     <ExternalLink className="w-4 h-4" />
                                 </Link>
                                 <Link
-                                    to="/companies"
+                                    href="/companies"
                                     className="inline-flex items-center gap-2 border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-xl transition-all duration-300"
                                 >
                                     <ArrowLeft className="w-4 h-4" />

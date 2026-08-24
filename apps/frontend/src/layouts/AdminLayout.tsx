@@ -1,5 +1,6 @@
+'use client';
 import { useState, useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut,
@@ -18,10 +19,10 @@ import NotificationBell from '../components/admin/NotificationBell';
 import { API_ENDPOINTS } from '../utils/api';
 import ConfirmationModal from '../components/ConfirmationModal';
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
     const adminName = sessionStorage.getItem('adminName') || 'Administrator';
     const adminUsername = sessionStorage.getItem('adminUsername') || 'admin';
     const adminRole = sessionStorage.getItem('adminRole');
@@ -70,7 +71,7 @@ const AdminLayout = () => {
         sessionStorage.removeItem('adminRole');
         sessionStorage.removeItem('adminVerified');
         setShowLogoutConfirm(false);
-        navigate('/admin');
+        router.push('/admin');
     };
 
     const logoutConfirmation = (
@@ -133,7 +134,7 @@ const AdminLayout = () => {
     };
 
     const getPageTitle = () => {
-        const path = location.pathname;
+        const path = pathname;
         if (path.includes('/dashboard')) return 'Dashboard';
         if (path.includes('/profile')) return 'My Profile';
         if (path.includes('/management')) return 'Admin Management';
@@ -341,7 +342,7 @@ const AdminLayout = () => {
                             </div>
                         </div>
                     </div>
-                    <Outlet />
+                    {children}
                 </div>
             </motion.main>
 

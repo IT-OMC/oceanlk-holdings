@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight, Loader } from 'lucide-react';
 
 
@@ -187,7 +187,7 @@ const Media = () => {
                                     whileHover={{ y: -5 }}
                                     className={`${span} group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white border border-gray-100/50`}
                                 >
-                                    <Link to={`/news/media/${item.id}`} className="block h-full w-full">
+                                    <Link href={`/news/media/${item.id}`} className="block h-full w-full">
                                         {/* Background Image or Video */}
                                         {isActuallyVideo && videoSrc ? (
                                             <video

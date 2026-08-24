@@ -1,5 +1,6 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Bell, Check, ExternalLink, Clock, Info, AlertTriangle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_ENDPOINTS } from '../../utils/api';
@@ -17,7 +18,7 @@ const NotificationBell = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const fetchNotifications = async () => {
         try {
@@ -86,7 +87,7 @@ const NotificationBell = () => {
     const handleNotificationClick = (notification: Notification) => {
         markAsRead(notification.id);
         if (notification.link) {
-            navigate(notification.link);
+            router.push(notification.link);
         }
         setIsOpen(false);
     };

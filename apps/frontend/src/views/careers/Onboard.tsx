@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
@@ -20,7 +20,7 @@ interface JobOpportunity {
 }
 
 const Onboard = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [jobOpenings, setJobOpenings] = useState<JobOpportunity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -363,7 +363,7 @@ const Onboard = () => {
                                                                 <span>{job.location}</span>
                                                             </div>
                                                             <motion.button
-                                                                onClick={() => navigate(`/careers/opportunities/${job.id}`)}
+                                                                onClick={() => router.push(`/careers/opportunities/${job.id}`)}
                                                                 className="px-5 py-2.5 rounded-full text-white flex items-center gap-2"
                                                                 style={{
                                                                     background: 'linear-gradient(135deg, rgba(16,185,129,0.6) 0%, rgba(5,150,105,0.6) 100%)',
@@ -470,7 +470,7 @@ const Onboard = () => {
                                                             <span>{job.location}</span>
                                                         </div>
                                                         <motion.button
-                                                            onClick={() => navigate(`/careers/opportunities/${job.id}`)}
+                                                            onClick={() => router.push(`/careers/opportunities/${job.id}`)}
                                                             className="px-4 py-2 rounded-full flex items-center gap-2"
                                                             style={{
                                                                 background: 'rgba(59,130,246,0.2)',

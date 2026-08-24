@@ -1,6 +1,7 @@
+'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const verticals = [
     {
@@ -57,7 +58,7 @@ const verticals = [
 
 const EcosystemAccordion = () => {
     const [activeId, setActiveId] = useState<number | null>(1);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     return (
         <section className="relative py-24 text-white overflow-hidden">
@@ -174,7 +175,7 @@ const EcosystemAccordion = () => {
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    navigate(item.link);
+                                                    router.push(item.link);
                                                 }}
                                                 className="text-sm font-semibold text-white/80 hover:text-white flex items-center gap-2 group/btn"
                                             >

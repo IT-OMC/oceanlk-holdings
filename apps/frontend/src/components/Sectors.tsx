@@ -1,3 +1,4 @@
+'use client';
 import { motion } from 'framer-motion';
 import { oceanData } from '../data/mockData';
 import SectionWrapper from './SectionWrapper';

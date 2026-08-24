@@ -1,4 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 import {
@@ -27,7 +29,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
     const [isPagesExpanded, setIsPagesExpanded] = useState(true);
     const [isMediaExpanded, setIsMediaExpanded] = useState(true);
     const [isHRExpanded, setIsHRExpanded] = useState(true);
-    const location = useLocation();
+    const pathname = usePathname();
     const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
 
@@ -131,18 +133,18 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         <nav className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Dashboard */}
             <Link
-                to="/admin/dashboard"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/dashboard'
+                href="/admin/dashboard"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/dashboard'
                     ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/dashboard' && (
+                {pathname === '/admin/dashboard' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
                 )}
                 <LayoutDashboard
                     size={20}
-                    className={`${location.pathname === '/admin/dashboard' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
+                    className={`${pathname === '/admin/dashboard' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
                 />
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (
@@ -160,18 +162,18 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
 
             {/* Profile */}
             <Link
-                to="/admin/profile"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/profile'
+                href="/admin/profile"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/profile'
                     ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/profile' && (
+                {pathname === '/admin/profile' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
                 )}
                 <User
                     size={20}
-                    className={`${location.pathname === '/admin/profile' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
+                    className={`${pathname === '/admin/profile' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
                 />
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (
@@ -190,18 +192,18 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
             {/* Admin Management (Super Admin only) */}
             {isSuperAdmin && (
                 <Link
-                    to="/admin/management"
-                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/management'
+                    href="/admin/management"
+                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/management'
                         ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
                         }`}
                 >
-                    {location.pathname === '/admin/management' && (
+                    {pathname === '/admin/management' && (
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-500 rounded-full" />
                     )}
                     <Settings
                         size={20}
-                        className={`${location.pathname === '/admin/management' ? 'text-purple-400' : 'text-gray-500 group-hover:text-purple-400'} transition-colors`}
+                        className={`${pathname === '/admin/management' ? 'text-purple-400' : 'text-gray-500 group-hover:text-purple-400'} transition-colors`}
                     />
                     <AnimatePresence mode="wait">
                         {isSidebarOpen && (
@@ -222,19 +224,19 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
 
             {/* Pending Changes (for both Admin and SuperAdmin) */}
             <Link
-                to="/admin/pending-changes"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/pending-changes'
+                href="/admin/pending-changes"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/pending-changes'
                     ? 'bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/pending-changes' && (
+                {pathname === '/admin/pending-changes' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500 rounded-full" />
                 )}
                 <div className="relative">
                     <CheckSquare
                         size={20}
-                        className={`${location.pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
+                        className={`${pathname === '/admin/pending-changes' ? 'text-orange-400' : 'text-gray-500 group-hover:text-orange-400'} transition-colors`}
                     />
                     {!isSidebarOpen && pendingCount > 0 && (
                         <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
@@ -298,11 +300,11 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                             className="overflow-hidden bg-white/2 rounded-xl mx-2"
                         >
                             {pageMenuItems.map((item) => {
-                                const isActive = location.pathname === item.path;
+                                const isActive = pathname === item.path;
                                 return (
                                     <Link
                                         key={item.path}
-                                        to={item.path}
+                                        href={item.path}
                                         className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 group relative text-sm ${isActive
                                             ? 'bg-emerald-500/10 text-emerald-300'
                                             : 'text-gray-500 hover:text-white hover:bg-white/5'
@@ -363,11 +365,11 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                             className="overflow-hidden bg-white/2 rounded-xl mx-2"
                         >
                             {mediaMenuItems.map((item) => {
-                                const isActive = location.pathname === item.path;
+                                const isActive = pathname === item.path;
                                 return (
                                     <Link
                                         key={item.path}
-                                        to={item.path}
+                                        href={item.path}
                                         className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 group relative text-sm ${isActive
                                             ? 'bg-blue-500/10 text-blue-300'
                                             : 'text-gray-500 hover:text-white hover:bg-white/5'
@@ -428,14 +430,14 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                             className="overflow-hidden bg-white/2 rounded-xl mx-2"
                         >
                             {hrMenuItems.map((item) => {
-                                const isActive = location.pathname === item.path;
+                                const isActive = pathname === item.path;
                                 const isApplications = item.path === '/admin/hr/applications';
                                 const showBadge = isApplications && newApplicationsCount > 0;
 
                                 return (
                                     <Link
                                         key={item.path}
-                                        to={item.path}
+                                        href={item.path}
                                         className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 group relative text-sm ${isActive
                                             ? 'bg-purple-500/10 text-purple-300'
                                             : 'text-gray-500 hover:text-white hover:bg-white/5'
@@ -473,19 +475,19 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
 
             {/* Communication */}
             <Link
-                to="/admin/contact-messages"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/contact-messages'
+                href="/admin/contact-messages"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/contact-messages'
                     ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/contact-messages' && (
+                {pathname === '/admin/contact-messages' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
                 )}
                 <div className="relative">
                     <Mail
                         size={20}
-                        className={`${location.pathname === '/admin/contact-messages' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
+                        className={`${pathname === '/admin/contact-messages' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
                     />
                     {!isSidebarOpen && contactUnreadCount > 0 && (
                         <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold">
@@ -514,18 +516,18 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
 
             {/* Audit Logs */}
             <Link
-                to="/admin/audit-logs"
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${location.pathname === '/admin/audit-logs'
+                href="/admin/audit-logs"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${pathname === '/admin/audit-logs'
                     ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
             >
-                {location.pathname === '/admin/audit-logs' && (
+                {pathname === '/admin/audit-logs' && (
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 rounded-full" />
                 )}
                 <ShieldAlert
                     size={20}
-                    className={`${location.pathname === '/admin/audit-logs' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
+                    className={`${pathname === '/admin/audit-logs' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-emerald-400'} transition-colors`}
                 />
                 <AnimatePresence mode="wait">
                     {isSidebarOpen && (

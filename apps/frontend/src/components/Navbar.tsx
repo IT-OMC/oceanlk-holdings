@@ -1,6 +1,8 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search, ChevronDown, X, Menu } from 'lucide-react';
 
 import { oceanData } from '../data/mockData';
@@ -14,8 +16,8 @@ const Navbar = () => {
     const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
     const [isScrolled, setIsScrolled] = useState(false);
-    const location = useLocation();
-    const isHomePage = location.pathname === '/';
+    const pathname = usePathname();
+    const isHomePage = pathname === '/';
 
     // Keyboard shortcut for search (Ctrl+K or Cmd+K)
     useEffect(() => {
@@ -66,7 +68,7 @@ const Navbar = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="flex items-center"
                     >
-                        <Link to="/">
+                        <Link href="/">
                             <img
                                 src="/och-logo.png"
                                 alt="OceanLK Holdings"
@@ -90,7 +92,7 @@ const Navbar = () => {
                                 >
                                     <div className="flex items-center gap-1 cursor-pointer">
                                         <Link
-                                            to={link.path || '#'}
+                                            href={link.path || '#'}
                                             className={`text-base font-semibold transition-all duration-300 relative inline-block py-4 ${(isHomePage && !isScrolled) ? 'text-white hover:text-white/80' : 'text-primary hover:text-accent'}`}
                                             onClick={(e) => link.hasDropdown && e.preventDefault()}
                                         >
@@ -116,7 +118,7 @@ const Navbar = () => {
                                                     {link.subItems.map((subItem: any, subIndex: number) => (
                                                         <Link
                                                             key={subIndex}
-                                                            to={subItem.path}
+                                                            href={subItem.path}
                                                             className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium group"
                                                         >
                                                             {subItem.logo && (
@@ -239,7 +241,7 @@ const Navbar = () => {
                                                             {link.subItems.map((subItem: any, index: number) => (
                                                                 <Link
                                                                     key={index}
-                                                                    to={subItem.path}
+                                                                    href={subItem.path}
                                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                                                                 >
@@ -261,7 +263,7 @@ const Navbar = () => {
                                             </>
                                         ) : (
                                             <Link
-                                                to={link.path || '#'}
+                                                href={link.path || '#'}
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 className="block px-4 py-3 text-base font-semibold text-primary hover:bg-gray-50 rounded-lg transition-colors"
                                             >

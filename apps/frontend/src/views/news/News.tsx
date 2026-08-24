@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Calendar, ArrowRight, ArrowUpRight, Loader } from 'lucide-react';
 
 import { API_ENDPOINTS, getMediaUrl } from '../../utils/api';
@@ -117,7 +117,7 @@ const News = () => {
                                 whileHover={{ y: -5 }}
                                 className={`${article.span} group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white border border-gray-100/50`}
                             >
-                                <Link to={`/news/articles/${article.id}`} className="block h-full w-full">
+                                <Link href={`/news/articles/${article.id}`} className="block h-full w-full">
                                     {/* Use different layouts based on span */}
                                     {article.span?.includes('row-span-2') ? (
                                         // Vertical or Large Cards (Full Background)

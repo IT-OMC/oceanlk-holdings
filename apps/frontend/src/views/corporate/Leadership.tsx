@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
@@ -174,7 +174,7 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
 };
 
 const Leadership = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [leaders, setLeaders] = useState<CorporateLeader[]>([]);
 
     const [categories, setCategories] = useState<LeadershipCategory[]>([]);
@@ -319,7 +319,7 @@ const Leadership = () => {
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate('/careers/opportunities')}
+                            onClick={() => router.push('/careers/opportunities')}
                             className="px-8 py-4 bg-gradient-to-r from-accent to-primary text-white font-semibold rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all duration-300 inline-flex items-center gap-2"
                         >
                             Explore Opportunities
