@@ -164,7 +164,7 @@ const SectionHeader = ({ title, subtitle, delay = 0 }: SectionHeaderProps) => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
                 {title}
             </h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 {subtitle}
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto mt-6" />

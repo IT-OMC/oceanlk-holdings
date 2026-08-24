@@ -590,91 +590,91 @@ const GalleryManagement = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {visibleGalleryItems.map((item) => (
-                        <motion.div
-                            key={item.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-[#0f1e3a] border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/30 transition-all flex flex-col cursor-pointer"
-                            onClick={() => {
-                                if (item.type === 'ALBUM') {
-                                    setExpandedAlbum(item);
-                                }
-                            }}
-                        >
-                            <div className="relative h-48 overflow-hidden bg-black/40">
-                                {item.type === 'ALBUM' && item.galleryImages && item.galleryImages.length > 0 ? (
-                                    <div className="grid grid-cols-2 h-full gap-0.5">
-                                        {item.galleryImages.slice(0, 4).map((img, idx) => (
-                                            <div key={idx} className="relative w-full h-full overflow-hidden">
-                                                <img src={img} alt="" className="w-full h-full object-cover" />
-                                                {idx === 3 && item.galleryImages && item.galleryImages.length > 4 && (
-                                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-lg">
-                                                        +{item.galleryImages.length - 4}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : item.type === 'VIDEO' && item.videoUrl ? (
-                                    <video
-                                        src={item.videoUrl}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                ) : item.imageUrl ? (
-                                    <img
-                                        src={item.imageUrl}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                ) : (
-                                    <div className="flex items-center justify-center h-full text-gray-600">
-                                        <ImageIcon size={32} />
-                                    </div>
-                                )}
-                                <div className="absolute top-2 right-2 flex gap-2">
-                                    <span className={`px-2 py-1 backdrop-blur-md rounded text-xs text-white ${item.type === 'ALBUM' ? 'bg-blue-500/80' : 'bg-black/60'}`}>
-                                        {item.type === 'ALBUM' ? 'ALBUM' : 'GALLERY'}
-                                    </span>
+                    <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#0f1e3a] border border-white/10 rounded-2xl overflow-hidden group hover:border-emerald-500/30 transition-all flex flex-col cursor-pointer"
+                        onClick={() => {
+                            if (item.type === 'ALBUM') {
+                                setExpandedAlbum(item);
+                            }
+                        }}
+                    >
+                        <div className="relative h-48 overflow-hidden bg-black/40">
+                            {item.type === 'ALBUM' && item.galleryImages && item.galleryImages.length > 0 ? (
+                                <div className="grid grid-cols-2 h-full gap-0.5">
+                                    {item.galleryImages.slice(0, 4).map((img, idx) => (
+                                        <div key={idx} className="relative w-full h-full overflow-hidden">
+                                            <img src={img} alt="" className="w-full h-full object-cover" />
+                                            {idx === 3 && item.galleryImages && item.galleryImages.length > 4 && (
+                                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-xl">
+                                                    +{item.galleryImages.length - 4}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : item.type === 'VIDEO' && item.videoUrl ? (
+                                <video
+                                    src={item.videoUrl}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                            ) : item.imageUrl ? (
+                                <img
+                                    src={item.imageUrl}
+                                    alt={item.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-gray-600">
+                                    <ImageIcon size={32} />
+                                </div>
+                            )}
+                            <div className="absolute top-2 right-2 flex gap-2">
+                                <span className={`px-2 py-1 backdrop-blur-md rounded text-xs text-white ${item.type === 'ALBUM' ? 'bg-blue-500/80' : 'bg-black/60'}`}>
+                                    {item.type === 'ALBUM' ? 'ALBUM' : 'GALLERY'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="p-5 flex-1 flex flex-col">
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
+                            <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{item.description}</p>
+                            {item.companyName && (
+                                <p className="text-emerald-400 text-xs mb-2 flex items-center gap-1">
+                                    <Briefcase size={12} /> {item.companyName}
+                                </p>
+                            )}
+
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                                <span className="text-xs text-gray-500">
+                                    {new Date(item.publishedDate).toLocaleDateString()}
+                                </span>
+                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openModal(item);
+                                        }}
+                                        className="p-1.5 bg-white/5 rounded text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                                    >
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openDeleteModal(item.id!);
+                                        }}
+                                        className="p-1.5 bg-white/5 rounded text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </div>
-
-                            <div className="p-5 flex-1 flex flex-col">
-                                <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{item.title}</h3>
-                                <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{item.description}</p>
-                                {item.companyName && (
-                                    <p className="text-emerald-400 text-xs mb-2 flex items-center gap-1">
-                                        <Briefcase size={12} /> {item.companyName}
-                                    </p>
-                                )}
-
-                                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                                    <span className="text-xs text-gray-500">
-                                        {new Date(item.publishedDate).toLocaleDateString()}
-                                    </span>
-                                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openModal(item);
-                                            }}
-                                            className="p-1.5 bg-white/5 rounded text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openDeleteModal(item.id!);
-                                            }}
-                                            className="p-1.5 bg-white/5 rounded text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                        </div>
+                    </motion.div>
+                ))}
             </div>
 
             {visibleGalleryItems.length === 0 && (

@@ -355,61 +355,61 @@ const EventsManagement = () => {
                 <h3 className="text-xl font-bold text-white">Upcoming Events</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {upcomingEvents.map((event) => {
-                            const category = categories.find((cat) => cat.value === event.category);
-                            return (
-                                <motion.div
-                                    key={event.id}
-                                    whileHover={{ y: -5 }}
-                                    className="bg-white/5 rounded-xl p-4 border border-white/10"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div
-                                            className="px-2 py-1 rounded text-xs font-bold text-white"
-                                            style={{ backgroundColor: category?.hex ?? CATEGORY_FALLBACK }}
-                                        >
-                                            {category?.label || event.category}
-                                        </div>
-                                        <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :
-                                            event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
-                                                'bg-gray-500/20 text-gray-400'
-                                            }`}>
-                                            {event.status}
-                                        </span>
+                        const category = categories.find((cat) => cat.value === event.category);
+                        return (
+                            <motion.div
+                                key={event.id}
+                                whileHover={{ y: -5 }}
+                                className="bg-white/5 rounded-xl p-4 border border-white/10"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div
+                                        className="px-2 py-1 rounded text-xs font-bold text-white"
+                                        style={{ backgroundColor: category?.hex ?? CATEGORY_FALLBACK }}
+                                    >
+                                        {category?.label || event.category}
                                     </div>
-                                    <h4 className="text-lg font-bold text-white mb-2">{event.title}</h4>
-                                    <div className="space-y-1 mb-3">
+                                    <span className={`text-xs px-2 py-1 rounded ${event.status === 'UPCOMING' ? 'bg-green-500/20 text-green-400' :
+                                        event.status === 'ONGOING' ? 'bg-blue-500/20 text-blue-400' :
+                                            'bg-gray-500/20 text-gray-400'
+                                        }`}>
+                                        {event.status}
+                                    </span>
+                                </div>
+                                <h4 className="text-xl font-bold text-white mb-2">{event.title}</h4>
+                                <div className="space-y-1 mb-3">
+                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                        <CalendarIcon size={14} />
+                                        {moment(event.date).format('MMM DD, YYYY')}
+                                    </div>
+                                    {event.time && (
                                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                                            <CalendarIcon size={14} />
-                                            {moment(event.date).format('MMM DD, YYYY')}
+                                            <Clock size={14} />
+                                            {event.time}
                                         </div>
-                                        {event.time && (
-                                            <div className="flex items-center gap-2 text-sm text-gray-400">
-                                                <Clock size={14} />
-                                                {event.time}
-                                            </div>
-                                        )}
-                                        <p className="text-sm text-gray-500">{event.location}</p>
-                                    </div>
-                                    <p className="text-sm text-gray-400 mb-4 line-clamp-2">{event.description}</p>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => openEditModal(event)}
-                                            className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
-                                        >
-                                            <Edit2 size={14} />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(event.id)}
-                                            className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
-                                        >
-                                            <Trash2 size={14} />
-                                            Delete
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
+                                    )}
+                                    <p className="text-sm text-gray-500">{event.location}</p>
+                                </div>
+                                <p className="text-sm text-gray-400 mb-4 line-clamp-2">{event.description}</p>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => openEditModal(event)}
+                                        className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                                    >
+                                        <Edit2 size={14} />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => openDeleteModal(event.id)}
+                                        className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                                    >
+                                        <Trash2 size={14} />
+                                        Delete
+                                    </button>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
 
                 {!initialLoading && upcomingEvents.length === 0 && (

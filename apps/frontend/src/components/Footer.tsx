@@ -33,7 +33,7 @@ const Footer = () => {
                             alt={oceanData.company.name}
                             className="h-16 w-auto mb-3"
                         />
-                        <p className="text-lg text-slate-400 mb-4 italic">
+                        <p className="text-xl text-slate-400 mb-4 italic">
                             {oceanData.company.tagline}
                         </p>
                         <p className="text-slate-400 text-sm max-w-md leading-relaxed">
@@ -49,7 +49,7 @@ const Footer = () => {
                         transition={{ delay: 0.1 }}
                         className="lg:col-span-2"
                     >
-                        <h4 className="text-white font-semibold text-lg mb-6 relative inline-block">
+                        <h4 className="text-white font-semibold text-xl mb-6 relative inline-block">
                             Quick Links
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-accent rounded-full"></span>
                         </h4>
@@ -76,7 +76,7 @@ const Footer = () => {
                         transition={{ delay: 0.2 }}
                         className="lg:col-span-3"
                     >
-                        <h4 className="text-white font-semibold text-lg mb-6 relative inline-block">
+                        <h4 className="text-white font-semibold text-xl mb-6 relative inline-block">
                             Contact
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-accent rounded-full"></span>
                         </h4>
@@ -140,7 +140,7 @@ const Footer = () => {
                         transition={{ delay: 0.3 }}
                         className="lg:col-span-3"
                     >
-                        <h4 className="text-white font-semibold text-lg mb-6 relative inline-block">
+                        <h4 className="text-white font-semibold text-xl mb-6 relative inline-block">
                             Newsletter
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-accent rounded-full"></span>
                         </h4>

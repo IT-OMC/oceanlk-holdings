@@ -68,9 +68,9 @@ const Tabs = ({ selected, setSelected }: { selected: string, setSelected: (val: 
                 <button
                     key={tab}
                     onClick={() => setSelected(tab)}
-                    className={`px-6 py-2 rounded-full text-lg font-medium transition-all duration-300 ${selected === tab
-                            ? 'bg-blue-600 text-white shadow-lg scale-105'
-                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    className={`px-6 py-2 rounded-full text-xl font-medium transition-all duration-300 ${selected === tab
+                        ? 'bg-blue-600 text-white shadow-lg scale-105'
+                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
                         }`}
                 >
                     {tab}

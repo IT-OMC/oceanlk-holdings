@@ -58,7 +58,7 @@ const Memberships = () => {
                             {t('home.memberships.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">{t('home.memberships.titleAccent')}</span>
                         </h2>
 
-                        <p className="max-w-2xl mx-auto text-lg text-gray-400 leading-relaxed font-light">
+                        <p className="max-w-2xl mx-auto text-xl text-gray-400 leading-relaxed font-light">
                             {t('home.memberships.description')}
                         </p>
                     </motion.div>

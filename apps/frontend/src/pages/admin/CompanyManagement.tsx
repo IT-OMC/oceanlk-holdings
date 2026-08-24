@@ -249,7 +249,7 @@ const CompanyManagement = () => {
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col">
-                            <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{company.title}</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{company.title}</h3>
                             <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{company.description}</p>
 
                             {company.industry && (

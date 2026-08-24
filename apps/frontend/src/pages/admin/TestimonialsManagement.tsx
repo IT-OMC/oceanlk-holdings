@@ -298,7 +298,7 @@ const TestimonialsManagement = () => {
                                 )}
                             </div>
                             <div className="flex-1">
-                                <h3 className="text-lg font-bold text-white">{item.name}</h3>
+                                <h3 className="text-xl font-bold text-white">{item.name}</h3>
                                 <p className="text-emerald-400 text-sm">{item.position}</p>
                                 <p className="text-gray-500 text-xs">{item.company}</p>
                             </div>

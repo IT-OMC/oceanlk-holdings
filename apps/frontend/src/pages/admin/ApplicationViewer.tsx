@@ -347,7 +347,7 @@ const ApplicationViewer = () => {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <h3 className="text-3xl font-bold text-white mb-2">{selectedApp.fullName}</h3>
-                                        <p className="text-emerald-400 text-lg font-medium">{selectedApp.position}</p>
+                                        <p className="text-emerald-400 text-xl font-medium">{selectedApp.position}</p>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
                                         <label className="text-xs text-gray-500 font-bold uppercase tracking-wider">Status</label>

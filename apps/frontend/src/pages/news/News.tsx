@@ -166,7 +166,7 @@ const News = () => {
                                                     <Calendar className="w-3 h-3" />
                                                     {article.publishedDate}
                                                 </div>
-                                                <h3 className="text-lg font-bold mb-1 leading-snug">
+                                                <h3 className="text-xl font-bold mb-1 leading-snug">
                                                     {article.title}
                                                 </h3>
                                                 <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur flex items-center justify-center absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">

@@ -216,7 +216,7 @@ const AdminLayout = () => {
                                             value={otp}
                                             onChange={(e) => setOtp(e.target.value)}
                                             maxLength={6}
-                                            className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 transition-colors tracking-widest text-lg font-mono"
+                                            className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 transition-colors tracking-widest text-xl font-mono"
                                             placeholder="000000"
                                         />
                                     </div>

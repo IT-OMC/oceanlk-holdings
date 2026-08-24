@@ -236,7 +236,7 @@ const JobApplication = () => {
                             </div>
 
                             <div className="border-t border-white/10 pt-6">
-                                <h3 className="text-lg font-bold text-white mb-4">About the Role</h3>
+                                <h3 className="text-xl font-bold text-white mb-4">About the Role</h3>
                                 <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                                     {job.description}
                                 </p>
@@ -275,7 +275,7 @@ const JobApplication = () => {
                                                 {[1, 2, 3].map((step) => (
                                                     <div key={step} className="relative flex flex-col items-center">
                                                         <motion.div
-                                                            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 relative z-10 border-4 ${currentStep >= step
+                                                            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl transition-all duration-300 relative z-10 border-4 ${currentStep >= step
                                                                 ? 'bg-emerald-500 border-[#0f1e3a] text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'
                                                                 : 'bg-[#0f1e3a] border-white/10 text-gray-500'
                                                                 }`}
@@ -351,7 +351,7 @@ const JobApplication = () => {
                                                                 onClick={nextStep}
                                                                 whileHover={{ scale: 1.02 }}
                                                                 whileTap={{ scale: 0.98 }}
-                                                                className="px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
+                                                                className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
                                                             >
                                                                 Next Step <ChevronRight className="w-5 h-5" />
                                                             </motion.button>
@@ -438,7 +438,7 @@ const JobApplication = () => {
                                                                 onClick={nextStep}
                                                                 whileHover={{ scale: 1.02 }}
                                                                 whileTap={{ scale: 0.98 }}
-                                                                className="px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
+                                                                className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
                                                             >
                                                                 Next Step <ChevronRight className="w-5 h-5" />
                                                             </motion.button>
@@ -522,7 +522,7 @@ const JobApplication = () => {
                                                                 disabled={!formData.file || isSubmitting}
                                                                 whileHover={formData.file && !isSubmitting ? { scale: 1.02 } : {}}
                                                                 whileTap={formData.file && !isSubmitting ? { scale: 0.98 } : {}}
-                                                                className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all duration-300 ${formData.file && !isSubmitting
+                                                                className={`px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 ${formData.file && !isSubmitting
                                                                     ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg'
                                                                     : 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
                                                                     }`}
@@ -552,7 +552,7 @@ const JobApplication = () => {
                                             <Star className="w-12 h-12 text-white" fill="currentColor" />
                                         </div>
                                         <h3 className="text-4xl font-bold text-white mb-4">Application Sent!</h3>
-                                        <p className="text-gray-300 text-lg mb-10 max-w-md mx-auto leading-relaxed">
+                                        <p className="text-gray-300 text-xl mb-10 max-w-md mx-auto leading-relaxed">
                                             Thank you for applying to <strong>{job.company}</strong>. We've received your application and will review it shortly.
                                         </p>
                                         <Link

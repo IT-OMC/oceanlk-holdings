@@ -253,7 +253,7 @@ const CompanySingle = () => {
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">{item.label}</p>
-                                                    <p className="text-gray-900 font-semibold text-lg">{item.value}</p>
+                                                    <p className="text-gray-900 font-semibold text-xl">{item.value}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -287,7 +287,7 @@ const CompanySingle = () => {
                                     Who We Are
                                 </h2>
                                 <div className="w-12 h-1 bg-accent rounded-full mb-8" />
-                                <p className="text-lg text-gray-600 leading-relaxed mb-12">
+                                <p className="text-xl text-gray-600 leading-relaxed mb-12">
                                     {company.longDescription}
                                 </p>
 
@@ -537,7 +537,7 @@ const CompanySingle = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{rc.title}</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{rc.title}</h3>
                                     <p className="text-sm text-gray-500 line-clamp-2">{rc.desc}</p>
                                 </Link>
                             </motion.div>

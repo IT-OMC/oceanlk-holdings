@@ -270,7 +270,7 @@ const HRMediaManagement = () => {
                                 </div>
                             </div>
                             <div className="p-4">
-                                <h3 className="text-lg font-bold text-white mb-1">{item.title}</h3>
+                                <h3 className="text-xl font-bold text-white mb-1">{item.title}</h3>
                                 <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
                                 <div className="flex gap-2">
                                     <button
@@ -330,7 +330,7 @@ const HRMediaManagement = () => {
                                 </div>
                             </div>
                             <div className="p-4">
-                                <h3 className="text-lg font-bold text-white mb-1">{item.title}</h3>
+                                <h3 className="text-xl font-bold text-white mb-1">{item.title}</h3>
                                 <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
                                 <div className="flex gap-2">
                                     <button

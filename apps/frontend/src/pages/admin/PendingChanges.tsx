@@ -33,7 +33,7 @@ const PendingChanges: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'pending-approvals' | 'my-changes'>('pending-approvals');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
-    const [alertDialog, setAlertDialog] = useState<{isOpen: boolean, title: string, message: string, type: 'success'|'error'|'warning'}>({ isOpen: false, title: '', message: '', type: 'success' });
+    const [alertDialog, setAlertDialog] = useState<{ isOpen: boolean, title: string, message: string, type: 'success' | 'error' | 'warning' }>({ isOpen: false, title: '', message: '', type: 'success' });
 
     const adminRole = sessionStorage.getItem('adminRole');
     const isSuperAdmin = adminRole === 'SUPER_ADMIN';
@@ -322,7 +322,7 @@ const PendingChanges: React.FC = () => {
                                 <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mb-4 text-gray-600">
                                     <Search size={32} />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-300">No changes found</h3>
+                                <h3 className="text-xl font-medium text-gray-300">No changes found</h3>
                                 <p className="text-gray-500 mt-2 max-w-sm">
                                     {activeTab === 'pending-approvals'
                                         ? "There are no pending changes requiring your approval at this moment."

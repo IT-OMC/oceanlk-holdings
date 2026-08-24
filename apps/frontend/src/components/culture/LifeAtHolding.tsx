@@ -227,7 +227,7 @@ const LifeAtHolding = () => {
                             </div>
                             <div className="relative">
                                 <Quote className="absolute -top-4 -left-2 text-gray-100 rotate-180" size={60} fill="currentColor" />
-                                <p className="text-lg text-gray-700 italic relative z-10 mb-4">
+                                <p className="text-xl text-gray-700 italic relative z-10 mb-4">
                                     {testimonial.quote}
                                 </p>
                                 <div className="flex items-center gap-2">

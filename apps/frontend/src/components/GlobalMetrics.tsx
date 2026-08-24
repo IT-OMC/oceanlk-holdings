@@ -112,7 +112,7 @@ const MetricCard = ({ value, label, theme, index, icon: Icon }: MetricCardProps)
                 <div className={`text-4xl lg:text-5xl font-black tracking-tight ${currentTheme.text}`}>
                     <span className="tabular-nums">{isInView ? animatedCount : 0}</span>{suffix}
                 </div>
-                <div className="font-medium text-slate-500 uppercase tracking-widest text-[11px] text-center px-2">
+                <div className="font-medium text-slate-500 uppercase tracking-widest text-xs text-center px-2">
                     {label}
                 </div>
             </div>
@@ -181,22 +181,26 @@ const GlobalMetrics = () => {
                         {t('home.metrics.title')}
                     </h2>
                     <div className="h-1 w-20 bg-blue-600 mx-auto rounded-full mb-4" />
-                    <p className="text-slate-500 text-sm tracking-widest uppercase font-medium">
+                    <p className="text-slate-500 text-base tracking-widest uppercase font-medium">
                         {t('home.metrics.subtitle')}
                     </p>
                 </motion.div>
 
                 {/* Metrics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                     {displayMetrics.map((metric, index) => (
-                        <MetricCard
-                            key={metric.id || index}
-                            value={metric.value}
-                            label={metric.label}
-                            theme={'blue'}
-                            icon={metric.icon}
-                            index={index}
-                        />
+                        <div 
+                            key={metric.id || index} 
+                            className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(20%-1.2rem)]"
+                        >
+                            <MetricCard
+                                value={metric.value}
+                                label={metric.label}
+                                theme={'blue'}
+                                icon={metric.icon}
+                                index={index}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>

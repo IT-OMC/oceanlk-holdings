@@ -68,7 +68,8 @@ export const oceanData = {
             logo: "/company logos/Ocean Maritime Ceylon logo.png",
             url: "https://omc.lk",
             image: "/company images for hero section/ocean maritime ceylon.jpg",
-            video: "https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4",
+            // Todo: add the video of the company
+            video: "https://www.pexels.com/download/video/26893777/",
             founded: "1998",
             employees: "150+",
             revenue: "$45M",

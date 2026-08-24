@@ -234,7 +234,7 @@ const Media = () => {
                                                 })}
                                             </div>
 
-                                            <h3 className={`font-bold mb-3 leading-tight ${span.includes('col-span-2') ? 'text-3xl' : isLarge ? 'text-xl' : 'text-lg'}`}>
+                                            <h3 className={`font-bold mb-3 leading-tight ${span.includes('col-span-2') ? 'text-3xl' : isLarge ? 'text-xl' : 'text-xl'}`}>
                                                 {item.title}
                                             </h3>
 

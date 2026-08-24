@@ -139,7 +139,7 @@ const Gallery = () => {
                     <h2 className="text-4xl lg:text-5xl font-bold text-navy mb-4">
                         {t('home.gallery.title')} <span className="text-accent">{t('home.gallery.titleAccent')}</span>
                     </h2>
-                    <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+                    <p className="text-slate-600 text-xl max-w-2xl mx-auto">
                         {t('home.gallery.description')}
                     </p>
                 </motion.div>
@@ -253,7 +253,7 @@ const Gallery = () => {
 
                     <button
                         onClick={() => window.location.href = '/news/media'}
-                        className="px-8 py-4 bg-white border border-slate-200 text-navy font-semibold rounded-full hover:bg-navy hover:text-white hover:border-navy transition-all duration-300 flex items-center gap-2 group shadow-sm hover:shadow-lg"
+                        className="px-8 py-4 bg-white border border-slate-200 text-navy text-lg font-semibold rounded-full hover:bg-navy hover:text-white hover:border-navy transition-all duration-300 flex items-center gap-2 group shadow-sm hover:shadow-lg"
                     >
                         {t('home.gallery.viewMore')}
                         <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

@@ -426,7 +426,7 @@ const LeadershipManagement = () => {
 
             {/* Category Management Section */}
             <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-bold text-white mb-4">Category Titles</h3>
+                <h3 className="text-xl font-bold text-white mb-4">Category Titles</h3>
                 <p className="text-sm text-gray-400 mb-4">Customize the titles for each leadership category</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {categories.map((category) => (

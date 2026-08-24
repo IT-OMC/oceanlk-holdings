@@ -86,7 +86,7 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white/90 text-center max-w-sm md:max-w-md lg:max-w-2xl mb-6 md:mb-8 lg:mb-9 px-2 md:px-4"
+                        className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-xl text-white/90 text-center max-w-sm md:max-w-md lg:max-w-2xl mb-6 md:mb-8 lg:mb-9 px-2 md:px-4"
                     >
                         {sectors[currentSlide].desc}
                     </motion.p>

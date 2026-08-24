@@ -83,7 +83,7 @@ const HoldingDescription = () => {
                             <div className="h-1.5 w-24 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-2 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)]" />
                         </h2>
 
-                        <p className="max-w-3xl mx-auto text-lg text-gray-300 leading-relaxed font-light">
+                        <p className="max-w-3xl mx-auto text-xl text-gray-300 leading-relaxed font-light">
                             Collaborating with world-class organizations to drive innovation and sustainable growth across the globe.
                         </p>
                     </motion.div>

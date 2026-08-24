@@ -99,7 +99,7 @@ const RefreshedCultureHero = () => {
                                     A Journey.
                                 </span>
                             </h1>
-                            <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-lg">
+                            <p className="text-slate-300 text-xl md:text-xl leading-relaxed max-w-lg">
                                 From your first cup of coffee to leading global initiatives, discover how you'll grow, thrive, and make a difference at Ocean Ceylon Holdings.
                             </p>
                         </motion.div>

@@ -87,7 +87,7 @@ const EcosystemAccordion = () => {
                             Ecosystem
                         </span>
                     </h2>
-                    <p className="text-slate-400">
+                    <p className="text-slate-400 text-lg">
                         Explore our integrated verticals designed to provide end-to-end supply chain mastery.
                         Click to discover more about our capabilities.
                     </p>

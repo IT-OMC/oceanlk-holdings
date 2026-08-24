@@ -19,7 +19,7 @@ const BentoGrid = () => {
                             <Users className="w-7 h-7 text-white" />
                         </div>
                         <h3 className="text-3xl font-bold text-white mb-4">Who We Are</h3>
-                        <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">
+                        <p className="text-gray-300 text-xl leading-relaxed max-w-2xl">
                             OceanLK Holdings is a premier corporate holding company with a rich legacy of excellence. We unite industry leaders under one strategic umbrella, driving innovation from our roots in Sri Lanka to the global stage.
                         </p>
                     </div>

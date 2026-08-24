@@ -116,7 +116,7 @@ const BusinessVideo = () => {
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="text-lg text-slate-300 leading-relaxed"
+                        className="text-xl text-slate-300 leading-relaxed"
                     >
                         At OceanLK, we bridge continents through seamless supply chain solutions.
                         Watch how we are redefining maritime and aviation logistics with innovation
@@ -129,7 +129,7 @@ const BusinessVideo = () => {
                         transition={{ delay: 0.5 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-white text-slate-900 font-bold rounded-lg shadow-lg hover:shadow-cyan-500/20 transition-all"
+                        className="px-8 py-4 bg-white text-xl text-slate-900 font-bold rounded-lg shadow-lg hover:shadow-cyan-500/20 transition-all"
                     >
                         Explore Our Services
                     </motion.button>

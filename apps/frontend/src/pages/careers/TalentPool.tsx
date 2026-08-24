@@ -363,7 +363,7 @@ const TalentPool = () => {
                                         <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 border border-white/10">
                                             <step.icon className="w-6 h-6 text-emerald-400" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+                                        <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
                                         <p className="text-sm text-gray-400">{step.desc}</p>
 
                                         {/* Step Number Badge */}
@@ -418,7 +418,7 @@ const TalentPool = () => {
                                         {[1, 2, 3].map((step) => (
                                             <div key={step} className="relative flex flex-col items-center group">
                                                 <motion.div
-                                                    className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 relative z-10 border-[3px] backdrop-blur-md ${currentStep >= step
+                                                    className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl transition-all duration-300 relative z-10 border-[3px] backdrop-blur-md ${currentStep >= step
                                                         ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
                                                         : 'bg-[#0f1e3a]/80 border-white/10 text-gray-500'
                                                         }`}
@@ -510,7 +510,7 @@ const TalentPool = () => {
                                                         onClick={nextStep}
                                                         whileHover={{ scale: 1.02, x: 5 }}
                                                         whileTap={{ scale: 0.98 }}
-                                                        className="px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60"
+                                                        className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60"
                                                     >
                                                         Next Step
                                                         <ChevronRight className="w-5 h-5" />
@@ -627,7 +627,7 @@ const TalentPool = () => {
                                                         onClick={nextStep}
                                                         whileHover={{ scale: 1.02, x: 5 }}
                                                         whileTap={{ scale: 0.98 }}
-                                                        className="px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60"
+                                                        className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60"
                                                     >
                                                         Next Step
                                                         <ChevronRight className="w-5 h-5" />
@@ -722,7 +722,7 @@ const TalentPool = () => {
                                                         disabled={!formData.file || isLoading}
                                                         whileHover={formData.file && !isLoading ? { scale: 1.02, x: 5 } : {}}
                                                         whileTap={formData.file && !isLoading ? { scale: 0.98 } : {}}
-                                                        className={`px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all duration-300 ${formData.file && !isLoading
+                                                        className={`px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 ${formData.file && !isLoading
                                                             ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-900/40 hover:shadow-emerald-900/60'
                                                             : 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
                                                             } `}
@@ -767,7 +767,7 @@ const TalentPool = () => {
                                 <Star className="w-12 h-12 text-white" fill="currentColor" />
                             </div>
                             <h3 className="text-4xl font-bold text-white mb-4">Application Sent!</h3>
-                            <p className="text-gray-300 text-lg mb-10 max-w-md mx-auto leading-relaxed">
+                            <p className="text-gray-300 text-xl mb-10 max-w-md mx-auto leading-relaxed">
                                 Thank you for your interest in joining our team. We've received your details and will get back to you shortly.
                             </p>
                             <motion.button
@@ -838,7 +838,7 @@ const TalentPool = () => {
                                             className="w-16 h-16 rounded-full border-2 border-emerald-500/30"
                                         />
                                         <div>
-                                            <h4 className="text-white font-bold text-lg">{testimonial.name}</h4>
+                                            <h4 className="text-white font-bold text-xl">{testimonial.name}</h4>
                                             <p className="text-emerald-400 text-sm">{testimonial.role}</p>
                                         </div>
                                     </div>

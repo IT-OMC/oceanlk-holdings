@@ -589,13 +589,13 @@ const Onboard = () => {
                             <h3 className="text-4xl md:text-5xl font-bold mb-6 text-white">
                                 Don't see a perfect fit?
                             </h3>
-                            <p className="text-lg text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto leading-relaxed">
                                 We're always looking for talented individuals to join our diverse portfolio of companies.
                                 Submit your CV to our talent pool and we'll contact you when a matching opportunity arises.
                             </p>
                             <motion.a
                                 href="/careers/talent-pool"
-                                className="inline-flex items-center gap-3 px-10 py-5 rounded-full font-bold text-lg transition-all relative overflow-hidden group/button"
+                                className="inline-flex items-center gap-3 px-10 py-5 rounded-full font-bold text-xl transition-all relative overflow-hidden group/button"
                                 style={{
                                     background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)',
                                     color: '#0a1628',
