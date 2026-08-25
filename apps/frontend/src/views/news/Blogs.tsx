@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Calendar, User, ArrowUpRight, BookOpen } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/api';
+import { MediaImage } from '../../components/MediaThumbnail';
 
 export interface BlogPost {
     id: string;
@@ -49,9 +50,10 @@ const Blogs = ({ blogPosts }: { blogPosts: BlogPost[] }) => {
                                 className={`${post.span} group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 bg-white border border-gray-100/50`}
                             >
                                 <Link href={`/news/blogs/${post.id}`} className="block h-full w-full">
-                                    <div
-                                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                        style={{ backgroundImage: `url('${getMediaUrl(post.imageUrl)}')` }}
+                                    <MediaImage
+                                        src={getMediaUrl(post.imageUrl)}
+                                        alt={post.title}
+                                        className="group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 

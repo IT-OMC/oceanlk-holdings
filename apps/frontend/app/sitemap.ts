@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
 import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api';
-import { oceanData } from '@/data/mockData';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -33,16 +32,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
     }));
 
-    const companyRoutes = oceanData.sectors.map((c: { id: string }) => ({
-        url: `${siteUrl}/companies/${c.id}`,
-        lastModified: new Date(),
-    }));
-
-    const [blogIds, articleIds, mediaIds] = await Promise.all([
+    const [companyIds, blogIds, articleIds, mediaIds] = await Promise.all([
+        fetchIds(NEXT_PUBLIC_API_BASE_URL.COMPANIES),
         fetchIds(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS),
         fetchIds(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS),
         fetchIds(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA),
     ]);
+
+    const companyRoutes = companyIds.map((id) => ({
+        url: `${siteUrl}/companies/${id}`,
+        lastModified: new Date(),
+    }));
 
     const blogRoutes = blogIds.map((id) => ({ url: `${siteUrl}/news/blogs/${id}`, lastModified: new Date() }));
     const articleRoutes = articleIds.map((id) => ({ url: `${siteUrl}/news/articles/${id}`, lastModified: new Date() }));

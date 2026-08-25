@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Calendar, ArrowRight, ArrowUpRight } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/api';
+import { MediaImage } from '../../components/MediaThumbnail';
 
 export interface NewsArticle {
     id: string;
@@ -51,9 +52,10 @@ const News = ({ newsArticles }: { newsArticles: NewsArticle[] }) => {
                                     {article.span?.includes('row-span-2') ? (
                                         // Vertical or Large Cards (Full Background)
                                         <>
-                                            <div
-                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${getMediaUrl(article.imageUrl)}')` }}
+                                            <MediaImage
+                                                src={getMediaUrl(article.imageUrl)}
+                                                alt={article.title}
+                                                className="group-hover:scale-110"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                                             <div className="absolute top-6 left-6">
@@ -80,9 +82,10 @@ const News = ({ newsArticles }: { newsArticles: NewsArticle[] }) => {
                                     ) : (
                                         // Standard Cards (Overlay style for all)
                                         <>
-                                            <div
-                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${getMediaUrl(article.imageUrl)}')` }}
+                                            <MediaImage
+                                                src={getMediaUrl(article.imageUrl)}
+                                                alt={article.title}
+                                                className="group-hover:scale-110"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                                             <div className="absolute top-4 left-4">

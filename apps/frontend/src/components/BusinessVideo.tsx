@@ -13,13 +13,13 @@ const BusinessVideo = () => {
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
     // Video URLs
-    const bgVideo1 = "https://www.youtube.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
-    const bgVideo2 = "https://www.youtube.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
+    const bgVideo1 = "https://www.youtube-nocookie.com/embed/QRCJvp0p7uk?autoplay=1&mute=1&controls=0&loop=1&playlist=QRCJvp0p7uk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
+    const bgVideo2 = "https://www.youtube-nocookie.com/embed/6VfYIo2wBNk?autoplay=1&mute=1&controls=0&loop=1&playlist=6VfYIo2wBNk&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&cc_load_policy=0";
 
     // State for transition management
     const [mountSecondVideo, setMountSecondVideo] = useState(false);
     const [showSecondVideo, setShowSecondVideo] = useState(false);
-    const [frontVideo, setFrontVideo] = useState("https://www.youtube.com/embed/FjXRWYYuq_0?si=R-ohWNzHB__2fYgr");
+    const [frontVideo, setFrontVideo] = useState("https://www.youtube-nocookie.com/embed/FjXRWYYuq_0?si=R-ohWNzHB__2fYgr");
 
     useEffect(() => {
         // Preload second video 4 seconds before transition
@@ -30,7 +30,7 @@ const BusinessVideo = () => {
         // Perform transition
         const switchTimer = setTimeout(() => {
             setShowSecondVideo(true);
-            setFrontVideo("https://www.youtube.com/embed/XsVN3OLJ0qA?si=8oQ6yXb7mkRTShsY");
+            setFrontVideo("https://www.youtube-nocookie.com/embed/XsVN3OLJ0qA?si=8oQ6yXb7mkRTShsY");
         }, 30000);
 
         return () => {

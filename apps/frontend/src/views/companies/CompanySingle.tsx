@@ -124,10 +124,7 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
     // Filtered Instagram posts (match by title since API IDs differ from mock IDs)
     const igPosts = oceanData.instagramUpdates.filter((p: any) => p.companyName === company.title);
 
-    // Fallback to mock stats if API stats are empty
-    const displayStats = company.stats && company.stats.length > 0
-        ? company.stats
-        : oceanData.sectors.find((c: any) => c.title === company.title)?.stats || [];
+    const safeStats = company.stats || [];
 
     return (
         <div className="min-h-screen bg-white">
@@ -304,13 +301,14 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                                     Who We Are
                                 </h2>
                                 <div className="w-12 h-1 bg-accent rounded-full mb-8" />
-                                <p className="text-xl text-gray-600 leading-relaxed mb-12">
+                                <p className="text-lg text-justify text-gray-600 leading-relaxed mb-12">
                                     {company.longDescription}
                                 </p>
 
                                 {/* Animated Stat Cards */}
+                                {/*
                                 <div ref={statsRef} className="grid sm:grid-cols-3 gap-5">
-                                    {displayStats.map((stat: any, index: number) => {
+                                    {safeStats.map((stat: any, index: number) => {
                                         const Icon = IconMap[stat.icon] || Award;
                                         return (
                                             <motion.div
@@ -320,7 +318,6 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                                                 transition={{ duration: 0.6, delay: index * 0.15 }}
                                                 className="group relative bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 text-white overflow-hidden hover:-translate-y-1 transition-transform duration-300"
                                             >
-                                                {/* Background glow */}
                                                 <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
 
                                                 <Icon className="w-7 h-7 text-accent mb-4 relative z-10" />
@@ -332,6 +329,7 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                                         );
                                     })}
                                 </div>
+                                */}
                             </motion.div>
                         </div>
                     </div>
@@ -339,7 +337,7 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
             </section>
 
             {/* ── 3. KEY SERVICES / HIGHLIGHTS ─────────────────────────────── */}
-            {displayStats.length > 0 && (
+            {safeStats.length > 0 && (
                 <section className="py-24 bg-gray-50" ref={servicesRef}>
                 <SectionWrapper>
                     <motion.div
@@ -354,7 +352,7 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                     </motion.div>
 
                     <div className="grid md:grid-cols-3 gap-8">
-                        {displayStats.map((stat: any, index: number) => {
+                        {safeStats.map((stat: any, index: number) => {
                             const Icon = IconMap[stat.icon] || Award;
                             const descriptions: string[] = [
                                 `Industry-leading performance with ${stat.value} ${stat.label.toLowerCase()} and growing.`,

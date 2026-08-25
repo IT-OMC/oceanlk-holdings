@@ -9,6 +9,7 @@ import LatestUpdates from '../components/LatestUpdates';
 import ErrorBoundary from '../components/ErrorBoundary';
 import BusinessVideo from '../components/BusinessVideo';
 import EcosystemAccordion from '../components/EcosystemAccordion';
+import Testimonials from '@/components/Testimonials';
 
 const Home = () => {
     return (
@@ -23,6 +24,7 @@ const Home = () => {
             </ErrorBoundary>
             <Gallery />
             <LatestUpdates />
+            <Testimonials />
             <ChatWidget />
         </div>
     );

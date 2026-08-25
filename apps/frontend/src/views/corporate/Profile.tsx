@@ -3,10 +3,10 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect } from 'react';
 import SectionWrapper from '../../components/SectionWrapper';
 import { Target, Eye } from 'lucide-react';
-import { oceanData } from '../../data/mockData';
 import Timeline from '../../components/corporate/Timeline';
 import BentoGrid from '../../components/corporate/BentoGrid';
 import Memberships from '../../components/Memberships';
+import { companyData } from '@/data/companyData';
 
 const Profile = () => {
     const mouseX = useMotionValue(0);
@@ -129,7 +129,7 @@ const Profile = () => {
                             Corporate Profile
                         </h1>
                         <p className="text-xl md:text-3xl text-gray-300 leading-relaxed font-light max-w-3xl mx-auto">
-                            {oceanData.company.tagline}
+                            {companyData.company.tagline}
                         </p>
                     </motion.div>
                 </SectionWrapper>

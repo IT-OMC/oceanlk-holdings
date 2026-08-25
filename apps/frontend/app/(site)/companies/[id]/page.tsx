@@ -4,7 +4,7 @@ import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api';
 import CompanySingle from '@/views/companies/CompanySingle';
 import type { Company } from '@/views/companies/CompanySingle';
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function generateStaticParams() {
     const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 }
 
 async function getCompany(id: string): Promise<Company | null> {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANY_BY_ID(id), { next: { revalidate: 3600 } });
+    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANY_BY_ID(id), { cache: 'no-store' });
     if (res.status === 404) return null;
     if (!res.ok) throw new Error(`Company ${id} fetch failed: ${res.status}`);
     return res.json();
@@ -35,7 +35,7 @@ export default async function Page(props: PageProps<'/companies/[id]'>) {
 
     const [company, companiesRes] = await Promise.all([
         getCompany(id),
-        fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES, { next: { revalidate: 3600 } }),
+        fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES, { cache: 'no-store' }),
     ]);
 
     if (!company) notFound();

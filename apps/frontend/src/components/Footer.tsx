@@ -1,9 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { oceanData } from '../data/mockData';
+import { companyData } from '../data/companyData';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
+import { navigationData } from './Navbar';
 
 const XIcon = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -33,14 +34,14 @@ const Footer = () => {
                     >
                         <img
                             src="/och-logo.png"
-                            alt={oceanData.company.name}
+                            alt={companyData.company.name}
                             className="h-16 w-auto mb-3"
                         />
                         <p className="text-xl text-slate-400 mb-4 italic">
-                            {oceanData.company.tagline}
+                            {companyData.company.tagline}
                         </p>
                         <p className="text-slate-400 text-sm max-w-md leading-relaxed">
-                            {oceanData.company.heroDescription}
+                            {companyData.company.heroDescription}
                         </p>
                     </motion.div>
 
@@ -57,7 +58,7 @@ const Footer = () => {
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-accent rounded-full"></span>
                         </h4>
                         <ul className="space-y-3">
-                            {oceanData.navigation.map((link) => (
+                            {navigationData.map((link) => (
                                 <li key={link.name}>
                                     <a
                                         href={link.footerPath}
@@ -178,7 +179,7 @@ const Footer = () => {
                     className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4"
                 >
                     <p className="text-slate-500 text-sm">
-                        © {currentYear} {oceanData.company.name}. All rights reserved.
+                        © {currentYear} {companyData.company.name}. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-sm">
                         <Link href="/privacy-policy" className="text-slate-500 hover:text-accent transition-colors">

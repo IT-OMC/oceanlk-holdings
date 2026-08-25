@@ -252,7 +252,7 @@ const Leadership = ({ leaders, categories }: LeadershipProps) => {
                 // up, instead of taking down the whole page.
                 if (!category.code) return null;
 
-                const categoryLeaders = leaders.filter(l => l.department === category.code);
+                const categoryLeaders = leaders.filter(l => l.department?.toLowerCase() === category.code?.toLowerCase());
                 if (categoryLeaders.length === 0) return null;
 
                 return (

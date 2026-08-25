@@ -1,9 +1,20 @@
 'use client';
 import { motion } from 'framer-motion';
-import { oceanData } from '../data/mockData';
 import { Star, Quote } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api';
+import { Testimonial } from '@/types/api';
 
 const Testimonials = () => {
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+    useEffect(() => {
+        fetch(NEXT_PUBLIC_API_BASE_URL.TESTIMONIALS)
+            .then(res => res.json())
+            .then(data => setTestimonials(data))
+            .catch(error => console.log(error));
+    }, []);
+
     return (
         <section className="py-20 lg:py-32 bg-navy relative overflow-hidden">
             {/* Background Pattern */}
@@ -32,7 +43,7 @@ const Testimonials = () => {
 
                 {/* Testimonials Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {oceanData.testimonials.map((testimonial, index) => (
+                    {testimonials?.map((testimonial, index) => (
                         <motion.div
                             key={testimonial.id}
                             initial={{ opacity: 0, y: 30 }}
@@ -41,19 +52,21 @@ const Testimonials = () => {
                             transition={{ delay: index * 0.1 }}
                             className="glass p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
                         >
-                            {/* Quote Icon */}
-                            <div className="mb-6 relative">
-                                <Quote className="w-10 h-10 text-accent/30 absolute -top-2 -left-2" />
-                            </div>
+                            <div className="flex justify-between mb-4">
+                                {/* Quote Icon */}
+                                <div className="relative">
+                                    <Quote className="w-10 h-10 text-accent/30 absolute -top-2 -left-2" />
+                                </div>
 
-                            {/* Rating */}
-                            <div className="flex gap-1 mb-4">
-                                {[...Array(testimonial.rating)].map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        className="w-5 h-5 fill-accent text-accent"
-                                    />
-                                ))}
+                                {/* Rating */}
+                                <div className="flex gap-1 mb-4">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`w-5 h-5 ${i < testimonial.rating ? 'fill-accent text-accent' : 'text-accent/30'}`}
+                                        />
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Quote Text */}

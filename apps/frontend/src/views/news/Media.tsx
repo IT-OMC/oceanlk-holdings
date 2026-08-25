@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Calendar, Play, Image as ImageIcon, FileText, ArrowUpRight } from 'lucide-react';
 
 import { getMediaUrl } from '../../utils/api';
+import { MediaImage, MediaVideo } from '../../components/MediaThumbnail';
 
 export interface MediaItem {
     id: string;
@@ -141,18 +142,15 @@ const Media = ({ mediaItems }: { mediaItems: MediaItem[] }) => {
                                     <Link href={`/news/media/${item.id}`} className="block h-full w-full">
                                         {/* Background Image or Video */}
                                         {isActuallyVideo && videoSrc ? (
-                                            <video
+                                            <MediaVideo
                                                 src={getMediaUrl(videoSrc)}
-                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                muted
-                                                loop
-                                                playsInline
-                                                autoPlay // Consider adding logic to only autoplay on hover or if visible to save resources
+                                                className="group-hover:scale-110"
                                             />
                                         ) : displayImageUrl ? (
-                                            <div
-                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${getMediaUrl(displayImageUrl)}')` }}
+                                            <MediaImage
+                                                src={getMediaUrl(displayImageUrl)}
+                                                alt={item.title}
+                                                className="group-hover:scale-110"
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

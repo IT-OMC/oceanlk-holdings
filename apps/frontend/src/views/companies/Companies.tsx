@@ -2,20 +2,12 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowRight, Users, Calendar } from 'lucide-react';
-import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
+import { useCompanies } from '../../components/CompaniesProvider';
 
 const Companies = () => {
-    const [companies, setCompanies] = useState<any[]>([]);
-
-    useEffect(() => {
-        fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES)
-            .then(res => res.json())
-            .then(data => setCompanies(data))
-            .catch(err => console.error('Failed to fetch companies:', err));
-    }, []);
+    const { companies } = useCompanies();
 
     return (
         <div className="min-h-screen bg-gray-50/50">

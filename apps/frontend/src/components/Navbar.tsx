@@ -4,10 +4,57 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, ChevronDown, X, Menu } from 'lucide-react';
-
-import { oceanData } from '../data/mockData';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchModal from './SearchModal';
+import { useCompanies } from './CompaniesProvider';
+
+export const navigationData = [
+    {
+        name: "Home",
+        path: "/",
+        footerPath: "/"
+    },
+    {
+        name: "Corporate",
+        hasDropdown: true,
+        subItems: [
+            { name: "Profile", path: "/corporate/profile" },
+            { name: "Leadership", path: "/corporate/leadership" }
+        ],
+        footerPath: "/corporate/profile"
+    },
+    {
+        name: "Companies",
+        hasDropdown: true,
+        subItems: [],
+        footerPath: "/companies"
+    },
+    {
+        name: "News",
+        hasDropdown: true,
+        subItems: [
+            { name: "Blogs", path: "/news/blogs" },
+            { name: "News", path: "/news/articles" },
+            { name: "Media", path: "/news/media" }
+        ],
+        footerPath: "/news/articles"
+    },
+    {
+        name: "Life at OCH",
+        hasDropdown: true,
+        subItems: [
+            { name: "Culture", path: "/careers/culture" },
+            { name: "Onboard", path: "/careers/opportunities" },
+            { name: "Talent Pool", path: "/careers/talent-pool" }
+        ],
+        footerPath: "/careers/opportunities"
+    },
+    {
+        name: "Contact Us",
+        path: "/contact",
+        footerPath: "/contact"
+    }
+];
 
 const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -16,6 +63,7 @@ const Navbar = () => {
     const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
     const [isScrolled, setIsScrolled] = useState(false);
+    const { companies } = useCompanies();
     const pathname = usePathname();
     const isHomePage = pathname === '/';
 
@@ -31,6 +79,20 @@ const Navbar = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
+
+    const getSubItems = (link: any) => {
+        if (link.name === 'Companies' && companies.length > 0) {
+            return [
+                { name: 'All Companies', path: '/companies' },
+                ...companies.map((c: any) => ({
+                    name: c.title,
+                    path: `/companies/${c.id}`,
+                    logo: c.logoUrl?.replace('company logos', 'company-logos') || ''
+                }))
+            ];
+        }
+        return link.subItems;
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -80,7 +142,7 @@ const Navbar = () => {
                     {/* Right Side - Navigation & Icons */}
                     <div className="flex items-center gap-6">
                         <ul className="hidden lg:flex items-center gap-8">
-                            {oceanData.navigation.map((link: any, index) => (
+                            {navigationData.map((link: any, index) => (
                                 <motion.li
                                     key={link.name}
                                     initial={{ opacity: 0, y: -10 }}
@@ -115,7 +177,7 @@ const Navbar = () => {
                                                 className="absolute top-full left-0 mt-2 w-64 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50 p-2"
                                             >
                                                 <div className="flex flex-col gap-1">
-                                                    {link.subItems.map((subItem: any, subIndex: number) => (
+                                                    {getSubItems(link).map((subItem: any, subIndex: number) => (
                                                         <Link
                                                             key={subIndex}
                                                             href={subItem.path}
@@ -215,8 +277,8 @@ const Navbar = () => {
                             </div>
 
                             {/* Navigation Links */}
-                            <nav className="p-6 space-y-1">
-                                {oceanData.navigation.map((link: any) => (
+                            <nav className="flex flex-col space-y-1 p-6">
+                                {navigationData.map((link: any) => (
                                     <div key={link.name} className="space-y-1">
                                         {link.hasDropdown ? (
                                             <>
@@ -238,7 +300,7 @@ const Navbar = () => {
                                                             transition={{ duration: 0.2 }}
                                                             className="overflow-hidden pl-4 space-y-1"
                                                         >
-                                                            {link.subItems.map((subItem: any, index: number) => (
+                                                            {getSubItems(link).map((subItem: any, index: number) => (
                                                                 <Link
                                                                     key={index}
                                                                     href={subItem.path}

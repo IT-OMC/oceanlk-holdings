@@ -1,15 +1,17 @@
 'use client';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { oceanData } from '../data/mockData';
+import { useCompanies } from './CompaniesProvider';
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 
 const Hero = () => {
+    const router = useRouter();
     const { t } = useTranslation();
     const [currentSlide, setCurrentSlide] = useState(0);
-    const sectors = oceanData.sectors;
+    const { companies: sectors } = useCompanies();
 
     const nextSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev + 1) % sectors.length);
@@ -24,6 +26,8 @@ const Hero = () => {
         const timer = setInterval(nextSlide, 5000);
         return () => clearInterval(timer);
     }, [nextSlide]);
+
+    if (sectors.length === 0) return null;
 
     return (
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden group">
@@ -45,7 +49,7 @@ const Hero = () => {
                         className="relative w-full h-full"
                     >
                         <Image
-                            src={sectors[currentSlide].image}
+                            src={sectors[currentSlide].image?.replace('company images for hero section', 'hero-company-images') || ''}
                             alt={sectors[currentSlide].title}
                             fill
                             priority={currentSlide === 0}
@@ -71,7 +75,7 @@ const Hero = () => {
                     >
                         <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
                             <Image
-                                src={sectors[currentSlide].logo}
+                                src={sectors[currentSlide].logoUrl?.replace('company logos', 'company-logos') || ''}
                                 alt={`${sectors[currentSlide].title} logo`}
                                 fill
                                 sizes="96px"
@@ -101,7 +105,7 @@ const Hero = () => {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="text-xs sm:text-sm md:text-base lg:text-xl xl:text-xl text-white/90 text-center max-w-sm md:max-w-md lg:max-w-2xl mb-6 md:mb-8 lg:mb-9 px-2 md:px-4"
                     >
-                        {sectors[currentSlide].desc}
+                        {sectors[currentSlide].description}
                     </motion.p>
 
                     {/* CTA Button */}
@@ -109,6 +113,7 @@ const Hero = () => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.8 }}
+                        onClick={() => router.push('/companies')}
                         className="px-5 md:px-6 lg:px-8 py-2.5 md:py-3 lg:py-3.5 bg-white/10 backdrop-blur-sm text-white text-sm lg:text-base font-medium rounded-full border border-white/30 hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105"
                     >
                         {t('hero.exploreButton')}
@@ -215,7 +220,7 @@ const Hero = () => {
                                         className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'} bg-white flex items-center justify-center p-2`}
                                     >
                                         <Image
-                                            src={sector.logo}
+                                            src={sector.logoUrl?.replace('company logos', 'company-logos') || ''}
                                             alt={sector.title}
                                             fill
                                             sizes="64px"
