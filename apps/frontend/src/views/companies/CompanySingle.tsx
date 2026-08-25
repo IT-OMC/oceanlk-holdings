@@ -113,11 +113,13 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
     const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
     // Sections refs for scroll-trigger
-    const statsRef = useRef(null);
+    // statsRef / statsInView are parked alongside the "Animated Stat Cards" block
+    // below (~line 309), which is currently commented out. Restore all three together.
+    // const statsRef = useRef(null);
     const servicesRef = useRef(null);
     const igRef = useRef(null);
 
-    const statsInView = useInView(statsRef, { once: true, margin: '-100px' });
+    // const statsInView = useInView(statsRef, { once: true, margin: '-100px' });
     const servicesInView = useInView(servicesRef, { once: true, margin: '-100px' });
     const igInView = useInView(igRef, { once: true, margin: '-100px' });
 

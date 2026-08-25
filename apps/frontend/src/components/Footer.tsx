@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { companyData } from '../data/companyData';
+import { useSocialLinks } from './SocialLinksProvider';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
 import { navigationData } from './Navbar';
@@ -20,6 +21,7 @@ const WeChatIcon = ({ className }: { className?: string }) => (
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
+    const social = useSocialLinks();
 
     return (
         <footer className="bg-navy border-t border-white/10">
@@ -117,17 +119,19 @@ const Footer = () => {
                         {/* Social Media - Moved here from Contact */}
                         <div className="flex gap-3 mt-8">
                             {[
-                                { Icon: Facebook, href: '#' },
-                                { Icon: Linkedin, href: '#' },
-                                { Icon: Instagram, href: '#' },
-                                { Icon: XIcon, href: '#' },
-                                { Icon: WeChatIcon, href: '#' },
-                                { Icon: Youtube, href: '#' }
+                                { Icon: Facebook, href: social.facebook },
+                                { Icon: Linkedin, href: social.linkedin },
+                                { Icon: Instagram, href: social.instagram },
+                                { Icon: XIcon, href: social.x },
+                                { Icon: WeChatIcon, href: social.weChat },
+                                { Icon: Youtube, href: social.youtube }
                             ].map(({ Icon, href }, index) => (
                                 <motion.a
                                     key={index}
                                     whileHover={{ scale: 1.1, y: -2 }}
                                     href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-all text-slate-400"
                                 >
                                     <Icon className="w-4 h-4" />

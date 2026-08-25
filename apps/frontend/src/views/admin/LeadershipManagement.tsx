@@ -470,7 +470,7 @@ const LeadershipManagement = () => {
                         <h3 className="text-xl font-bold text-emerald-400 border-b border-white/10 pb-2">
                             {category.title}
                         </h3>
-                        {leaders.filter(l => l.department === category.code).map((leader) => (
+                        {leaders.filter(l => l.department?.toLowerCase() === category.code?.toLowerCase()).map((leader) => (
                             <motion.div
                                 key={leader.id}
                                 layout
@@ -508,7 +508,7 @@ const LeadershipManagement = () => {
                                 </div>
                             </motion.div>
                         ))}
-                        {leaders.filter(l => l.department === category.code).length === 0 && (
+                        {leaders.filter(l => l.department?.toLowerCase() === category.code?.toLowerCase()).length === 0 && (
                             <p className="text-gray-500 italic text-sm">No members in this section</p>
                         )}
                     </div>

@@ -16,7 +16,8 @@ import {
     Settings,
     CheckSquare,
     TrendingUp,
-    FileText
+    FileText,
+    Share2
 } from 'lucide-react';
 import { useState } from 'react';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
@@ -113,6 +114,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         { path: '/admin/pages/leadership', icon: Users, label: 'Leadership' },
         { path: '/admin/pages/partners', icon: Briefcase, label: 'Partners & Memberships' },
         { path: '/admin/pages/stats', icon: TrendingUp, label: 'Global Impact Metrics' },
+        { path: '/admin/content/social', icon: Share2, label: 'Social Media Links' },
     ];
 
     const mediaMenuItems = [

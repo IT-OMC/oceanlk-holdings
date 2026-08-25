@@ -6,4 +6,12 @@ export const companyData = {
         ctaPrimary: "Explore Our World",
         ctaSecondary: "Watch Showreel"
     },
+    socialMedio: {
+        facebook: "https://www.facebook.com/oceanceylonholdings",
+        linkedin: "https://www.linkedin.com/company/ocean-ceylon-holdings/",
+        instagram: "https://www.instagram.com/ocean_ceylon_holdings/",
+        x: "https://www.x.com/ocean_ceylon_holdings/",
+        weChat: "https://wechat.com/en/oceanceylonholdings",
+        youtube: "https://www.youtube.com/oceanceylonholdings"
+    }
 }

@@ -6,12 +6,14 @@ import {
     Briefcase,
     Users,
     TrendingUp,
+    Share2,
     ArrowLeft,
     Layout
 } from 'lucide-react';
 import PartnerManagement from './PartnerManagement';
 import LeadershipManagement from './LeadershipManagement';
 import StatsManagement from './StatsManagement';
+import SocialLinksManagement from './SocialLinksManagement';
 
 interface Section {
     id: string;
@@ -57,6 +59,13 @@ const PageContentManager = () => {
             description: 'Update the key metrics and statistics shown in the hero or stats section.',
             icon: TrendingUp,
             component: <StatsManagement />
+        },
+        {
+            id: 'social',
+            title: 'Social Media Links',
+            description: 'Update the social profile URLs used by the home page hero and the site footer.',
+            icon: Share2,
+            component: <SocialLinksManagement />
         }
     ];
 
