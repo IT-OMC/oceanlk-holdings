@@ -1,6 +1,9 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+const BASE_URL =
+    process.env.API_BASE_URL ??
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    'http://localhost:8080';
 
-export const API_ENDPOINTS = {
+export const NEXT_PUBLIC_API_BASE_URL = {
     // Admin & Auth
     LOGIN: `${BASE_URL}/api/admin/login`,
     VALIDATE_TOKEN: `${BASE_URL}/api/admin/validate`,

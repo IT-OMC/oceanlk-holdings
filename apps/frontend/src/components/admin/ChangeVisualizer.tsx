@@ -46,6 +46,20 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
         if (typeof value === 'boolean') return value ? <Check size={16} className="text-emerald-500" /> : <X size={16} className="text-rose-500" />;
         if (Array.isArray(value)) return `Array (${value.length} items)`;
         if (typeof value === 'object') return 'Complex Object';
+        // Some fields (e.g. PageContent.content for the social links row) hold a
+        // JSON blob. Pretty-print it so the reviewer sees the actual values
+        // instead of one long unreadable line.
+        if (typeof value === 'string' && /^\s*[{[]/.test(value)) {
+            try {
+                return (
+                    <pre className="whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed">
+                        {JSON.stringify(JSON.parse(value), null, 2)}
+                    </pre>
+                );
+            } catch {
+                // Not JSON after all - fall through to the plain string.
+            }
+        }
         return String(value);
     };
 

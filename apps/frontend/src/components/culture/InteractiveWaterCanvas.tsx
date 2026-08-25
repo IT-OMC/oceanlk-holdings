@@ -1,22 +1,20 @@
+'use client';
 import { useRef, useMemo } from 'react';
-import { Canvas, useFrame, extend, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, extend, useThree, type ThreeElement } from '@react-three/fiber';
 import { OrbitControls, Sky } from '@react-three/drei';
 import * as THREE from 'three';
 import { Water } from 'three-stdlib';
 
 extend({ Water });
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements {
-            water: any;
-        }
+declare module '@react-three/fiber' {
+    interface ThreeElements {
+        water: ThreeElement<typeof Water>;
     }
 }
 
 const Ocean = () => {
-    const ref = useRef<any>();
+    const ref = useRef<Water>(null);
     const gl = useThree((state) => state.gl);
 
     // Water geometry

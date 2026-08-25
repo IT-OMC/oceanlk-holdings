@@ -1,8 +1,9 @@
+'use client';
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Ship, Calendar, Anchor, Globe, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 
 // Custom hook for count-up animation
 const useCountUp = (end: number, duration: number = 2000, inView: boolean) => {
@@ -128,7 +129,7 @@ const GlobalMetrics = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const response = await fetch(API_ENDPOINTS.METRICS);
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.METRICS);
                 if (response.ok) {
                     const data = await response.json();
                     // Map backend icon strings to Lucide icons components if needed, or pass string to Helper
@@ -189,8 +190,8 @@ const GlobalMetrics = () => {
                 {/* Metrics Grid */}
                 <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                     {displayMetrics.map((metric, index) => (
-                        <div 
-                            key={metric.id || index} 
+                        <div
+                            key={metric.id || index}
                             className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(20%-1.2rem)]"
                         >
                             <MetricCard

@@ -1,13 +1,14 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, Loader2, Building2, Briefcase, Image, Calendar, MessageSquare, Users, Award } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { debouncedSearch, SearchResponse, SearchResultItem } from '../services/searchService';
 
 interface SearchModalProps {
     isOpen: boolean;
     onClose: () => void;
-    triggerRef?: React.RefObject<HTMLElement>;
+    triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
 const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
@@ -17,7 +18,7 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [position, setPosition] = useState<{ top: number; right: number } | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     // Calculate position based on trigger ref
     useEffect(() => {
@@ -114,7 +115,7 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
     };
 
     const handleResultClick = (result: SearchResultItem) => {
-        navigate(result.url);
+        router.push(result.url);
         onClose();
         setQuery('');
         setResults(null);

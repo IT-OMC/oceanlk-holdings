@@ -1,8 +1,9 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Bell, Check, ExternalLink, Clock, Info, AlertTriangle, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { API_ENDPOINTS } from '../../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface Notification {
     id: string;
@@ -17,14 +18,14 @@ const NotificationBell = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const fetchNotifications = async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
             if (!token) return;
 
-            const res = await fetch(API_ENDPOINTS.NOTIFICATIONS, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.NOTIFICATIONS, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -56,7 +57,7 @@ const NotificationBell = () => {
     const markAsRead = async (id: string) => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const res = await fetch(API_ENDPOINTS.MARK_READ(id), {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MARK_READ(id), {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -71,7 +72,7 @@ const NotificationBell = () => {
     const markAllRead = async () => {
         try {
             const token = sessionStorage.getItem('adminToken');
-            const res = await fetch(API_ENDPOINTS.MARK_ALL_READ, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MARK_ALL_READ, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -86,7 +87,7 @@ const NotificationBell = () => {
     const handleNotificationClick = (notification: Notification) => {
         markAsRead(notification.id);
         if (notification.link) {
-            navigate(notification.link);
+            router.push(notification.link);
         }
         setIsOpen(false);
     };

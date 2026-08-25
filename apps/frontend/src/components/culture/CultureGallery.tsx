@@ -1,6 +1,8 @@
+'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { API_ENDPOINTS } from '../../utils/api';
+import Image from 'next/image';
+import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 
 interface MediaItem {
     id: string;
@@ -22,8 +24,8 @@ const CultureGallery = () => {
         try {
             // Fetch both GALLERY and LIFE_AT_OCH categories
             const [galleryRes, lifeRes] = await Promise.all([
-                fetch(`${API_ENDPOINTS.MEDIA}?category=GALLERY&group=HR_PANEL`),
-                fetch(`${API_ENDPOINTS.MEDIA}?category=LIFE_AT_OCH&group=HR_PANEL`)
+                fetch(`${NEXT_PUBLIC_API_BASE_URL.MEDIA}?category=GALLERY&group=HR_PANEL`),
+                fetch(`${NEXT_PUBLIC_API_BASE_URL.MEDIA}?category=LIFE_AT_OCH&group=HR_PANEL`)
             ]);
 
             let allImages: MediaItem[] = [];
@@ -125,11 +127,17 @@ const CultureGallery = () => {
                         whileHover={{ scale: 1.02 }}
                         className={`relative rounded-2xl overflow-hidden group ${getSpanClass(index)}`}
                     >
-                        <img
-                            src={item.imageUrl}
-                            alt={item.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
+                        {item.imageUrl ? (
+                            <Image
+                                src={item.imageUrl}
+                                alt={item.title}
+                                fill
+                                sizes="(min-width: 768px) 25vw, 100vw"
+                                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gray-200" />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                             <span className="text-white font-medium text-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                 {item.title}

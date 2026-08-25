@@ -1,3 +1,4 @@
+'use client';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Calendar, Anchor, Settings, Globe, Map, BookOpen } from 'lucide-react';

@@ -1,5 +1,6 @@
+'use client';
 import { motion } from 'framer-motion';
-import { oceanData } from '../data/mockData';
+import { useCompanies } from './CompaniesProvider';
 import SectionWrapper from './SectionWrapper';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -44,6 +45,8 @@ const SectorCard = ({ title, desc, image }: { title: string; desc: string; image
 };
 
 const Sectors = () => {
+    const { companies } = useCompanies();
+
     return (
         <SectionWrapper id="sectors" className="py-20">
             <motion.div
@@ -63,15 +66,19 @@ const Sectors = () => {
 
             {/* Grid Layout - 3 equal cards */}
             <div className="grid md:grid-cols-3 gap-6">
-                {oceanData.sectors.map((sector, index) => (
+                {companies.map((company, index) => (
                     <motion.div
-                        key={sector.id}
+                        key={company.id}
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                        <SectorCard title={sector.title} desc={sector.desc} image={sector.image} />
+                        <SectorCard
+                            title={company.title}
+                            desc={company.description}
+                            image={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
+                        />
                     </motion.div>
                 ))}
             </div>

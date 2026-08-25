@@ -1,8 +1,9 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, ChevronDown, Bot, Trash2, ArrowDown } from 'lucide-react';
 import { useWhatsApp } from '../hooks/useWhatsApp';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 import ChatMessage from './chat/ChatMessage';
 import QuickActions from './chat/QuickActions';
 import WhatsAppBackground from './chat/WhatsAppBackground';
@@ -100,7 +101,7 @@ const ChatWidget = () => {
         setIsTyping(true);
 
         try {
-            const response = await fetch(API_ENDPOINTS.CHAT_MESSAGE, {
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.CHAT_MESSAGE, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -206,8 +207,8 @@ const ChatWidget = () => {
                             >
                                 <X size={14} />
                             </button>
-                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-sm mb-1">We're Online!</h4>
-                            <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-base mb-1">We're Online!</h4>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Ask us anything about OceanLK Holdings!
                             </p>
                             <div className="absolute -bottom-6 right-6 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45 border-r border-b border-gray-100 dark:border-gray-700" />

@@ -1,6 +1,11 @@
+'use client';
 import { motion } from 'framer-motion';
-import { oceanData } from '../data/mockData';
-import { Mail, Phone, MapPin, Linkedin, Facebook, ArrowRight, Instagram, Youtube } from 'lucide-react';
+import Link from 'next/link';
+import { companyData } from '../data/companyData';
+import { useSocialLinks } from './SocialLinksProvider';
+import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
+import { navigationData } from './Navbar';
 
 const XIcon = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -16,6 +21,7 @@ const WeChatIcon = ({ className }: { className?: string }) => (
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
+    const social = useSocialLinks();
 
     return (
         <footer className="bg-navy border-t border-white/10">
@@ -30,14 +36,14 @@ const Footer = () => {
                     >
                         <img
                             src="/och-logo.png"
-                            alt={oceanData.company.name}
+                            alt={companyData.company.name}
                             className="h-16 w-auto mb-3"
                         />
                         <p className="text-xl text-slate-400 mb-4 italic">
-                            {oceanData.company.tagline}
+                            {companyData.company.tagline}
                         </p>
                         <p className="text-slate-400 text-sm max-w-md leading-relaxed">
-                            {oceanData.company.heroDescription}
+                            {companyData.company.heroDescription}
                         </p>
                     </motion.div>
 
@@ -54,10 +60,10 @@ const Footer = () => {
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-accent rounded-full"></span>
                         </h4>
                         <ul className="space-y-3">
-                            {oceanData.navigation.map((link) => (
+                            {navigationData.map((link) => (
                                 <li key={link.name}>
                                     <a
-                                        href={link.path}
+                                        href={link.footerPath}
                                         className="text-slate-400 hover:text-accent transition-colors text-sm flex items-center gap-2 group"
                                     >
                                         <span className="w-1.5 h-1.5 rounded-full bg-accent/50 group-hover:bg-accent transition-colors"></span>
@@ -87,7 +93,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Email</span>
-                                    info@oceanlk.com
+                                    <a href='mailto:info@oceanlk.com'>info@oceanlk.com</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">
@@ -96,7 +102,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Phone</span>
-                                    +94 11 234 5678
+                                    <a href='tel:+94112345678'>+94 11 234 5678</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">
@@ -113,17 +119,19 @@ const Footer = () => {
                         {/* Social Media - Moved here from Contact */}
                         <div className="flex gap-3 mt-8">
                             {[
-                                { Icon: Facebook, href: '#' },
-                                { Icon: Linkedin, href: '#' },
-                                { Icon: Instagram, href: '#' },
-                                { Icon: XIcon, href: '#' },
-                                { Icon: WeChatIcon, href: '#' },
-                                { Icon: Youtube, href: '#' }
+                                { Icon: Facebook, href: social.facebook },
+                                { Icon: Linkedin, href: social.linkedin },
+                                { Icon: Instagram, href: social.instagram },
+                                { Icon: XIcon, href: social.x },
+                                { Icon: WeChatIcon, href: social.weChat },
+                                { Icon: Youtube, href: social.youtube }
                             ].map(({ Icon, href }, index) => (
                                 <motion.a
                                     key={index}
                                     whileHover={{ scale: 1.1, y: -2 }}
                                     href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-all text-slate-400"
                                 >
                                     <Icon className="w-4 h-4" />
@@ -175,15 +183,15 @@ const Footer = () => {
                     className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4"
                 >
                     <p className="text-slate-500 text-sm">
-                        © {currentYear} {oceanData.company.name}. All rights reserved.
+                        © {currentYear} {companyData.company.name}. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-sm">
-                        <a href="#" className="text-slate-500 hover:text-accent transition-colors">
+                        <Link href="/privacy-policy" className="text-slate-500 hover:text-accent transition-colors">
                             Privacy Policy
-                        </a>
-                        <a href="#" className="text-slate-500 hover:text-accent transition-colors">
+                        </Link>
+                        <Link href="/terms-of-service" className="text-slate-500 hover:text-accent transition-colors">
                             Terms of Service
-                        </a>
+                        </Link>
                     </div>
                 </motion.div>
             </div>

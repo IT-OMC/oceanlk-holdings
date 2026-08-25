@@ -1,7 +1,8 @@
+'use client';
 import { useRef, useEffect } from 'react';
 import { motion, animate, useInView } from 'framer-motion';
 import { Globe, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 
 // Counter Component for Animated Metrics
@@ -120,7 +121,7 @@ const HoldingDescription = () => {
                         viewport={{ once: true }}
                         className="mb-20"
                     >
-                        <Link to="/corporate/profile#partners">
+                        <Link href="/corporate/profile#partners">
                             <button className="group relative px-8 py-4 bg-transparent overflow-hidden rounded-full">
                                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-500 to-blue-600 opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
                                 <div className="absolute inset-0 w-full h-full border border-cyan-500/50 rounded-full" />

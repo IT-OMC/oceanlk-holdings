@@ -1,5 +1,6 @@
+'use client';
 import { useState, useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut,
@@ -15,13 +16,13 @@ import {
 import { toast } from 'react-hot-toast';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import NotificationBell from '../components/admin/NotificationBell';
-import { API_ENDPOINTS } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 import ConfirmationModal from '../components/ConfirmationModal';
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
     const adminName = sessionStorage.getItem('adminName') || 'Administrator';
     const adminUsername = sessionStorage.getItem('adminUsername') || 'admin';
     const adminRole = sessionStorage.getItem('adminRole');
@@ -42,7 +43,7 @@ const AdminLayout = () => {
                 const token = sessionStorage.getItem('adminToken');
                 if (!token) return;
 
-                const res = await fetch(API_ENDPOINTS.VALIDATE_TOKEN, {
+                const res = await fetch(NEXT_PUBLIC_API_BASE_URL.VALIDATE_TOKEN, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -70,7 +71,7 @@ const AdminLayout = () => {
         sessionStorage.removeItem('adminRole');
         sessionStorage.removeItem('adminVerified');
         setShowLogoutConfirm(false);
-        navigate('/admin');
+        router.push('/admin');
     };
 
     const logoutConfirmation = (
@@ -89,7 +90,7 @@ const AdminLayout = () => {
     const sendOtp = async () => {
         setLoading(true);
         try {
-            const res = await fetch(API_ENDPOINTS.OTP_SEND, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.OTP_SEND, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, method: 'email' })
@@ -111,7 +112,7 @@ const AdminLayout = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch(API_ENDPOINTS.OTP_VERIFY, {
+            const res = await fetch(NEXT_PUBLIC_API_BASE_URL.OTP_VERIFY, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminUsername, otp })
@@ -133,7 +134,7 @@ const AdminLayout = () => {
     };
 
     const getPageTitle = () => {
-        const path = location.pathname;
+        const path = pathname;
         if (path.includes('/dashboard')) return 'Dashboard';
         if (path.includes('/profile')) return 'My Profile';
         if (path.includes('/management')) return 'Admin Management';
@@ -147,6 +148,7 @@ const AdminLayout = () => {
         if (path.includes('/content/leadership')) return 'Leadership';
         if (path.includes('/content/stats')) return 'Statistics';
         if (path.includes('/content/partners')) return 'Partners';
+        if (path.includes('/content/social')) return 'Social Media';
         if (path.includes('/pages/leadership')) return 'Leadership Team';
         if (path.includes('/pages/stats')) return 'Global Statistics';
         if (path.includes('/pages/partners')) return 'Partners & Memberships';
@@ -341,7 +343,7 @@ const AdminLayout = () => {
                             </div>
                         </div>
                     </div>
-                    <Outlet />
+                    {children}
                 </div>
             </motion.main>
 

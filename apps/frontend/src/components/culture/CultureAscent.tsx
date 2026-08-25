@@ -1,3 +1,4 @@
+'use client';
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, MotionValue, useSpring } from 'framer-motion';
@@ -151,7 +152,7 @@ const StepMarker = ({
     );
 };
 
-const ScrollHandle = ({ scrollYProgress, containerRef, numStages }: { scrollYProgress: MotionValue<number>, containerRef: React.RefObject<HTMLDivElement>, numStages: number }) => {
+const ScrollHandle = ({ scrollYProgress, containerRef, numStages }: { scrollYProgress: MotionValue<number>, containerRef: React.RefObject<HTMLDivElement | null>, numStages: number }) => {
     const [isDragging, setIsDragging] = useState(false);
     const trackRef = useRef<HTMLDivElement>(null);
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 400, damping: 30 });

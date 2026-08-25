@@ -111,13 +111,17 @@ After setting up your environment:
 
 3. **Test Frontend**
    ```bash
-   cd oceanlk-frontend
+   cd apps/frontend
    npm run dev
    ```
+   Next.js, not Vite, as of the migration in `docs/migration/`. The frontend
+   deploys to Vercel — there's no Docker image or nginx container for it
+   anymore (`apps/frontend/Dockerfile`/`nginx.conf` were retired in Phase 5;
+   `docker-compose.yml` now only runs the backend and Redis).
 
 4. **Verify Health Endpoints**
    - Backend: http://localhost:8080/actuator/health
-   - Frontend: http://localhost:5173
+   - Frontend: http://localhost:5173/health
 
 ## Production Checklist
 

@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { Image as ImageIcon, Video, FileQuestion } from 'lucide-react';
 

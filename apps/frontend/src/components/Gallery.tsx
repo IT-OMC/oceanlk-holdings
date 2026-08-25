@@ -1,8 +1,10 @@
+'use client';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Play, ExternalLink } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { API_ENDPOINTS, getMediaUrl } from '../utils/api';
+import { NEXT_PUBLIC_API_BASE_URL, getMediaUrl } from '../utils/api';
 
 interface GalleryItem {
     id: string;
@@ -27,7 +29,7 @@ const Gallery = () => {
         const fetchGalleryData = async () => {
             try {
                 // Fetch from Media Center endpoint to get latest media per company
-                const response = await fetch(API_ENDPOINTS.MEDIA_MEDIA);
+                const response = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA);
                 if (response.ok) {
                     const data = await response.json();
 
@@ -204,12 +206,16 @@ const Gallery = () => {
                                                     loop
                                                     playsInline
                                                 />
-                                            ) : (
-                                                <img
+                                            ) : item.imageUrl ? (
+                                                <Image
                                                     src={getMediaUrl(item.imageUrl)}
                                                     alt={item.title}
-                                                    className="w-full h-full object-cover"
+                                                    fill
+                                                    sizes="(min-width: 1024px) 600px, (min-width: 768px) 400px, 280px"
+                                                    className="object-cover"
                                                 />
+                                            ) : (
+                                                <div className="w-full h-full bg-slate-800" />
                                             )}
 
                                             {/* Overlay (always visible on inactive, hover/active styled) */}

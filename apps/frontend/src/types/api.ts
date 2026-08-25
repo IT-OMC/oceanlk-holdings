@@ -161,3 +161,13 @@ export interface NotificationRequest {
     recipientRole: string;
     relatedEntity?: string;
 }
+
+export interface Testimonial {
+    id: string;
+    name: string;
+    position: string;
+    company: string;
+    image: string;
+    quote: string;
+    rating: number;
+}
