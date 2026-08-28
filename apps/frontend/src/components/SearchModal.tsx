@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, Loader2, Building2, Briefcase, Image, Calendar, MessageSquare, Users, Award } from 'lucide-react';
+import { X, Search, Loader2, Building2, Briefcase, Image, Calendar, MessageSquare, Users, Award, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { debouncedSearch, SearchResponse, SearchResultItem } from '../services/searchService';
 
@@ -38,6 +38,7 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
 
     // Category icons and labels
     const categoryConfig: { [key: string]: { icon: any; label: string; color: string } } = {
+        pages: { icon: FileText, label: 'Pages', color: 'bg-teal-500' },
         companies: { icon: Building2, label: 'Companies', color: 'bg-blue-500' },
         jobs: { icon: Briefcase, label: 'Job Opportunities', color: 'bg-green-500' },
         media: { icon: Image, label: 'Media', color: 'bg-purple-500' },
@@ -211,9 +212,18 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
                             </div>
                         )}
 
-                        {results && results.totalResults > 0 && (
+                        {results && results.totalResults > 0 && (() => {
+                            const categoryEntries = Object.entries(results.results);
+                            let runningIndex = 0;
+                            const categoryOffsets = new Map<string, number>();
+                            for (const [category, items] of categoryEntries) {
+                                categoryOffsets.set(category, runningIndex);
+                                runningIndex += items.length;
+                            }
+
+                            return (
                             <div className="py-2">
-                                {Object.entries(results.results).map(([category, items]) => {
+                                {categoryEntries.map(([category, items]) => {
                                     const config = categoryConfig[category];
                                     const Icon = config?.icon || Search;
 
@@ -231,9 +241,7 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
                                             {/* Category Results */}
                                             <div className="space-y-1 px-2">
                                                 {items.map((item, index) => {
-                                                    const globalIndex = Object.entries(results.results)
-                                                        .slice(0, Object.keys(results.results).indexOf(category))
-                                                        .reduce((sum, [, categoryItems]) => sum + categoryItems.length, 0) + index;
+                                                    const globalIndex = (categoryOffsets.get(category) ?? 0) + index;
 
                                                     return (
                                                         <motion.button
@@ -248,11 +256,20 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
                                                             {/* Icon or Image */}
                                                             <div className={`w-10 h-10 rounded-lg ${config?.color || 'bg-gray-400'} flex items-center justify-center flex-shrink-0 overflow-hidden`}>
                                                                 {item.imageUrl ? (
-                                                                    <img
-                                                                        src={item.imageUrl}
-                                                                        alt={item.title}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
+                                                                    <>
+                                                                        <img
+                                                                            src={item.imageUrl}
+                                                                            alt={item.title}
+                                                                            className="w-full h-full object-cover"
+                                                                            onError={(e) => {
+                                                                                e.currentTarget.style.display = 'none';
+                                                                                if (e.currentTarget.nextElementSibling) {
+                                                                                    e.currentTarget.nextElementSibling.classList.remove('hidden');
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                        <Icon className="w-5 h-5 text-white hidden" />
+                                                                    </>
                                                                 ) : (
                                                                     <Icon className="w-5 h-5 text-white" />
                                                                 )}
@@ -282,7 +299,8 @@ const SearchModal = ({ isOpen, onClose, triggerRef }: SearchModalProps) => {
                                     );
                                 })}
                             </div>
-                        )}
+                            );
+                        })()}
                     </div>
 
                     {/* Footer */}
