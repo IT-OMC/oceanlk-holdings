@@ -6,10 +6,15 @@ import BlogSingle, { type BlogPost } from '@/views/news/BlogSingle';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS);
-    if (!res.ok) return [];
-    const blogs = await res.json();
-    return blogs.map((b: { id: string }) => ({ id: b.id }));
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS);
+        if (!res.ok) return [];
+        const blogs = await res.json();
+        return blogs.map((b: { id: string }) => ({ id: b.id }));
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation.');
+        return [];
+    }
 }
 
 async function getBlog(id: string) {
