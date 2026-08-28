@@ -7,10 +7,15 @@ import type { Company } from '@/views/companies/CompanySingle';
 export const revalidate = 0;
 
 export async function generateStaticParams() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
-    if (!res.ok) return [];
-    const companies: Company[] = await res.json();
-    return companies.map((c) => ({ id: c.id }));
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
+        if (!res.ok) return [];
+        const companies: Company[] = await res.json();
+        return companies.map((c) => ({ id: c.id }));
+    } catch (error) {
+        console.warn('Backend unreachable during build, skipping static generation.');
+        return [];
+    }
 }
 
 async function getCompany(id: string): Promise<Company | null> {
