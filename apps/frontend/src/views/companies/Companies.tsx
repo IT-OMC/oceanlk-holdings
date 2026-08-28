@@ -5,8 +5,10 @@ import Link from 'next/link';
 import SectionWrapper from '../../components/SectionWrapper';
 import { ArrowRight, Users, Calendar } from 'lucide-react';
 import { useCompanies } from '../../components/CompaniesProvider';
+import { useTranslation } from 'react-i18next';
 
 const Companies = () => {
+    const { t } = useTranslation();
     const { companies } = useCompanies();
 
     return (
@@ -18,10 +20,9 @@ const Companies = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <div className="mb-16">
-                        <h1 className="text-5xl font-bold mb-6 text-gray-900">Our Companies</h1>
+                        <h1 className="text-5xl font-bold mb-6 text-gray-900">{t('pages.companies.title')}</h1>
                         <p className="text-xl text-gray-600 max-w-3xl">
-                            A diversified portfolio of industry-leading companies driving excellence
-                            across multiple sectors.
+                            {t('pages.companies.subtitle')}
                         </p>
                     </div>
 

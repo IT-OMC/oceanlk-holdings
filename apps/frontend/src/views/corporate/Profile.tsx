@@ -7,8 +7,10 @@ import Timeline from '../../components/corporate/Timeline';
 import BentoGrid from '../../components/corporate/BentoGrid';
 import Memberships from '../../components/Memberships';
 import { companyData } from '@/data/companyData';
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
+    const { t } = useTranslation();
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
@@ -126,7 +128,7 @@ const Profile = () => {
                         </motion.div>
 
                         <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-blue-100 to-blue-900/50 tracking-tight">
-                            Corporate Profile
+                            {t('pages.corporate.profile.title')}
                         </h1>
                         <p className="text-xl md:text-3xl text-gray-300 leading-relaxed font-light max-w-3xl mx-auto">
                             {companyData.company.tagline}

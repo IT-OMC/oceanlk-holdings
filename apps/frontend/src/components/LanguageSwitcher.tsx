@@ -20,7 +20,7 @@ const languages = [
     { code: 'es', name: 'Spanish', flag: 'es' }
 ];
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ isScrolled = false, isHomePage }: { isScrolled?: boolean, isHomePage?: boolean }) => {
     const { i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -37,7 +37,7 @@ const LanguageSwitcher = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 transition-colors bg-black/5 rounded-full group"
                 aria-label="Change Language"
             >
                 <img
@@ -45,10 +45,10 @@ const LanguageSwitcher = () => {
                     alt={currentLanguage.name}
                     className="w-5 h-auto object-cover rounded-sm"
                 />
-                <span className="hidden lg:inline text-sm font-semibold text-primary">
+                <span className={`hidden lg:inline text-sm font-semibold px-2 transition-colors duration-300 ${(isScrolled || !isHomePage) ? 'text-primary group-hover:text-primary/80' : 'text-white group-hover:text-primary'}`}>
                     {currentLanguage.name}
                 </span>
-                <ChevronDown className={`w-3 h-3 text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${(isScrolled || !isHomePage) ? 'text-primary group-hover:text-primary/80' : 'text-white group-hover:text-primary'} ${isOpen ? 'rotate-180' : ''}`} />
             </motion.button>
 
             <AnimatePresence>

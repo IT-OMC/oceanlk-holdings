@@ -7,6 +7,7 @@ import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
 import ChatMessage from './chat/ChatMessage';
 import QuickActions from './chat/QuickActions';
 import WhatsAppBackground from './chat/WhatsAppBackground';
+import { useTranslation } from 'react-i18next';
 
 // Define message type
 interface Message {
@@ -17,6 +18,7 @@ interface Message {
 }
 
 const ChatWidget = () => {
+    const { t } = useTranslation();
     const { config, loading, error } = useWhatsApp();
     const [isOpen, setIsOpen] = useState(false);
     const [showBubble, setShowBubble] = useState(false);
@@ -207,9 +209,9 @@ const ChatWidget = () => {
                             >
                                 <X size={14} />
                             </button>
-                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-base mb-1">We're Online!</h4>
+                            <h4 className="font-bold text-gray-800 dark:text-gray-100 text-base mb-1">{t('chatWidget.online')}</h4>
                             <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Ask us anything about OceanLK Holdings!
+                                {t('chatWidget.askAnything')}
                             </p>
                             <div className="absolute -bottom-6 right-6 w-4 h-4 bg-white dark:bg-gray-800 transform rotate-45 border-r border-b border-gray-100 dark:border-gray-700" />
                         </div>

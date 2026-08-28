@@ -9,6 +9,7 @@ import SectionWrapper from '../../components/SectionWrapper';
 import { Mail, ArrowRight, X } from 'lucide-react';
 import { Linkedin } from '../../components/icons/BrandIcons';
 import { CorporateLeader, LeadershipCategory } from '../../types/api';
+import { useTranslation } from 'react-i18next';
 
 interface LeadershipCardProps {
     member: CorporateLeader;
@@ -183,6 +184,7 @@ interface LeadershipProps {
 }
 
 const Leadership = ({ leaders, categories }: LeadershipProps) => {
+    const { t } = useTranslation();
     const router = useRouter();
 
     return (
@@ -201,16 +203,15 @@ const Leadership = ({ leaders, categories }: LeadershipProps) => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="inline-block mb-6 px-6 py-3 bg-gradient-to-r from-accent/20 to-primary/20 backdrop-blur-xl border border-accent/30 rounded-full"
                     >
-                        <span className="text-accent font-semibold">Excellence in Leadership</span>
+                        <span className="text-accent font-semibold">{t('pages.corporate.leadership.badge')}</span>
                     </motion.div>
 
                     <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
-                        Meet The Leadership Team
+                        {t('pages.corporate.leadership.title')}
                     </h1>
 
                     <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-                        Visionary leaders driving innovation, excellence, and sustainable growth across
-                        all our business operations with decades of combined experience.
+                        {t('pages.corporate.leadership.subtitle')}
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-8 mt-12">
