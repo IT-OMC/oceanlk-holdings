@@ -6,25 +6,31 @@ import { Phone, Mail, Send, Building2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
+import { useContactInfo } from '../components/ContactInfoProvider';
 
 const Contact = () => {
     const { t } = useTranslation();
+    const contactInfo = useContactInfo();
 
-    const contactInfo = [
+    // Titles stay on i18n (so they still translate); only the actual details
+    // (address/phone/email) are admin-editable, via the CONTACT/CONTACT_INFO
+    // page_content row fetched server-side in app/(site)/layout.tsx and shared
+    // through ContactInfoProvider (the Footer needs the same data).
+    const contactCards = [
         {
             icon: Building2,
             title: t('contact.info.headOffice'),
-            details: ['Ocean Ceylon Holdings', '123 Galle Road', 'Colombo 03, Sri Lanka']
+            details: contactInfo.headOfficeLines
         },
         {
             icon: Phone,
             title: t('contact.info.phone'),
-            details: ['+94 11 234 5678', '+94 77 123 4567']
+            details: contactInfo.phones
         },
         {
             icon: Mail,
             title: t('contact.info.email'),
-            details: ['info@oceanlk.com', 'careers@oceanlk.com']
+            details: contactInfo.emails
         }
     ];
     const [formData, setFormData] = useState({
@@ -211,7 +217,7 @@ const Contact = () => {
 
                 {/* Contact Info Cards */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-                    {contactInfo.map((info, index) => {
+                    {contactCards.map((info, index) => {
                         const Icon = info.icon;
                         return (
                             <motion.div

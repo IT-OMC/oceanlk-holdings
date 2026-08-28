@@ -115,6 +115,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
         { path: '/admin/pages/partners', icon: Briefcase, label: 'Partners & Memberships' },
         { path: '/admin/pages/stats', icon: TrendingUp, label: 'Global Impact Metrics' },
         { path: '/admin/content/social', icon: Share2, label: 'Social Media Links' },
+        { path: '/admin/content/contact', icon: Mail, label: 'Contact Information' },
     ];
 
     const mediaMenuItems = [

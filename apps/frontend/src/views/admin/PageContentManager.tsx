@@ -7,6 +7,7 @@ import {
     Users,
     TrendingUp,
     Share2,
+    Phone,
     ArrowLeft,
     Layout
 } from 'lucide-react';
@@ -14,6 +15,7 @@ import PartnerManagement from './PartnerManagement';
 import LeadershipManagement from './LeadershipManagement';
 import StatsManagement from './StatsManagement';
 import SocialLinksManagement from './SocialLinksManagement';
+import ContactInfoManagement from './ContactInfoManagement';
 
 interface Section {
     id: string;
@@ -69,11 +71,24 @@ const PageContentManager = () => {
         }
     ];
 
+    // Define sections for the Contact page
+    const contactSections: Section[] = [
+        {
+            id: 'contact-info',
+            title: 'Contact Information',
+            description: 'Update the head office address, phone numbers, and email addresses shown on the Contact page.',
+            icon: Phone,
+            component: <ContactInfoManagement />
+        }
+    ];
+
     // Placeholder for other pages (can be expanded later)
     const getSectionsForPage = (page: string) => {
         switch (page) {
             case 'Home':
                 return homeSections;
+            case 'Contact':
+                return contactSections;
             default:
                 return [];
         }

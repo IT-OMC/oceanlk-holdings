@@ -149,6 +149,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         if (path.includes('/content/stats')) return 'Statistics';
         if (path.includes('/content/partners')) return 'Partners';
         if (path.includes('/content/social')) return 'Social Media';
+        if (path.includes('/content/contact')) return 'Contact Information';
         if (path.includes('/pages/leadership')) return 'Leadership Team';
         if (path.includes('/pages/stats')) return 'Global Statistics';
         if (path.includes('/pages/partners')) return 'Partners & Memberships';

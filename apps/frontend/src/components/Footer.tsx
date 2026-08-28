@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { companyData } from '../data/companyData';
 import { useSocialLinks } from './SocialLinksProvider';
+import { useContactInfo } from './ContactInfoProvider';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
 import { navigationData } from './Navbar';
@@ -22,6 +23,12 @@ const WeChatIcon = ({ className }: { className?: string }) => (
 const Footer = () => {
     const currentYear = new Date().getFullYear();
     const social = useSocialLinks();
+    // Admin-editable via /admin/content/contact, shared from the site layout so
+    // the Contact page and this footer never drift apart.
+    const contactInfo = useContactInfo();
+    const primaryEmail = contactInfo.emails[0];
+    const primaryPhone = contactInfo.phones[0];
+    const address = contactInfo.headOfficeLines.join(', ');
 
     return (
         <footer className="bg-navy border-t border-white/10">
@@ -93,7 +100,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Email</span>
-                                    <a href='mailto:info@oceanlk.com'>info@oceanlk.com</a>
+                                    <a href={`mailto:${primaryEmail}`}>{primaryEmail}</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">
@@ -102,7 +109,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Phone</span>
-                                    <a href='tel:+94112345678'>+94 11 234 5678</a>
+                                    <a href={`tel:${primaryPhone.replace(/[^+\d]/g, '')}`}>{primaryPhone}</a>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3 text-slate-400 text-sm group">
@@ -111,7 +118,7 @@ const Footer = () => {
                                 </div>
                                 <div>
                                     <span className="block text-slate-500 text-xs mb-0.5">Address</span>
-                                    Colombo, Sri Lanka
+                                    {address}
                                 </div>
                             </li>
                         </ul>
