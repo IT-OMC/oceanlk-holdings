@@ -136,11 +136,11 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                         transition={{ delay: 0.3, duration: 0.8 }}
                     >
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-blue-200">
-                            {t('pages.careers.opportunities.title1')}
+                            {t('pages.careers.opportunities.heroTitle1')}
                         </span>
                         <br />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-emerald-200 to-white">
-                            {t('pages.careers.opportunities.title2')}
+                            {t('pages.careers.opportunities.heroTitle2')}
                         </span>
                     </motion.h1>
 
@@ -151,8 +151,7 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                         transition={{ delay: 0.5, duration: 0.8 }}
                         style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}
                     >
-                        Discover where your talent fits in our ecosystem of innovative companies.
-                        We're building something extraordinary, together.
+                        {t('pages.careers.opportunities.heroDescription')}
                     </motion.p>
 
                     {/* Liquid Glass Search Bar */}

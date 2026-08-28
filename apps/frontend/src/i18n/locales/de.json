@@ -138,25 +138,50 @@
         },
         "corporate": {
             "profile": {
-                "title": "Corporate Profile"
+                "title": "Corporate Profile",
+                "badge": "Gegr. 1990",
+                "heroTitle1": "Unternehmens",
+                "heroTitle2": "Profil",
+                "heroDescription": "Überbrückung der Kluft zwischen Sri Lanka und der Welt durch innovative Logistiklösungen."
             },
             "leadership": {
-                "badge": "Excellence in Leadership",
+                "badge": "Exzellenz in Führung",
                 "title": "Meet The Leadership Team",
-                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience."
+                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience.",
+                "heroTitle1": "Treffen Sie",
+                "heroTitle2": "das Führungsteam",
+                "heroDescription": "Visionäre Führungskräfte, die Innovation, Exzellenz und nachhaltiges Wachstum vorantreiben.",
+                "stats": {
+                    "stat1": "Jahre Erfahrung",
+                    "stat2": "Führungsmitglieder",
+                    "stat3": "Engagiert"
+                }
             }
         },
         "careers": {
             "opportunities": {
-                "badge": "Join Our Team",
+                "badge": "Komm ins Team",
                 "title1": "Shape the Future",
                 "title2": "with Ocean Ceylon",
-                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector."
+                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector.",
+                "heroTitle1": "Gestalte die Zukunft",
+                "heroTitle2": "mit Ocean Ceylon",
+                "heroDescription": "Entdecke, wo dein Talent hineinpasst. Wir bauen etwas Außergewöhnliches."
             },
             "jobApplication": {
                 "personalDetails": "Persönliche Daten",
                 "professionalDetails": "Berufliche Details",
                 "uploadCV": "Lebenslauf hochladen"
+            },
+            "talentPool": {
+                "badge": "Talent-Community",
+                "heroTitle1": "Deine Zukunft",
+                "heroTitle2": "Beginnt Hier",
+                "heroDescription": "Siehst du nicht die perfekte Rolle? Tritt unserem Talentpool bei."
+            },
+            "culture": {
+                "heroTitle1": "Nicht nur ein Job.",
+                "heroTitle2": "Eine Reise."
             }
         }
     }
