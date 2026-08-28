@@ -12,7 +12,7 @@ export async function generateStaticParams() {
         if (!res.ok) return [];
         const companies: Company[] = await res.json();
         return companies.map((c) => ({ id: c.id }));
-    } catch (error) {
+    } catch {
         console.warn('Backend unreachable during build, skipping static generation.');
         return [];
     }
