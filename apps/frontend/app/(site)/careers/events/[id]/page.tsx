@@ -5,7 +5,19 @@ import EventSingle, { type Event } from '@/views/careers/EventSingle';
 
 export const revalidate = 3600;
 
-function mapEvent(data: any): Event {
+interface RawEvent {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    time?: string;
+    location?: string;
+    imageUrl?: string;
+    category?: string;
+    status?: string;
+}
+
+function mapEvent(data: RawEvent): Event {
     return {
         id: data.id,
         title: data.title,
@@ -29,7 +41,7 @@ async function getEvent(id: string): Promise<Event | null> {
     const allRes = await fetch(NEXT_PUBLIC_API_BASE_URL.EVENTS, { next: { revalidate: 3600 } });
     if (!allRes.ok) throw new Error(`Events fetch failed: ${allRes.status}`);
     const all = await allRes.json();
-    const found = all.find((item: any) => item.id === id);
+    const found = all.find((item: RawEvent) => item.id === id);
     return found ? mapEvent(found) : null;
 }
 
