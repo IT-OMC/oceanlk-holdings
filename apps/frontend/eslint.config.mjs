@@ -30,7 +30,10 @@ export default tseslint.config(
       'react-hooks/purity': 'warn',
 
       // Carried over from .eslintrc.cjs
-      '@typescript-eslint/no-unused-vars': 'warn',
+      // argsIgnorePattern lets a deliberately-unused parameter (e.g. the error
+      // in getDerivedStateFromError, kept for its type/readability) be named
+      // instead of discarded as a bare `_`, without still tripping this rule.
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
     },
   },

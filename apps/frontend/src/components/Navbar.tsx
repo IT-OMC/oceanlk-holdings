@@ -7,56 +7,64 @@ import { Search, ChevronDown, X, Menu } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchModal from './SearchModal';
 import { useCompanies } from './CompaniesProvider';
+import { useTranslation } from 'react-i18next';
 
 export const navigationData = [
     {
         name: "Home",
+        tKey: "home",
         path: "/",
         footerPath: "/"
     },
     {
         name: "Corporate",
+        tKey: "corporate",
         hasDropdown: true,
         subItems: [
-            { name: "Profile", path: "/corporate/profile" },
-            { name: "Leadership", path: "/corporate/leadership" }
+            { name: "Profile", tKey: "profile", path: "/corporate/profile" },
+            { name: "Leadership", tKey: "leadership", path: "/corporate/leadership" }
         ],
         footerPath: "/corporate/profile"
     },
     {
         name: "Companies",
+        tKey: "companies",
         hasDropdown: true,
         subItems: [],
         footerPath: "/companies"
     },
     {
         name: "News",
+        tKey: "news",
         hasDropdown: true,
         subItems: [
-            { name: "Blogs", path: "/news/blogs" },
-            { name: "News", path: "/news/articles" },
-            { name: "Media", path: "/news/media" }
+            { name: "Blogs", tKey: "blogs", path: "/news/blogs" },
+            { name: "News", tKey: "articles", path: "/news/articles" },
+            { name: "Media", tKey: "media", path: "/news/media" }
         ],
         footerPath: "/news/articles"
     },
     {
         name: "Life at OCH",
+        tKey: "careers",
         hasDropdown: true,
         subItems: [
-            { name: "Culture", path: "/careers/culture" },
-            { name: "Onboard", path: "/careers/opportunities" },
-            { name: "Talent Pool", path: "/careers/talent-pool" }
+            { name: "Culture", tKey: "culture", path: "/careers/culture" },
+            { name: "Onboard", tKey: "onboard", path: "/careers/opportunities" },
+            { name: "Talent Pool", tKey: "talentPool", path: "/careers/talent-pool" }
         ],
         footerPath: "/careers/opportunities"
     },
     {
         name: "Contact Us",
+        tKey: "contact",
         path: "/contact",
         footerPath: "/contact"
     }
 ];
 
 const Navbar = () => {
+    const { t } = useTranslation();
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -83,7 +91,7 @@ const Navbar = () => {
     const getSubItems = (link: any) => {
         if (link.name === 'Companies' && companies.length > 0) {
             return [
-                { name: 'All Companies', path: '/companies' },
+                { name: 'All Companies', tKey: 'allCompanies', path: '/companies' },
                 ...companies.map((c: any) => ({
                     name: c.title,
                     path: `/companies/${c.id}`,
@@ -158,7 +166,7 @@ const Navbar = () => {
                                             className={`text-base font-semibold transition-all duration-300 relative inline-block py-4 ${(isHomePage && !isScrolled) ? 'text-white hover:text-white/80' : 'text-primary hover:text-accent'}`}
                                             onClick={(e) => link.hasDropdown && e.preventDefault()}
                                         >
-                                            {link.name}
+                                            {link.tKey ? t(`nav.${link.tKey}`) : link.name}
                                             <span className={`absolute bottom-2 left-0 w-0 h-0.5 transition-all duration-300 ${(isHomePage && !isScrolled) ? 'bg-white group-hover:w-full' : 'bg-accent group-hover:w-full'}`} />
                                         </Link>
                                         {link.hasDropdown && (
@@ -192,7 +200,7 @@ const Navbar = () => {
                                                                     />
                                                                 </div>
                                                             )}
-                                                            <span className={subItem.logo ? '' : 'ml-8'}>{subItem.name}</span>
+                                                            <span className={subItem.logo ? '' : 'ml-8'}>{subItem.tKey ? t(`nav.${subItem.tKey}`) : subItem.name}</span>
                                                         </Link>
                                                     ))}
                                                 </div>
@@ -225,7 +233,7 @@ const Navbar = () => {
 
                             {/* Language Switcher */}
                             <div className="hidden md:block">
-                                <LanguageSwitcher />
+                                <LanguageSwitcher isScrolled={isScrolled} isHomePage={isHomePage} />
                             </div>
 
                             {/* Hamburger Menu Button - Mobile Only */}
@@ -286,7 +294,7 @@ const Navbar = () => {
                                                     onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
                                                     className="w-full flex items-center justify-between px-4 py-3 text-base font-semibold text-primary hover:bg-gray-50 rounded-lg transition-colors"
                                                 >
-                                                    {link.name}
+                                                    {link.tKey ? t(`nav.${link.tKey}`) : link.name}
                                                     <ChevronDown
                                                         className={`w-5 h-5 transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''}`}
                                                     />
@@ -316,7 +324,7 @@ const Navbar = () => {
                                                                             />
                                                                         </div>
                                                                     )}
-                                                                    <span>{subItem.name}</span>
+                                                                    <span>{subItem.tKey ? t(`nav.${subItem.tKey}`) : subItem.name}</span>
                                                                 </Link>
                                                             ))}
                                                         </motion.div>
@@ -329,7 +337,7 @@ const Navbar = () => {
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 className="block px-4 py-3 text-base font-semibold text-primary hover:bg-gray-50 rounded-lg transition-colors"
                                             >
-                                                {link.name}
+                                                {link.tKey ? t(`nav.${link.tKey}`) : link.name}
                                             </Link>
                                         )}
                                     </div>
@@ -338,7 +346,7 @@ const Navbar = () => {
 
                             {/* Footer with Language Switcher */}
                             <div className="border-t border-gray-200 p-6">
-                                <LanguageSwitcher />
+                                <LanguageSwitcher isScrolled={isScrolled} isHomePage={isHomePage} />
                             </div>
                         </motion.div>
                     </>

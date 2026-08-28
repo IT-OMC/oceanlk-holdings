@@ -126,5 +126,38 @@
         "allRightsReserved": "版权所有",
         "privacyPolicy": "隐私政策",
         "termsOfService": "服务条款"
+    },
+    "chatWidget": {
+        "online": "我们在线！",
+        "askAnything": "询问有关 OceanLK Holdings 的任何问题！"
+    },
+    "pages": {
+        "companies": {
+            "title": "Our Companies",
+            "subtitle": "A diversified portfolio of industry-leading companies driving excellence across multiple sectors."
+        },
+        "corporate": {
+            "profile": {
+                "title": "Corporate Profile"
+            },
+            "leadership": {
+                "badge": "Excellence in Leadership",
+                "title": "Meet The Leadership Team",
+                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience."
+            }
+        },
+        "careers": {
+            "opportunities": {
+                "badge": "Join Our Team",
+                "title1": "Shape the Future",
+                "title2": "with Ocean Ceylon",
+                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector."
+            },
+            "jobApplication": {
+                "personalDetails": "个人详情",
+                "professionalDetails": "专业详情",
+                "uploadCV": "上传简历"
+            }
+        }
     }
 }

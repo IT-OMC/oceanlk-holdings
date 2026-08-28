@@ -16,7 +16,7 @@ const Testimonials = () => {
     }, []);
 
     return (
-        <section className="py-20 lg:py-32 bg-navy relative overflow-hidden">
+        <section className="py-8 lg:py-24 bg-white relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -33,10 +33,10 @@ const Testimonials = () => {
                     viewport={{ once: true }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+                    <h2 className="text-4xl lg:text-5xl font-bold text-navy mb-4">
                         Client <span className="text-accent">Testimonials</span>
                     </h2>
-                    <p className="text-slate-300 text-xl max-w-2xl mx-auto">
+                    <p className="text-navy text-xl max-w-2xl mx-auto">
                         Success stories from our valued partners around the globe
                     </p>
                 </motion.div>
@@ -50,7 +50,7 @@ const Testimonials = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="glass p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+                            className="p-8 rounded-2xl bg-navy hover:bg-navy/95 transition-all duration-300 group"
                         >
                             <div className="flex justify-between mb-4">
                                 {/* Quote Icon */}

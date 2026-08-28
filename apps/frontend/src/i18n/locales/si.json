@@ -126,5 +126,38 @@
         "allRightsReserved": "සියලුම හිමිකම් ඇවිරිණි",
         "privacyPolicy": "පෞද්ගලිකත්ව ප්‍රතිපත්තිය",
         "termsOfService": "සේවා කොන්දේසි"
+    },
+    "chatWidget": {
+        "online": "අපි මාර්ගගතව සිටිමු!",
+        "askAnything": "OceanLK Holdings ගැන ඕනෑම දෙයක් අපෙන් අසන්න!"
+    },
+    "pages": {
+        "companies": {
+            "title": "Our Companies",
+            "subtitle": "A diversified portfolio of industry-leading companies driving excellence across multiple sectors."
+        },
+        "corporate": {
+            "profile": {
+                "title": "Corporate Profile"
+            },
+            "leadership": {
+                "badge": "Excellence in Leadership",
+                "title": "Meet The Leadership Team",
+                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience."
+            }
+        },
+        "careers": {
+            "opportunities": {
+                "badge": "Join Our Team",
+                "title1": "Shape the Future",
+                "title2": "with Ocean Ceylon",
+                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector."
+            },
+            "jobApplication": {
+                "personalDetails": "පුද්ගලික විස්තර",
+                "professionalDetails": "වෘත්තීය විස්තර",
+                "uploadCV": "CV උඩුගත කරන්න"
+            }
+        }
     }
 }

@@ -7,10 +7,15 @@ import type { Company } from '@/views/companies/CompanySingle';
 export const revalidate = 0;
 
 export async function generateStaticParams() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
-    if (!res.ok) return [];
-    const companies: Company[] = await res.json();
-    return companies.map((c) => ({ id: c.id }));
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES);
+        if (!res.ok) return [];
+        const companies: Company[] = await res.json();
+        return companies.map((c) => ({ id: c.id }));
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation.');
+        return [];
+    }
 }
 
 async function getCompany(id: string): Promise<Company | null> {
@@ -20,7 +25,7 @@ async function getCompany(id: string): Promise<Company | null> {
     return res.json();
 }
 
-export async function generateMetadata(props: PageProps<'/companies/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const company = await getCompany(id);
     if (!company) return { title: 'Company Not Found' };
@@ -30,7 +35,7 @@ export async function generateMetadata(props: PageProps<'/companies/[id]'>): Pro
     };
 }
 
-export default async function Page(props: PageProps<'/companies/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
 
     const [company, companiesRes] = await Promise.all([

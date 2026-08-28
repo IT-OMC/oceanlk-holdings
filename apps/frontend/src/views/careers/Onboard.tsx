@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import SectionWrapper from '../../components/SectionWrapper';
 import { MapPin, Briefcase, ArrowRight, Search, Filter, Sparkles, Star, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const categories = ['All', 'Engineering', 'Hospitality', 'Technology', 'Finance', 'Marketing'];
 
@@ -21,6 +22,7 @@ export interface JobOpportunity {
 }
 
 const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
+    const { t } = useTranslation();
     const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
@@ -123,7 +125,7 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <Sparkles className="w-4 h-4 text-emerald-400 relative z-10" />
-                        <span className="text-sm font-semibold text-white relative z-10">Join Our Team</span>
+                        <span className="text-sm font-semibold text-white relative z-10">{t('pages.careers.opportunities.badge')}</span>
                     </motion.div>
 
                     {/* Hero Title with Parallax */}
@@ -134,11 +136,11 @@ const Onboard = ({ jobOpenings }: { jobOpenings: JobOpportunity[] }) => {
                         transition={{ delay: 0.3, duration: 0.8 }}
                     >
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-blue-200">
-                            Shape the Future
+                            {t('pages.careers.opportunities.title1')}
                         </span>
                         <br />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-emerald-200 to-white">
-                            with Ocean Ceylon
+                            {t('pages.careers.opportunities.title2')}
                         </span>
                     </motion.h1>
 

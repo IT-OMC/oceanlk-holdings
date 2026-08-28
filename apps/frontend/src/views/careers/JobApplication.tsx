@@ -7,8 +7,10 @@ import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Star, CheckCircle, AlertCircle, FileText, ArrowLeft, Briefcase, MapPin, Clock } from 'lucide-react';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
 import { JobOpportunity } from '../../types/api';
+import { useTranslation } from 'react-i18next';
 
 const JobApplication = ({ job }: { job: JobOpportunity }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -128,24 +130,26 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative">
             {/* Animated Gradient Mesh Background */}
-            <div className="absolute inset-0 opacity-30">
-                <div
-                    className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[120px] animate-pulse"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)',
-                        transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
-                    }}
-                />
-                <div
-                    className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[120px] animate-pulse"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
-                        animationDelay: '1s',
-                        transform: `translate(${-mousePosition.x * 0.01}px, ${-mousePosition.y * 0.01}px)`
-                    }}
-                />
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute inset-0 opacity-30">
+                    <div
+                        className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[120px] animate-pulse"
+                        style={{
+                            background: 'radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)',
+                            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
+                        }}
+                    />
+                    <div
+                        className="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[120px] animate-pulse"
+                        style={{
+                            background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
+                            animationDelay: '1s',
+                            transform: `translate(${-mousePosition.x * 0.01}px, ${-mousePosition.y * 0.01}px)`
+                        }}
+                    />
+                </div>
             </div>
 
             <SectionWrapper id="job-application" className="pt-32 pb-20 relative z-10">
@@ -159,13 +163,13 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    {/* Job Details Sidebar */}
-                    <div className="lg:col-span-1">
+                <div className="flex flex-col lg:flex-row items-start gap-10">
+                    {/* Job Details — scrollable left column */}
+                    <div className="w-full lg:w-1/2">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 sticky top-32"
+                            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8"
                         >
                             <div className="mb-6">
                                 <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-4">
@@ -199,30 +203,20 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                         </motion.div>
                     </div>
 
-                    {/* Application Form */}
-                    <div className="lg:col-span-1">
+                    {/* Application Form — sticky right column */}
+                    <div className="w-full lg:w-1/2 lg:sticky lg:top-32 h-fit max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="relative group/form"
+                            className="relative group/form pb-4"
                         >
-                            {/* Animated Border Gradient */}
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/30 to-blue-500/30 rounded-3xl opacity-50 blur-lg group-hover/form:opacity-75 transition-opacity duration-500" />
 
-                            <div
-                                className="relative p-1.5 rounded-3xl overflow-hidden"
-                                style={{
-                                    background: 'rgba(15, 30, 58, 0.7)',
-                                    backdropFilter: 'blur(24px)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-                                }}
-                            >
+                            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden">
                                 {!isSubmitted ? (
                                     <>
                                         {/* Progress Indicator */}
-                                        <div className="px-8 pt-8 pb-8 bg-gradient-to-b from-white/5 to-transparent rounded-t-2xl">
+                                        <div className="px-6 pt-6 pb-6 bg-gradient-to-b from-white/5 to-transparent rounded-t-2xl">
                                             <div className="flex items-center justify-between relative">
                                                 {/* Background Track */}
                                                 <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 rounded-full -z-10" />
@@ -230,8 +224,8 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                 {[1, 2, 3].map((step) => (
                                                     <div key={step} className="relative flex flex-col items-center">
                                                         <motion.div
-                                                            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl transition-all duration-300 relative z-10 border-4 ${currentStep >= step
-                                                                ? 'bg-emerald-500 border-[#0f1e3a] text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 relative z-10 border-4 ${currentStep >= step
+                                                                ? 'bg-emerald-500 border-[#0f1e3a] text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]'
                                                                 : 'bg-[#0f1e3a] border-white/10 text-gray-500'
                                                                 }`}
                                                             animate={{
@@ -258,7 +252,7 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                             </div>
                                         </div>
 
-                                        <form onSubmit={handleSubmit} className="p-8 md:p-10">
+                                        <form onSubmit={handleSubmit} className="p-6 md:p-8">
                                             <AnimatePresence mode="wait">
                                                 {/* Step 1: Personal Information */}
                                                 {currentStep === 1 && (
@@ -268,8 +262,8 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                         animate={{ opacity: 1, x: 0 }}
                                                         exit={{ opacity: 0, x: -20 }}
                                                     >
-                                                        <h3 className="text-2xl font-bold text-white mb-6">Personal Details</h3>
-                                                        <div className="space-y-6">
+                                                        <h3 className="text-xl font-bold text-white mb-5">{t('pages.careers.jobApplication.personalDetails')}</h3>
+                                                        <div className="space-y-5">
                                                             {[
                                                                 { id: 'fullName', label: 'Full Name', type: 'text', placeholder: 'e.g. Sarah Smith' },
                                                                 { id: 'email', label: 'Email Address', type: 'email', placeholder: 'sarah@example.com' },
@@ -286,7 +280,7 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                                             name={field.id}
                                                                             value={formData[field.id as keyof typeof formData] as string}
                                                                             onChange={handleChange}
-                                                                            className={`w-full px-5 py-4 rounded-xl bg-white/5 border text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition-all ${errors[field.id] ? 'border-red-500/50' : 'border-white/10 focus:border-emerald-500/50'}`}
+                                                                            className={`w-full px-4 py-3 text-sm rounded-xl bg-white/5 border text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 transition-all ${errors[field.id] ? 'border-red-500/50' : 'border-white/10 focus:border-emerald-500/50'}`}
                                                                             placeholder={field.placeholder}
                                                                         />
                                                                         {errors[field.id] && (
@@ -300,13 +294,13 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                             ))}
                                                         </div>
 
-                                                        <div className="flex justify-end mt-10">
+                                                        <div className="flex justify-end mt-8">
                                                             <motion.button
                                                                 type="button"
                                                                 onClick={nextStep}
                                                                 whileHover={{ scale: 1.02 }}
                                                                 whileTap={{ scale: 0.98 }}
-                                                                className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
+                                                                className="px-6 py-3 rounded-xl font-bold text-lg flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
                                                             >
                                                                 Next Step <ChevronRight className="w-5 h-5" />
                                                             </motion.button>
@@ -322,8 +316,8 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                         animate={{ opacity: 1, x: 0 }}
                                                         exit={{ opacity: 0, x: -20 }}
                                                     >
-                                                        <h3 className="text-2xl font-bold text-white mb-6">Professional Details</h3>
-                                                        <div className="space-y-6">
+                                                        <h3 className="text-xl font-bold text-white mb-5">{t('pages.careers.jobApplication.professionalDetails')}</h3>
+                                                        <div className="space-y-5">
                                                             <div className="group">
                                                                 <label className="block text-sm font-semibold text-gray-300 mb-2 ml-1">
                                                                     Applying For
@@ -332,7 +326,7 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                                     type="text"
                                                                     value={formData.position}
                                                                     disabled
-                                                                    className="w-full px-5 py-4 rounded-xl bg-white/10 border border-white/10 text-gray-400 cursor-not-allowed"
+                                                                    className="w-full px-4 py-3 text-sm rounded-xl bg-white/10 border border-white/10 text-gray-400 cursor-not-allowed"
                                                                 />
                                                             </div>
 
@@ -346,7 +340,7 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                                         name="experience"
                                                                         value={formData.experience}
                                                                         onChange={handleChange}
-                                                                        className={`w-full px-5 py-4 rounded-xl bg-white/5 border text-white focus:outline-none appearance-none cursor-pointer ${errors.experience ? 'border-red-500/50' : 'border-white/10 focus:border-emerald-500/50'}`}
+                                                                        className={`w-full px-4 py-3 text-sm rounded-xl bg-white/5 border text-white focus:outline-none appearance-none cursor-pointer ${errors.experience ? 'border-red-500/50' : 'border-white/10 focus:border-emerald-500/50'}`}
                                                                     >
                                                                         <option value="" className="bg-[#0f1e3a] text-gray-400">Select experience level</option>
                                                                         <option value="0-2" className="bg-[#0f1e3a] text-white">0-2 years</option>
@@ -373,27 +367,27 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                                     name="message"
                                                                     value={formData.message}
                                                                     onChange={handleChange}
-                                                                    rows={4}
-                                                                    className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50"
+                                                                    rows={3}
+                                                                    className="w-full px-4 py-3 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50"
                                                                     placeholder="Why are you a good fit for this role?"
                                                                 />
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex justify-between mt-10">
+                                                        <div className="flex justify-between mt-8">
                                                             <motion.button
                                                                 type="button"
                                                                 onClick={prevStep}
-                                                                className="px-6 py-4 rounded-xl font-semibold flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                                                                className="px-5 py-3 rounded-xl font-semibold flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm"
                                                             >
-                                                                <ChevronLeft className="w-5 h-5" /> Back
+                                                                <ChevronLeft className="w-4 h-4" /> Back
                                                             </motion.button>
                                                             <motion.button
                                                                 type="button"
                                                                 onClick={nextStep}
                                                                 whileHover={{ scale: 1.02 }}
                                                                 whileTap={{ scale: 0.98 }}
-                                                                className="px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
+                                                                className="px-6 py-3 rounded-xl font-bold text-lg flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
                                                             >
                                                                 Next Step <ChevronRight className="w-5 h-5" />
                                                             </motion.button>
@@ -409,11 +403,11 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                         animate={{ opacity: 1, x: 0 }}
                                                         exit={{ opacity: 0, x: -20 }}
                                                     >
-                                                        <h3 className="text-2xl font-bold text-white mb-6">Upload CV</h3>
+                                                        <h3 className="text-xl font-bold text-white mb-5">{t('pages.careers.jobApplication.uploadCV')}</h3>
 
-                                                        <div className="mb-10">
+                                                        <div className="mb-8">
                                                             <div
-                                                                className="relative border-2 border-dashed rounded-3xl p-16 text-center hover:border-emerald-400 transition-all duration-300 cursor-pointer group overflow-hidden bg-white/[0.02]"
+                                                                className="relative border-2 border-dashed rounded-3xl p-10 text-center hover:border-emerald-400 transition-all duration-300 cursor-pointer group overflow-hidden bg-white/[0.02]"
                                                                 style={{
                                                                     borderColor: formData.file ? '#10b981' : 'rgba(255,255,255,0.1)'
                                                                 }}
@@ -464,26 +458,26 @@ const JobApplication = ({ job }: { job: JobOpportunity }) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex justify-between mt-10">
+                                                        <div className="flex justify-between mt-8">
                                                             <motion.button
                                                                 type="button"
                                                                 onClick={prevStep}
-                                                                className="px-6 py-4 rounded-xl font-semibold flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                                                                className="px-5 py-3 rounded-xl font-semibold flex items-center gap-2 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm"
                                                             >
-                                                                <ChevronLeft className="w-5 h-5" /> Back
+                                                                <ChevronLeft className="w-4 h-4" /> Back
                                                             </motion.button>
                                                             <motion.button
                                                                 type="submit"
                                                                 disabled={!formData.file || isSubmitting}
                                                                 whileHover={formData.file && !isSubmitting ? { scale: 1.02 } : {}}
                                                                 whileTap={formData.file && !isSubmitting ? { scale: 0.98 } : {}}
-                                                                className={`px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 transition-all duration-300 ${formData.file && !isSubmitting
+                                                                className={`px-6 py-3 rounded-xl font-bold text-lg flex items-center gap-2 transition-all duration-300 ${formData.file && !isSubmitting
                                                                     ? 'bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg'
                                                                     : 'bg-white/5 text-gray-500 cursor-not-allowed border border-white/5'
                                                                     }`}
                                                             >
                                                                 {isSubmitting ? 'Sending...' : 'Submit Application'}
-                                                                {!isSubmitting && <Send className="w-5 h-5" />}
+                                                                {!isSubmitting && <Send className="w-4 h-4" />}
                                                             </motion.button>
                                                         </div>
                                                         {apiError && (

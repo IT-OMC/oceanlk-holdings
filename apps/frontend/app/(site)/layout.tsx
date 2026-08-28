@@ -3,7 +3,9 @@ import Footer from '@/components/Footer'
 import MainLayout from '@/layouts/MainLayout'
 import { CompaniesProvider } from '@/components/CompaniesProvider'
 import { SocialLinksProvider } from '@/components/SocialLinksProvider'
+import { ContactInfoProvider } from '@/components/ContactInfoProvider'
 import { getSocialLinks } from '@/lib/socialLinks'
+import { getContactInfo } from '@/lib/contactInfo'
 import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api'
 import type { Company } from '@/views/companies/CompanySingle'
 
@@ -14,20 +16,23 @@ async function getCompanies(): Promise<Company[]> {
 }
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  // Fetched in parallel — neither read depends on the other.
-  const [initialCompanies, socialLinks] = await Promise.all([
+  // Fetched in parallel — none of these reads depend on the others.
+  const [initialCompanies, socialLinks, contactInfo] = await Promise.all([
     getCompanies(),
     getSocialLinks(),
+    getContactInfo(),
   ])
 
   return (
     <CompaniesProvider initialCompanies={initialCompanies}>
       <SocialLinksProvider socialLinks={socialLinks}>
-        <div className="fixed top-0 left-0 right-0 z-50">
-          <Navbar />
-        </div>
-        <MainLayout>{children}</MainLayout>
-        <Footer />
+        <ContactInfoProvider contactInfo={contactInfo}>
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <Navbar />
+          </div>
+          <MainLayout>{children}</MainLayout>
+          <Footer />
+        </ContactInfoProvider>
       </SocialLinksProvider>
     </CompaniesProvider>
   )

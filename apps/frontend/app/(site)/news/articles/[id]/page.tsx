@@ -32,7 +32,7 @@ async function getArticle(id: string) {
     return article;
 }
 
-export async function generateMetadata(props: PageProps<'/news/articles/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const article = await getArticle(id);
     if (!article) return { title: 'Article Not Found' };
@@ -43,7 +43,7 @@ export async function generateMetadata(props: PageProps<'/news/articles/[id]'>):
     };
 }
 
-export default async function Page(props: PageProps<'/news/articles/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const article = await getArticle(id);
     if (!article) notFound();
