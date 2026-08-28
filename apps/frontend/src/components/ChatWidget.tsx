@@ -60,14 +60,16 @@ const ChatWidget = () => {
     // Initialize with welcome message when opened/loaded
     useEffect(() => {
         if (config?.welcomeMessage && messages.length === 0) {
-            setMessages([
-                {
-                    id: 'welcome',
-                    text: config.welcomeMessage,
-                    sender: 'agent',
-                    timestamp: new Date()
-                }
-            ]);
+            setTimeout(() => {
+                setMessages([
+                    {
+                        id: 'welcome',
+                        text: config.welcomeMessage,
+                        sender: 'agent',
+                        timestamp: new Date()
+                    }
+                ]);
+            }, 0);
         }
     }, [config, messages.length]);
 

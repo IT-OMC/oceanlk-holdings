@@ -33,7 +33,7 @@ async function getEvent(id: string): Promise<Event | null> {
     return found ? mapEvent(found) : null;
 }
 
-export async function generateMetadata(props: PageProps<'/careers/events/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const event = await getEvent(id);
     if (!event) return { title: 'Event Not Found' };
@@ -44,7 +44,7 @@ export async function generateMetadata(props: PageProps<'/careers/events/[id]'>)
     };
 }
 
-export default async function Page(props: PageProps<'/careers/events/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const event = await getEvent(id);
     if (!event) notFound();

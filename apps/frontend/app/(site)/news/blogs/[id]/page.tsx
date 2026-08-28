@@ -34,7 +34,7 @@ async function getBlog(id: string) {
     return blog;
 }
 
-export async function generateMetadata(props: PageProps<'/news/blogs/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const blog = await getBlog(id);
     if (!blog) return { title: 'Blog Post Not Found' };
@@ -45,7 +45,7 @@ export async function generateMetadata(props: PageProps<'/news/blogs/[id]'>): Pr
     };
 }
 
-export default async function Page(props: PageProps<'/news/blogs/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const blog = await getBlog(id);
     if (!blog) notFound();

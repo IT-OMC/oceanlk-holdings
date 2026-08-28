@@ -14,7 +14,7 @@ async function getJob(id: string): Promise<JobOpportunity | null> {
     return jobs.find((j) => j.id === id) ?? null;
 }
 
-export async function generateMetadata(props: PageProps<'/careers/opportunities/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const job = await getJob(id);
     if (!job) return { title: 'Job Not Found' };
@@ -24,7 +24,7 @@ export async function generateMetadata(props: PageProps<'/careers/opportunities/
     };
 }
 
-export default async function Page(props: PageProps<'/careers/opportunities/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const job = await getJob(id);
     if (!job) notFound();

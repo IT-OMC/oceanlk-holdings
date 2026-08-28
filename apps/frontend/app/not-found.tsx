@@ -4,11 +4,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+interface Particle {
+    x1: number;
+    y1: number;
+    scale: number;
+    x2: number;
+    y2: number;
+    duration: number;
+}
+
 export default function NotFound() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [particlesReady, setParticlesReady] = useState(false);
+    const [particles, setParticles] = useState<Particle[]>([]);
 
     useEffect(() => {
+        setParticles([...Array(20)].map(() => ({
+            x1: Math.random() * window.innerWidth,
+            y1: Math.random() * window.innerHeight,
+            scale: Math.random() * 0.5 + 0.5,
+            x2: Math.random() * window.innerWidth,
+            y2: Math.random() * window.innerHeight,
+            duration: Math.random() * 20 + 10
+        })));
         setParticlesReady(true);
 
         const handleMouseMove = (e: MouseEvent) => {
@@ -50,21 +68,21 @@ export default function NotFound() {
             </div>
 
             {/* Floating Particles */}
-            {particlesReady && [...Array(20)].map((_, i) => (
+            {particlesReady && particles.map((p, i) => (
                 <motion.div
                     key={i}
                     className="absolute w-1 h-1 bg-white/20 rounded-full z-0 pointer-events-none"
                     initial={{
-                        x: Math.random() * window.innerWidth,
-                        y: Math.random() * window.innerHeight,
-                        scale: Math.random() * 0.5 + 0.5
+                        x: p.x1,
+                        y: p.y1,
+                        scale: p.scale
                     }}
                     animate={{
-                        y: [null, Math.random() * window.innerHeight],
-                        x: [null, Math.random() * window.innerWidth],
+                        y: [null, p.y2],
+                        x: [null, p.x2],
                     }}
                     transition={{
-                        duration: Math.random() * 20 + 10,
+                        duration: p.duration,
                         repeat: Infinity,
                         repeatType: "reverse"
                     }}

@@ -11,8 +11,10 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = sessionStorage.getItem('adminToken')
     if (!token) {
-      setStatus('denied')
-      router.replace('/admin')
+      setTimeout(() => {
+        setStatus('denied')
+        router.replace('/admin')
+      }, 0)
       return
     }
     fetch(NEXT_PUBLIC_API_BASE_URL.VALIDATE_TOKEN, { headers: { Authorization: `Bearer ${token}` } })

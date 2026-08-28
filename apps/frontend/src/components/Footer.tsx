@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { companyData } from '../data/companyData';
 import { useSocialLinks } from './SocialLinksProvider';
 import { useContactInfo } from './ContactInfoProvider';
@@ -41,9 +42,11 @@ const Footer = () => {
                         viewport={{ once: true }}
                         className="lg:col-span-4"
                     >
-                        <img
+                        <Image
                             src="/och-logo.png"
                             alt={companyData.company.name}
+                            width={200}
+                            height={64}
                             className="h-16 w-auto mb-3"
                         />
                         <p className="text-xl text-slate-400 mb-4 italic">

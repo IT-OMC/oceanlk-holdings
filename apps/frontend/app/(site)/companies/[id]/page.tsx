@@ -20,7 +20,7 @@ async function getCompany(id: string): Promise<Company | null> {
     return res.json();
 }
 
-export async function generateMetadata(props: PageProps<'/companies/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const company = await getCompany(id);
     if (!company) return { title: 'Company Not Found' };
@@ -30,7 +30,7 @@ export async function generateMetadata(props: PageProps<'/companies/[id]'>): Pro
     };
 }
 
-export default async function Page(props: PageProps<'/companies/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
 
     const [company, companiesRes] = await Promise.all([

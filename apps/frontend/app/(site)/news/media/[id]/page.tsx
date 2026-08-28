@@ -20,7 +20,7 @@ async function getMediaItem(id: string) {
     return media;
 }
 
-export async function generateMetadata(props: PageProps<'/news/media/[id]'>): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await props.params;
     const media = await getMediaItem(id);
     if (!media) return { title: 'Media Not Found' };
@@ -31,7 +31,7 @@ export async function generateMetadata(props: PageProps<'/news/media/[id]'>): Pr
     };
 }
 
-export default async function Page(props: PageProps<'/news/media/[id]'>) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
     const { id } = await props.params;
     const media = await getMediaItem(id);
     if (!media) notFound();
