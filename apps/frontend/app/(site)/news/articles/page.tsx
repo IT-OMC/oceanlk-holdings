@@ -16,24 +16,29 @@ function getGridSpan(index: number) {
 }
 
 export default async function Page() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error(`News fetch failed: ${res.status}`);
-    const data = await res.json();
-
-    const newsArticles: NewsArticle[] = data.map((item: any, index: number) => ({
-        id: item.id,
-        title: item.title,
-        excerpt: item.excerpt || item.description,
-        description: item.description,
-        imageUrl: item.imageUrl,
-        publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }),
-        category: item.category,
-        span: getGridSpan(index),
-    }));
+    let newsArticles: NewsArticle[] = [];
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS, { next: { revalidate: 3600 } });
+        if (res.ok) {
+            const data = await res.json();
+            newsArticles = data.map((item: any, index: number) => ({
+                id: item.id,
+                title: item.title,
+                excerpt: item.excerpt || item.description,
+                description: item.description,
+                imageUrl: item.imageUrl,
+                publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                }),
+                category: item.category,
+                span: getGridSpan(index),
+            }));
+        }
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation for articles.');
+    }
 
     return <News newsArticles={newsArticles} />;
 }
