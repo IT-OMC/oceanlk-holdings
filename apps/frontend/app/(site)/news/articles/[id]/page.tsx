@@ -6,10 +6,15 @@ import NewsSingle, { type NewsArticle } from '@/views/news/NewsSingle';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS);
-    if (!res.ok) return [];
-    const articles = await res.json();
-    return articles.map((a: { id: string }) => ({ id: a.id }));
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_NEWS);
+        if (!res.ok) return [];
+        const articles = await res.json();
+        return articles.map((a: { id: string }) => ({ id: a.id }));
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation.');
+        return [];
+    }
 }
 
 async function getArticle(id: string) {

@@ -10,9 +10,14 @@ import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api'
 import type { Company } from '@/views/companies/CompanySingle'
 
 async function getCompanies(): Promise<Company[]> {
-  const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES, { next: { revalidate: 60 } })
-  if (!res.ok) return []
-  return res.json()
+  try {
+    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.COMPANIES, { next: { revalidate: 60 } })
+    if (!res.ok) return []
+    return res.json()
+  } catch (error) {
+    console.warn("Backend unreachable during build, skipping static generation for layout companies.");
+    return []
+  }
 }
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {

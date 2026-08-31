@@ -10,9 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.JOBS, { next: { revalidate: 300 } });
-    if (!res.ok) throw new Error(`Jobs fetch failed: ${res.status}`);
-    const jobOpenings: JobOpportunity[] = await res.json();
+    let jobOpenings: JobOpportunity[] = [];
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.JOBS, { next: { revalidate: 300 } });
+        if (res.ok) {
+            jobOpenings = await res.json();
+        }
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation for opportunities.');
+    }
 
     return <Onboard jobOpenings={jobOpenings} />;
 }

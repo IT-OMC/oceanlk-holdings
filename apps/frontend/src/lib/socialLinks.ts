@@ -13,13 +13,19 @@ import { companyData } from '@/data/companyData';
 export const SOCIAL_LINKS_PAGE = 'GLOBAL';
 export const SOCIAL_LINKS_SECTION = 'SOCIAL_LINKS';
 
+/** A platform is only shown on the site when `enabled` is true AND `url` is non-empty. */
+export interface SocialLink {
+    url: string;
+    enabled: boolean;
+}
+
 export interface SocialLinks {
-    facebook: string;
-    linkedin: string;
-    instagram: string;
-    x: string;
-    weChat: string;
-    youtube: string;
+    facebook: SocialLink;
+    linkedin: SocialLink;
+    instagram: SocialLink;
+    x: SocialLink;
+    weChat: SocialLink;
+    youtube: SocialLink;
 }
 
 /** Drives both the admin form and the icon rows, so the two can't drift apart. */
@@ -35,20 +41,42 @@ export const SOCIAL_PLATFORMS: { key: keyof SocialLinks; label: string; placehol
 /**
  * Fallback used before an admin has ever saved the row, and whenever the API is
  * unreachable. Seeded from the values that used to be hardcoded, so the site
- * looks identical on day one.
+ * looks identical on day one (all enabled).
  */
-export const DEFAULT_SOCIAL_LINKS: SocialLinks = { ...companyData.socialMedio };
+export const DEFAULT_SOCIAL_LINKS: SocialLinks = SOCIAL_PLATFORMS.reduce((acc, { key }) => {
+    acc[key] = { url: companyData.socialMedio[key], enabled: true };
+    return acc;
+}, {} as SocialLinks);
+
+/** True only when a platform should actually be rendered on the site. */
+export const isSocialLinkVisible = (link: SocialLink) => link.enabled && link.url.trim().length > 0;
+
+function normalizeLink(raw: unknown, fallback: SocialLink): SocialLink {
+    // Legacy rows (saved before the enabled toggle existed) store a bare URL
+    // string; treat those as enabled so previously-live links keep showing.
+    if (typeof raw === 'string') {
+        const url = raw.trim();
+        return { url, enabled: url.length > 0 };
+    }
+    if (raw && typeof raw === 'object') {
+        const obj = raw as Partial<SocialLink>;
+        return {
+            url: typeof obj.url === 'string' ? obj.url.trim() : fallback.url,
+            enabled: typeof obj.enabled === 'boolean' ? obj.enabled : fallback.enabled,
+        };
+    }
+    return fallback;
+}
 
 /** Tolerant parse: bad or partial JSON degrades to the defaults rather than blanking the footer. */
 export function parseSocialLinks(content?: string | null): SocialLinks {
     if (!content) return { ...DEFAULT_SOCIAL_LINKS };
     try {
-        const parsed = JSON.parse(content) as Partial<SocialLinks>;
+        const parsed = JSON.parse(content) as Partial<Record<keyof SocialLinks, unknown>>;
         if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_SOCIAL_LINKS };
-        const merged = { ...DEFAULT_SOCIAL_LINKS };
+        const merged = {} as SocialLinks;
         for (const { key } of SOCIAL_PLATFORMS) {
-            const value = parsed[key];
-            if (typeof value === 'string') merged[key] = value.trim();
+            merged[key] = normalizeLink(parsed[key], DEFAULT_SOCIAL_LINKS[key]);
         }
         return merged;
     } catch {

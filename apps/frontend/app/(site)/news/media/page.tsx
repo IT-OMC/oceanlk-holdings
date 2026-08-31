@@ -10,9 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error(`Media fetch failed: ${res.status}`);
-    const mediaItems: MediaItem[] = await res.json();
+    let mediaItems: MediaItem[] = [];
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA, { next: { revalidate: 3600 } });
+        if (res.ok) {
+            mediaItems = await res.json();
+        }
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation for media.');
+    }
 
     return <Media mediaItems={mediaItems} />;
 }

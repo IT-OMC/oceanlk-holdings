@@ -6,7 +6,6 @@ import { Target, Eye } from 'lucide-react';
 import Timeline from '../../components/corporate/Timeline';
 import BentoGrid from '../../components/corporate/BentoGrid';
 import Memberships from '../../components/Memberships';
-import { companyData } from '@/data/companyData';
 import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
@@ -124,14 +123,14 @@ const Profile = () => {
                             transition={{ delay: 0.2, duration: 0.8 }}
                             className="inline-block mb-6 px-6 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm"
                         >
-                            <span className="text-blue-300 font-medium tracking-wide uppercase text-sm">Est. 1990</span>
+                            <span className="text-blue-300 font-medium tracking-wide uppercase text-sm">{t('pages.corporate.profile.badge')}</span>
                         </motion.div>
 
                         <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-blue-100 to-blue-900/50 tracking-tight">
-                            {t('pages.corporate.profile.title')}
+                            {t('pages.corporate.profile.heroTitle1')} <br /> {t('pages.corporate.profile.heroTitle2')}
                         </h1>
                         <p className="text-xl md:text-3xl text-gray-300 leading-relaxed font-light max-w-3xl mx-auto">
-                            {companyData.company.tagline}
+                            {t('pages.corporate.profile.heroDescription')}
                         </p>
                     </motion.div>
                 </SectionWrapper>

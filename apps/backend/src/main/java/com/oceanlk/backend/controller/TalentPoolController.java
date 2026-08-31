@@ -5,7 +5,6 @@ import com.oceanlk.backend.repository.TalentPoolApplicationRepository;
 import com.oceanlk.backend.service.EmailService;
 import com.oceanlk.backend.service.FileStorageService;
 import com.oceanlk.backend.model.StoredFile;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

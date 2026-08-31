@@ -294,6 +294,17 @@ public class PendingChangeController {
     }
 
     private void handleGlobalMetricChange(PendingChange pendingChange, String action) {
+        if ("REORDER".equals(action)) {
+            // Bundled as one PendingChange covering every stat whose position
+            // moved, so approving it applies the whole new order at once.
+            GlobalMetric[] updates = pendingChangeService.parseChangeData(pendingChange.getChangeData(),
+                    GlobalMetric[].class);
+            for (GlobalMetric update : updates) {
+                globalMetricService.updateMetric(update.getId(), update);
+            }
+            return;
+        }
+
         GlobalMetric metric = pendingChangeService.parseChangeData(pendingChange.getChangeData(), GlobalMetric.class);
 
         switch (action) {

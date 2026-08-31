@@ -62,6 +62,57 @@ public class GlobalMetricController {
                 }
         }
 
+        /**
+         * Reorder is submitted as a single batch so it produces exactly one
+         * pending change to approve, not one per stat whose position shifted
+         * (moving one stat past another changes both of their displayOrder).
+         */
+        @PutMapping("/reorder")
+        @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+        public ResponseEntity<?> reorderMetrics(@RequestBody List<GlobalMetric> orderedMetrics, Principal principal,
+                        Authentication authentication) {
+                boolean isSuperAdmin = authentication.getAuthorities().stream()
+                                .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+                if (isSuperAdmin) {
+                        List<GlobalMetric> saved = orderedMetrics.stream()
+                                        .map(update -> {
+                                                GlobalMetric existing = repository.findById(update.getId())
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                                "Metric not found with id: "
+                                                                                                + update.getId()));
+                                                existing.setDisplayOrder(update.getDisplayOrder());
+                                                return repository.save(existing);
+                                        })
+                                        .toList();
+
+                        pendingChangeService.createApprovedChange(
+                                        "GlobalMetric", null, "REORDER", principal.getName(), saved, null);
+
+                        auditLogService.logAction(principal.getName(), "REORDER", "GlobalMetric", null,
+                                        "Reordered global metrics");
+                        return ResponseEntity.ok(saved);
+                } else {
+                        boolean hasPendingReorder = pendingChangeService.getPendingChangesByEntityType("GlobalMetric")
+                                        .stream()
+                                        .anyMatch(pc -> "REORDER".equals(pc.getAction()));
+                        if (hasPendingReorder) {
+                                return ResponseEntity.badRequest().body(Map.of(
+                                                "error", "A reorder is already awaiting approval"));
+                        }
+
+                        com.oceanlk.backend.model.PendingChange pendingChange = pendingChangeService
+                                        .createPendingChange(
+                                                        "GlobalMetric", null, "REORDER", principal.getName(),
+                                                        orderedMetrics, null);
+                        auditLogService.logAction(principal.getName(), "SUBMIT_FOR_APPROVAL", "GlobalMetric", null,
+                                        "Submitted metric reorder for approval");
+                        return ResponseEntity.ok(Map.of(
+                                        "message", "Reorder submitted for approval",
+                                        "pendingChange", pendingChange));
+                }
+        }
+
         @PutMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
         public ResponseEntity<?> updateMetric(@PathVariable @NonNull String id,

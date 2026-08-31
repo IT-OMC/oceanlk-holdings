@@ -16,26 +16,31 @@ function getGridSpan(index: number) {
 }
 
 export default async function Page() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error(`Blogs fetch failed: ${res.status}`);
-    const data = await res.json();
-
-    const blogPosts: BlogPost[] = data.map((item: any, index: number) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        excerpt: item.excerpt || item.description,
-        imageUrl: item.imageUrl,
-        author: item.author || 'OceanLK Team',
-        publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }),
-        category: item.category,
-        readTime: item.readTime || '5 min read',
-        span: getGridSpan(index),
-    }));
+    let blogPosts: BlogPost[] = [];
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_BLOGS, { next: { revalidate: 3600 } });
+        if (res.ok) {
+            const data = await res.json();
+            blogPosts = data.map((item: any, index: number) => ({
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                excerpt: item.excerpt || item.description,
+                imageUrl: item.imageUrl,
+                author: item.author || 'OceanLK Team',
+                publishedDate: new Date(item.publishedDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                }),
+                category: item.category,
+                readTime: item.readTime || '5 min read',
+                span: getGridSpan(index),
+            }));
+        }
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation for blogs.');
+    }
 
     return <Blogs blogPosts={blogPosts} />;
 }

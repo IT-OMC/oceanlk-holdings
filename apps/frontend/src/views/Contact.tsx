@@ -1,8 +1,8 @@
 'use client';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import SectionWrapper from '../components/SectionWrapper';
-import { Phone, Mail, Send, Building2, Sparkles } from 'lucide-react';
+import { Phone, Mail, Send, Building2, Sparkles, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { NEXT_PUBLIC_API_BASE_URL } from '../utils/api';
@@ -44,6 +44,8 @@ const Contact = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [particlesReady, setParticlesReady] = useState(false);
+    const [isSubjectOpen, setIsSubjectOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setParticlesReady(true);
@@ -54,8 +56,33 @@ const Contact = () => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsSubjectOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!formData.subject) {
+            toast.error('Please select a subject for your message.', {
+                duration: 4000,
+                style: {
+                    background: '#ef4444',
+                    color: '#fff',
+                    fontWeight: '600',
+                },
+            });
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -111,6 +138,14 @@ const Contact = () => {
             [e.target.name]: e.target.value
         });
     };
+
+    const subjects = [
+        { value: 'general', label: t('contact.form.subjectGeneral') },
+        { value: 'partnership', label: t('contact.form.subjectPartnership') },
+        { value: 'investment', label: t('contact.form.subjectInvestment') },
+        { value: 'career', label: t('contact.form.subjectCareer') },
+        { value: 'other', label: t('contact.form.subjectOther') },
+    ];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e3a] to-[#1a2847] relative overflow-hidden">
@@ -349,30 +384,61 @@ const Contact = () => {
                                     </div>
                                 </div>
 
-                                <div className="mb-6">
+                                <div className="mb-6" ref={dropdownRef}>
                                     <label htmlFor="subject" className="block text-sm font-semibold mb-2 text-gray-200">
                                         {t('contact.form.subjectLabel')} {t('contact.form.required')}
                                     </label>
-                                    <select
-                                        id="subject"
-                                        name="subject"
-                                        value={formData.subject}
-                                        onChange={handleChange}
-                                        required
-                                        className="w-full px-4 py-3 rounded-xl text-white focus:outline-none transition-all"
-                                        style={{
-                                            background: 'rgba(255,255,255,0.05)',
-                                            backdropFilter: 'blur(10px)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                        }}
-                                    >
-                                        <option value="" className="bg-[#0f1e3a]">{t('contact.form.subjectPlaceholder')}</option>
-                                        <option value="general" className="bg-[#0f1e3a]">{t('contact.form.subjectGeneral')}</option>
-                                        <option value="partnership" className="bg-[#0f1e3a]">{t('contact.form.subjectPartnership')}</option>
-                                        <option value="investment" className="bg-[#0f1e3a]">{t('contact.form.subjectInvestment')}</option>
-                                        <option value="career" className="bg-[#0f1e3a]">{t('contact.form.subjectCareer')}</option>
-                                        <option value="other" className="bg-[#0f1e3a]">{t('contact.form.subjectOther')}</option>
-                                    </select>
+                                    <div className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSubjectOpen(!isSubjectOpen)}
+                                            className="w-full px-4 py-3 rounded-xl text-left text-white focus:outline-none transition-all flex items-center justify-between"
+                                            style={{
+                                                background: 'rgba(255,255,255,0.05)',
+                                                backdropFilter: 'blur(10px)',
+                                                border: isSubjectOpen ? '1px solid rgba(16,185,129,0.5)' : '1px solid rgba(255,255,255,0.1)',
+                                            }}
+                                        >
+                                            <span className={formData.subject ? "text-white" : "text-gray-400"}>
+                                                {formData.subject 
+                                                    ? subjects.find(s => s.value === formData.subject)?.label || t('contact.form.subjectPlaceholder')
+                                                    : t('contact.form.subjectPlaceholder')
+                                                }
+                                            </span>
+                                            <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isSubjectOpen ? 'rotate-180' : ''}`} />
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {isSubjectOpen && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="absolute z-50 w-full mt-2 rounded-xl overflow-hidden shadow-2xl"
+                                                    style={{
+                                                        background: 'rgba(15, 30, 58, 0.95)',
+                                                        backdropFilter: 'blur(16px)',
+                                                        border: '1px solid rgba(255,255,255,0.1)',
+                                                    }}
+                                                >
+                                                    {subjects.map((subject) => (
+                                                        <button
+                                                            key={subject.value}
+                                                            type="button"
+                                                            className="w-full px-4 py-3 text-left text-gray-200 hover:bg-emerald-500/20 hover:text-white transition-colors"
+                                                            onClick={() => {
+                                                                setFormData({ ...formData, subject: subject.value });
+                                                                setIsSubjectOpen(false);
+                                                            }}
+                                                        >
+                                                            {subject.label}
+                                                        </button>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
                                 </div>
 
                                 <div className="mb-6">

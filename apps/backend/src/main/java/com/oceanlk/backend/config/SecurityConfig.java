@@ -85,7 +85,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/debug/**").hasRole("SUPER_ADMIN")
 
                                                 // Admin endpoints
-                                                .requestMatchers("/api/admin/audit-logs/**").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/admin/audit-logs/**")
+                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/api/admin/whatsapp")
                                                 .hasRole("SUPER_ADMIN")
                                                 .requestMatchers("/api/admin/management/list")

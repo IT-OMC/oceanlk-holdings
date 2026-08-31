@@ -6,10 +6,15 @@ import MediaSingle, { type MediaItem } from '@/views/news/MediaSingle';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-    const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA);
-    if (!res.ok) return [];
-    const items = await res.json();
-    return items.map((m: { id: string }) => ({ id: m.id }));
+    try {
+        const res = await fetch(NEXT_PUBLIC_API_BASE_URL.MEDIA_MEDIA);
+        if (!res.ok) return [];
+        const items = await res.json();
+        return items.map((m: { id: string }) => ({ id: m.id }));
+    } catch {
+        console.warn('Backend unreachable during build, skipping static generation.');
+        return [];
+    }
 }
 
 async function getMediaItem(id: string) {

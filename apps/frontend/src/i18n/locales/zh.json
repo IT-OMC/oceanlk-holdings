@@ -138,25 +138,50 @@
         },
         "corporate": {
             "profile": {
-                "title": "Corporate Profile"
+                "title": "Corporate Profile",
+                "badge": "成立于 1990",
+                "heroTitle1": "企业",
+                "heroTitle2": "简介",
+                "heroDescription": "通过创新的物流解决方案连接斯里兰卡与世界。"
             },
             "leadership": {
-                "badge": "Excellence in Leadership",
+                "badge": "卓越领导力",
                 "title": "Meet The Leadership Team",
-                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience."
+                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience.",
+                "heroTitle1": "认识",
+                "heroTitle2": "领导团队",
+                "heroDescription": "推动创新、卓越和可持续发展的有远见的领导者。",
+                "stats": {
+                    "stat1": "多年经验",
+                    "stat2": "领导成员",
+                    "stat3": "致力于卓越"
+                }
             }
         },
         "careers": {
             "opportunities": {
-                "badge": "Join Our Team",
+                "badge": "加入我们",
                 "title1": "Shape the Future",
                 "title2": "with Ocean Ceylon",
-                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector."
+                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector.",
+                "heroTitle1": "塑造未来",
+                "heroTitle2": "与 Ocean Ceylon 一起",
+                "heroDescription": "发现您的才华所在。我们正在共同创造非凡的事物。"
             },
             "jobApplication": {
                 "personalDetails": "个人详情",
                 "professionalDetails": "专业详情",
                 "uploadCV": "上传简历"
+            },
+            "talentPool": {
+                "badge": "人才社区",
+                "heroTitle1": "您的未来",
+                "heroTitle2": "从这里开始",
+                "heroDescription": "没有看到完美的职位？加入我们的人才库。"
+            },
+            "culture": {
+                "heroTitle1": "不仅仅是一份工作。",
+                "heroTitle2": "一段旅程。"
             }
         }
     }

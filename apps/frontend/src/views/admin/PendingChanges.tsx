@@ -13,7 +13,7 @@ interface PendingChange {
     id: string;
     entityType: string;
     entityId: string | null;
-    action: 'CREATE' | 'UPDATE' | 'DELETE';
+    action: 'CREATE' | 'UPDATE' | 'DELETE' | 'REORDER';
     status: 'PENDING' | 'APPROVED' | 'REJECTED';
     submittedBy: string;
     submittedAt: string;

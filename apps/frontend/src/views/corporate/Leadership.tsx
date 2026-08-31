@@ -207,11 +207,11 @@ const Leadership = ({ leaders, categories }: LeadershipProps) => {
                     </motion.div>
 
                     <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
-                        {t('pages.corporate.leadership.title')}
+                        {t('pages.corporate.leadership.heroTitle1')} <br /> {t('pages.corporate.leadership.heroTitle2')}
                     </h1>
 
                     <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-                        {t('pages.corporate.leadership.subtitle')}
+                        {t('pages.corporate.leadership.heroDescription')}
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-8 mt-12">
@@ -220,21 +220,21 @@ const Leadership = ({ leaders, categories }: LeadershipProps) => {
                             className="glass px-8 py-4 rounded-xl border border-accent/30"
                         >
                             <div className="text-3xl font-bold text-accent">15+</div>
-                            <div className="text-sm text-gray-300">Years Average Experience</div>
+                            <div className="text-sm text-gray-300">{t('pages.corporate.leadership.stats.stat1')}</div>
                         </motion.div>
                         <motion.div
                             whileHover={{ scale: 1.05 }}
                             className="glass px-8 py-4 rounded-xl border border-primary/30"
                         >
                             <div className="text-3xl font-bold text-primary">{leaders.length}</div>
-                            <div className="text-sm text-gray-300">Leadership Members</div>
+                            <div className="text-sm text-gray-300">{t('pages.corporate.leadership.stats.stat2')}</div>
                         </motion.div>
                         <motion.div
                             whileHover={{ scale: 1.05 }}
                             className="glass px-8 py-4 rounded-xl border border-accent/30"
                         >
                             <div className="text-3xl font-bold text-accent">100%</div>
-                            <div className="text-sm text-gray-300">Committed to Excellence</div>
+                            <div className="text-sm text-gray-300">{t('pages.corporate.leadership.stats.stat3')}</div>
                         </motion.div>
                     </div>
                 </motion.div>

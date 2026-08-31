@@ -138,25 +138,50 @@
         },
         "corporate": {
             "profile": {
-                "title": "Corporate Profile"
+                "title": "Corporate Profile",
+                "badge": "स्थापित 1990",
+                "heroTitle1": "कॉर्पोरेट",
+                "heroTitle2": "प्रोफ़ाइल",
+                "heroDescription": "अभिनव रसद समाधानों के माध्यम से श्रीलंका और दुनिया के बीच की खाई को पाटना।"
             },
             "leadership": {
-                "badge": "Excellence in Leadership",
+                "badge": "नेतृत्व में उत्कृष्टता",
                 "title": "Meet The Leadership Team",
-                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience."
+                "subtitle": "Visionary leaders driving innovation, excellence, and sustainable growth across all our business operations with decades of combined experience.",
+                "heroTitle1": "मिलिए",
+                "heroTitle2": "नेतृत्व टीम से",
+                "heroDescription": "नवाचार और सतत विकास को चलाने वाले दूरदर्शी नेता।",
+                "stats": {
+                    "stat1": "वर्षों का अनुभव",
+                    "stat2": "नेतृत्व सदस्य",
+                    "stat3": "प्रतिबद्धता"
+                }
             }
         },
         "careers": {
             "opportunities": {
-                "badge": "Join Our Team",
+                "badge": "हमारी टीम में शामिल हों",
                 "title1": "Shape the Future",
                 "title2": "with Ocean Ceylon",
-                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector."
+                "subtitle": "Discover exciting career opportunities and be part of a dynamic team driving innovation in the maritime and logistics sector.",
+                "heroTitle1": "भविष्य को आकार दें",
+                "heroTitle2": "Ocean Ceylon के साथ",
+                "heroDescription": "पता लगाएं कि आपकी प्रतिभा कहां फिट बैठती है। हम कुछ असाधारण बना रहे हैं।"
             },
             "jobApplication": {
                 "personalDetails": "व्यक्तिगत विवरण",
                 "professionalDetails": "व्यावसायिक विवरण",
                 "uploadCV": "सीवी अपलोड करें"
+            },
+            "talentPool": {
+                "badge": "प्रतिभा समुदाय",
+                "heroTitle1": "आपका भविष्य",
+                "heroTitle2": "यहाँ से शुरू होता है",
+                "heroDescription": "सही भूमिका नहीं दिख रही है? हमारे टैलेंट पूल में शामिल हों।"
+            },
+            "culture": {
+                "heroTitle1": "सिर्फ एक नौकरी नहीं।",
+                "heroTitle2": "एक यात्रा।"
             }
         }
     }

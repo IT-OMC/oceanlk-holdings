@@ -2,11 +2,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Coffee, TrendingUp, Award, Users, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // How long each stage stays active before auto-advancing to the next one.
 const AUTO_ADVANCE_MS = 5000;
 
 const RefreshedCultureHero = () => {
+    const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [activeStage, setActiveStage] = useState(0);
 
@@ -95,9 +97,9 @@ const RefreshedCultureHero = () => {
                             transition={{ duration: 0.8 }}
                         >
                             <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white tracking-tight mb-6">
-                                Not just a job. <br />
+                                {t('pages.careers.culture.heroTitle1')} <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-light to-secondary">
-                                    A Journey.
+                                    {t('pages.careers.culture.heroTitle2')}
                                 </span>
                             </h1>
                             <p className="text-slate-300 text-xl md:text-xl leading-relaxed max-w-lg">

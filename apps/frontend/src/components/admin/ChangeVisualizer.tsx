@@ -4,7 +4,7 @@ import MediaPreview from './MediaPreview';
 
 interface ChangeVisualizerProps {
     entityType: string;
-    action: 'CREATE' | 'UPDATE' | 'DELETE';
+    action: 'CREATE' | 'UPDATE' | 'DELETE' | 'REORDER';
     changeData: string;
     originalData?: string;
 }
@@ -27,6 +27,29 @@ const ChangeVisualizer: React.FC<ChangeVisualizerProps> = ({
 
     const newData = parseJSON(changeData);
     const oldData = parseJSON(originalData);
+
+    // Reorder actions (e.g. GlobalMetric stats) submit changeData as an array
+    // of the full new ordering rather than a single entity, so the generic
+    // key/value diff table below (which assumes one object) doesn't apply.
+    if (Array.isArray(newData)) {
+        return (
+            <div className="bg-[#0B1120] rounded-lg border border-gray-800 overflow-hidden shadow-inner">
+                <div className="px-6 py-3 bg-[#151C2C]/30 border-b border-gray-800 flex justify-between items-center">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">New Order</span>
+                    <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20">{entityType}</span>
+                </div>
+                <ol className="divide-y divide-gray-800/50">
+                    {newData.map((item: any, index: number) => (
+                        <li key={item?.id ?? index} className="px-6 py-3 flex items-center gap-4 text-sm">
+                            <span className="text-gray-500 font-mono w-6">{index + 1}.</span>
+                            {item?.value && <span className="text-emerald-400 font-semibold">{item.value}</span>}
+                            <span className="text-gray-300">{item?.label ?? item?.name ?? item?.title ?? `Item ${index + 1}`}</span>
+                        </li>
+                    ))}
+                </ol>
+            </div>
+        );
+    }
 
     // Media fields that should be rendered as previews
     const mediaFields = ['imageUrl', 'videoUrl', 'galleryImages', 'image', 'avatar', 'logoUrl', 'video'];

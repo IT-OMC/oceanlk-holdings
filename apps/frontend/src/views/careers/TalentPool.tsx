@@ -5,8 +5,10 @@ import SectionWrapper from '../../components/SectionWrapper';
 import { Upload, Send, ChevronRight, ChevronLeft, Sparkles, Target, Zap, Users, TrendingUp, Star, Quote, FileText, BrainCircuit, Bell, Rocket, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
+import { useTranslation } from 'react-i18next';
 
 const TalentPool = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -244,7 +246,7 @@ const TalentPool = () => {
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <Sparkles className="w-4 h-4 text-emerald-400 relative z-10" />
-                        <span className="text-sm font-semibold text-white relative z-10">Join Our Talent Community</span>
+                        <span className="text-sm font-semibold text-white relative z-10">{t('pages.careers.talentPool.badge')}</span>
                     </motion.div>
 
                     {/* Hero Title */}
@@ -254,13 +256,9 @@ const TalentPool = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
                     >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-blue-200">
-                            Your Future
-                        </span>
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-blue-200">{t('pages.careers.talentPool.heroTitle1')}</span>
                         <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-emerald-200 to-white">
-                            Starts Here
-                        </span>
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-emerald-200 to-white">{t('pages.careers.talentPool.heroTitle2')}</span>
                     </motion.h1>
 
                     <motion.p
@@ -270,7 +268,7 @@ const TalentPool = () => {
                         transition={{ delay: 0.5, duration: 0.8 }}
                         style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}
                     >
-                        Don't see the perfect role right now? Join our talent pool and be first in line when opportunities arise across our portfolio of innovative companies.
+                        {t('pages.careers.talentPool.heroDescription')}
                     </motion.p>
                 </motion.div>
 

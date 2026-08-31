@@ -87,23 +87,34 @@ const SocialLinksManagement = () => {
         fetchPendingSubmission();
     }, [fetchLinks, fetchPendingSubmission]);
 
-    const handleChange = (key: keyof SocialLinks, value: string) => {
-        setLinks((prev) => ({ ...prev, [key]: value }));
+    const handleUrlChange = (key: keyof SocialLinks, value: string) => {
+        setLinks((prev) => ({ ...prev, [key]: { ...prev[key], url: value } }));
+        setErrors((prev) => ({ ...prev, [key]: undefined }));
+    };
+
+    const handleToggle = (key: keyof SocialLinks) => {
+        setLinks((prev) => ({ ...prev, [key]: { ...prev[key], enabled: !prev[key].enabled } }));
         setErrors((prev) => ({ ...prev, [key]: undefined }));
     };
 
     const validate = () => {
         const next: Partial<Record<keyof SocialLinks, string>> = {};
         for (const { key, label } of SOCIAL_PLATFORMS) {
-            const value = links[key].trim();
-            if (!value) next[key] = `${label} URL is required`;
+            const { url, enabled } = links[key];
+            // A disabled platform isn't shown on the site, so its URL doesn't
+            // need to be filled in or even valid yet.
+            if (!enabled) continue;
+            const value = url.trim();
+            if (!value) next[key] = `${label} URL is required while it's shown on the site`;
             else if (!isValidUrl(value)) next[key] = 'Must be a full http:// or https:// URL';
         }
         setErrors(next);
         return Object.keys(next).length === 0;
     };
 
-    const isDirty = SOCIAL_PLATFORMS.some(({ key }) => links[key].trim() !== savedLinks[key]);
+    const isDirty = SOCIAL_PLATFORMS.some(
+        ({ key }) => links[key].url.trim() !== savedLinks[key].url || links[key].enabled !== savedLinks[key].enabled,
+    );
 
     const handleSave = async () => {
         if (!validate()) {
@@ -114,7 +125,7 @@ const SocialLinksManagement = () => {
         setSaving(true);
         try {
             const trimmed = SOCIAL_PLATFORMS.reduce((acc, { key }) => {
-                acc[key] = links[key].trim();
+                acc[key] = { url: links[key].url.trim(), enabled: links[key].enabled };
                 return acc;
             }, {} as SocialLinks);
 
@@ -172,11 +183,10 @@ const SocialLinksManagement = () => {
             <div className="flex items-start justify-between gap-4 flex-wrap">
 
                 <span
-                    className={`text-xs px-3 py-1.5 rounded-full border ${
-                        isSuperAdmin
+                    className={`text-xs px-3 py-1.5 rounded-full border ${isSuperAdmin
                             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                             : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                    }`}
+                        }`}
                 >
                     {isSuperAdmin ? 'Changes publish immediately' : 'Changes require super admin approval'}
                 </span>
@@ -194,45 +204,72 @@ const SocialLinksManagement = () => {
             )}
 
             <div className="bg-[#0B1120] rounded-lg border border-gray-800 divide-y divide-gray-800/60">
-                {SOCIAL_PLATFORMS.map(({ key, label, placeholder }, index) => (
-                    <motion.div
-                        key={key}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                        className="p-5"
-                    >
-                        <div className="flex items-center justify-between mb-2">
-                            <label htmlFor={`social-${key}`} className="text-sm font-medium text-gray-300">
-                                {label}
-                            </label>
-                            {isValidUrl(links[key].trim()) && (
-                                <a
-                                    href={links[key].trim()}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs text-gray-500 hover:text-emerald-400 flex items-center gap-1 transition-colors"
-                                >
-                                    Open <ExternalLink size={12} />
-                                </a>
-                            )}
-                        </div>
-                        <input
-                            id={`social-${key}`}
-                            type="url"
-                            inputMode="url"
-                            value={links[key]}
-                            placeholder={placeholder}
-                            onChange={(e) => handleChange(key, e.target.value)}
-                            className={`w-full bg-[#151C2C] border rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-gray-600 outline-none transition-colors ${
-                                errors[key]
-                                    ? 'border-rose-500/60 focus:border-rose-500'
-                                    : 'border-gray-700 focus:border-emerald-500'
-                            }`}
-                        />
-                        {errors[key] && <p className="text-xs text-rose-400 mt-1.5">{errors[key]}</p>}
-                    </motion.div>
-                ))}
+                {SOCIAL_PLATFORMS.map(({ key, label, placeholder }, index) => {
+                    const { url, enabled } = links[key];
+                    return (
+                        <motion.div
+                            key={key}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.03 }}
+                            className={`p-5 transition-opacity ${enabled ? '' : 'opacity-60'}`}
+                        >
+                            <div className="flex items-center justify-between mb-2 gap-3">
+                                <div className="flex items-center gap-3">
+                                    <label htmlFor={`social-${key}`} className="text-sm font-medium text-gray-300">
+                                        {label}
+                                    </label>
+                                    <span className={`text-xs ${enabled ? 'text-emerald-400' : 'text-gray-500'}`}>
+                                        {enabled ? 'Shown on site' : 'Hidden'}
+                                    </span>
+                                </div>
+                                {isValidUrl(url.trim()) && (
+                                    <a
+                                        href={url.trim()}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-gray-500 hover:text-emerald-400 flex items-center gap-1 transition-colors"
+                                    >
+                                        Open <ExternalLink size={12} />
+                                    </a>
+                                )}
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <div className="flex-1">
+                                    <input
+                                        id={`social-${key}`}
+                                        type="url"
+                                        inputMode="url"
+                                        value={url}
+                                        placeholder={placeholder}
+                                        onChange={(e) => handleUrlChange(key, e.target.value)}
+                                        className={`w-full bg-[#151C2C] border rounded-lg px-4 py-2.5 text-sm text-white placeholder:text-gray-600 outline-none transition-colors ${errors[key]
+                                                ? 'border-rose-500/60 focus:border-rose-500'
+                                                : 'border-gray-700 focus:border-emerald-500'
+                                            }`}
+                                    />
+                                    {errors[key] && <p className="text-xs text-rose-400 mt-1.5">{errors[key]}</p>}
+                                </div>
+                                <div className="flex items-center h-10 shrink-0">
+                                    <button
+                                        type="button"
+                                        role="switch"
+                                        aria-checked={enabled}
+                                        aria-label={`${enabled ? 'Hide' : 'Show'} ${label} on the site`}
+                                        onClick={() => handleToggle(key)}
+                                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${enabled ? 'bg-emerald-600' : 'bg-gray-700'
+                                            }`}
+                                    >
+                                        <span
+                                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'
+                                                }`}
+                                        />
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
             </div>
 
             <div className="flex items-center justify-end gap-3">

@@ -1,7 +1,6 @@
 package com.oceanlk.backend.service;
 
 import com.oceanlk.backend.dto.SearchDTO;
-import com.oceanlk.backend.model.*;
 import com.oceanlk.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Trash2, Edit2, BarChart3 } from 'lucide-react';
+import { motion, Reorder } from 'framer-motion';
+import { Plus, Trash2, Edit2, BarChart3, GripVertical, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
@@ -15,6 +15,7 @@ interface GlobalMetric {
 
 const StatsManagement = () => {
     const [stats, setStats] = useState<GlobalMetric[]>([]);
+    const [isReordered, setIsReordered] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<GlobalMetric | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -41,6 +42,7 @@ const StatsManagement = () => {
             if (response.ok) {
                 const data = await response.json();
                 setStats(data);
+                setIsReordered(false);
             }
         } catch (error) {
             toast.error('Failed to fetch stats');
@@ -84,6 +86,43 @@ const StatsManagement = () => {
             }
         } catch (error) {
             toast.error('An error occurred');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSaveOrder = async () => {
+        setIsLoading(true);
+        try {
+            const token = sessionStorage.getItem('adminToken');
+            // Sent as a single batch (not one PUT per moved stat) so a reorder
+            // is exactly one pending change for a super admin to approve, not
+            // one per stat whose position shifted.
+            const reordered = stats.map((stat, index) => ({ ...stat, displayOrder: index + 1 }));
+
+            const response = await fetch(NEXT_PUBLIC_API_BASE_URL.METRICS_REORDER, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(reordered),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.pendingChange) {
+                    toast.success('Order change submitted for approval');
+                } else {
+                    toast.success('Order saved successfully');
+                }
+            } else {
+                const data = await response.json().catch(() => null);
+                toast.error(data?.error || 'Failed to save order');
+            }
+            fetchStats();
+        } catch (error) {
+            toast.error('An error occurred while saving order');
         } finally {
             setIsLoading(false);
         }
@@ -135,29 +174,46 @@ const StatsManagement = () => {
                 <div>
                     <p className="text-gray-400">Manage the key metrics displayed on the home page</p>
                 </div>
-                <button
-                    onClick={() => {
-                        setEditingItem(null);
-                        setFormData({ label: '', value: '', icon: 'BarChart', displayOrder: 0 });
-                        setIsModalOpen(true);
-                    }}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center gap-2 transition-colors"
-                >
-                    <Plus size={20} />
-                    Add Stat
-                </button>
+                <div className="flex gap-4">
+                    {isReordered && (
+                        <button
+                            onClick={handleSaveOrder}
+                            disabled={isLoading}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50"
+                        >
+                            <Save size={20} />
+                            Save Order
+                        </button>
+                    )}
+                    <button
+                        onClick={() => {
+                            setEditingItem(null);
+                            setFormData({ label: '', value: '', icon: 'BarChart', displayOrder: 0 });
+                            setIsModalOpen(true);
+                        }}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                        <Plus size={20} />
+                        Add Stat
+                    </button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat) => (
-                    <motion.div
+            <Reorder.Group values={stats} onReorder={(newOrder) => { setStats(newOrder); setIsReordered(true); }} className="flex flex-col gap-4">
+                {stats.map((stat, index) => (
+                    <Reorder.Item
                         key={stat.id}
-                        layout
-                        className="bg-white/5 rounded-xl p-6 border border-white/10 flex flex-col items-center text-center hover:border-emerald-500/30 transition-colors"
+                        value={stat}
+                        className="bg-white/5 rounded-xl p-4 px-6 border min-h-24 w-3/4 border-white/10 flex flex-row items-center justify-between hover:border-emerald-500/30 transition-colors cursor-grab active:cursor-grabbing relative"
                     >
-                        <div className="text-4xl font-bold text-emerald-400 mb-2">{stat.value}</div>
-                        <div className="text-gray-400 font-medium mb-4">{stat.label}</div>
-                        <div className="mt-auto flex gap-2 w-full">
+                        <div className="flex items-center gap-8">
+                            <div className="text-gray-500 flex items-center gap-4">
+                                <span className="font-medium text-lg min-w-[20px]">{index + 1}.</span>
+                            </div>
+                            <div className="text-3xl font-bold text-emerald-400 min-w-[140px]">{stat.value}</div>
+                            <div className="text-gray-300 font-medium text-lg">{stat.label}</div>
+                        </div>
+                        <div className="flex items-center gap-3" onPointerDown={(e) => e.stopPropagation()}>
                             <button
                                 onClick={() => {
                                     setEditingItem(stat);
@@ -169,23 +225,26 @@ const StatsManagement = () => {
                                     });
                                     setIsModalOpen(true);
                                 }}
-                                className="flex-1 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg transition-colors flex justify-center"
+                                className="p-2.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg transition-colors"
                             >
-                                <Edit2 size={16} />
+                                <Edit2 size={18} />
                             </button>
                             <button
                                 onClick={() => {
                                     setItemToDelete(stat.id);
                                     setDeleteModalOpen(true);
                                 }}
-                                className="flex-1 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors flex justify-center"
+                                className="p-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
                             >
-                                <Trash2 size={16} />
+                                <Trash2 size={18} />
                             </button>
+                            <div className="text-gray-500 flex items-center gap-4 ml-8">
+                                <GripVertical size={20} />
+                            </div>
                         </div>
-                    </motion.div>
+                    </Reorder.Item>
                 ))}
-            </div>
+            </Reorder.Group>
 
             {!initialLoading && stats.length === 0 && (
                 <div className="text-center py-16 text-gray-400 bg-white/5 rounded-xl border border-white/10">
