@@ -4,8 +4,10 @@ import { Star, Quote } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NEXT_PUBLIC_API_BASE_URL } from '@/utils/api';
 import { Testimonial } from '@/types/api';
+import { useTranslation } from 'react-i18next';
 
 const Testimonials = () => {
+    const { t } = useTranslation();
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
     useEffect(() => {
@@ -34,10 +36,10 @@ const Testimonials = () => {
                     className="text-center mb-16"
                 >
                     <h2 className="text-4xl lg:text-5xl font-bold text-navy mb-4">
-                        Client <span className="text-accent">Testimonials</span>
+                        {t('testimonials.title')} <span className="text-accent">{t('testimonials.titleAccent')}</span>
                     </h2>
                     <p className="text-navy text-xl max-w-2xl mx-auto">
-                        Success stories from our valued partners around the globe
+                        {t('testimonials.description')}
                     </p>
                 </motion.div>
 

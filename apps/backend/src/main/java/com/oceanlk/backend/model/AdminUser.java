@@ -35,7 +35,7 @@ public class AdminUser {
     @Column(columnDefinition = "TEXT")
     private String avatar;
 
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "admin_user_email_preferences", joinColumns = @JoinColumn(name = "admin_user_id"))
     @MapKeyColumn(name = "preference_key")
     @Column(name = "preference_value")

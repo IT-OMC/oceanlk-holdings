@@ -1,9 +1,9 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { companyData } from '../data/companyData';
 import { useSocialLinks } from './SocialLinksProvider';
+import { isSocialLinkVisible } from '../lib/socialLinks';
 import { useContactInfo } from './ContactInfoProvider';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { Linkedin, Facebook, Instagram, Youtube } from './icons/BrandIcons';
@@ -42,11 +42,9 @@ const Footer = () => {
                         viewport={{ once: true }}
                         className="lg:col-span-4"
                     >
-                        <Image
+                        <img
                             src="/och-logo.png"
                             alt={companyData.company.name}
-                            width={200}
-                            height={64}
                             className="h-16 w-auto mb-3"
                         />
                         <p className="text-xl text-slate-400 mb-4 italic">
@@ -129,24 +127,26 @@ const Footer = () => {
                         {/* Social Media - Moved here from Contact */}
                         <div className="flex gap-3 mt-8">
                             {[
-                                { Icon: Facebook, href: social.facebook },
-                                { Icon: Linkedin, href: social.linkedin },
-                                { Icon: Instagram, href: social.instagram },
-                                { Icon: XIcon, href: social.x },
-                                { Icon: WeChatIcon, href: social.weChat },
-                                { Icon: Youtube, href: social.youtube }
-                            ].map(({ Icon, href }, index) => (
-                                <motion.a
-                                    key={index}
-                                    whileHover={{ scale: 1.1, y: -2 }}
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-all text-slate-400"
-                                >
-                                    <Icon className="w-4 h-4" />
-                                </motion.a>
-                            ))}
+                                { Icon: Facebook, link: social.facebook },
+                                { Icon: Linkedin, link: social.linkedin },
+                                { Icon: Instagram, link: social.instagram },
+                                { Icon: XIcon, link: social.x },
+                                { Icon: WeChatIcon, link: social.weChat },
+                                { Icon: Youtube, link: social.youtube }
+                            ]
+                                .filter(({ link }) => isSocialLinkVisible(link))
+                                .map(({ Icon, link }, index) => (
+                                    <motion.a
+                                        key={index}
+                                        whileHover={{ scale: 1.1, y: -2 }}
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-all text-slate-400"
+                                    >
+                                        <Icon className="w-4 h-4" />
+                                    </motion.a>
+                                ))}
                         </div>
                     </motion.div>
 

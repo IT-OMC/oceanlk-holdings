@@ -6,7 +6,6 @@ import { Target, Eye } from 'lucide-react';
 import Timeline from '../../components/corporate/Timeline';
 import BentoGrid from '../../components/corporate/BentoGrid';
 import Memberships from '../../components/Memberships';
-import { companyData } from '@/data/companyData';
 import { useTranslation } from 'react-i18next';
 
 const Profile = () => {

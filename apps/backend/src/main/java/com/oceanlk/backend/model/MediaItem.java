@@ -48,7 +48,7 @@ public class MediaItem {
     private Integer photoCount; // For galleries
     private Integer pageCount; // For documents
 
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "media_item_gallery_images", joinColumns = @JoinColumn(name = "media_item_id"))
     @Column(name = "image_url", columnDefinition = "TEXT")
     private java.util.List<String> galleryImages; // For ALBUM type

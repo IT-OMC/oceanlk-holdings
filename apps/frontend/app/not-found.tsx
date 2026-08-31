@@ -106,7 +106,7 @@ export default function NotFound() {
                     <p className="text-lg md:text-xl text-gray-400 max-w-md mx-auto mb-8">
                         The page you are looking for has drifted away or doesn't exist.
                     </p>
-                    
+
                     <Link href="/">
                         <motion.button
                             className="px-8 py-4 rounded-full text-white font-semibold flex items-center gap-2 mx-auto"

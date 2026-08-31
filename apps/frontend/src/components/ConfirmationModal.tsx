@@ -1,4 +1,3 @@
-'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, CheckCircle, X } from 'lucide-react';
 
@@ -76,15 +75,15 @@ const ConfirmationModal = ({
                         exit={{ scale: 0.9, opacity: 0 }}
                         transition={{ type: "spring", duration: 0.5 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl relative"
+                        className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl relative"
                     >
                         {/* Close Button */}
                         <button
                             onClick={onClose}
                             disabled={isLoading}
-                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
+                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-500 transition-colors disabled:opacity-50"
                         >
-                            <X size={20} className="text-gray-600" />
+                            <X size={20} className="text-gray-400" />
                         </button>
 
                         {/* Icon */}
@@ -93,17 +92,17 @@ const ConfirmationModal = ({
                         </div>
 
                         {/* Title */}
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+                        <h2 className="text-2xl font-bold text-gray-200 mb-2">{title}</h2>
 
                         {/* Message */}
-                        <p className="text-gray-600 mb-6">{message}</p>
+                        <p className="text-gray-300 mb-6">{message}</p>
 
                         {/* Buttons */}
                         <div className="flex gap-3">
                             <button
                                 onClick={onClose}
                                 disabled={isLoading}
-                                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-300 font-medium hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {cancelText}
                             </button>

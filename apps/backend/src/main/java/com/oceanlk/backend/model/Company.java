@@ -35,7 +35,7 @@ public class Company {
     private String revenue;
     private String category;
 
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "company_stats", joinColumns = @JoinColumn(name = "company_id"))
     private List<Stat> stats;
 

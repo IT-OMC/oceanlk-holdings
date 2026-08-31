@@ -104,6 +104,7 @@ export const NEXT_PUBLIC_API_BASE_URL = {
     // Metrics
     METRICS: `${BASE_URL}/api/metrics`,
     METRIC_BY_ID: (id: string | number) => `${BASE_URL}/api/metrics/${id}`,
+    METRICS_REORDER: `${BASE_URL}/api/metrics/reorder`,
 
     // Partners & Memberships
     PARTNERS: `${BASE_URL}/api/partners`,

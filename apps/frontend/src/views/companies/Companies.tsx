@@ -43,6 +43,8 @@ const Companies = () => {
                                                 src={company.image?.replace('company images for hero section', 'hero-company-images') || ''}
                                                 alt={company.title}
                                                 fill
+                                                priority={index < 6}
+                                                loading='eager'
                                                 sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                                                 className="object-cover transform group-hover:scale-110 transition-transform duration-700"
                                             />

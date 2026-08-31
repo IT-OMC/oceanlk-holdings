@@ -13,11 +13,11 @@ import {
     Building2,
     ShieldAlert,
     User,
-    Settings,
     CheckSquare,
     TrendingUp,
     FileText,
-    Share2
+    Share2,
+    UserKeyIcon
 } from 'lucide-react';
 import { useState } from 'react';
 import { NEXT_PUBLIC_API_BASE_URL } from '../../utils/api';
@@ -204,7 +204,7 @@ const AdminSidebar = ({ isSidebarOpen }: AdminSidebarProps) => {
                     {pathname === '/admin/management' && (
                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-500 rounded-full" />
                     )}
-                    <Settings
+                    <UserKeyIcon
                         size={20}
                         className={`${pathname === '/admin/management' ? 'text-purple-400' : 'text-gray-500 group-hover:text-purple-400'} transition-colors`}
                     />

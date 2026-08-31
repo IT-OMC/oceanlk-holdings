@@ -10,12 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 import jakarta.annotation.PostConstruct;
 import java.util.Collections;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.Duration;
 import reactor.util.retry.Retry;
 
@@ -60,7 +57,6 @@ public class ChatService {
         try {
             // Construct the request
             GeminiRequest request = new GeminiRequest();
-            List<GeminiContent> contents = new ArrayList<>();
 
             // Prepend system prompt to the user message
             String fullPrompt = systemPrompt + "\n\nUser Question: " + userMessage;

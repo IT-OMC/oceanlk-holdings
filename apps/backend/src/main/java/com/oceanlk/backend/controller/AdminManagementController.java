@@ -8,7 +8,6 @@ import com.oceanlk.backend.service.AuditLogService;
 import com.oceanlk.backend.service.EmailService;
 import com.oceanlk.backend.service.NotificationService;
 import com.oceanlk.backend.service.OtpService;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,13 +102,20 @@ public class AdminManagementController {
                 "Created new admin: " + created.getUsername());
 
         // Notify Super Admins
-        notificationService.createNotification(
-                "Admin Management Action",
-                authentication.getName() + " created a new admin account: " + created.getUsername(),
-                "INFO",
-                "ROLE_SUPER_ADMIN",
-                "/admin/management",
-                authentication.getName());
+        try {
+            org.springframework.security.core.Authentication auth_obj = authentication != null ? authentication
+                    : org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            String adminName = auth_obj != null ? auth_obj.getName() : "System";
+            notificationService.createNotification(
+                    "Admin Management Action",
+                    adminName + " created a new admin account: " + created.getUsername(),
+                    "INFO",
+                    "ROLE_SUPER_ADMIN",
+                    "/admin/management",
+                    adminName);
+        } catch (Exception e) {
+            log.error("Failed to send add admin notification: {}", e.getMessage());
+        }
 
         return ResponseEntity.ok(created);
     }
