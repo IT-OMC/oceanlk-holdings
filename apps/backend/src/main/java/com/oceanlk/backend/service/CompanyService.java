@@ -63,6 +63,7 @@ public class CompanyService {
         company.setRevenue(companyDetails.getRevenue());
         company.setCategory(companyDetails.getCategory());
         company.setStats(companyDetails.getStats());
+        company.setSocialLinks(companyDetails.getSocialLinks());
 
         return companyRepository.save(company);
     }

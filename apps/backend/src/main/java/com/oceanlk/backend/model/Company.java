@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Entity
@@ -38,6 +39,14 @@ public class Company {
     @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "company_stats", joinColumns = @JoinColumn(name = "company_id"))
     private List<Stat> stats;
+
+    // Keyed by platform: "facebook", "x", "linkedin", "instagram". Missing/absent
+    // key means the platform isn't shown for this company.
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
+    @CollectionTable(name = "company_social_links", joinColumns = @JoinColumn(name = "company_id"))
+    @MapKeyColumn(name = "platform")
+    @Column(name = "url", columnDefinition = "TEXT")
+    private Map<String, String> socialLinks;
 
     @Data
     @Embeddable

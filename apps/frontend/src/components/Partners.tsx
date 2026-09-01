@@ -38,7 +38,7 @@ const Partners = () => {
     if (partners.length === 0) return null;
 
     return (
-        <section className="relative min-h-[50vh] flex items-center justify-center bg-primary overflow-hidden py-16">
+        <section className="relative min-h-[90vh] flex items-center justify-center bg-primary overflow-hidden py-16">
             {/* Background Elements */}
             <div className="absolute inset-0 z-0 bg-primary">
                 {/* Modern Gradient Background */}
