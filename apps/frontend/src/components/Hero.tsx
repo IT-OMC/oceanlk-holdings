@@ -64,31 +64,13 @@ const Hero = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Dark Overlay for better contrast */}
+                {/* Very lite dark overlay */}
+                <div className="absolute inset-0 bg-black/30" />
+                {/* Gradient Overlay for better contrast at top and bottom */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
 
                 {/* Center Content */}
                 <div className="absolute inset-x-0 top-20 md:top-24 bottom-32 md:bottom-36 lg:bottom-40 flex flex-col items-center justify-center z-10 px-4 md:px-8 lg:px-12">
-                    {/* Company Logo - Dynamic based on sector */}
-                    <motion.div
-                        key={`logo-${currentSlide}`}
-                        initial={{ scale: 0, rotate: 180, opacity: 0 }}
-                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                        exit={{ scale: 0, rotate: -180, opacity: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="mb-4 md:mb-5 lg:mb-6 p-4 md:p-5 lg:p-6 bg-white rounded-full shadow-lg"
-                    >
-                        <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24">
-                            <Image
-                                src={sectors[currentSlide].logoUrl?.replace('company logos', 'company-logos') || ''}
-                                alt={`${sectors[currentSlide].title} logo`}
-                                fill
-                                sizes="96px"
-                                className="object-contain"
-                            />
-                        </div>
-                    </motion.div>
-
                     {/* Main Heading - Dynamic based on sector */}
                     <motion.h1
                         key={`title-${currentSlide}`}
@@ -96,7 +78,7 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.6 }}
-                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-center leading-tight mb-3 md:mb-4 lg:mb-5"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-white text-center leading-tight mb-3 md:mb-4 lg:mb-5"
                     >
                         {sectors[currentSlide].title}
                     </motion.h1>
@@ -146,7 +128,7 @@ const Hero = () => {
                 {/* Social Media Sidebar - Hidden on Mobile/Tablet, and entirely
                     when the admin has disabled every platform */}
                 {hasVisibleSocialLinks && (
-                    <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6 py-6 px-3 bg-white rounded-l-2xl shadow-lg transform translate-x-0 transition-transform duration-300">
+                    <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 flex-col items-center gap-6 py-6 px-3 bg-white/90 rounded-l-2xl shadow-lg transform translate-x-0 transition-transform duration-300">
                         {/* Facebook */}
                         {isSocialLinkVisible(social.facebook) && (
                             <a href={social.facebook.url} className="hover:scale-110 transition-transform" target='_blank' rel='noopener noreferrer'>
@@ -211,48 +193,50 @@ const Hero = () => {
 
             {/* Bottom Navigation Circles */}
             <div className="absolute bottom-16 lg:bottom-24 left-0 right-0 z-20 px-4 lg:px-6">
-                <div className="w-full max-w-[98%] mx-auto flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-12 pb-2 lg:pb-0">
+                <div className="w-full max-w-[98%] mx-auto flex flex-wrap justify-center items-center gap-6 md:gap-14 lg:gap-16 pb-2 lg:pb-0">
                     {sectors.map((sector, index) => {
                         const isActive = currentSlide === index;
                         return (
                             <button
                                 key={sector.id}
                                 onClick={() => setCurrentSlide(index)}
-                                className="group flex items-center gap-2 md:gap-4 focus:outline-none"
+                                className="group flex items-center gap-2 md:gap-2.5 focus:outline-none"
                             >
                                 <div className="relative">
                                     {/* Dotted Outline Ring - Only Visible when Active */}
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeRing"
-                                            className="absolute -inset-2 rounded-full border-2 border-dotted border-secondary"
+                                            className="absolute -inset-1.5 rounded-full"
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
                                     )}
 
-                                    {/* Image Circle - Active much larger, inactive smaller */}
+                                    {/* Image Circle - Scaled down to match text size */}
                                     <motion.div
                                         animate={{
-                                            scale: isActive ? 1 : 0.6,
+                                            scale: isActive ? 1 : 0.9,
                                             opacity: isActive ? 1 : 0.5
                                         }}
                                         transition={{ duration: 0.4, ease: "easeOut" }}
-                                        className={`relative ${isActive ? 'w-14 h-14 lg:w-16 lg:h-16' : 'w-10 h-10 lg:w-12 lg:h-12'} rounded-full overflow-hidden border-2 ${isActive ? 'border-secondary' : 'border-white/50 group-hover:opacity-100'} bg-white flex items-center justify-center p-2`}
+                                        className={`relative w-12 h-12 lg:w-16 lg:h-16 overflow-hidden flex items-center justify-center p-0.5`}
                                     >
                                         <Image
                                             src={sector.logoUrl?.replace('company logos', 'company-logos') || ''}
                                             alt={sector.title}
                                             fill
-                                            sizes="64px"
-                                            className="object-contain"
+                                            sizes="36px"
+                                            priority
+                                            loading='eager'
+                                            className="object-contain brightness-0 invert"
                                         />
                                     </motion.div>
                                 </div>
 
                                 {/* Sector Name Label - Always Visible */}
-                                <span className={`font-medium text-sm lg:text-base whitespace-nowrap transition-colors duration-300 hidden lg:block ${isActive ? 'text-white' : 'text-white/60 group-hover:text-white/90'}`}>
+                                {/* <span className={`font-medium text-sm lg:text-base whitespace-nowrap transition-colors duration-300 hidden lg:block ${isActive ? 'text-white' : 'text-white/60 group-hover:text-white/90'}`}>
                                     {sector.title}
-                                </span>
+                                </span> */}
                             </button>
                         );
                     })}

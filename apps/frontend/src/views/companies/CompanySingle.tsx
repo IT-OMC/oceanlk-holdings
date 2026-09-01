@@ -8,9 +8,10 @@ import {
     Ship, Anchor, Package, Briefcase, PieChart, Wrench,
     CheckCircle, Globe, Map, Activity, MapPin, Smile,
     Compass, Layout, BarChart, ChevronDown, Calendar,
-    DollarSign, Building2, Heart, Play, X
+    DollarSign,
+    Building2, Play, Heart, X
 } from 'lucide-react';
-import { Instagram } from '../../components/icons/BrandIcons';
+import { Facebook, Instagram, Linkedin } from '../../components/icons/BrandIcons';
 import { oceanData } from '../../data/mockData';
 import Image from 'next/image';
 
@@ -18,6 +19,13 @@ export interface CompanyStat {
     icon: string;
     value: string;
     label: string;
+}
+
+export interface CompanySocialLinks {
+    facebook?: string;
+    x?: string;
+    linkedin?: string;
+    instagram?: string;
 }
 
 export interface Company {
@@ -35,6 +43,7 @@ export interface Company {
     revenue: string;
     category: string;
     stats: CompanyStat[];
+    socialLinks?: CompanySocialLinks;
 }
 
 // Map string icon names to Lucide components
@@ -127,6 +136,16 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
     const igPosts = oceanData.instagramUpdates.filter((p: any) => p.companyName === company.title);
 
     const safeStats = company.stats || [];
+
+    const socialPlatforms = [
+        { key: 'facebook' as const, icon: Facebook, label: 'Facebook' },
+        { key: 'x' as const, icon: X, label: 'X' },
+        { key: 'linkedin' as const, icon: Linkedin, label: 'LinkedIn' },
+        { key: 'instagram' as const, icon: Instagram, label: 'Instagram' },
+    ];
+    const activeSocialLinks = socialPlatforms
+        .map((platform) => ({ ...platform, url: company.socialLinks?.[platform.key] }))
+        .filter((platform): platform is typeof platform & { url: string } => Boolean(platform.url));
 
     return (
         <div className="min-h-screen bg-white">
@@ -256,7 +275,7 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                                         alt={`${company.title} logo`}
                                         className="w-28 h-28 object-contain mx-auto mb-8"
                                     />
-                                    <div className="space-y-5">
+                                    <div className="space-y-2">
                                         {[
                                             { icon: Calendar, label: 'Founded', value: company.established },
                                             { icon: Users, label: 'Employees', value: company.employees },
@@ -275,6 +294,24 @@ const CompanySingle = ({ company, relatedCompanies }: CompanySingleProps) => {
                                         ))}
                                     </div>
                                 </div>
+
+                                {/* Social Media Links */}
+                                {activeSocialLinks.length > 0 && (
+                                    <div className="flex items-center justify-center gap-4 mb-10">
+                                        {activeSocialLinks.map((social) => (
+                                            <a
+                                                key={social.key}
+                                                href={social.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={social.label}
+                                                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all duration-300 border border-gray-100 hover:border-primary hover:shadow-md hover:-translate-y-1"
+                                            >
+                                                <social.icon className="w-4 h-4" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
 
                                 {company.website && (
                                     <a

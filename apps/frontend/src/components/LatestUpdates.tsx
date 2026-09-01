@@ -108,6 +108,8 @@ const LatestUpdates = () => {
                                                 alt={post.companyName}
                                                 fill
                                                 sizes="40px"
+                                                priority
+                                                loading="eager"
                                                 className="object-contain"
                                             />
                                         </div>
