@@ -64,10 +64,8 @@ const Hero = () => {
                     </motion.div>
                 </motion.div>
 
-                {/* Very lite dark overlay */}
-                <div className="absolute inset-0 bg-black/30" />
-                {/* Gradient Overlay for better contrast at top and bottom */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+                {/* Radial dark gradient overlay - lighter at all four corners */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.5)_20%,rgba(0,0,0,0.15)_100%)]" />
 
                 {/* Center Content */}
                 <div className="absolute inset-x-0 top-20 md:top-24 bottom-32 md:bottom-36 lg:bottom-40 flex flex-col items-center justify-center z-10 px-4 md:px-8 lg:px-12">
